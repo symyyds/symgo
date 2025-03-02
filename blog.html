@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>博客 - 学术个人网站</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="profile">
+                <img src="images/sym_photo.jpg" alt="个人照片" class="profile-img">
+                <div class="profile-info">
+                    <h1>孙远鸣</h1>
+                    <p class="title">独善其身</p>
+                    <p class="keywords">CS | SE</p>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <!-- <li><a href="about.html">关于我</a></li>
+                    <li><a href="research.html">研究方向</a></li>
+                    <li><a href="publications.html">论文发表</a></li> -->
+                    <li><a href="blog.html" class="active">博客</a></li>
+                    <!-- <li><a href="resources.html">学术资源</a></li>
+                    <li><a href="contact.html">联系方式</a></li> -->
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <div class="container">
+                <h1>学术博客</h1>
+                <p>分享研究见解、技术报告和学术思考</p>
+            </div>
+        </section>
+
+        <section class="blog-content">
+            <div class="container">
+                <div class="blog-layout">
+                    <div class="blog-main">
+                        <div class="blog-filters">
+                            <div class="filter-tabs">
+                                <button class="filter-tab active" data-category="all">全部</button>
+                                <button class="filter-tab" data-category="research">研究笔记</button>
+                                <button class="filter-tab" data-category="paper">论文解读</button>
+                                <button class="filter-tab" data-category="tutorial">教程</button>
+                                <button class="filter-tab" data-category="conference">会议报告</button>
+                            </div>
+                            <div class="search-box">
+                                <input type="text" id="blog-search" placeholder="搜索博客文章...">
+                                <button id="search-btn"><i class="fas fa-search"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="blog-grid">
+                            <!-- 博客文章卡片1 -->
+                            <div class="blog-card" data-category="tutorial">
+                                <div class="blog-img">
+                                    <img src="images/blog/25_skills/fig1.png" alt="博客图片">
+                                </div>
+                                <div class="blog-content">
+                                    <div class="blog-meta">
+                                        <span class="blog-date"><i class="far fa-calendar-alt"></i> 2025年03月02日</span>
+                                        <span class="blog-category">教程</span>
+                                    </div>
+                                    <h3 class="blog-title">考研/保研 复试技巧与经验分享</h3>
+                                    <p class="blog-excerpt">本文分享了考研/保研复试的技巧与经验，包括复试准备、面试技巧、英语口语等方面。</p>
+                                    <a href="blog/25_skills.html" class="btn secondary">阅读全文</a>
+                                </div>
+                            </div>
+
+                            <!-- 博客文章卡片2 -->
+                            <!-- <div class="blog-card" data-category="research">
+                                <div class="blog-img">
+                                    <img src="images/blog/blog-2.jpg" alt="博客图片">
+                                </div>
+                                <div class="blog-content">
+                                    <div class="blog-meta">
+                                        <span class="blog-date"><i class="far fa-calendar-alt"></i> 2023年11月05日</span>
+                                        <span class="blog-category">研究笔记</span>
+                                    </div>
+                                    <h3 class="blog-title">XXX算法在XXX问题上的实验结果分析</h3>
+                                    <p class="blog-excerpt">这篇研究笔记记录了我们最近对XXX算法在解决XXX问题时的实验结果和分析发现...</p>
+                                    <a href="blog/research-note-1.html" class="btn secondary">阅读全文</a>
+                                </div>
+                            </div> -->
+
+                            <!-- 博客文章卡片3 -->
+                            <!-- <div class="blog-card" data-category="tutorial">
+                                <div class="blog-img">
+                                    <img src="images/blog/blog-3.jpg" alt="博客图片">
+                                </div>
+                                <div class="blog-content">
+                                    <div class="blog-meta">
+                                        <span class="blog-date"><i class="far fa-calendar-alt"></i> 2023年10月20日</span>
+                                        <span class="blog-category">教程</span>
+                                    </div>
+                                    <h3 class="blog-title">入门指南：如何使用XXX工具进行数据分析</h3>
+                                    <p class="blog-excerpt">这篇教程将一步步指导您如何使用XXX工具进行有效的数据分析，包括数据预处理、特征选择等关键步骤...</p>
+                                    <a href="blog/tutorial-1.html" class="btn secondary">阅读全文</a>
+                                </div>
+                            </div> -->
+
+                            <!-- 博客文章卡片4 -->
+                            <!-- <div class="blog-card" data-category="conference">
+                                <div class="blog-img">
+                                    <img src="images/blog/blog-4.jpg" alt="博客图片">
+                                </div>
+                                <div class="blog-content">
+                                    <div class="blog-meta">
+                                        <span class="blog-date"><i class="far fa-calendar-alt"></i> 2023年09月10日</span>
+                                        <span class="blog-category">会议报告</span>
+                                    </div>
+                                    <h3 class="blog-title">2023年XXX国际会议亮点总结</h3>
+                                    <p class="blog-excerpt">这篇文章总结了今年XXX国际会议上的主要亮点、前沿研究趋势和值得关注的工作...</p>
+                                    <a href="blog/conference-1.html" class="btn secondary">阅读全文</a>
+                                </div>
+                            </div> -->
+
+                            <!-- 博客文章卡片5 -->
+                            <!-- <div class="blog-card" data-category="paper">
+                                <div class="blog-img">
+                                    <img src="images/blog/blog-5.jpg" alt="博客图片">
+                                </div>
+                                <div class="blog-content">
+                                    <div class="blog-meta">
+                                        <span class="blog-date"><i class="far fa-calendar-alt"></i> 2023年08月25日</span>
+                                        <span class="blog-category">论文解读</span>
+                                    </div>
+                                    <h3 class="blog-title">解读：XXX方法在XXX任务上的创新应用</h3>
+                                    <p class="blog-excerpt">本文详细解读了最近发表的一篇关于XXX方法在XXX任务上应用的创新论文，并讨论其实际价值...</p>
+                                    <a href="blog/paper-review-2.html" class="btn secondary">阅读全文</a>
+                                </div>
+                            </div> -->
+
+                            <!-- 博客文章卡片6 -->
+                            <!-- <div class="blog-card" data-category="research">
+                                <div class="blog-img">
+                                    <img src="images/blog/blog-6.jpg" alt="博客图片">
+                                </div>
+                                <div class="blog-content">
+                                    <div class="blog-meta">
+                                        <span class="blog-date"><i class="far fa-calendar-alt"></i> 2023年07月15日</span>
+                                        <span class="blog-category">研究笔记</span>
+                                    </div>
+                                    <h3 class="blog-title">XXX问题的新思路与初步实验结果</h3>
+                                    <p class="blog-excerpt">这篇研究笔记探讨了解决XXX问题的一种新思路，并分享了我们团队的初步实验结果与分析...</p>
+                                    <a href="blog/research-note-2.html" class="btn secondary">阅读全文</a>
+                                </div>
+                            </div> -->
+                        </div>
+
+                        <div class="pagination">
+                            <button class="pagination-btn active">1</button>
+                            <button class="pagination-btn">2</button>
+                            <button class="pagination-btn">3</button>
+                            <span class="pagination-dots">...</span>
+                            <button class="pagination-btn">下一页 &raquo;</button>
+                        </div>
+                    </div>
+
+                    <div class="blog-sidebar">
+                        <div class="sidebar-widget">
+                            <h3 class="widget-title">关于博客</h3>
+                            <p>这里是我分享学术思考、研究见解和技术报告的地方。所有内容均代表个人观点，欢迎讨论与交流。</p>
+                        </div>
+
+                        <div class="sidebar-widget">
+                            <h3 class="widget-title">博客归档</h3>
+                            <ul class="archive-list">
+                                <li><a href="#">2025年 <span>(1)</span></a></li>
+                                <!-- <li><a href="#">2022年 <span>(15)</span></a></li>
+                                <li><a href="#">2021年 <span>(8)</span></a></li>
+                                <li><a href="#">2020年 <span>(10)</span></a></li> -->
+                            </ul>
+                        </div>
+
+                        <div class="sidebar-widget">
+                            <h3 class="widget-title">热门标签</h3>
+                            <div class="tag-cloud">
+                                <!-- <a href="#" class="tag">人工智能</a>
+                                <a href="#" class="tag">深度学习</a>
+                                <a href="#" class="tag">数据分析</a>
+                                <a href="#" class="tag">机器学习</a>
+                                <a href="#" class="tag">生物信息学</a>
+                                <a href="#" class="tag">分子模拟</a>
+                                <a href="#" class="tag">计算化学</a>
+                                <a href="#" class="tag">研究方法</a>
+                                <a href="#" class="tag">学术会议</a> -->
+                                <a href="#" class="tag">考研</a>
+                                <a href="#" class="tag">保研</a>
+                                <a href="#" class="tag">复试</a>
+                                <a href="#" class="tag">经验分享</a>
+                            </div>
+                        </div>
+
+                        <!-- <div class="sidebar-widget">
+                            <h3 class="widget-title">最新文章</h3>
+                            <ul class="recent-posts">
+                                <li>
+                                    <a href="blog/paper-review-1.html">
+                                        <div class="post-thumb">
+                                            <img src="images/blog/blog-1-thumb.jpg" alt="缩略图">
+                                        </div>
+                                        <div class="post-info">
+                                            <h4>最新研究：XXX领域的突破性进展</h4>
+                                            <span>2023年12月15日</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="blog/research-note-1.html">
+                                        <div class="post-thumb">
+                                            <img src="images/blog/blog-2-thumb.jpg" alt="缩略图">
+                                        </div>
+                                        <div class="post-info">
+                                            <h4>XXX算法在XXX问题上的实验结果分析</h4>
+                                            <span>2023年11月05日</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="blog/tutorial-1.html">
+                                        <div class="post-thumb">
+                                            <img src="images/blog/blog-3-thumb.jpg" alt="缩略图">
+                                        </div>
+                                        <div class="post-info">
+                                            <h4>入门指南：如何使用XXX工具进行数据分析</h4>
+                                            <span>2023年10月20日</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+<!-- 
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>您的姓名</h3>
+                    <p>XXX大学XX学院</p>
+                </div>
+                <div class="footer-links">
+                    <h4>快速链接</h4>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="publications.html">论文发表</a></li>
+                        <li><a href="resources.html">学术资源</a></li>
+                        <li><a href="contact.html">联系方式</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>联系方式</h4>
+                    <p><i class="fas fa-envelope"></i> email@university.edu</p>
+                    <p><i class="fas fa-map-marker-alt"></i> XXX大学XX学院XX楼XXX室</p>
+                    <div class="social-icons">
+                        <a href="#" title="Google Scholar"><i class="fas fa-graduation-cap"></i></a>
+                        <a href="#" title="ResearchGate"><i class="fab fa-researchgate"></i></a>
+                        <a href="#" title="ORCID"><i class="fab fa-orcid"></i></a>
+                        <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 您的姓名. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer> -->
+
+    <script src="js/main.js"></script>
+    <script>
+        // 博客筛选功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            const blogCards = document.querySelectorAll('.blog-card');
+            const searchInput = document.getElementById('blog-search');
+            const searchBtn = document.getElementById('search-btn');
+            
+            // 筛选分类
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // 移除所有活跃状态
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    // 添加当前活跃状态
+                    this.classList.add('active');
+                    
+                    const category = this.getAttribute('data-category');
+                    
+                    blogCards.forEach(card => {
+                        if (category === 'all') {
+                            card.style.display = 'block';
+                        } else if (card.getAttribute('data-category') === category) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // 搜索功能
+            function performSearch() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                
+                if (searchTerm === '') {
+                    // 如果搜索框为空，恢复到当前选中的分类筛选状态
+                    const activeTab = document.querySelector('.filter-tab.active');
+                    activeTab.click();
+                    return;
+                }
+                
+                blogCards.forEach(card => {
+                    const title = card.querySelector('.blog-title').textContent.toLowerCase();
+                    const excerpt = card.querySelector('.blog-excerpt').textContent.toLowerCase();
+                    
+                    if (title.includes(searchTerm) || excerpt.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+            
+            searchBtn.addEventListener('click', performSearch);
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
