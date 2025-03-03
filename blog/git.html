@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git使用指南 - 技术笔记</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* 保持原有样式基础上新增代码块样式 */
+        .article-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .article-meta {
+            color: #666;
+            font-size: 0.9em;
+            margin: 10px 0;
+        }
+
+        .article-content {
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        /* Markdown内容样式 */
+        .markdown-body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .markdown-body pre {
+            background: #f6f8fa;
+            padding: 16px;
+            border-radius: 6px;
+            overflow: auto;
+            margin: 20px 0;
+            border: 1px solid #e1e4e8;
+        }
+
+        .markdown-body code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 14px;
+        }
+
+        .markdown-body h2 {
+            border-bottom: 1px solid #eaecef;
+            padding-bottom: 0.3em;
+            margin-top: 1.5em;
+        }
+
+        .markdown-body ul {
+            padding-left: 2em;
+        }
+
+        .attachments-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        /* 保持原有附件样式 */
+        .attachment-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <!-- 导航栏 -->
+    </header>
+
+    <main>
+        <div class="article-container">
+            <article>
+                <div class="article-header">
+                    <h1>Git教程</h1>
+                    <div class="article-meta">
+                        <span><i class="far fa-calendar-alt"></i> 发布日期：2024-02-20</span>
+                        <span><i class="far fa-user"></i> 作者：技术笔记</span>
+                        <span><i class="far fa-folder"></i> 分类：开发工具</span>
+                    </div>
+                </div>
+
+                <div class="article-content markdown-body">
+                    <h2>Git基础命令</h2>
+
+                    <h3>仓库初始化</h3>
+                    <pre><code># 初始化新仓库
+git init
+
+# 克隆现有仓库
+git clone https://github.com/user/repo.git</code></pre>
+
+                    <h3>提交更改</h3>
+                    <pre><code># 添加所有修改到暂存区
+git add .
+
+# 提交到本地仓库
+git commit -m "提交说明"</code></pre>
+
+                    <h2>分支管理</h2>
+                    <pre><code># 创建新分支
+git branch feature-branch
+
+# 切换分支
+git checkout main
+
+# 合并分支
+git merge feature-branch</code></pre>
+
+                    <h2>常用工作流</h2>
+                    <ul>
+                        <li>集中式工作流</li>
+                        <li>功能分支工作流</li>
+                        <li>Git Flow工作流</li>
+                    </ul>
+
+                    <h2>高级技巧</h2>
+                    <pre><code># 修改最近提交
+git commit --amend
+
+# 交互式变基
+git rebase -i HEAD~3</code></pre>
+                </div>
+
+                <div class="attachments-section">
+                    <h2>相关资源下载</h2>
+                    <div class="attachment-list">
+                        <div class="attachment-item">
+                            <i class="fas fa-file-pdf attachment-icon"></i>
+                            <div class="attachment-info">
+                                <div class="attachment-name">Git速查表.pdf</div>
+                                <div class="attachment-meta">PDF文档 - 1.8MB</div>
+                            </div>
+                            <a href="../files/git_guide/cheatsheet.pdf" class="download-btn">
+                                <i class="fas fa-download"></i> 下载
+                            </a>
+                        </div>
+                        <div class="attachment-item">
+                            <i class="fas fa-file-code attachment-icon"></i>
+                            <div class="attachment-info">
+                                <div class="attachment-name">示例项目.zip</div>
+                                <div class="attachment-meta">ZIP压缩包 - 512KB</div>
+                            </div>
+                            <a href="../files/git_guide/demo_project.zip" class="download-btn">
+                                <i class="fas fa-download"></i> 下载
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <footer>
+        <!-- 页脚 -->
+    </footer>
+</body>
+</html>
