@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>孙远鸣 - 留言板</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .message-board {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            padding: 16px;
+            margin-bottom: 16px;
+            min-height: 60vh;
+        }
+
+        .message-item {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            animation: fadeIn 0.3s ease-in;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .message-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .message-header {
+            color: var(--text-light);
+            font-size: 0.85em;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .message-content {
+            line-height: 1.5;
+            color: var(--text-color);
+            white-space: pre-wrap;
+            font-size: 0.95em;
+            margin: 6px 0;
+        }
+
+        .message-footer {
+            margin-top: 8px;
+            color: var(--text-light);
+            font-size: 0.8em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .input-container {
+            margin-top: 16px;
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 0.9em;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 100px;
+            font-family: var(--font-main);
+            font-size: 0.95em;
+            line-height: 1.5;
+            color: #333;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(var(--primary-color-rgb), 0.1);
+        }
+
+        .nickname-input {
+            padding: 8px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95em;
+            width: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .nickname-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(var(--primary-color-rgb), 0.1);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn.primary {
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+        }
+
+        .btn.danger {
+            background: #dc3545;
+            color: white;
+            padding: 4px 8px;
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: none;
+        }
+
+        .message-item:hover .delete-btn {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 48px;
+            color: var(--text-light);
+            font-style: italic;
+            font-size: 0.95em;
+        }
+
+        .admin-mode {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        /* 分页样式 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 24px;
+            gap: 8px;
+        }
+
+        .pagination button {
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85em;
+        }
+
+        .pagination .current-page {
+            padding: 8px 12px;
+            color: var(--text-color);
+            font-size: 0.85em;
+        }
+
+        /* 管理员登录模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+        }
+
+        .modal-header {
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: var(--text-color);
+            font-size: 1.2em;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="profile">
+                <img src="images/sym_photo.jpg" alt="个人照片" class="profile-img">
+                <div class="profile-info">
+                    <h1>孙远鸣</h1>
+                    <p class="title">独善其身</p>
+                    <p class="keywords">CS | SE</p>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="blog.html">博客</a></li>
+                    <li><a href="ai.html">AI聊天</a></li>
+                    <li><a href="leave_message.html" class="active">留言板</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div id="adminMode" class="admin-mode" style="display: none;">管理员模式</div>
+            
+            <div class="message-board" id="messageBoard">
+                <!-- 留言内容将通过 JavaScript 动态加载 -->
+            </div>
+
+            <div class="pagination" id="pagination">
+                <!-- 分页控件将通过 JavaScript 动态加载 -->
+            </div>
+
+            <div class="input-container">
+                <div class="input-group">
+                    <label for="nickname">昵称（选填）</label>
+                    <input type="text" id="nickname" class="nickname-input" placeholder="匿名">
+                </div>
+                <div class="input-group">
+                    <label for="messageContent">留言内容</label>
+                    <textarea id="messageContent" placeholder="说点什么吧..."></textarea>
+                </div>
+                <button class="btn primary" onclick="submitMessage()">发表留言</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 管理员登录模态框 -->
+    <div id="adminLoginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>管理员登录</h2>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label for="adminPassword">管理员密码</label>
+                    <input type="password" id="adminPassword" class="nickname-input" placeholder="请输入密码">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeAdminLogin()">取消</button>
+                <button class="btn primary" onclick="verifyAdminPassword()">登录</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 配置参数
+        const CONFIG = {
+            STORAGE_KEY: 'message_board_v1',
+            ADMIN_KEY: 'admin_mode_v1',
+            ADMIN_PASSWORD: '123456', // 这里设置管理员密码，实际使用时应该使用更复杂的密码
+            ITEMS_PER_PAGE: 3 // 每页显示的留言数量
+        };
+
+        let currentPage = 1;
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', () => {
+            loadMessages();
+            checkAdminMode();
+            
+            // 添加快捷键支持
+            document.addEventListener('keydown', (e) => {
+                // Alt + S 打开管理员登录
+                if (e.altKey && e.key === 's') {
+                    showAdminLogin();
+                }
+            });
+        });
+
+        // 加载留言
+        function loadMessages() {
+            const messages = getMessages();
+            const messageBoard = document.getElementById('messageBoard');
+            
+            if (messages.length === 0) {
+                messageBoard.innerHTML = '<div class="empty-message">暂无留言，来说点什么吧~</div>';
+                document.getElementById('pagination').style.display = 'none';
+                return;
+            }
+
+            // 计算分页
+            const totalPages = Math.ceil(messages.length / CONFIG.ITEMS_PER_PAGE);
+            const startIndex = (currentPage - 1) * CONFIG.ITEMS_PER_PAGE;
+            const endIndex = Math.min(startIndex + CONFIG.ITEMS_PER_PAGE, messages.length);
+            const currentMessages = messages.slice(startIndex, endIndex);
+
+            // 渲染留言
+            messageBoard.innerHTML = currentMessages.map((msg, index) => `
+                <div class="message-item" data-index="${startIndex + index}">
+                    <div class="message-header">
+                        <span>${msg.nickname || '匿名用户'}</span>
+                        ${isAdminMode() ? `
+                            <button class="btn danger delete-btn" onclick="deleteMessage(${startIndex + index})">
+                                删除
+                            </button>
+                        ` : ''}
+                    </div>
+                    <div class="message-content">${msg.content}</div>
+                    <div class="message-footer">
+                        <span>${new Date(msg.timestamp).toLocaleString('zh-CN')}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            // 更新分页控件
+            updatePagination(totalPages);
+        }
+
+        // 更新分页控件
+        function updatePagination(totalPages) {
+            const pagination = document.getElementById('pagination');
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+
+            pagination.style.display = 'flex';
+            pagination.innerHTML = `
+                <button onclick="changePage(1)" ${currentPage === 1 ? 'disabled' : ''}>首页</button>
+                <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>上一页</button>
+                <span class="current-page">${currentPage} / ${totalPages}</span>
+                <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>下一页</button>
+                <button onclick="changePage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''}>末页</button>
+            `;
+        }
+
+        // 切换页面
+        function changePage(page) {
+            currentPage = page;
+            loadMessages();
+            window.scrollTo(0, 0);
+        }
+
+        // 管理员登录相关函数
+        function showAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'flex';
+        }
+
+        function closeAdminLogin() {
+            document.getElementById('adminLoginModal').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+        }
+
+        function verifyAdminPassword() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === CONFIG.ADMIN_PASSWORD) {
+                localStorage.setItem(CONFIG.ADMIN_KEY, 'true');
+                closeAdminLogin();
+                checkAdminMode();
+                loadMessages();
+            } else {
+                alert('密码错误！');
+            }
+        }
+
+        // 提交留言
+        function submitMessage() {
+            const nickname = document.getElementById('nickname').value.trim();
+            const content = document.getElementById('messageContent').value.trim();
+            
+            if (!content) {
+                alert('请输入留言内容');
+                return;
+            }
+
+            const messages = getMessages();
+            messages.unshift({
+                nickname: nickname || '匿名用户',
+                content: content,
+                timestamp: Date.now()
+            });
+
+            localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(messages));
+            
+            // 清空输入框
+            document.getElementById('messageContent').value = '';
+            document.getElementById('nickname').value = '';
+            
+            // 确保显示第一页
+            currentPage = 1;
+            
+            // 重新加载留言
+            loadMessages();
+            
+            // 平滑滚动到留言板顶部
+            document.getElementById('messageBoard').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 删除留言
+        function deleteMessage(index) {
+            if (!isAdminMode()) return;
+            
+            if (confirm('确定要删除这条留言吗？')) {
+                const messages = getMessages();
+                messages.splice(index, 1);
+                localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(messages));
+                loadMessages();
+            }
+        }
+
+        // 获取所有留言
+        function getMessages() {
+            return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY) || '[]');
+        }
+
+        // 管理员模式相关函数
+        function isAdminMode() {
+            return localStorage.getItem(CONFIG.ADMIN_KEY) === 'true';
+        }
+
+        function checkAdminMode() {
+            const adminModeDiv = document.getElementById('adminMode');
+            adminModeDiv.style.display = isAdminMode() ? 'block' : 'none';
+        }
+    </script>
+</body>
+</html>
