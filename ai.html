@@ -603,7 +603,25 @@
             const chatBox = document.getElementById('chat-box');
             chatBox.innerHTML = ''; // 清空聊天框
             
-            // 加载历史记录时传入 isNewMessage = false
+            // 先添加欢迎消息
+            chatBox.innerHTML = `
+                <div class="message ai-message">
+                    <div class="message-header">
+                        <span>📚 学术助手</span>
+                        <span>${new Date().toLocaleDateString('zh-CN')}</span>
+                    </div>
+                    <div class="message-content">
+                        欢迎使用学术助手！功能说明：
+                        <ul>
+                            <li>本地自动保存聊天记录</li>
+                            <li>支持导出/导入JSON格式记录</li>
+                            <li>最多保存${CONFIG.MAX_HISTORY}条对话</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            // 然后加载历史记录
             for (const item of history) {
                 appendMessage(item.content, item.sender, false);
             }
