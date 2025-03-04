@@ -20,14 +20,116 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     </script>
     <style>
-        /* AI助手特定样式 */
+        /* 聊天列表样式 */
+        .chat-layout {
+            display: flex;
+            gap: 20px;
+            height: calc(100vh - 200px);
+            margin: 20px 0;
+        }
+
+        .chat-list-panel {
+            width: 250px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .chat-list-header {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .new-chat-btn {
+            padding: 8px 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .new-chat-btn:hover {
+            background: var(--primary-color-dark, #0056b3);
+        }
+
+        .chat-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .chat-item {
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-item:hover {
+            background: #f8f9fa;
+        }
+
+        .chat-item.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .chat-item-icon {
+            font-size: 1.2em;
+        }
+
+        .chat-item-content {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .chat-item-title {
+            font-weight: 500;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-item-time {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .chat-item.active .chat-item-time {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 修改现有的聊天容器样式 */
         .chat-container {
+            flex: 1;
             background: white;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             padding: 20px;
             margin-bottom: 20px;
-            height: 60vh;
             overflow-y: auto;
         }
 
@@ -170,31 +272,48 @@
             }
         }
 
+        /* 工具栏样式 */
         .toolbar {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
+            padding: 10px;
+            border-top: 1px solid #eee;
             display: flex;
-            gap: 10px;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .tool-btn {
-            padding: 8px 16px;
-            border-radius: 20px;
+            width: 100%;
+            padding: 8px;
+            border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
             border: none;
             color: white;
             font-family: var(--font-main);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
-        #clearBtn { background: #dc3545; }
-        #exportBtn { background: var(--success-color); }
-        #importBtn { background: var(--accent-color); }
+        #clearBtn { 
+            background: #dc3545;
+        }
+        #exportBtn { 
+            background: var(--success-color);
+        }
+        #importBtn { 
+            background: var(--accent-color);
+        }
         
         .tool-btn:hover {
-            transform: translateY(-2px);
+            transform: translateY(-1px);
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .tool-btn i {
+            font-size: 14px;
         }
 
         /* Markdown 样式 */
@@ -428,37 +547,54 @@
     </header>
 
     <main>
-
         <section class="container">
-            <div class="chat-container" id="chat-box">
-                <!-- 聊天消息通过JavaScript加载 -->
-            </div>
-
-            <div class="input-container">
-                <div class="input-wrapper">
-                    <div class="input-area">
-                        <textarea id="user-input" placeholder="请输入学术问题（支持Markdown语法）..."></textarea>
-                        <button class="file-upload-btn" onclick="document.getElementById('upload-file').click()">
-                            <i class="fas fa-paperclip"></i>
+            <div class="chat-layout">
+                <div class="chat-list-panel">
+                    <div class="chat-list-header">
+                        <h3>聊天列表</h3>
+                        <button class="new-chat-btn" onclick="createNewChat()">
+                            <i class="fas fa-plus"></i>
+                            新建
                         </button>
-                        <div class="file-type-hint">（仅支持文本文件、Word、PDF）</div>
-                        <input type="file" id="upload-file" hidden onchange="handleFileUpload(event)">
+                    </div>
+                    <div class="chat-list" id="chat-list">
+                        <!-- 聊天列表项将通过JavaScript动态添加 -->
+                    </div>
+                    <!-- 功能工具栏 -->
+                    <div class="toolbar">
+                        <button class="tool-btn" id="exportBtn" onclick="exportHistory()">
+                            <i class="fas fa-download"></i>导出记录
+                        </button>
+                        <button class="tool-btn" id="importBtn" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-upload"></i>导入记录
+                        </button>
+                        <button class="tool-btn" id="clearBtn" onclick="clearHistory()">
+                            <i class="fas fa-trash"></i>清除记录
+                        </button>
+                    </div>
+                    <input type="file" id="fileInput" hidden accept=".json" onchange="importHistory(event)">
+                </div>
+                <div class="chat-main">
+                    <div class="chat-container" id="chat-box">
+                        <!-- 聊天消息将通过JavaScript动态添加 -->
+                    </div>
+                    <div class="input-container">
+                        <div class="input-wrapper">
+                            <div class="input-area">
+                                <textarea id="user-input" placeholder="请输入学术问题（支持Markdown语法）..."></textarea>
+                                <button class="file-upload-btn" onclick="document.getElementById('upload-file').click()">
+                                    <i class="fas fa-paperclip"></i>
+                                </button>
+                                <div class="file-type-hint">（仅支持文本文件、Word、PDF）</div>
+                                <input type="file" id="upload-file" hidden onchange="handleFileUpload(event)">
+                            </div>
+                        </div>
+                        <button class="btn primary" onclick="sendMessage()">发送</button>
                     </div>
                 </div>
-                <button class="btn primary" onclick="sendMessage()">发送</button>
             </div>
         </section>
     </main>
-
-    
-
-    <!-- 功能工具栏 -->
-    <div class="toolbar">
-        <button class="tool-btn" id="exportBtn" onclick="exportHistory()">导出记录</button>
-        <button class="tool-btn" id="importBtn" onclick="document.getElementById('fileInput').click()">导入记录</button>
-        <button class="tool-btn" id="clearBtn" onclick="clearHistory()">清除记录</button>
-    </div>
-    <input type="file" id="fileInput" hidden accept=".json" onchange="importHistory(event)">
 
     <script src="js/main.js"></script>
     <script>
@@ -702,37 +838,209 @@
         // 配置参数
         const CONFIG = {
             API_KEY: 'sk-634a1ac34563499983406a759727cd56',
-            STORAGE_KEY: 'academic_chat_v1',
+            STORAGE_KEY: 'academic_chat_v2',
             MAX_HISTORY: 200  // 最多保存200条记录
+        };
+
+        let currentChatId = null;
+
+        // 聊天数据结构
+        const chatData = {
+            chats: {},  // 存储所有聊天
+            chatList: []  // 存储聊天列表顺序
         };
 
         // 初始化页面
         document.addEventListener('DOMContentLoaded', () => {
-            initChat();
-            loadHistory();
+            loadAllChats();
             initTextareaAutoResize();
         });
 
-        // 初始化聊天框
-        function initChat() {
+        // 加载所有聊天
+        function loadAllChats() {
+            const savedData = localStorage.getItem(CONFIG.STORAGE_KEY);
+            if (savedData) {
+                Object.assign(chatData, JSON.parse(savedData));
+            }
+            
+            if (chatData.chatList.length === 0) {
+                // 如果没有任何聊天，创建一个新的
+                createNewChat();
+            } else {
+                // 加载聊天列表
+                renderChatList();
+                // 加载最后一个活跃的聊天
+                switchToChat(chatData.chatList[chatData.chatList.length - 1]);
+            }
+        }
+
+        // 创建新聊天
+        function createNewChat() {
+            const chatId = 'chat_' + Date.now();
+            const newChat = {
+                id: chatId,
+                title: '新的对话',
+                messages: [],
+                createdAt: Date.now(),
+                lastMessageAt: Date.now()
+            };
+            
+            chatData.chats[chatId] = newChat;
+            chatData.chatList.push(chatId);
+            
+            // 保存到本地存储
+            saveChatsToStorage();
+            
+            // 更新UI
+            renderChatList();
+            switchToChat(chatId);
+        }
+
+        // 切换到指定聊天
+        function switchToChat(chatId) {
+            currentChatId = chatId;
+            const chat = chatData.chats[chatId];
+            
+            // 更新聊天列表UI
+            document.querySelectorAll('.chat-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.chatId === chatId) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // 清空并重新渲染聊天消息
             const chatBox = document.getElementById('chat-box');
-            chatBox.innerHTML = `
-                <div class="message ai-message">
-                    <div class="message-header">
-                        <span>📚 学术助手</span>
-                        <span>${new Date().toLocaleDateString('zh-CN')}</span>
+            chatBox.innerHTML = '';
+            
+            // 添加欢迎消息
+            appendMessage({
+                content: `欢迎使用学术助手！功能说明：
+                <ul>
+                    <li>本地自动保存聊天记录</li>
+                    <li>支持导出/导入JSON格式记录</li>
+                    <li>支持上传文档进行分析（最大20MB）</li>
+                    <li>最多保存${CONFIG.MAX_HISTORY}条对话</li>
+                </ul>`,
+                sender: 'ai',
+                timestamp: chat.createdAt
+            }, false);
+            
+            // 加载聊天历史
+            chat.messages.forEach(msg => {
+                appendMessage({
+                    content: msg.content,
+                    sender: msg.sender,
+                    timestamp: msg.timestamp
+                }, false);
+            });
+        }
+
+        // 渲染聊天列表
+        function renderChatList() {
+            const chatList = document.getElementById('chat-list');
+            chatList.innerHTML = '';
+            
+            // 反转数组顺序显示
+            [...chatData.chatList].reverse().forEach(chatId => {
+                const chat = chatData.chats[chatId];
+                const chatItem = document.createElement('div');
+                chatItem.className = `chat-item ${chatId === currentChatId ? 'active' : ''}`;
+                chatItem.dataset.chatId = chatId;
+                
+                // 获取最后一条消息作为标题
+                const lastMessage = chat.messages[chat.messages.length - 1];
+                const title = lastMessage ? 
+                    lastMessage.content.substring(0, 30) + (lastMessage.content.length > 30 ? '...' : '') : 
+                    '新的对话';
+                
+                chatItem.innerHTML = `
+                    <div class="chat-item-icon">
+                        <i class="fas fa-comments"></i>
                     </div>
-                    <div class="message-content">
-                        欢迎使用学术助手！功能说明：
-                        <ul>
-                            <li>本地自动保存聊天记录</li>
-                            <li>支持导出/导入JSON格式记录</li>
-                            <li>支持上传文档进行分析（最大20MB）</li>
-                            <li>最多保存${CONFIG.MAX_HISTORY}条对话</li>
-                        </ul>
+                    <div class="chat-item-content">
+                        <div class="chat-item-title">${title}</div>
+                        <div class="chat-item-time">${new Date(chat.lastMessageAt).toLocaleString('zh-CN')}</div>
                     </div>
-                </div>
-            `;
+                `;
+                
+                chatItem.onclick = () => switchToChat(chatId);
+                chatList.appendChild(chatItem);
+            });
+        }
+
+        // 保存聊天到本地存储
+        function saveChatsToStorage() {
+            localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(chatData));
+        }
+
+        // 修改现有的saveMessage函数
+        function saveMessage(content, sender) {
+            if (!currentChatId) return;
+            
+            const message = {
+                content,
+                sender,
+                timestamp: Date.now()
+            };
+            
+            const chat = chatData.chats[currentChatId];
+            chat.messages.push(message);
+            chat.lastMessageAt = message.timestamp;
+            
+            // 如果消息数超过限制，删除最早的消息
+            if (chat.messages.length > CONFIG.MAX_HISTORY) {
+                chat.messages.splice(0, chat.messages.length - CONFIG.MAX_HISTORY);
+            }
+            
+            // 更新存储
+            saveChatsToStorage();
+            // 更新聊天列表显示
+            renderChatList();
+        }
+
+        // 修改导出功能以支持多聊天
+        function exportHistory() {
+            const blob = new Blob([JSON.stringify(chatData)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `chat_history_${Date.now()}.json`;
+            a.click();
+        }
+
+        // 修改导入功能以支持多聊天
+        function importHistory(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    // 验证导入的数据格式
+                    if (importedData.chats && importedData.chatList) {
+                        Object.assign(chatData, importedData);
+                        saveChatsToStorage();
+                        loadAllChats();
+                    } else {
+                        alert('导入的文件格式不正确！');
+                    }
+                } catch {
+                    alert('文件格式错误！');
+                }
+            }
+            reader.readAsText(file);
+        }
+
+        // 修改清除历史记录功能
+        function clearHistory() {
+            if(confirm('确定要清除所有聊天记录吗？')) {
+                chatData.chats = {};
+                chatData.chatList = [];
+                saveChatsToStorage();
+                createNewChat();
+            }
         }
 
         // 初始化文本框自动调整高度
@@ -756,27 +1064,6 @@
                     sendMessage();
                 }
             });
-        }
-
-        // ================= 存储管理 =================
-        function saveMessage(content, sender) {
-            const history = getHistory();
-            history.push({
-                content,
-                sender,
-                timestamp: Date.now()
-            });
-            
-            // 自动清理旧记录
-            if(history.length > CONFIG.MAX_HISTORY) {
-                history.splice(0, history.length - CONFIG.MAX_HISTORY);
-            }
-            
-            localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(history));
-        }
-
-        function getHistory() {
-            return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY) || '[]');
         }
 
         // ================= 核心功能 =================
@@ -811,7 +1098,12 @@
                 }
 
                 // 添加用户消息
-                await appendMessage(messageContent, 'user');
+                const userMessage = {
+                    content: messageContent,
+                    sender: 'user',
+                    timestamp: Date.now()
+                };
+                await appendMessage(userMessage);
                 saveMessage(messageContent, 'user');
 
                 // 添加思考状态
@@ -879,7 +1171,12 @@
                 if (data.choices?.[0]?.message?.content) {
                     const aiResponse = data.choices[0].message.content;
                     document.getElementById('chat-box').removeChild(thinkingDiv);
-                    await appendMessage(aiResponse, 'ai', true);
+                    const aiMessage = {
+                        content: aiResponse,
+                        sender: 'ai',
+                        timestamp: Date.now()
+                    };
+                    await appendMessage(aiMessage, true);
                     saveMessage(aiResponse, 'ai');
                 } else {
                     throw new Error('响应格式不正确');
@@ -895,7 +1192,12 @@
                 if (thinkingDiv) {
                     document.getElementById('chat-box').removeChild(thinkingDiv);
                 }
-                await appendMessage(`请求失败：${error.message}`, 'error');
+                const errorMessage = {
+                    content: `请求失败：${error.message}`,
+                    sender: 'ai',
+                    timestamp: Date.now()
+                };
+                await appendMessage(errorMessage);
                 console.error('API调用错误:', error);
             } finally {
                 input.value = '';
@@ -906,12 +1208,12 @@
         }
 
         // ================= 辅助功能 =================
-        async function appendMessage(content, sender, isNewMessage = true) {
+        async function appendMessage(message, isNewMessage = true) {
             const chatBox = document.getElementById('chat-box');
             const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}-message`;
+            messageDiv.className = `message ${message.sender}-message`;
             
-            const timestamp = new Date().toLocaleString('zh-CN', {
+            const timestamp = new Date(message.timestamp).toLocaleString('zh-CN', {
                 year: 'numeric',
                 month: '2-digit',
                 day: '2-digit',
@@ -921,7 +1223,7 @@
 
             messageDiv.innerHTML = `
                 <div class="message-header">
-                    <span>${sender === 'ai' ? '📚 学术助手' : '👤 我的提问'}</span>
+                    <span>${message.sender === 'ai' ? '📚 学术助手' : '👤 我的提问'}</span>
                     <span>${timestamp}</span>
                 </div>
                 <div class="message-content"></div>
@@ -930,13 +1232,15 @@
             chatBox.appendChild(messageDiv);
             const contentDiv = messageDiv.querySelector('.message-content');
 
-            if (sender === 'ai' && isNewMessage) {
+            if (message.sender === 'ai' && isNewMessage) {
                 // 只对新的AI消息使用打字机效果
-                await typewriterEffect(contentDiv, content);
+                await typewriterEffect(contentDiv, message.content);
             } else {
                 // 用户消息和历史AI消息直接显示
-                contentDiv.innerHTML = sender === 'ai' ? marked.parse(content) : content.replace(/\n/g, '<br>');
-                if (sender === 'ai') {
+                contentDiv.innerHTML = message.sender === 'ai' ? 
+                    marked.parse(message.content) : 
+                    message.content.replace(/\n/g, '<br>');
+                if (message.sender === 'ai') {
                     contentDiv.querySelectorAll('pre code').forEach((block) => {
                         hljs.highlightElement(block);
                     });
@@ -1000,71 +1304,6 @@
             element.querySelectorAll('pre code').forEach((block) => {
                 hljs.highlightElement(block);
             });
-        }
-
-        // 修改loadHistory函数
-        function loadHistory() {
-            const history = getHistory();
-            const chatBox = document.getElementById('chat-box');
-            chatBox.innerHTML = ''; // 清空聊天框
-            
-            // 先添加欢迎消息
-            chatBox.innerHTML = `
-                <div class="message ai-message">
-                    <div class="message-header">
-                        <span>📚 学术助手</span>
-                        <span>${new Date().toLocaleDateString('zh-CN')}</span>
-                    </div>
-                    <div class="message-content">
-                        欢迎使用学术助手！功能说明：
-                        <ul>
-                            <li>本地自动保存聊天记录</li>
-                            <li>支持导出/导入JSON格式记录</li>
-                            <li>最多保存${CONFIG.MAX_HISTORY}条对话</li>
-                        </ul>
-                    </div>
-                </div>
-            `;
-            
-            // 然后加载历史记录
-            for (const item of history) {
-                appendMessage(item.content, item.sender, false);
-            }
-        }
-
-        // ================= 扩展功能 =================
-        function clearHistory() {
-            if(confirm('确定要清除所有聊天记录吗？')) {
-                localStorage.removeItem(CONFIG.STORAGE_KEY);
-                initChat();
-            }
-        }
-
-        function exportHistory() {
-            const history = getHistory();
-            const blob = new Blob([JSON.stringify(history)], {type: 'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `chat_history_${Date.now()}.json`;
-            a.click();
-        }
-
-        function importHistory(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(data));
-                    location.reload(); // 重新加载页面应用新数据
-                } catch {
-                    alert('文件格式错误！');
-                }
-            }
-            reader.readAsText(file);
         }
 
         // 配置 marked
