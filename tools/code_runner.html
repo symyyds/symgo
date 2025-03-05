@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>代码运行工具 - 学术个人网站</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dropdown.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/solarized.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai-sublime.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/vs2015.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/nord.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/tokyo-night-dark.min.css">
+    <style>
+        .code-runner-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .code-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .editor-section, .output-section {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem;
+        }
+        .control-panel {
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .language-select, .theme-select {
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            cursor: pointer;
+        }
+        .run-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.3s;
+        }
+        .run-btn:hover {
+            background: #218838;
+        }
+        .run-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .output-section {
+            background: #1e1e1e;
+            color: #fff;
+        }
+        .output-content {
+            font-family: 'Consolas', monospace;
+            white-space: pre-wrap;
+            padding: 1rem;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        #code-editor {
+            width: 100%;
+            height: 400px;
+            font-size: 14px;
+        }
+        .language-info {
+            color: #666;
+            font-size: 0.9em;
+            margin-left: 1rem;
+        }
+        .error-output {
+            color: #ff6b6b;
+        }
+        .console-output {
+            color: #4cd137;
+        }
+        
+        /* 响应式布局 */
+        @media screen and (max-width: 768px) {
+            .code-panel {
+                grid-template-columns: 1fr;
+            }
+            .control-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .language-info {
+                margin: 0.5rem 0;
+            }
+        }
+        .export-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.3s;
+        }
+        .export-btn:hover {
+            background: #0056b3;
+        }
+        .code-preview {
+            padding: 0;
+            margin-top: 1rem;
+            display: none;
+        }
+        .code-preview pre {
+            margin: 0;
+            padding: 0;
+        }
+        .code-preview code {
+            font-family: 'Consolas', monospace;
+            font-size: 14px;
+            padding: 1rem;
+            display: block;
+        }
+        /* 添加主题样式控制 */
+        .theme-label {
+            color: #666;
+            margin-right: 0.5rem;
+        }
+        #highlight-theme-select {
+            min-width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="profile">
+                <img src="../images/sym_photo.jpg" alt="个人照片" class="profile-img">
+                <div class="profile-info">
+                    <h1>孙远鸣</h1>
+                    <p class="title">独善其身</p>
+                    <p class="keywords">CS | SE</p>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">首页</a></li>
+                    <li><a href="../blog.html">博客</a></li>
+                    
+                    <li><a href="../ai.html">AI聊天</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="active">工具箱</a>
+                        <div class="dropdown-content">
+                            <a href="code_runner.html" class="active">代码高亮</a>
+                        </div>
+                    </li>
+                    <li><a href="../leave_message.html">留言板</a></li>
+    
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <div class="container">
+                <h1>在线代码运行工具</h1>
+                <p>支持在浏览器中直接运行 JavaScript 代码，提供其他语言的代码编辑功能</p>
+            </div>
+        </section>
+
+        <section class="code-runner-container">
+            <div class="control-panel">
+                <select class="language-select" id="language-select">
+                    <option value="javascript">JavaScript</option>
+                    <option value="python">Python</option>
+                    <option value="java">Java</option>
+                    <option value="cpp">C++</option>
+                </select>
+                <select class="theme-select" id="theme-select">
+                    <option value="monokai">Monokai</option>
+                    <option value="dracula">Dracula</option>
+                    <option value="material">Material</option>
+                    <option value="solarized">Solarized</option>
+                </select>
+                <span class="theme-label">代码高亮主题：</span>
+                <select class="theme-select" id="highlight-theme-select">
+                    <option value="monokai-sublime">Monokai Sublime</option>
+                    <option value="github">GitHub Light</option>
+                    <option value="atom-one-dark">Atom Dark</option>
+                    <option value="vs2015">VS 2015</option>
+                    <option value="dracula">Dracula</option>
+                    <option value="nord">Nord</option>
+                    <option value="tokyo-night-dark">Tokyo Night</option>
+                </select>
+                <button class="run-btn" id="run-btn">
+                    <i class="fas fa-play"></i>
+                    运行代码
+                </button>
+                <button class="export-btn" id="export-btn">
+                    <i class="fas fa-download"></i>
+                    导出PNG
+                </button>
+                <span class="language-info" id="language-info">当前仅支持运行 JavaScript 代码</span>
+            </div>
+
+            <div class="code-panel">
+                <div class="editor-section">
+                    <textarea id="code-editor"></textarea>
+                    <div id="code-preview" class="code-preview">
+                        <pre><code></code></pre>
+                    </div>
+                </div>
+                <div class="output-section">
+                    <h3>输出结果</h3>
+                    <div class="output-content" id="output">// 运行结果将显示在这里</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>WEB</h3>
+                </div>
+                <div class="footer-links">
+                    <h4>快速链接</h4>
+                    <ul>
+                        <li><a href="../index.html">首页</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>联系方式</h4>
+                    <p><i class="fas fa-envelope"></i> 19861208800@163.com</p>
+                    <p><i class="fas fa-phone"></i> +86-19861208800</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 sym. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script>
+        // 初始化代码编辑器
+        let editor = CodeMirror.fromTextArea(document.getElementById("code-editor"), {
+            lineNumbers: true,
+            mode: "javascript",
+            theme: "monokai",
+            indentUnit: 4,
+            autoCloseBrackets: true,
+            matchBrackets: true,
+            lineWrapping: true
+        });
+
+        // 设置默认代码
+        const defaultCode = {
+            javascript: `// 在这里编写JavaScript代码
+function helloWorld() {
+    console.log("Hello, World!");
+    return "运行成功！";
+}
+
+helloWorld();`,
+            python: `# Python代码（仅支持查看和编辑）
+def hello_world():
+    print("Hello, World!")
+
+hello_world()`,
+            java: `// Java代码（仅支持查看和编辑）
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}`,
+            cpp: `// C++代码（仅支持查看和编辑）
+#include <iostream>
+
+int main() {
+    std::cout << "Hello, World!" << std::endl;
+    return 0;
+}`
+        };
+
+        // 重定向console.log输出
+        const output = document.getElementById('output');
+        const originalConsoleLog = console.log;
+        const originalConsoleError = console.error;
+        let outputContent = [];
+
+        console.log = function() {
+            outputContent.push('<span class="console-output">' + 
+                Array.from(arguments).join(' ') + '</span>');
+            originalConsoleLog.apply(console, arguments);
+        };
+
+        console.error = function() {
+            outputContent.push('<span class="error-output">' + 
+                Array.from(arguments).join(' ') + '</span>');
+            originalConsoleError.apply(console, arguments);
+        };
+
+        // 语言切换处理
+        document.getElementById('language-select').addEventListener('change', function(e) {
+            const language = e.target.value;
+            const runBtn = document.getElementById('run-btn');
+            const languageInfo = document.getElementById('language-info');
+
+            editor.setOption("mode", language === "python" ? "python" : 
+                                   language === "javascript" ? "javascript" : "text/x-c++src");
+            editor.setValue(defaultCode[language]);
+
+            // 只有JavaScript可以运行
+            runBtn.disabled = language !== 'javascript';
+            languageInfo.textContent = language === 'javascript' ? 
+                "当前支持运行 JavaScript 代码" : 
+                "该语言仅支持代码编辑，不支持运行";
+            updateCodePreview();
+        });
+
+        // 主题切换处理
+        document.getElementById('theme-select').addEventListener('change', function(e) {
+            editor.setOption("theme", e.target.value);
+        });
+
+        // 设置初始代码
+        editor.setValue(defaultCode.javascript);
+
+        // 运行代码
+        document.getElementById('run-btn').addEventListener('click', function() {
+            const code = editor.getValue();
+            outputContent = [];
+            output.innerHTML = "运行中...\n";
+
+            try {
+                // 使用 Function 构造器来运行代码，这样可以获取返回值
+                const result = new Function(code)();
+                if (result !== undefined) {
+                    outputContent.push(result);
+                }
+                output.innerHTML = outputContent.join('\n');
+            } catch (error) {
+                output.innerHTML = '<span class="error-output">运行出错：' + error.message + '</span>';
+            }
+        });
+
+        // 更新代码高亮显示
+        function updateCodePreview() {
+            const code = editor.getValue();
+            const language = document.getElementById('language-select').value;
+            const previewElement = document.getElementById('code-preview');
+            const codeElement = previewElement.querySelector('code');
+            const theme = document.getElementById('highlight-theme-select').value;
+            
+            // 移除之前的所有样式链接
+            document.querySelectorAll('link[data-highlight-theme]').forEach(link => link.remove());
+            
+            // 添加新的主题样式
+            const themeLink = document.createElement('link');
+            themeLink.rel = 'stylesheet';
+            themeLink.href = `https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/${theme}.min.css`;
+            themeLink.setAttribute('data-highlight-theme', theme);
+            document.head.appendChild(themeLink);
+            
+            codeElement.className = `language-${language}`;
+            codeElement.textContent = code;
+            hljs.highlightElement(codeElement);
+            previewElement.style.display = 'block';
+        }
+
+        // 导出PNG图片
+        document.getElementById('export-btn').addEventListener('click', async function() {
+            const previewElement = document.getElementById('code-preview');
+            try {
+                const canvas = await html2canvas(previewElement, {
+                    backgroundColor: '#272822',
+                    scale: 2,
+                    padding: 0,
+                    margin: 0,
+                    borderRadius: 0
+                });
+                
+                const link = document.createElement('a');
+                link.download = `code-${document.getElementById('language-select').value}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } catch (error) {
+                console.error('导出图片失败：', error);
+            }
+        });
+
+        // 添加高亮主题切换事件监听
+        document.getElementById('highlight-theme-select').addEventListener('change', updateCodePreview);
+
+        // 监听代码变化
+        editor.on('change', updateCodePreview);
+
+        // 初始化代码预览
+        updateCodePreview();
+    </script>
+</body>
+</html> 

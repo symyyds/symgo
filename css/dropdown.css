@@ -1,0 +1,78 @@
+/* 二级导航样式 */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    min-width: 120px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    top: calc(100% + 5px);  /* 位于父元素下方5px */
+    left: 50%;              /* 水平居中 */
+    transform: translateX(-50%);  /* 水平居中对齐 */
+    z-index: 1000;
+}
+
+/* 鼠标悬停时显示下拉内容 */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-content a {
+    color: #666;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.dropdown-content a:hover {
+    background-color: #f5f5f5;
+    color: #007bff;
+}
+
+.dropdown-content a.active {
+    color: #007bff;
+    background-color: #f0f0f0;
+}
+
+/* 添加小三角形 */
+.dropdown-content::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid #fff;
+}
+
+/* 移动端适配 */
+@media screen and (max-width: 768px) {
+    .dropdown-content {
+        position: static;
+        box-shadow: none;
+        transform: none;
+        left: 0;
+        width: 100%;
+        background-color: #f8f9fa;
+    }
+
+    .dropdown-content::before {
+        display: none;
+    }
+
+    .dropdown-content a {
+        padding: 8px 20px;
+        text-align: left;
+    }
+} 
