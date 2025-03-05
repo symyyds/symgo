@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>保研/推免经验贴 - 技术笔记</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .article-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .article-header h1 {
+            font-size: 2.2rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .article-meta {
+            color: #7f8c8d;
+            font-size: 0.95rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .article-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .article-content {
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .article-content h2 {
+            color: #2c3e50;
+            font-size: 1.6rem;
+            margin: 2.5rem 0 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .site-list {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .site-item {
+            padding: 1.5rem;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .site-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: #3498db;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .site-item:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
+        }
+
+        .site-item:hover::before {
+            opacity: 1;
+        }
+
+        .site-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .site-description {
+            color: #5f6368;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 0.8rem;
+        }
+
+        .site-link {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s ease;
+        }
+
+        .site-link:hover {
+            color: #2980b9;
+            text-decoration: none;
+            transform: translateX(4px);
+        }
+
+        .site-link::after {
+            content: '→';
+            font-size: 1.1rem;
+            transition: transform 0.2s ease;
+        }
+
+        .site-link:hover::after {
+            transform: translateX(2px);
+        }
+
+        @media (max-width: 768px) {
+            .article-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .article-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .article-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 比例 */
+            height: 0;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .docs-section {
+            margin-bottom: 2rem;
+        }
+
+        .tips-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+            margin: 2rem 0;
+        }
+
+        .tips-section p {
+            margin: 0.5rem 0;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .tips-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+
+        .video-section {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .video-title {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+        }
+
+        .video-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            background: #3498db;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+        }
+
+        .video-button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .video-button i {
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="article-container">
+        <div class="article-header">
+            <h1>保研/推免经验贴</h1>
+            <div class="article-meta">
+                <span><i class="far fa-calendar-alt"></i> 2024-03-05</span>
+                <span><i class="fas fa-tags"></i> 保研, 升学</span>
+            </div>
+        </div>
+        
+        <div class="article-content">
+            <h2>官方网站</h2>
+            <ul class="site-list">
+                <li class="site-item">
+                    <div class="site-title">中国研究生招生信息网</div>
+                    <div class="site-description">
+                        教育部指定的研究生招生信息发布、报名和调剂服务的官方网站。包含推免服务系统、调剂系统等重要功能。
+                    </div>
+                    <a href="https://yz.chsi.com.cn/" class="site-link" target="_blank">https://yz.chsi.com.cn/</a>
+                </li>
+                <li class="site-item">
+                    <div class="site-title">全国推荐优秀应届本科毕业生免试攻读研究生信息公开平台</div>
+                    <div class="site-description">
+                        各高校发布推免相关政策、招生计划和录取信息的官方平台。
+                    </div>
+                    <a href="https://yz.chsi.com.cn/tm" class="site-link" target="_blank">https://yz.chsi.com.cn/tm</a>
+                </li>
+            </ul>
+
+            <h2>信息交流平台</h2>
+            <ul class="site-list">
+                <li class="site-item">
+                    <div class="site-title">绿群保研信息</div>
+                    <div class="site-description">
+                        GitHub上的开源项目，汇总各高校保研夏令营通知。
+                    </div>
+                    <a href="https://csbaoyan.top/" class="site-link" target="_blank">绿群保研信息</a>
+                </li>
+                <li class="site-item">
+                    <div class="site-title">蓝群保研信息</div>
+                    <div class="site-description">
+                        汇总各高校保研信息、经验分享、通知公告等资源的综合信息平台。
+                    </div>
+                    <a href="http://pc.baoyanwang.com.cn/articles?category=%E4%BF%9D%E7%A0%94%E4%BF%A1%E6%81%AF" class="site-link" target="_blank">蓝群保研信息</a>
+                </li>
+                <li class="site-item">
+                    <div class="site-title">保研论坛</div>
+                    <div class="site-description">
+                        专注于保研信息交流的论坛，包含各院校信息、经验分享、复试资料等。
+                    </div>
+                    <a href="http://www.eeban.com/" class="site-link" target="_blank">http://www.eeban.com/</a>
+                </li>
+            </ul>
+
+            <h2>保研专业术语</h2>
+            <style>
+                .term-list {
+                    display: grid;
+                    gap: 1.5rem;
+                    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                }
+            </style>
+            <ul class="site-list term-list">
+                <li class="site-item">
+                    <div class="site-title">基础术语</div>
+                    <div class="site-description">
+                        <strong>推免生</strong>：推荐免试研究生的简称<br>
+                        <strong>统考</strong>：全国研究生统一招生考试<br>
+                        <strong>学硕</strong>：学术型硕士，一般是3年<br>
+                        <strong>专硕</strong>：专业型研究生，偏向实际应用<br>
+                        <strong>直博</strong>：5年或6年毕业，毕业时只有博士学位<br>
+                        <strong>AP</strong>：助理教授，可担任硕士生导师，通常年轻有活力
+                    </div>
+                </li>
+                <li class="site-item">
+                    <div class="site-title">学校分类</div>
+                    <div class="site-description">
+                        <strong>title</strong>：学校名头，如清北、华五、C9、两电一邮等<br>
+                        <strong>双非</strong>：非985、211院校<br>
+                        <strong>四非</strong>：非985、211、双一流院校<br>
+                        <strong>强com</strong>：录取由招生办决定，如北航、东南等<br>
+                        <strong>弱com</strong>：老师话语权大，录取方式由导师决定，如中科院、PKU-CS等
+                    </div>
+                </li>
+                <li class="site-item">
+                    <div class="site-title">考核阶段</div>
+                    <div class="site-description">
+                        <strong>夏令营</strong>：暑期各校举办的优秀大学生夏令营<br>
+                        <strong>夏0营</strong>：夏令营无offer<br>
+                        <strong>预推免</strong>：暑假末至九月开学期间举办的面试<br>
+                        <strong>九推</strong>：推免系统开放后的补充面试<br>
+                        <strong>mock</strong>：模拟面试，提前熟悉面试流程<br>
+                        <strong>保研春晚</strong>：填系统凌晨
+                    </div>
+                </li>
+                <li class="site-item">
+                    <div class="site-title">录取相关</div>
+                    <div class="site-description">
+                        <strong>优营</strong>：优秀营员，不一定等于拟录取<br>
+                        <strong>wl</strong>：候补队列，防止被鸽<br>
+                        <strong>oq</strong>：over qualified，报名与自己能力相差过多的院校<br>
+                        <strong>捡漏</strong>：929后因学校/老师被鸽捡到好offer<br>
+                        <strong>被海</strong>：超发offer或学生持有多个offer不放弃
+                    </div>
+                </li>
+                <li class="site-item">
+                    <div class="site-title">背景与排名</div>
+                    <div class="site-description">
+                        <strong>rank/rk</strong>：排名，需要教务处盖章证明<br>
+                        <strong>bg</strong>：background，个人背景，含个人陈述和简历<br>
+                        <strong>bar</strong>：入营门槛，由综合背景决定<br>
+                        <strong>套磁</strong>：邮件联系老师，达成双选或获得入营资格
+                    </div>
+                </li>
+                <li class="site-item">
+                    <div class="site-title">其他术语</div>
+                    <div class="site-description">
+                        <strong>鸽子</strong>：约定好/签协议后单方面放弃<br>
+                        <strong>羊导</strong>：放养导师<br>
+                        <strong>绿群/蓝群/紫群</strong>：计算机/电信保研等交流群<br>
+                        <strong>联培</strong>：联合培养，可能涉及多个培养单位
+                    </div>
+                </li>
+            </ul>
+
+            <h2>保研注意事项</h2>
+            <style>
+                .video-section {
+                    text-align: center;
+                    margin: 2rem 0;
+                }
+
+                .video-title {
+                    font-size: 1.2rem;
+                    color: #2c3e50;
+                    margin-bottom: 1.5rem;
+                }
+
+                .video-button {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.8rem;
+                    background: #3498db;
+                    color: white;
+                    padding: 1rem 2rem;
+                    border-radius: 8px;
+                    text-decoration: none;
+                    font-weight: 500;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+                }
+
+                .video-button:hover {
+                    background: #2980b9;
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+                }
+
+                .video-button i {
+                    font-size: 1.2rem;
+                }
+            </style>
+
+            <div class="video-section">
+                <div class="video-title">视频讲解（目前尚未讲解，大概5月份左右进行）</div>
+                <a href="" class="video-button" target="_blank">
+                    <i class="fas fa-play-circle"></i>
+                    查看腾讯会议
+                </a>
+            </div>
+
+            <div class="docs-section">
+                <h3 style="text-align: margin-bottom: 2rem; color: #2c3e50;">保研资料下载</h3>
+                <ul class="site-list">
+                    <li class="site-item">
+                        <div class="site-title">保研材料准备清单EXCEL</div>
+                        <div class="site-description">
+                            详细的材料准备清单，包括各类证书、成绩单等必备材料的准备说明。
+                        </div>
+                        <!-- <a href="" class="site-link" target="_blank">下载EXCEL</a> -->
+                        <a href="" class="site-link" target="_blank">目前并未上传</a>
+                    </li>
+                    <!-- <li class="site-item">
+                        <div class="site-title">保研面试技巧指南</div>
+                        <div class="site-description">
+                            面试经验总结，包括自我介绍、专业问答、英语口语等各个环节的准备建议。
+                        </div>
+                        <a href="docs/保研面试技巧指南.pdf" class="site-link" target="_blank">下载指南</a>
+                    </li>
+                    <li class="site-item">
+                        <div class="site-title">保研政策解读</div>
+                        <div class="site-description">
+                            最新保研政策要点解读，包括各类院校的具体要求和注意事项。
+                        </div>
+                        <a href="docs/保研政策解读2024.pdf" class="site-link" target="_blank">下载解读</a>
+                    </li> -->
+                </ul>
+            </div>
+
+            <div class="tips-section">
+                <div class="tips-title">重要提示</div>
+                <p>1. 保研是一场长期战役，要提前做好规划，合理分配时间。切忌临时抱佛脚。</p>
+                <p>2. 在参加夏令营/预推免之前，一定要仔细研究目标院校往年的考核方式和录取情况（可以去小红书/CSDN/知乎等平台找帖子）。</p>
+                <p>3. 面试准备要全面，既要准备专业课知识，也要准备个人陈述和英语口语。<a href="25_skills.html" class="site-link" target="_blank">可参考面试技巧</a></p>
+                <p>4. 申请材料一定要规范，按照学校要求的格式准备，并留出足够时间修改完善。</p>
+                <p>5. 保持心态平和，合理规划申请院校梯度，不要把所有希望都寄托在一所学校上。</p>
+            </div>
+
+            <h2>保研时间轴</h2>
+            <style>
+                .timeline {
+                    position: relative;
+                    max-width: 100%;
+                    margin: 2rem auto;
+                    padding: 20px;
+                }
+
+                .timeline::before {
+                    content: '';
+                    position: absolute;
+                    width: 4px;
+                    background: #3498db;
+                    top: 0;
+                    bottom: 0;
+                    left: 50%;
+                    margin-left: -2px;
+                    border-radius: 2px;
+                }
+
+                .timeline-item {
+                    padding: 10px 40px;
+                    position: relative;
+                    width: 50%;
+                    box-sizing: border-box;
+                    margin: 2rem 0;
+                }
+
+                .timeline-item::before {
+                    content: '';
+                    position: absolute;
+                    width: 20px;
+                    height: 20px;
+                    background: #fff;
+                    border: 4px solid #3498db;
+                    border-radius: 50%;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    right: -52px;
+                    z-index: 1;
+                }
+
+                .timeline-item:nth-child(even) {
+                    left: 50%;
+                }
+
+                .timeline-item:nth-child(odd) {
+                    left: 0;
+                }
+
+                .timeline-item:nth-child(even)::before {
+                    left: -52px;
+                }
+
+                .timeline-content {
+                    padding: 1.5rem;
+                    background: #fff;
+                    border-radius: 10px;
+                    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+                    position: relative;
+                }
+
+                .timeline-content::before {
+                    content: '';
+                    position: absolute;
+                    border-style: solid;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+
+                .timeline-item:nth-child(odd) .timeline-content::before {
+                    border-width: 10px 10px 10px 0;
+                    border-color: transparent #fff transparent transparent;
+                    right: -10px;
+                }
+
+                .timeline-item:nth-child(even) .timeline-content::before {
+                    border-width: 10px 0 10px 10px;
+                    border-color: transparent transparent transparent #fff;
+                    left: -10px;
+                }
+
+                .timeline-date {
+                    color: #3498db;
+                    font-weight: 600;
+                    margin-bottom: 0.5rem;
+                }
+
+                .timeline-title {
+                    font-size: 1.1rem;
+                    color: #2c3e50;
+                    margin-bottom: 0.5rem;
+                    font-weight: 600;
+                }
+
+                .timeline-desc {
+                    color: #5f6368;
+                    font-size: 0.95rem;
+                    line-height: 1.5;
+                }
+
+                @media (max-width: 768px) {
+                    .timeline::before {
+                        left: 31px;
+                    }
+
+                    .timeline-item {
+                        width: 100%;
+                        padding-left: 70px;
+                        padding-right: 25px;
+                    }
+
+                    .timeline-item:nth-child(even) {
+                        left: 0;
+                    }
+
+                    .timeline-item::before {
+                        left: 21px;
+                        right: auto;
+                    }
+
+                    .timeline-item:nth-child(even)::before {
+                        left: 21px;
+                    }
+
+                    .timeline-item:nth-child(even) .timeline-content::before {
+                        border-width: 10px 10px 10px 0;
+                        border-color: transparent #fff transparent transparent;
+                        left: -10px;
+                    }
+                }
+            </style>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">5月-7月</div>
+                        <div class="timeline-title">夏令营阶段</div>
+                        <div class="timeline-desc">
+                            - 关注各高校夏令营通知<br>
+                            - 准备夏令营申请材料<br>
+                            - 参加夏令营考核<br>
+                            - 获取优秀营员资格
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">8月-9月初</div>
+                        <div class="timeline-title">预推免阶段</div>
+                        <div class="timeline-desc">
+                            - 关注预推免通知<br>
+                            - 准备预推免申请材料<br>
+                            - 参加预推免考核<br>
+                            - 获取预录取资格
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">9月中旬</div>
+                        <div class="timeline-title">9推阶段</div>
+                        <div class="timeline-desc">
+                            - 确认本校推免资格<br>
+                            - 参加院校复试<br>
+                            - 接收导师或院校offer<br>
+                            - 确定最终去向
+                        </div>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">9月28日前后</div>
+                        <div class="timeline-title">填报系统阶段</div>
+                        <div class="timeline-desc">
+                            - 登录推免服务系统<br>
+                            - 填报志愿<br>
+                            - 确认复试结果<br>
+                            - 接受录取通知
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
