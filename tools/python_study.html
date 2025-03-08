@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python入门教程</title>
+    <style>
+        :root {
+            --primary-color: #3776ab;
+            --secondary-color: #ffd343;
+            --bg-color: #f8f9fa;
+            --code-bg: #f1f1f1;
+            --output-bg: #e9ecef;
+            --text-color: #333;
+            --border-radius: 6px;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            padding: 0;
+            margin: 0;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            margin-bottom: 0.5rem;
+        }
+        
+        nav {
+            background-color: #2d6a9f;
+            padding: 0.8rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        nav ul li {
+            margin: 0 1rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem;
+            border-radius: var(--border-radius);
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+        
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .section {
+            margin-bottom: 3rem;
+            background-color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+        
+        h3 {
+            color: var(--primary-color);
+            margin: 1.5rem 0 1rem;
+        }
+        
+        h4 {
+            margin: 1rem 0;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .code-block {
+            margin: 1.5rem 0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .code-header {
+            background-color: #4a4a4a;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-family: monospace;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .code {
+            background-color: var(--code-bg);
+            padding: 1rem;
+            font-family: monospace;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        
+        .output {
+            background-color: var(--output-bg);
+            padding: 1rem;
+            font-family: monospace;
+            border-top: 1px solid #ddd;
+        }
+        
+        .keyword {
+            color: #0000ff;
+        }
+        
+        .string {
+            color: #a31515;
+        }
+        
+        .comment {
+            color: #008000;
+        }
+        
+        .number {
+            color: #098658;
+        }
+        
+        .function {
+            color: #795e26;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        tr:nth-child(even) {
+            background-color: var(--code-bg);
+        }
+        
+        .note {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: var(--border-radius);
+        }
+        
+        .tip {
+            background-color: #ddffdd;
+            border-left: 4px solid #4CAF50;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: var(--border-radius);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            margin-top: 2rem;
+        }
+        
+        .run-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .run-button:hover {
+            background-color: #2d6a9f;
+        }
+        
+        @media (max-width: 768px) {
+            main {
+                padding: 1rem;
+            }
+            
+            .section {
+                padding: 1.5rem;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav ul li {
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Python入门教程</h1>
+        <p>零基础快速入门Python编程</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#intro">初识Python</a></li>
+            <li><a href="#print">输出函数</a></li>
+            <li><a href="#formatting">格式化输出</a></li>
+            <li><a href="#variables">变量</a></li>
+            <li><a href="#input">输入函数</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <div class="section" id="intro">
+            <h2>课程内容概览</h2>
+            <p>本课程为零基础入门Python，预计共2-3小时讲完。以下是课程内容：</p>
+            
+            <h3>课程内容包含：</h3>
+            <ul>
+                <li><strong>Python的内置函数</strong> (如：<code>print</code>输出函数、<code>input</code>输入函数等)</li>
+                <li><strong>变量的定义及使用</strong></li>
+                <li><strong>六大数据类型及它们的增删改查</strong>：
+                    <ul>
+                        <li>数值</li>
+                        <li>字符串</li>
+                        <li>列表</li>
+                        <li>字典</li>
+                        <li>元组</li>
+                        <li>集合</li>
+                    </ul>
+                </li>
+                <li><strong>Python的程序结构</strong>：
+                    <ul>
+                        <li>顺序</li>
+                        <li>分支</li>
+                        <li>循环</li>
+                    </ul>
+                </li>
+                <li><strong>函数的定义和调用</strong>：
+                    <ul>
+                        <li>局部变量与全局变量</li>
+                    </ul>
+                </li>
+                <li><strong>递归及Python经典编程案例</strong></li>
+                <li><strong>Python面向对象编程</strong>：
+                    <ul>
+                        <li>类和对象的定义及使用</li>
+                        <li>封装</li>
+                        <li>继承</li>
+                        <li>多态</li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <h3>后续课程内容：</h3>
+            <ul>
+                <li><strong>数据分析三剑客</strong>：
+                    <ul>
+                        <li>Numpy</li>
+                        <li>Pandas</li>
+                        <li>Matplotlib</li>
+                    </ul>
+                </li>
+                <li><strong>机器学习库</strong>：Scikit-learn</li>
+                <li><strong>深度学习库</strong>：PyTorch</li>
+            </ul>
+        </div>
+        
+        <div class="section" id="print">
+            <h2>第一章：初识Python</h2>
+            
+            <h3>print 输出函数</h3>
+            <p><code>print</code>函数是Python中最基础的输出函数，用于在控制台显示信息。</p>
+            
+            <h4>语法结构：</h4>
+            <div class="code-block">
+                <div class="code-header">基本语法</div>
+                <div class="code">
+<span class="function">print</span>(<span class="string">输出内容</span>)
+                </div>
+            </div>
+            
+            <h4>print() 函数完整语法格式：</h4>
+            <div class="code-block">
+                <div class="code-header">完整语法</div>
+                <div class="code">
+<span class="function">print</span>(*values, sep=<span class="string">" "</span>, end=<span class="string">"\n"</span>, file=None, flush=False)
+                </div>
+            </div>
+            
+            <h4>示例1：基本输出</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>示例1：输出字符串</span>
+                </div>
+                <div class="code">
+<span class="function">print</span>(<span class="string">"hello world"</span>)
+                </div>
+                <div class="output">
+hello world
+                </div>
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span>示例2：输出数字</span>
+                </div>
+                <div class="code">
+<span class="function">print</span>(<span class="number">123</span>)
+                </div>
+                <div class="output">
+123
+                </div>
+            </div>
+            
+            <h4>示例2：使用分隔符</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>使用默认分隔符</span>
+                </div>
+                <div class="code">
+<span class="function">print</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>) <span class="comment"># 1 2 3 4 默认分隔符为空格</span>
+                </div>
+                <div class="output">
+1 2 3 4
+                </div>
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span>自定义分隔符</span>
+                </div>
+                <div class="code">
+<span class="function">print</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, sep=<span class="string">"-&gt;"</span>) <span class="comment"># 分隔符改为了箭头</span>
+                </div>
+                <div class="output">
+1->2->3->4
+                </div>
+            </div>
+            
+            <h4>示例3：控制结束符</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>默认换行</span>
+                </div>
+                <div class="code">
+<span class="function">print</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>) <span class="comment"># print 默认为\n 代表换行</span>
+<span class="function">print</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)
+                </div>
+                <div class="output">
+1 2 3
+1 2 3
+                </div>
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span>使用制表符</span>
+                </div>
+                <div class="code">
+<span class="function">print</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, end=<span class="string">"\t"</span>) <span class="comment"># \t为制表符、为一个tab的大小</span>
+<span class="function">print</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)
+                </div>
+                <div class="output">
+1 2 3	1 2 3
+                </div>
+            </div>
+            
+            <h4>示例4：输出到文件</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>使用文件对象</span>
+                </div>
+                <div class="code">
+<span class="comment"># 打开名为"报错.txt"的文件，以追加模式("a")打开 w为写入 会覆盖原文本</span>
+<span class="comment"># 如果文件不存在，会自动创建</span>
+f = <span class="function">open</span>(<span class="string">"报错.txt"</span>, <span class="string">"a"</span>)
+<span class="function">print</span>(<span class="string">"hello world"</span>, file=f) <span class="comment"># 将字符串"hello world"写入文件中</span>
+f.<span class="function">close</span>() <span class="comment"># 关闭文件，确保所有写入的内容保存到文件中</span>
+                </div>
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span>使用with语句（推荐）</span>
+                </div>
+                <div class="code">
+<span class="comment"># 使用 with 语句打开文件"1.txt"，以追加模式("a")打开</span>
+<span class="comment"># with 语句可以确保文件在操作完成后自动关闭，避免手动关闭</span>
+<span class="keyword">with</span> <span class="function">open</span>(<span class="string">'1.txt'</span>, <span class="string">'a'</span>) <span class="keyword">as</span> f:
+    <span class="function">print</span>(<span class="string">"print语句需要加上括号111"</span>, file=f)  <span class="comment"># 文件会在with语句结束时自动关闭</span>
+                </div>
+            </div>
+            
+            <div class="tip">
+                <strong>提示：</strong> 使用 <code>with</code> 语句操作文件是一种更安全的做法，它会自动处理文件的关闭，即使发生异常也能确保文件被正确关闭。
+            </div>
+        </div>
+        
+        <div class="section" id="formatting">
+            <h2>格式化输出</h2>
+            
+            <h3>含义</h3>
+            <p>给定一个模板，按照模板输出内容。</p>
+            
+            <h3>格式符号</h3>
+            <p>格式化输出使用 <code>%</code> 和不同的字符连用，不同类型的数据需要使用不同的格式化字符。</p>
+            
+            <h3>常用格式化字符及其含义</h3>
+            <table>
+                <tr>
+                    <th>格式化字符</th>
+                    <th>含义</th>
+                </tr>
+                <tr>
+                    <td><code>%c</code></td>
+                    <td>字符</td>
+                </tr>
+                <tr>
+                    <td><code>%s</code></td>
+                    <td>字符串</td>
+                </tr>
+                <tr>
+                    <td><code>%d</code></td>
+                    <td>十进制整数</td>
+                </tr>
+                <tr>
+                    <td><code>%f</code></td>
+                    <td>浮点数</td>
+                </tr>
+            </table>
+            
+            <h3>三种格式化方法</h3>
+            
+            <h4>1. 基本格式化输出：使用%</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>%格式化</span>
+                </div>
+                <div class="code">
+<span class="function">print</span>(<span class="string">'我的名字是%s，年龄是%d岁'</span> % (<span class="string">"01"</span>, <span class="number">18</span>))
+                </div>
+                <div class="output">
+我的名字是01，年龄是18岁
+                </div>
+            </div>
+            
+            <h4>2. format()格式化输出</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>format()方法</span>
+                </div>
+                <div class="code">
+<span class="function">print</span>(<span class="string">"我的名字是：{}，年龄为：{}岁"</span>.<span class="function">format</span>(<span class="string">"01"</span>, <span class="number">18</span>))
+                </div>
+                <div class="output">
+我的名字是：01，年龄为：18岁
+                </div>
+            </div>
+            
+            <h4>3. f表达式格式化输出（Python 3.6+）</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>f-string(推荐)</span>
+                </div>
+                <div class="code">
+name, age = <span class="string">"01"</span>, <span class="number">20</span>
+<span class="comment"># name = "01"</span>
+<span class="comment"># age = 18</span>
+<span class="function">print</span>(<span class="string">f"名字是{name},年龄是{age}岁"</span>)
+                </div>
+                <div class="output">
+名字是01,年龄是20岁
+                </div>
+            </div>
+            
+            <div class="tip">
+                <strong>提示：</strong> f-string（格式化字符串字面量）是Python 3.6引入的新特性，它提供了一种简洁、方便的格式化方式，是目前推荐的字符串格式化方法。
+            </div>
+        </div>
+        
+        <div class="section" id="variables">
+            <h2>变量</h2>
+            
+            <h3>变量概念</h3>
+            <ul>
+                <li>变量是将数据在内存中存储后给定的一个名称，这个名称就是变量。</li>
+                <li>变量名是没有类型的，类型只存在于对象中，变量只是引用对象。</li>
+                <li>Python 为动态解释型语言，在赋值操作时，类型是在运行过程中自动决定的。</li>
+            </ul>
+            
+            <h3>对象</h3>
+            <ul>
+                <li>对象是有类型的。</li>
+                <li>对象是分配的一块内存空间，用来表示它的值。</li>
+                <li>Python 对象的三要素：
+                    <ul>
+                        <li><code>id</code>：对象的唯一标识符。</li>
+                        <li><code>type</code>：对象的类型。</li>
+                        <li><code>value</code>：对象的值。</li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span>定义变量</span>
+                </div>
+                <div class="code">
+a = <span class="number">1</span> <span class="comment"># 定义变量a</span>
+<span class="function">print</span>(a)
+                </div>
+                <div class="output">
+1
+                </div>
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span>变量的id（内存地址）</span>
+                </div>
+                <div class="code">
+a = <span class="number">123</span>
+<span class="function">print</span>(<span class="function">id</span>(a))
+a = <span class="number">12</span>
+<span class="function">print</span>(<span class="function">id</span>(a))
+                </div>
+                <div class="output">
+2095699744944
+2095699552912
+                </div>
+            </div>
+            
+            <div class="note">
+                <strong>注意：</strong> 从输出可以看出，当变量a的值改变时，其id（内存地址）也发生了变化，说明Python创建了一个新的对象。
+            </div>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span>实际应用</span>
+                </div>
+                <div class="code">
+epoch = <span class="number">100</span>
+acc = <span class="number">0.8</span>
+<span class="function">print</span>(<span class="string">f"训练的总轮数为{epoch}，得到的acc为{acc}"</span>)
+                </div>
+                <div class="output">
+训练的总轮数为100，得到的acc为0.8
+                </div>
+            </div>
+            
+            <h3>Python关键字</h3>
+            <p>变量名不能使用Python的关键字，以下是Python的所有关键字：</p>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span>Python关键字</span>
+                </div>
+                <div class="code">
+<span class="keyword">import</span> keyword
+<span class="function">print</span>(keyword.kwlist)
+                </div>
+                <div class="output">
+['False', 'None', 'True', '__peg_parser__', 'and', 'as', 'assert', 'async', 'await', 'break', 'class', 'continue', 'def', 'del', 'elif', 'else', 'except', 'finally', 'for', 'from', 'global', 'if', 'import', 'in', 'is', 'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield']
+                </div>
+            </div>
+            
+            <h3>变量的命名规则</h3>
+            <ul>
+                <li>变量名只能由数字、字母和 _(下划线) 组成。</li>
+                <li>变量名不能以数字开头。</li>
+                <li>变量名不能是 Python 关键字。</li>
+                <li>变量名是区分大小写的。</li>
+            </ul>
+            
+            <div class="tip">
+                <strong>Python命名规范：</strong> 
+                <ul>
+                    <li>变量和函数名使用小写字母，单词之间用下划线分隔（snake_case）</li>
+                    <li>类名使用大驼峰命名法（CapWords）</li>
+                    <li>常量通常使用大写字母，单词之间用下划线分隔</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="section" id="input">
+            <h2>输入函数</h2>
+            
+            <h3>input() 函数</h3>
+            <p><code>input()</code> 是 Python 中用于从用户获取输入的函数。它会在控制台显示提示信息，并等待用户输入。用户输入的内容会以字符串形式返回。</p>
+            
+            <h4>基本用法</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span>基本输入</span>
+                </div>
+                <div class="code">
+a = <span class="function">input</span>(<span class="string">"请输入一些内容："</span>)
+<span class="function">print</span>(<span class="string">"你输入的内容是:"</span>, a)
+<span class="function">print</span>(<span class="function">type</span>(a)) <span class="comment"># <class 'str'>字符串类型</span>
+                </div>
+                <div class="output">
+请输入一些内容：123
+你输入的内容是: 123
+<class 'str'>
+                </div>
+            </div>
+            
+            <div class="note">
+                <strong>注意：</strong> <code>input()</code> 函数始终返回字符串类型，即使用户输入的是数字。
+            </div>
+            
+            <h4>类型转换</h4>
+            <p>如果需要将用户输入解释为其他类型，需要进行类型转换：</p>
+            
+            <div class="code-block">
+                <div class="code-header">
+                    <span>转换为整数</span>
+                </div>
+                <div class="code">
+age = <span class="function">int</span>(<span class="function">input</span>(<span class="string">"请输入你的年龄："</span>))
+<span class="function">print</span>(<span class="string">"你输入的内容是:"</span>, age)
+<span class="function">print</span>(<span class="function">type</span>(age)) <span class="comment"># <class 'int'> 整型</span>
+                </div>
+                <div class="output">
+请输入你的年龄：123
+你输入的内容是: 123
+<class 'int'>
+                </div>
+            </div>
+            
+            <div class="tip">
+                <strong>常用类型转换函数：</strong>
+                <ul>
+                    <li><code>int()</code>: 转换为整数</li>
+                    <li><code>float()</code>: 转换为浮点数</li>
+                    <li><code>str()</code>: 转换为字符串</li>
+                    <li><code>bool()</code>: 转换为布尔值</li>
+                </ul>
+            </div>
+            
+            <div class="note">
+                <strong>注意：</strong> 当用户输入的内容无法转换为目标类型时，会引发 <code>ValueError</code> 异常。例如，如果用户在提示输入年龄时输入了"abc"，<code>int()</code> 将无法将其转换为整数，程序会崩溃。实际开发中，应该使用异常处理来处理这种情况。
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <p>© 2025 Python入门教程 | 基于文档《python入门.ipynb》创建</p>
+    </footer>
+
+    <script>
+        // 添加平滑滚动效果
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                window.scrollTo({
+                    top: targetElement.offsetTop - 60,
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // 滚动时突出显示当前部分
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.section');

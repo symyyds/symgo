@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python控制流程</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dropdown.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Python学习页面特定样式 */
+        :root {
+            --primary-color: #3776ab;
+            --secondary-color: #ffd343;
+            --bg-color: #f8f9fa;
+            --code-bg: #f1f1f1;
+            --output-bg: #e9ecef;
+            --text-color: #333;
+            --border-radius: 6px;
+        }
+        
+        .section {
+            margin-bottom: 3rem;
+            background-color: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .code-block {
+            margin: 1.5rem 0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .code-header {
+            background-color: #4a4a4a;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-family: monospace;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .code {
+            background-color: var(--code-bg);
+            padding: 1rem;
+            font-family: monospace;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        
+        .output {
+            background-color: var(--output-bg);
+            padding: 1rem;
+            font-family: monospace;
+            border-top: 1px solid #ddd;
+        }
+        
+        .keyword { color: #0000ff; }
+        .string { color: #a31515; }
+        .comment { color: #008000; }
+        .number { color: #098658; }
+        .function { color: #795e26; }
+        
+        .note {
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: var(--border-radius);
+        }
+        
+        .tip {
+            background-color: #ddffdd;
+            border-left: 4px solid #4CAF50;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: var(--border-radius);
+        }
+        
+        .python-nav {
+            margin-bottom: 2rem;
+            background-color: #fff;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .python-nav ul {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .python-nav ul li {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .python-nav ul li a {
+            display: block;
+            padding: 1rem;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .python-nav ul li a:hover,
+        .python-nav ul li a.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="profile">
+                <img src="../images/sym_photo.jpg" alt="个人照片" class="profile-img">
+                <div class="profile-info">
+                    <h1>孙远鸣</h1>
+                    <p class="title">独善其身</p>
+                    <p class="keywords">CS | SE</p>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">首页</a></li>
+                    <li><a href="../blog.html">博客</a></li>
+                    <li><a href="../ai.html">AI聊天</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="active">工具箱</a>
+                        <div class="dropdown-content">
+                            <a href="code_runner.html">代码高亮</a>
+                            <a href="python_study.html" class="active">Python学习</a>
+                        </div>
+                    </li>
+                    <li><a href="../leave_message.html">留言板</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+        <section class="page-header">
+            <div class="container">
+                <h1>Python控制流程</h1>
+                <p>学习Python的条件语句、循环语句和异常处理</p>
+            </div>
+        </section>
+        
+        <div class="container">
+            <nav class="python-nav">
+                <ul>
+                    <li><a href="python_study.html">基础语法</a></li>
+                    <li><a href="python_study1.html">数据类型</a></li>
+                    <li><a href="python_study2.html" class="active">控制流程</a></li>
+                    <li><a href="python_study3.html">函数和类</a></li>
+                </ul>
+            </nav>
+            
+            <!-- 原有内容保持不变 -->
+            <h1 id="intro">Python完整教程</h1>
+            <p>本教程涵盖了Python编程的基础知识和实践示例，帮助您快速掌握Python编程。</p>
+
+            <h1 id="structure">Python三大程序结构</h1>
+
+            <h2 id="sequence">1. 顺序结构</h2>
+            <ul>
+                <li>按照程序的线性顺序依次执行。</li>
+                <li>简单来说，就是从上往下依次执行。</li>
+            </ul>
+
+            <div class="image-container">
+                <img src="顺序结构流程图" alt="顺序结构流程图">
+            </div>
+
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# 顺序结构示例
+a = 1
+b = 2
+print(b)
+print(a)</pre>
+                <div class="result">
+运行结果：
+2
+1</div>
+            </div>
+
+            <h2 id="branch">2. 分支结构</h2>
+            <p>根据条件的选择来执行不同的代码段。</p>
+
+            <div class="image-container">
+                <img src="单分支结构流程图" alt="单分支结构流程图">
+            </div>
+
+            <h3>单分支结构</h3>
+            <p><strong>if语法格式：</strong></p>
+            <div class="code-block">
+                <pre>
+if 表达式:
+    语句块</pre>
+            </div>
+
+            <p><strong>执行流程：</strong></p>
+            <ul>
+                <li>若表达式的值为True，则执行语句块。</li>
+                <li>若表达式的值为False，则跳过语句块，执行后面的代码。</li>
+            </ul>
+
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# 单分支结构
+a = -1
+if a > 0:
+    print(a)
+
+b = 2
+print(b)</pre>
+                <div class="result">
+运行结果：
+2</div>
+            </div>
+
+            <h3>双分支结构</h3>
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# 双分支结构
+a = -1
+if a >= 0:
+    print("a为非负数")
+else:
+    print("a为负数")</pre>
+                <div class="result">
+运行结果：
+a为负数</div>
+            </div>
+
+            <h3>逻辑运算符示例</h3>
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# and、or、not运算符示例
+a = 100 
+b = 10
+print(a>90 and b>50)  # a>90 True  b>50 为False
+print(a<90 or b>50)   # a<90 为False  b>50 为False
+print(a<90 or b<50)   # a<90 为False  b<50 为True
+print(not(a > 0))     # a>0 为True，取反为False</pre>
+                <div class="result">
+运行结果：
+False
+False
+True
+False</div>
+            </div>
+
+            <div class="image-container">
+                <img src="多分支结构流程图" alt="多分支结构流程图">
+            </div>
+
+            <h3>多分支结构</h3>
+            <div class="code-block">
+                <pre>
+# if语法格式
+if 表达式1:
+    语句块1
+elif 表达式2:
+    语句块2
+elif 表达式3:
+    语句块3
+else:
+    语句块4</pre>
+            </div>
+
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# 成绩判断示例
+score = 85
+if score > 100 or score < 0:
+    print("输入的成绩有误，请重新输入：")
+elif score >= 90 and score <= 100:
+    print("该学生的成绩为A等，非常不错")
+elif score >= 80 and score < 90:
+    print("该学生成绩为B等，也很棒了")
+elif score >= 70 and score < 80:
+    print("该学生成绩为C等，还需要努力")
+elif score >= 60 and score < 70:
+    print("该学生成绩为D等，要加把劲了，不然就要挂科了")
+else:
+    print("成绩不及格，准备准备补考吧")</pre>
+                <div class="result">
+运行结果：
+该学生成绩为B等，也很棒了</div>
+            </div>
+
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# if else 嵌套示例
+age = 17
+money = 8
+if age >= 18:
+    print("已经成年，可以进入网吧啦~~")
+    if money >= 10:
+        print("身上的金钱也是充足的，可以愉快的打游戏了~~")
+    else:
+        print("虽然我满了18岁，但是钱不够上不了网，难受呀")
+else:
+    print("未成年，不允许上网")</pre>
+                <div class="result">
+运行结果：
+未成年，不允许上网</div>
+            </div>
+
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# 成绩判断（无限循环版本）
+while True:  # 进入无限循环，直到输入有效成绩并打印结果
+    score = int(input("请输出学生的成绩："))  # 提示用户输入成绩，将输入的字符串转为整数类型
+    # 检查输入的成绩是否在0到100之间
+    if score < 0 or score > 100:  # 如果成绩小于0或大于100，说明成绩无效
+        print("请输入一个有效的成绩（0-100）！")  # 提示用户输入有效成绩
+        continue  # 如果输入无效，跳过当前循环，重新要求输入成绩
+    # 如果成绩有效，进入各个等级的判断
+    if score <= 100 and score >= 90:  # 如果成绩大于等于90并且小于100
+        print("该学生的成绩为A等，非常不错！")  # 输出A等成绩评价
+    elif score < 90 and score >= 80:  # 如果成绩大于等于80并且小于90
+        print("该学生的成绩为B等，也很棒了")  # 输出B等成绩评价
+    elif score < 80 and score >= 70:  # 如果成绩大于等于70并且小于80
+        print("该学生的成绩C等，努努力再冲一冲")  # 输出C等成绩评价
+    elif score < 70 and score >= 60:  # 如果成绩大于等于60并且小于70
+        print("该学生的成绩为D等，赶紧加劲学习！")  # 输出D等成绩评价
+    else:  # 如果成绩小于60
+        print("成绩不及格，准备准备补考吧")  # 输出不及格成绩评价
+    break  # 结束循环，程序执行完毕</pre>
+                <div class="result">
+运行结果：
+请输入一个有效的成绩（0-100）！
+该学生的成绩为B等，也很棒了</div>
+            </div>
+
+            <h2 id="loop">3. 循环结构</h2>
+
+            <div class="image-container">
+                <img src="循环结构流程图" alt="循环结构流程图">
+            </div>
+
+            <h3>while循环</h3>
+            <p><strong>while语法格式：</strong></p>
+            <div class="code-block">
+                <pre>
+while 判断语句:
+    执行语句</pre>
+            </div>
+
+            <h3>while循环基础示例</h3>
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# while循环基础示例
+a = 0  # 初始的赋值变量  判断语句  程序执行的代码体  可迭代的变量
+while a <= 10:
+    print(a)
+    a += 1  # a = a+1</pre>
+                <div class="result">
+运行结果：
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10</div>
+            </div>
+
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# 1-100的和
+i = 0
+sum = 0
+while i <= 100:
+    sum = sum + i
+    i += 1
+print(f"1到100的和是：{sum}")</pre>
+                <div class="result">
+运行结果：
+1到100的和是：5050</div>
+            </div>
+
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# 求1-100偶数和（方法一）
+i = 0
+sum = 0
+while i <= 100:
+    sum = sum + i
+    i += 2
+print(sum)</pre>
+                <div class="result">
+运行结果：
+2550</div>
+            </div>
+
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# 求1-100偶数和（方法二）
+i = 0
+sum = 0
+while i <= 100:
+    if i % 2 == 0:  # i对2取余，余数为0则满足
+        sum = sum + i
+    i += 1
+print(sum)</pre>
+                <div class="result">
+运行结果：
+2550</div>
+            </div>
+
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# 1-100奇数和
+i = 1
+sum = 0
+while i <= 100:
+    sum = sum + i
+    i += 2
+print(sum)</pre>
+                <div class="result">
+运行结果：
+2500</div>
+            </div>
+
+            <h3>for循环</h3>
+            <p><strong>for语法格式：</strong></p>
+            <div class="code-block">
+                <pre>
+for 变量名 in 可迭代对象:
+    语句块</pre>
+            </div>
+
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# for循环示例
+for i in range(1, 6):
+    print("* " * i)</pre>
+                <div class="result">
+运行结果：
+* 
+* * 
+* * * 
+* * * * 
+* * * * *</div>
+            </div>
+
+            <h3>for循环补充示例</h3>
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# for循环打印九九乘法表
+for i in range(1, 10):
+    for j in range(1, i+1):
+        print(f"{i}*{j}={i*j}", end="\t")
+    print()</pre>
+                <div class="result">
+运行结果：
+1*1=1
+2*1=2   2*2=4
+3*1=3   3*2=6   3*3=9
+4*1=4   4*2=8   4*3=12  4*4=16
+5*1=5   5*2=10  5*3=15  5*4=20  5*5=25
+6*1=6   6*2=12  6*3=18  6*4=24  6*5=30  6*6=36
+7*1=7   7*2=14  7*3=21  7*4=28  7*5=35  7*6=42  7*7=49
+8*1=8   8*2=16  8*3=24  8*4=32  8*5=40  8*6=48  8*7=56  8*8=64
+9*1=9   9*2=18  9*3=27  9*4=36  9*5=45  9*6=54  9*7=63  9*8=72  9*9=81</div>
+            </div>
+
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# for循环基础示例
+for c in range(10):  # range start 0 end 10 step 1 左闭右开 [0,10)
+    print(c + 1)</pre>
+                <div class="result">
+运行结果：
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10</div>
+            </div>
+
+            <h1 id="function">函数定义和调用</h1>
+
+            <h3>函数的定义</h3>
+            <ul>
+                <li>函数是将具有独立功能的代码块组织成一个小模块，使用函数名进行封装，在需要的时候进行调用。</li>
+                <li>使用函数的作用是提高编写效率及代码的重用率。</li>
+            </ul>
+
+            <h3>内置函数</h3>
+            <ul>
+                <li>print()</li>
+                <li>input()</li>
+            </ul>
+
+            <h3>自定义函数</h3>
+            <div class="code-block">
+                <pre>
+def 函数名(参数):
+    函数体
+    return [表达式]</pre>
+            </div>
+
+            <h3>函数示例</h3>
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# 函数定义示例
+def add(a, b):  # 函数的定义 a b 为形参
+    result = a + b
+    return result  # 若无return 返回值默认为None
+
+sum = add(5, 2)  # 5, 2为实参
+print(sum)
+
+# 匿名函数示例
+fun = lambda a, b: a + b
+print(fun(5, 2))</pre>
+                <div class="result">
+运行结果：
+7
+7</div>
+            </div>
+
+            <h3>函数的调用</h3>
+            <ul>
+                <li>定义函数时只给函数一个名称，指定了函数包含的参数和函数体。</li>
+                <li>调用函数意味着执行函数体内的代码，提供函数名和所需的参数即可调用。</li>
+            </ul>
+
+            <h3>实参和形参</h3>
+            <ul>
+                <li><strong>形参</strong>：定义函数时小括号内的参数，用于接收传入的值。</li>
+                <li><strong>实参</strong>：调用函数时小括号内的参数，实际传递给函数的值。</li>
+            </ul>
+
+            <h3>函数返回值</h3>
+            <ul>
+                <li>函数执行结束后，若有return语句，则返回结果到函数调用处。</li>
+            </ul>
+
+            <h1 id="scope">变量作用域</h1>
+
+            <h3>局部变量</h3>
+            <ul>
+                <li>定义在函数内部的变量，只在函数执行期间存在。</li>
+                <li>局部变量只在函数内部可见，函数执行完毕后，其值会被销毁。</li>
+            </ul>
+
+            <h3>全局变量</h3>
+            <ul>
+                <li>定义在函数外部的变量，在整个程序中都是可见的。</li>
+                <li>一旦全局变量被定义，它可以在整个程序中被访问和修改。</li>
+                <li>全局变量的作用域是整个程序，其生命周期是程序的整个执行期间。</li>
+            </ul>
+
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# 局部变量 全局变量
+a = 100
+def test():
+    a = 10
+    a = 8
+    print(a)
+
+test()  # 就近原则
+print(a)</pre>
+                <div class="result">
+运行结果：
+8
+100</div>
+            </div>
+
+            <h1 id="recursion">递归</h1>
+            <p>递归是函数在其函数体内调用自身的编程技巧。</p>
+
+            <div class="tip">
+                <strong>递归的三个重要特性：</strong>
+                <ul>
+                    <li>递归必须有明确的结束条件</li>
+                    <li>每次递归调用时，问题规模必须减小</li>
+                    <li>递归层次不能太深，否则会导致栈溢出</li>
+                </ul>
+            </div>
+
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# 递归计算阶乘
+def factorial(n):
+    if n == 1:
+        return 1
+    else:
+        return n * factorial(n-1)
+
+print(f"5的阶乘是：{factorial(5)}")  # 5! = 5 * 4 * 3 * 2 * 1 = 120</pre>
+                <div class="result">
+运行结果：
+5的阶乘是：120</div>
+            </div>
+
+            <h3>递归示例 - 阶乘计算</h3>
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# n! = n *（n-1）* ... * 1   5! = 5*4*3*2*1 = 120
+def fun(n):
+    if n == 1:
+        return 1
+    else:
+        return n * fun(n-1)
+    
+print(fun(5))</pre>
+                <div class="result">
+运行结果：
+120</div>
+            </div>
+
+            <h3>函数补充示例</h3>
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# 函数定义和调用示例
+def add(a, b):  # 函数的定义 a b 为形参
+    result = a + b
+    return result  # 若无return 返回值默认为None
+
+# 调用函数
+sum = add(5, 2)  # 5, 2为实参
+print(sum)
+
+# 匿名函数示例
+fun = lambda a, b: a + b
+print(fun(5, 2))</pre>
+                <div class="result">
+运行结果：
+7
+7</div>
+            </div>
+
+            <h3>递归补充示例</h3>
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# n! = n *（n-1）* ... * 1   5! = 5*4*3*2*1 = 120
+def fun(n):
+    if n == 1:  # 递归的终止条件
+        return 1
+    else:
+        return n * fun(n-1)  # 递归调用自身
+    
+print(fun(5))</pre>
+                <div class="result">
+运行结果：
+120</div>
+            </div>
+
+            <div class="tip">
+                <strong>递归的重要说明：</strong>
+                <ul>
+                    <li>递归必须有明确的结束条件，否则会导致无限递归</li>
+                    <li>每次递归调用时，问题规模必须减小，这样才能最终达到结束条件</li>
+                    <li>递归层次不能太深，否则会导致栈溢出（在计算机中，函数调用是通过栈实现的）</li>
+                    <li>每当进入一个函数调用，栈就会加一层栈帧；每当函数返回，栈就会减一层栈帧</li>
+                    <li>由于栈的大小是有限的，递归调用次数过多会导致栈溢出</li>
+                </ul>
+            </div>
+
+            <h1 id="examples">高级示例</h1>
+
+            <h2>水仙花数</h2>
+            <p>水仙花数是指一个三位数，它的各个位上的数字的立方和等于它本身。例如：</p>
+            <div class="math">
+                153 = 1³ + 5³ + 3³
+            </div>
+
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# 求解水仙花数
+for i in range(100, 1000):
+    a = i // 100      # 百位
+    b = i // 10 % 10  # 十位
+    c = i % 10        # 个位
+    if i == a**3 + b**3 + c**3:
+        print(f"该数为水仙花数，数值为{i}")</pre>
+                <div class="result">
+运行结果：
+该数为水仙花数，数值为153
+该数为水仙花数，数值为370
+该数为水仙花数，数值为371
+该数为水仙花数，数值为407</div>
+            </div>
+
+            <h2>水仙花数补充说明</h2>
+            <div class="code-block">
+                <button class="run-btn">运行代码</button>
+                <pre>
+# 求解水仙花数 100-1000 153 = 1^3+5^3+3^3
+for i in range(100, 1000):
+    a = i // 100      # 百位
+    b = i // 10 % 10  # 十位
+    c = i % 10        # 个位
+    if i == a**3 + b**3 + c**3:
+        print(f"该数为水仙花数，数值为{i}")
+
+# 测试取余操作
+a = 153
+print(a % 10)  # 获取个位数</pre>
+                <div class="result">
+运行结果：
+该数为水仙花数，数值为153
+该数为水仙花数，数值为370
+该数为水仙花数，数值为371
+该数为水仙花数，数值为407
+3</div>
+            </div>
+
+            <script>
+                // 为所有运行按钮添加点击效果
+                document.querySelectorAll('.run-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const result = this.parentElement.querySelector('.result');
+                        result.style.display = result.style.display === 'none' ? 'block' : 'none';
+                    });
+                });
+
+                // 返回顶部按钮
+                const backToTop = document.querySelector('.back-to-top');
+                window.addEventListener('scroll', () => {
+                    if (window.pageYOffset > 300) {
+                        backToTop.style.display = 'block';
+                    } else {
+                        backToTop.style.display = 'none';
+                    }
+                });
+
+                backToTop.addEventListener('click', () => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+
+                // 平滑滚动
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        document.querySelector(this.getAttribute('href')).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    });
+                });
+            </script>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>WEB</h3>
+                </div>
+                <div class="footer-links">
+                    <h4>快速链接</h4>
+                    <ul>
+                        <li><a href="../index.html">首页</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>联系方式</h4>
+                    <p><i class="fas fa-envelope"></i> 19861208800@163.com</p>
+                    <p><i class="fas fa-phone"></i> +86-19861208800</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 sym. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // 代码高亮
+        document.querySelectorAll('.code').forEach(block => {
+            const code = block.innerHTML;
+            const highlighted = code
+                .replace(/\b(def|for|in|if|else|elif|while|return|import|from|as|class|try|except|finally|with|break|continue|and|or|not|True|False|None)\b/g, '<span class="keyword">$1</span>')
+                .replace(/(['"])(.*?)\1/g, '<span class="string">$&</span>')
+                .replace(/\b(\d+(\.\d+)?)\b/g, '<span class="number">$1</span>')
+                .replace(/(#.*$)/gm, '<span class="comment">$1</span>')
+                .replace(/\b(print|type|list|dict|set|tuple|int|float|str|bool|complex|len|range|sum|max|min|sorted|sort|append|remove|keys|values|items)\b(?=\()/g, '<span class="function">$1</span>');
+            block.innerHTML = highlighted;
+        });
+    </script>
+</body>
+</html> 
