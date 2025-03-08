@@ -8,101 +8,198 @@
     <link rel="stylesheet" href="../css/dropdown.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* Keep header and footer styles unchanged */
+        
+        /* New welcome section style */
         .welcome-section {
             text-align: center;
-            padding: 60px 20px;
-            background-color: #fff;
-            margin-bottom: 40px;
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #3572a5 0%, #2b5d8a 100%);
+            color: white;
+            margin-bottom: 80px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(43, 93, 138, 0.2);
+        }
+
+        .welcome-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCI+CiAgPHBhdGggZD0iTTEyLjUgMTBMMjUgMTcuNUwzNy41IDEwTDI1IDIuNXoiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiIC8+Cjwvc3ZnPg==');
+            opacity: 0.1;
+            z-index: 0;
         }
 
         .welcome-section h1 {
-            font-size: 2.5em;
-            color: #333;
+            font-size: 3em;
             margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            color: #ffffff;
         }
 
         .welcome-section p {
-            font-size: 1.2em;
-            color: #666;
+            font-size: 1.3em;
             max-width: 800px;
             margin: 0 auto;
             line-height: 1.6;
+            position: relative;
+            z-index: 1;
+            opacity: 0.9;
+            color: #ffffff;
         }
 
+        /* New nav grid style */
         .nav-grid {
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 80px auto;
             padding: 0 20px;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-bottom: 60px;
+            gap: 40px;
         }
 
         .nav-card {
-            background: #fff;
-            border-radius: 10px;
+            background: white;
+            border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .nav-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .nav-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(53, 114, 165, 0.05) 0%, rgba(53, 114, 165, 0) 100%);
+            z-index: 0;
         }
 
         .nav-card-header {
-            background: #3572a5;
+            background: linear-gradient(135deg, #3572a5 0%, #2b5d8a 100%);
             color: white;
-            padding: 20px;
+            padding: 30px 20px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-card-header::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            right: -10px;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
         }
 
         .nav-card-header h2 {
             margin: 0;
-            font-size: 1.5em;
-            font-weight: 500;
+            font-size: 1.7em;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+            color: white;
+        }
+
+        .nav-card-header i {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            display: block;
+            opacity: 0.9;
         }
 
         .nav-card-body {
-            padding: 20px;
+            padding: 30px;
+            position: relative;
+            z-index: 1;
         }
 
         .nav-card-body p {
-            color: #666;
-            margin-bottom: 20px;
-            line-height: 1.6;
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.7;
+            font-size: 1.05em;
         }
 
         .nav-btn {
             display: inline-block;
             width: 100%;
-            padding: 12px 0;
-            background-color: #3572a5;
+            padding: 14px 0;
+            background: linear-gradient(135deg, #3572a5 0%, #2b5d8a 100%);
             color: white;
             text-align: center;
             text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
+            border-radius: 8px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .nav-btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
+            transition: all 0.6s ease;
+            z-index: -1;
         }
 
         .nav-btn:hover {
-            background-color: #2b5d8a;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(43, 93, 138, 0.3);
+            background: linear-gradient(135deg, #2b5d8a 0%, #1a4c79 100%);
+        }
+
+        .nav-btn:hover::before {
+            left: 100%;
         }
 
         @media (max-width: 768px) {
             .welcome-section {
-                padding: 40px 20px;
+                padding: 60px 20px;
+                border-radius: 0 0 20px 20px;
             }
 
             .welcome-section h1 {
-                font-size: 2em;
+                font-size: 2.2em;
+            }
+
+            .welcome-section p {
+                font-size: 1.1em;
             }
 
             .nav-grid {
                 grid-template-columns: 1fr;
                 padding: 0 15px;
+                gap: 30px;
+            }
+
+            .nav-card-header h2 {
+                font-size: 1.5em;
             }
         }
     </style>
@@ -142,44 +239,51 @@
     </section>
 
     <main>
+        
         <div class="nav-grid">
             <div class="nav-card">
                 <div class="nav-card-header">
-                    <h2>基础语法</h2>
+                    <i class="fas fa-rocket"></i>
+                    <h2>Python入门</h2>
                 </div>
                 <div class="nav-card-body">
-                    <p>学习Python的基本语法结构，包括变量、数据类型、运算符等基础知识。适合Python初学者。</p>
-                    <a href="python_study.html" class="nav-btn">开始学习</a>
+                    <p>从零开始学习Python，包括基础语法、开发环境配置等入门知识。适合编程新手快速上手Python语言。</p>
+                    <a href="python/python入门.html" class="nav-btn">开始学习</a>
                 </div>
             </div>
 
+            
+
             <div class="nav-card">
                 <div class="nav-card-header">
+                    <i class="fas fa-database"></i>
                     <h2>数据类型</h2>
                 </div>
                 <div class="nav-card-body">
-                    <p>深入了解Python的六大数据类型：数值、字符串、列表、元组、集合和字典的使用方法。</p>
-                    <a href="python_study1.html" class="nav-btn">开始学习</a>
+                    <p>深入学习Python的六大数据类型，包括数值、字符串、列表、元组、字典和集合。掌握数据处理的基础。</p>
+                    <a href="python/六大数据类型.html" class="nav-btn">开始学习</a>
                 </div>
             </div>
 
             <div class="nav-card">
                 <div class="nav-card-header">
-                    <h2>控制流程</h2>
+                    <i class="fas fa-code-branch"></i>
+                    <h2>程序结构</h2>
                 </div>
                 <div class="nav-card-body">
-                    <p>掌握Python的控制流程，包括条件语句、循环语句和异常处理等重要概念。</p>
-                    <a href="python_study2.html" class="nav-btn">开始学习</a>
+                    <p>掌握Python的三大程序结构：顺序结构、选择结构和循环结构。学习如何组织代码逻辑，提升编程能力。</p>
+                    <a href="python/python三大程序结构.html" class="nav-btn">开始学习</a>
                 </div>
             </div>
 
             <div class="nav-card">
                 <div class="nav-card-header">
-                    <h2>函数和类</h2>
+                    <i class="fas fa-cubes"></i>
+                    <h2>面向对象编程</h2>
                 </div>
                 <div class="nav-card-body">
-                    <p>学习Python的函数定义、类和面向对象编程，包括继承、多态等高级概念。</p>
-                    <a href="python_study3.html" class="nav-btn">开始学习</a>
+                    <p>学习Python的面向对象编程概念，包括类、对象、继承、多态等高级特性。迈向专业Python开发者的必经之路。</p>
+                    <a href="python/面向对象编程.html" class="nav-btn">开始学习</a>
                 </div>
             </div>
         </div>
@@ -209,4 +313,4 @@
         </div>
     </footer>
 </body>
-</html> 
+</html>
