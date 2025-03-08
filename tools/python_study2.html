@@ -10,73 +10,138 @@
     <style>
         /* Python学习页面特定样式 */
         :root {
-            --primary-color: #3776ab;
-            --secondary-color: #ffd343;
-            --bg-color: #f8f9fa;
-            --code-bg: #f1f1f1;
-            --output-bg: #e9ecef;
+            --primary-color: #2196F3;
+            --secondary-color: #64B5F6;
+            --bg-color: #f5f5f5;
+            --code-bg: #f8f9fa;
+            --code-text: #24292e;
+            --output-bg: #ffffff;
+            --output-text: #24292e;
             --text-color: #333;
-            --border-radius: 6px;
+            --border-radius: 4px;
+            --transition: all 0.3s ease;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            line-height: 1.6;
+            color: var(--text-color);
+        }
+
+        .page-header {
+            background: linear-gradient(120deg, #2196F3, #64B5F6);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .page-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .page-header p {
+            font-size: 1rem;
+            opacity: 0.9;
         }
         
         .section {
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
             background-color: white;
-            padding: 2rem;
+            padding: 1.5rem;
             border-radius: var(--border-radius);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: var(--shadow);
+        }
+        
+        .section h2 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary-color);
+        }
+
+        .section h3 {
+            color: #2c3e50;
+            font-size: 1.2rem;
+            margin: 1.2rem 0 0.8rem;
         }
         
         .code-block {
-            margin: 1.5rem 0;
+            margin: 1rem 0;
             border-radius: var(--border-radius);
             overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow);
+            background-color: var(--code-bg);
+            border: 1px solid #e1e4e8;
         }
         
         .code-header {
-            background-color: #4a4a4a;
-            color: white;
+            background-color: #f1f4f9;
+            color: var(--text-color);
             padding: 0.5rem 1rem;
-            font-family: monospace;
-            font-weight: bold;
+            font-family: system-ui, -apple-system, sans-serif;
+            font-weight: 500;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 1px solid #e1e4e8;
+        }
+
+        .run-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .run-btn:hover {
+            background-color: var(--secondary-color);
         }
         
         .code {
             background-color: var(--code-bg);
             padding: 1rem;
-            font-family: monospace;
+            font-family: Consolas, monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
             overflow-x: auto;
             white-space: pre;
+            color: var(--code-text);
         }
         
         .output {
             background-color: var(--output-bg);
             padding: 1rem;
-            font-family: monospace;
-            border-top: 1px solid #ddd;
+            font-family: Consolas, monospace;
+            color: var(--output-text);
+            border-top: 1px solid #e1e4e8;
         }
         
-        .keyword { color: #0000ff; }
-        .string { color: #a31515; }
-        .comment { color: #008000; }
-        .number { color: #098658; }
-        .function { color: #795e26; }
+        .keyword { color: #0076ff; }
+        .string { color: #50a14f; }
+        .comment { color: #a0a1a7; font-style: italic; }
+        .number { color: #986801; }
+        .function { color: #4078f2; }
         
         .note {
-            background-color: #e7f3fe;
-            border-left: 4px solid #2196F3;
+            background-color: #e3f2fd;
+            border-left: 4px solid var(--primary-color);
             padding: 1rem;
             margin: 1rem 0;
             border-radius: var(--border-radius);
         }
         
         .tip {
-            background-color: #ddffdd;
-            border-left: 4px solid #4CAF50;
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
             padding: 1rem;
             margin: 1rem 0;
             border-radius: var(--border-radius);
@@ -84,9 +149,10 @@
         
         .python-nav {
             margin-bottom: 2rem;
-            background-color: #fff;
+            background-color: white;
             border-radius: var(--border-radius);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: var(--shadow);
+            border: 1px solid #e1e4e8;
         }
         
         .python-nav ul {
@@ -103,14 +169,124 @@
         
         .python-nav ul li a {
             display: block;
-            padding: 1rem;
+            padding: 0.8rem;
             color: var(--text-color);
             text-decoration: none;
-            transition: all 0.3s ease;
+            font-weight: 500;
+            transition: var(--transition);
+            border-bottom: 2px solid transparent;
         }
         
-        .python-nav ul li a:hover,
+        .python-nav ul li a:hover {
+            color: var(--primary-color);
+            background-color: rgba(33, 150, 243, 0.05);
+        }
+        
         .python-nav ul li a.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* 列表样式优化 */
+        .section ul, .section ol {
+            padding-left: 1.5rem;
+            margin: 0.8rem 0;
+        }
+
+        .section li {
+            margin-bottom: 0.4rem;
+            line-height: 1.6;
+        }
+
+        /* 表格样式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        th, td {
+            padding: 0.8rem;
+            text-align: left;
+            border: 1px solid #e1e4e8;
+        }
+
+        th {
+            background-color: #f1f4f9;
+            font-weight: 500;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        /* 响应式优化 */
+        @media (max-width: 768px) {
+            .section {
+                padding: 1rem;
+            }
+
+            .code {
+                font-size: 0.85rem;
+            }
+
+            .python-nav ul {
+                flex-direction: column;
+            }
+
+            .python-nav ul li a {
+                padding: 0.6rem;
+            }
+
+            .page-header {
+                padding: 1.5rem 0;
+            }
+
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* 嵌套下拉菜单样式 */
+        .nested-dropdown {
+            position: relative;
+            display: block;
+        }
+
+        .nested-dropdown-content {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: var(--shadow);
+            z-index: 2;
+            border-radius: var(--border-radius);
+        }
+
+        .nested-dropdown:hover .nested-dropdown-content {
+            display: block;
+        }
+
+        .nested-dropdown-content a {
+            color: var(--text-color);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: var(--transition);
+        }
+
+        .nested-dropdown-content a:hover {
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+        }
+
+        .nested-dropdown-content a.active {
             background-color: var(--primary-color);
             color: white;
         }
@@ -136,7 +312,15 @@
                         <a href="#" class="active">工具箱</a>
                         <div class="dropdown-content">
                             <a href="code_runner.html">代码高亮</a>
-                            <a href="python_study.html" class="active">Python学习</a>
+                            <div class="nested-dropdown">
+                                <a href="python_study.html" class="active">Python学习</a>
+                                <div class="nested-dropdown-content">
+                                    <a href="python_study.html">基础语法</a>
+                                    <a href="python_study1.html">数据类型</a>
+                                    <a href="python_study2.html">控制流程</a>
+                                    <a href="python_study3.html">函数和类</a>
+                                </div>
+                            </div>
                         </div>
                     </li>
                     <li><a href="../leave_message.html">留言板</a></li>

@@ -114,6 +114,46 @@
             background-color: var(--primary-color);
             color: white;
         }
+
+        /* 嵌套下拉菜单样式 */
+        .nested-dropdown {
+            position: relative;
+            display: block;
+        }
+
+        .nested-dropdown-content {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: var(--shadow);
+            z-index: 2;
+            border-radius: var(--border-radius);
+        }
+
+        .nested-dropdown:hover .nested-dropdown-content {
+            display: block;
+        }
+
+        .nested-dropdown-content a {
+            color: var(--text-color);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: var(--transition);
+        }
+
+        .nested-dropdown-content a:hover {
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+        }
+
+        .nested-dropdown-content a.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -136,7 +176,15 @@
                         <a href="#" class="active">工具箱</a>
                         <div class="dropdown-content">
                             <a href="code_runner.html">代码高亮</a>
-                            <a href="python_study.html" class="active">Python学习</a>
+                            <div class="nested-dropdown">
+                                <a href="python_study.html" class="active">Python学习</a>
+                                <div class="nested-dropdown-content">
+                                    <a href="python_study.html">基础语法</a>
+                                    <a href="python_study1.html">数据类型</a>
+                                    <a href="python_study2.html">控制流程</a>
+                                    <a href="python_study3.html" class="active">函数和类</a>
+                                </div>
+                            </div>
                         </div>
                     </li>
                     <li><a href="../leave_message.html">留言板</a></li>
