@@ -117,6 +117,58 @@
             color: rgba(255, 255, 255, 0.8);
         }
 
+        /* 添加聊天记录操作按钮样式 */
+        .chat-item-actions {
+            display: none;
+            gap: 8px;
+            margin-left: 5px;
+        }
+
+        .chat-item:hover .chat-item-actions {
+            display: flex;
+        }
+
+        .chat-action-btn {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 0.8em;
+            padding: 2px;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+        }
+
+        .chat-item.active .chat-action-btn {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .chat-action-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        .chat-item.active .chat-action-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        /* 重命名输入框样式 */
+        .rename-input {
+            width: 100%;
+            padding: 4px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .chat-item.active .rename-input {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
         .chat-main {
             flex: 1;
             display: flex;
@@ -544,8 +596,11 @@
                     <li class="dropdown">
                         <a href="#" class="active">工具箱</a>
                         <div class="dropdown-content">
-                            <a href="tools/code_runner.html" class="active">代码高亮</a>
+                            <a href="tools/code_runner.html">代码高亮</a>
+                            <a href="tools/markdown_to_word.html" class="active">Markdown工具</a>
                             <a href="tools/python_nav.html">Python学习</a>
+                            <a href="tools/deep_learning.html">深度学习</a>
+                  
                         </div>
                     </li>
                     <li><a href="leave_message.html" class="active">留言板</a></li>
@@ -956,11 +1011,8 @@
                 chatItem.className = `chat-item ${chatId === currentChatId ? 'active' : ''}`;
                 chatItem.dataset.chatId = chatId;
                 
-                // 获取最后一条消息作为标题
-                const lastMessage = chat.messages[chat.messages.length - 1];
-                const title = lastMessage ? 
-                    lastMessage.content.substring(0, 30) + (lastMessage.content.length > 30 ? '...' : '') : 
-                    '新的对话';
+                // 获取聊天标题
+                const title = chat.title || '新的对话';
                 
                 chatItem.innerHTML = `
                     <div class="chat-item-icon">
@@ -970,11 +1022,106 @@
                         <div class="chat-item-title">${title}</div>
                         <div class="chat-item-time">${new Date(chat.lastMessageAt).toLocaleString('zh-CN')}</div>
                     </div>
+                    <div class="chat-item-actions">
+                        <button class="chat-action-btn rename-btn" title="重命名">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="chat-action-btn delete-btn" title="删除">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
                 `;
                 
-                chatItem.onclick = () => switchToChat(chatId);
                 chatList.appendChild(chatItem);
+                
+                // 添加点击事件
+                chatItem.querySelector('.chat-item-content').addEventListener('click', () => switchToChat(chatId));
+                
+                // 添加重命名按钮事件
+                chatItem.querySelector('.rename-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    renameChat(chatId, chatItem);
+                });
+                
+                // 添加删除按钮事件
+                chatItem.querySelector('.delete-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    deleteChat(chatId);
+                });
             });
+        }
+        
+        // 重命名聊天记录
+        function renameChat(chatId, chatItem) {
+            // 获取当前标题
+            const titleElement = chatItem.querySelector('.chat-item-title');
+            const currentTitle = chatData.chats[chatId].title || '新的对话';
+            
+            // 创建输入框
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'rename-input';
+            input.value = currentTitle;
+            
+            // 替换标题为输入框
+            titleElement.innerHTML = '';
+            titleElement.appendChild(input);
+            input.focus();
+            input.select();
+            
+            // 处理输入框事件
+            function handleRename() {
+                const newTitle = input.value.trim();
+                if (newTitle) {
+                    chatData.chats[chatId].title = newTitle;
+                    saveChatsToStorage();
+                }
+                renderChatList();
+            }
+            
+            // 添加输入框事件
+            input.addEventListener('blur', handleRename);
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleRename();
+                } else if (e.key === 'Escape') {
+                    renderChatList();
+                }
+            });
+            
+            // 阻止冒泡
+            input.addEventListener('click', (e) => e.stopPropagation());
+        }
+        
+        // 删除聊天记录
+        function deleteChat(chatId) {
+            if (confirm('确定要删除此聊天记录吗？')) {
+                // 从chatList中移除
+                const index = chatData.chatList.indexOf(chatId);
+                if (index > -1) {
+                    chatData.chatList.splice(index, 1);
+                }
+                
+                // 从chats中删除
+                delete chatData.chats[chatId];
+                
+                // 保存更改
+                saveChatsToStorage();
+                
+                // 如果删除的是当前聊天，切换到另一个聊天
+                if (chatId === currentChatId) {
+                    if (chatData.chatList.length > 0) {
+                        switchToChat(chatData.chatList[chatData.chatList.length - 1]);
+                    } else {
+                        // 如果没有聊天了，创建一个新的
+                        createNewChat();
+                    }
+                } else {
+                    // 重新渲染列表
+                    renderChatList();
+                }
+            }
         }
 
         // 保存聊天到本地存储

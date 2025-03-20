@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown转Word工具</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dropdown.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
+    <!-- MathJax支持 -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .markdown-converter-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .markdown-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .editor-section, .preview-section {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* 防止内容溢出 */
+            width: 100%; /* 确保宽度固定 */
+        }
+        .panel-title {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+        .control-panel {
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .export-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.3s;
+        }
+        .export-btn:hover {
+            background: #218838;
+        }
+        .export-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .export-img-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.3s;
+        }
+        .export-img-btn:hover {
+            background: #138496;
+        }
+        .export-options {
+            display: none;
+            position: absolute;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            padding: 1.2rem;
+            z-index: 100;
+            width: 320px;
+            top: 100%;
+            right: 0;
+        }
+        .export-options.show {
+            display: block;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .option-group {
+            margin-bottom: 1rem;
+        }
+        .option-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #444;
+        }
+        .option-group select, .option-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            transition: border-color 0.2s;
+        }
+        .option-group select:focus, .option-group input:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+        .option-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.5rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 0.8rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .option-btn:hover {
+            background: #5a6268;
+        }
+        .option-btn.primary {
+            background: #007bff;
+        }
+        .option-btn.primary:hover {
+            background: #0069d9;
+        }
+        .export-preview {
+            background: #f8f9fa;
+            padding: 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            display: none;
+            overflow: auto;
+        }
+        .export-preview.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid #dee2e6;
+            background: #fff;
+            border-radius: 8px 8px 0 0;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .preview-actions {
+            display: flex;
+            align-items: center;
+        }
+        .close-preview {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6c757d;
+            transition: color 0.2s;
+            margin-left: 1rem;
+        }
+        .close-preview:hover {
+            color: #343a40;
+        }
+        .export-content {
+            padding: 3rem;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin: 0 auto;
+            max-width: 210mm; /* A4宽度 */
+            min-height: 297mm; /* A4高度 */
+            font-family: 'Arial', sans-serif;
+            line-height: 1.8;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        /* 打印优化样式 */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .export-preview, .export-preview * {
+                visibility: visible;
+            }
+            .export-preview {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            .preview-header, .close-preview {
+                visibility: hidden;
+            }
+        }
+        .preview-section {
+            background: #fff;
+            color: #333;
+        }
+        .preview-content {
+            font-family: 'Arial', sans-serif;
+            padding: 1rem 1.5rem;
+            flex: 1;
+            overflow-y: auto;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            line-height: 1.5;
+        }
+        .preview-content h1, .preview-content h2, .preview-content h3 {
+            margin-top: 1.5em;
+            margin-bottom: 0.8em;
+        }
+        .preview-content h1 {
+            font-size: 1.8em;
+            padding-bottom: 0.3em;
+            border-bottom: 1px solid #eee;
+        }
+        .preview-content h2 {
+            font-size: 1.5em;
+            padding-bottom: 0.3em;
+            border-bottom: 1px solid #eee;
+        }
+        .preview-content h3 {
+            font-size: 1.3em;
+        }
+        .preview-content p {
+            margin-bottom: 1em;
+        }
+        .preview-content blockquote {
+            margin: 1em 0;
+            padding-left: 1em;
+            border-left: 4px solid #eee;
+            color: #777;
+        }
+        .preview-content pre {
+            background-color: #f6f8fa;
+            padding: 1em;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1em 0;
+        }
+        .preview-content code {
+            background-color: #f6f8fa;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+        .preview-content pre code {
+            padding: 0;
+            background-color: transparent;
+        }
+        .preview-content ul, .preview-content ol {
+            margin: 1em 0;
+            padding-left: 2em;
+        }
+        .preview-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1em 0;
+        }
+        .preview-content th, .preview-content td {
+            border: 1px solid #ddd;
+            padding: 0.5em;
+        }
+        .preview-content th {
+            background-color: #f6f8fa;
+            text-align: left;
+        }
+        #markdown-editor {
+            width: 100%;
+            flex: 1;
+            font-size: 14px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            resize: none;
+            padding: 10px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            line-height: 1.5;
+        }
+        
+        .CodeMirror {
+            height: 100% !important;
+            font-size: 14px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            line-height: 1.5;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            flex: 1;
+            width: 100%; /* 确保宽度固定 */
+            box-sizing: border-box; /* 防止padding影响宽度计算 */
+        }
+        
+        .CodeMirror-scroll {
+            overflow-x: hidden !important; /* 防止水平滚动条出现 */
+            overflow-y: auto !important;
+        }
+        
+        .CodeMirror-sizer {
+            min-width: 0 !important; /* 允许缩小到容器宽度 */
+        }
+        
+        .help-section {
+            margin-top: 2rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+        }
+        .help-section h3 {
+            margin-top: 0;
+            color: #343a40;
+            border-bottom: 1px solid #dfe2e6;
+            padding-bottom: 0.8rem;
+            margin-bottom: 1.2rem;
+        }
+        .help-section code {
+            background: #e9ecef;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Consolas', monospace;
+            color: #d63384;
+        }
+        .markdown-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.2rem;
+            margin-top: 1.2rem;
+        }
+        .example-card {
+            background: #fff;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 1.2rem;
+            height: 100%;
+        }
+        .example-card h4 {
+            margin-top: 0;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 0.6rem;
+            color: #495057;
+            font-size: 1.1rem;
+        }
+        .loading {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .spinner {
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 3px solid #28a745;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* 数学公式样式 */
+        .math-formula {
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .tool-description {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        .markdown-converter-container h2 {
+            margin-bottom: 0.8rem;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.8rem;
+        }
+        .highlight-line {
+            background-color: rgba(255, 230, 0, 0.2);
+            transition: background-color 0.3s ease;
+        }
+        .preview-highlight {
+            background-color: rgba(255, 230, 0, 0.2);
+            transition: background-color 0.3s ease;
+        }
+        .preview-content code {
+            cursor: pointer !important;
+            transition: background-color 0.2s;
+        }
+        .preview-content code:hover {
+            background-color: rgba(255, 230, 0, 0.1);
+        }
+        .preview-content pre {
+            position: relative;
+        }
+        .preview-content pre code {
+            display: block;
+            padding: 1em;
+            overflow-x: auto;
+        }
+        .preview-content pre code .line {
+            display: block;
+            line-height: 1.5em;
+            cursor: pointer;
+        }
+        .preview-content pre code .line:hover {
+            background-color: rgba(255, 230, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="profile">
+                <img src="../images/sym_photo.jpg" alt="个人照片" class="profile-img">
+                <div class="profile-info">
+                    <h1>孙远鸣</h1>
+                    <p class="title">独善其身</p>
+                    <p class="keywords">CS | SE</p>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">首页</a></li>
+                    <li><a href="../blog.html">博客</a></li>
+                    <li><a href="../ai.html">AI聊天</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="active">工具箱</a>
+                        <div class="dropdown-content">
+                            <a href="code_runner.html">代码高亮</a>
+                            <a href="markdown_to_word.html" class="active">Markdown工具</a>
+                            <a href="python_nav.html">Python学习</a>
+                            <a href="deep_learning.html">深度学习</a>
+                            
+                        </div>
+                    </li>
+                    <li><a href="../leave_message.html">留言板</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="markdown-converter-container">
+            <h2>Markdown转Word工具</h2>
+            <p class="tool-description">
+                在编辑器中输入Markdown格式的文本，左侧编辑、右侧预览，并可一键导出为Word文档或高质量图片。
+                支持数学公式、表格和各种格式化选项。
+            </p>
+            
+            <div class="control-panel">
+                <button id="export-word-btn" class="export-btn">
+                    <i class="fas fa-file-word"></i> 导出为Word
+                </button>
+                <button id="export-img-btn" class="export-img-btn">
+                    <i class="fas fa-image"></i> 导出为图片
+                </button>
+                <div class="loading" id="loading-indicator">
+                    <div class="spinner"></div>
+                    <span>正在生成文档...</span>
+                </div>
+                
+                <!-- 图片导出选项 -->
+                <div id="img-export-options" class="export-options">
+                    <div class="option-group">
+                        <label for="img-format">图片格式</label>
+                        <select id="img-format">
+                            <option value="png">PNG (高质量)</option>
+                            <option value="jpeg">JPEG (小文件)</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label for="img-scale">图片缩放 (质量)</label>
+                        <select id="img-scale">
+                            <option value="2">2x (高清)</option>
+                            <option value="3">3x (超高清)</option>
+                            <option value="1">1x (标准)</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label for="img-bg-color">背景颜色</label>
+                        <input type="color" id="img-bg-color" value="#ffffff">
+                    </div>
+                    <div class="option-group">
+                        <label for="img-text-color">文本颜色</label>
+                        <input type="color" id="img-text-color" value="#000000">
+                    </div>
+                    <div class="option-group">
+                        <label for="img-zh-font">中文字体</label>
+                        <select id="img-zh-font">
+                            <option value="SimSun, serif">宋体</option>
+                            <option value="Microsoft YaHei, sans-serif" selected>微软雅黑</option>
+                            <option value="SimHei, sans-serif">黑体</option>
+                            <option value="KaiTi, serif">楷体</option>
+                            <option value="FangSong, serif">仿宋</option>
+                            <option value="STXihei, sans-serif">华文细黑</option>
+                            <option value="STKaiti, serif">华文楷体</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label for="img-en-font">西文字体</label>
+                        <select id="img-en-font">
+                            <option value="Times New Roman, serif">Times New Roman</option>
+                            <option value="Arial, sans-serif" selected>Arial</option>
+                            <option value="Helvetica, sans-serif">Helvetica</option>
+                            <option value="Courier New, monospace">Courier New</option>
+                            <option value="Georgia, serif">Georgia</option>
+                            <option value="Verdana, sans-serif">Verdana</option>
+                            <option value="Calibri, sans-serif">Calibri</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label for="img-font-size">基础字体大小</label>
+                        <select id="img-font-size">
+                            <option value="14">14px (小)</option>
+                            <option value="16" selected>16px (标准)</option>
+                            <option value="18">18px (中)</option>
+                            <option value="20">20px (大)</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label for="img-line-height">行高</label>
+                        <select id="img-line-height">
+                            <option value="1.4">1.4 (紧凑)</option>
+                            <option value="1.6">1.6 (标准)</option>
+                            <option value="1.8" selected>1.8 (宽松)</option>
+                            <option value="2.0">2.0 (宽敞)</option>
+                            <option value="2.2">2.2 (超宽敞)</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label for="img-preset">预设样式</label>
+                        <select id="img-preset">
+                            <option value="default" selected>默认</option>
+                            <option value="exam">考试试卷</option>
+                            <option value="paper">学术论文</option>
+                            <option value="presentation">演示文稿</option>
+                            <option value="dark">暗色主题</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label for="img-spacing-mode">间距模式</label>
+                        <select id="img-spacing-mode">
+                            <option value="normal">正常</option>
+                            <option value="compact">紧凑</option>
+                            <option value="loose" selected>宽松</option>
+                            <option value="exam">试卷专用</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label>水印选项</label>
+                        <div style="display: flex; align-items: center; margin-top: 5px;">
+                            <input type="checkbox" id="img-watermark-enable" style="width: auto; margin-right: 5px;">
+                            <label for="img-watermark-enable" style="margin: 0;">启用水印</label>
+                        </div>
+                    </div>
+                    <div class="option-group watermark-options" style="display: none;">
+                        <label for="img-watermark-text">水印文字</label>
+                        <input type="text" id="img-watermark-text" value="CONFIDENTIAL">
+                        <div style="display: flex; margin-top: 5px; gap: 5px;">
+                            <input type="color" id="img-watermark-color" value="#dddddd" style="width: 40px;">
+                            <select id="img-watermark-opacity" style="flex: 1;">
+                                <option value="0.1">10% 透明度</option>
+                                <option value="0.15" selected>15% 透明度</option>
+                                <option value="0.2">20% 透明度</option>
+                                <option value="0.3">30% 透明度</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="option-group">
+                        <button id="export-img-confirm" class="option-btn primary">导出图片</button>
+                        <button id="export-img-cancel" class="option-btn">取消</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="markdown-panel">
+                <div class="editor-section">
+                    <h3 class="panel-title">Markdown编辑器</h3>
+                    <textarea id="markdown-editor" placeholder="在此输入Markdown文本..."></textarea>
+                </div>
+                <div class="preview-section">
+                    <h3 class="panel-title">实时预览</h3>
+                    <div id="preview-content" class="preview-content"></div>
+                </div>
+            </div>
+            
+            <div class="help-section">
+                <h3>Markdown语法帮助</h3>
+                <p>以下是一些常用的Markdown语法示例，可以直接在编辑器中使用：</p>
+                
+                <div class="markdown-examples">
+                    <div class="example-card">
+                        <h4>标题</h4>
+                        <code># 一级标题</code><br>
+                        <code>## 二级标题</code><br>
+                        <code>### 三级标题</code>
+                    </div>
+                    <div class="example-card">
+                        <h4>格式化</h4>
+                        <code>**粗体文本**</code><br>
+                        <code>*斜体文本*</code><br>
+                        <code>~~删除线~~</code>
+                    </div>
+                    <div class="example-card">
+                        <h4>列表</h4>
+                        <code>- 无序列表项</code><br>
+                        <code>1. 有序列表项</code>
+                    </div>
+                    <div class="example-card">
+                        <h4>链接和图片</h4>
+                        <code>[链接文本](URL)</code><br>
+                        <code>![图片描述](图片URL)</code>
+                    </div>
+                    <div class="example-card">
+                        <h4>引用</h4>
+                        <code>> 这是一段引用文本</code>
+                    </div>
+                    <div class="example-card">
+                        <h4>代码</h4>
+                        <code>`行内代码`</code><br>
+                        <code>```<br>代码块<br>```</code>
+                    </div>
+                    <div class="example-card">
+                        <h4>表格</h4>
+                        <code>| 表头1 | 表头2 |<br>| ------ | ------ |<br>| 单元格 | 单元格 |</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>WEB</h3>
+                </div>
+                <div class="footer-links">
+                    <h4>快速链接</h4>
+                    <ul>
+                        <li><a href="../index.html">首页</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>联系方式</h4>
+                    <p><i class="fas fa-envelope"></i> 19861208800@163.com</p>
+                    <p><i class="fas fa-phone"></i> +86-19861208800</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 sym. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 必要的JavaScript库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/markdown/markdown.min.js"></script>
+    <!-- Showdown - Markdown转HTML -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+    <!-- docx.js - 用于创建Word文档 -->
+    <script src="https://unpkg.com/docx@8.0.0/build/index.js"></script>
+    <!-- FileSaver.js - 用于保存文件 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <!-- html-to-image 用于将数学公式转为图片 -->
+    <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
+
+    <!-- 图片导出预览区域 -->
+    <div id="export-preview" class="export-preview">
+        <div class="preview-header">
+            <h2>预览与导出</h2>
+            <div class="preview-actions">
+                <button id="confirm-export-btn" class="option-btn primary" style="margin-right: 10px;">
+                    <i class="fas fa-download"></i> 确认导出
+                </button>
+                <button id="print-preview-btn" class="option-btn primary" style="margin-right: 10px;">
+                    <i class="fas fa-print"></i> 打印
+                </button>
+                <button class="close-preview" id="close-preview">&times;</button>
+            </div>
+        </div>
+        <div id="export-content" class="export-content"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 定义示例Markdown内容，确保在初始化编辑器前声明
+            const sampleMarkdown = `# Markdown示例文档
+
+## 简介
+这是一个简单的Markdown文档示例，展示了常用的Markdown语法和数学公式支持。
+
+## 格式化文本
+你可以使用 **粗体** 或 *斜体* 来强调文本。~~删除线~~ 也可以使用。
+
+## 列表示例
+### 无序列表
+- 项目1
+- 项目2
+  - 子项目A
+  - 子项目B
+
+### 有序列表
+1. 第一项
+2. 第二项
+3. 第三项
+
+## 引用
+> 这是一个引用块。
+> 它可以跨越多行。
+
+## 代码
+这是\`行内代码\`。
+
+\`\`\`python
+def hello_world():
+    print("Hello, World!")
+\`\`\`
+
+## 表格
+| 表头1 | 表头2 | 表头3 |
+|-------|-------|-------|
+| 内容1 | 内容2 | 内容3 |
+| 内容4 | 内容5 | 内容6 |
+
+## 数学公式示例
+行内公式: $E=mc^2$
+
+行间公式:
+$$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
+`;
+
+            // 初始化CodeMirror编辑器
+            const editor = CodeMirror.fromTextArea(document.getElementById('markdown-editor'), {
+                mode: 'markdown',
+                lineNumbers: true,
+                theme: 'monokai',
+                lineWrapping: true
+            });
+
+            // 初始设置编辑器内容
+            editor.setValue(sampleMarkdown);
+
+            // 初始化Markdown转换器
+            const converter = new showdown.Converter({
+                tables: true,
+                tasklists: true,
+                strikethrough: true
+            });
+
+            // 初始渲染预览内容
+            const initialHtml = converter.makeHtml(sampleMarkdown);
+            document.getElementById('preview-content').innerHTML = initialHtml;
+            
+            // 渲染数学公式
+            if (typeof MathJax !== 'undefined') {
+                MathJax.typesetPromise([document.getElementById('preview-content')]).catch(function (err) {
+                    console.log('MathJax初始化出错:', err);
+                });
+            }
+            
+            // 初始添加点击事件处理
+            addClickHandlersToPreviewElements();
+        });
+    </script>
+</body>
+</html> 

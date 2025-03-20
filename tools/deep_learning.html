@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>深度学习资源</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dropdown.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 欢迎区域样式 */
+        .welcome-section {
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+            color: white;
+            margin-bottom: 80px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(75, 108, 183, 0.2);
+        }
+
+        .welcome-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCI+CiAgPHBhdGggZD0iTTEyLjUgMTBMMjUgMTcuNUwzNy41IDEwTDI1IDIuNXoiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiIC8+Cjwvc3ZnPg==');
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .welcome-section h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            color: #ffffff;
+        }
+
+        .welcome-section p {
+            font-size: 1.3em;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+            opacity: 0.9;
+            color: #ffffff;
+        }
+
+        /* 资源卡片样式 */
+        .resource-grid {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .resource-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .resource-card-header {
+            background: #4b6cb7;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .resource-card-header i {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            display: block;
+            opacity: 0.9;
+        }
+
+        .resource-card-header h2 {
+            margin: 0;
+            font-size: 1.5em;
+            font-weight: 600;
+            color: white;
+        }
+
+        .resource-card-body {
+            padding: 20px;
+        }
+
+        .resource-card-body p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .resource-links {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+
+        .resource-links a {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 10px;
+            margin: 5px 10px;
+            color: #4b6cb7;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95em;
+            position: relative;
+        }
+
+        .resource-links a:hover {
+            color: #3a5a9f;
+        }
+
+        .resource-links a i {
+            margin-right: 6px;
+        }
+
+        /* 框架部分样式 */
+        .frameworks-section {
+            background: #f8f9fa;
+            padding: 60px 20px;
+            margin-top: 40px;
+        }
+
+        .frameworks-section h2 {
+            text-align: center;
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 40px;
+        }
+
+        .framework-cards {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .framework-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .framework-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .framework-card img {
+            height: 70px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .framework-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .framework-card h3 {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .framework-card p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .framework-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #4b6cb7;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .framework-btn:hover {
+            background: #3a5a9f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(75, 108, 183, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .resource-grid, .framework-cards {
+                grid-template-columns: 1fr;
+                padding: 0 15px;
+            }
+            
+            .welcome-section h1 {
+                font-size: 2em;
+            }
+            
+            .frameworks-section h2 {
+                font-size: 1.6em;
+            }
+
+            .resource-card-header {
+                padding: 25px;
+            }
+
+            .resource-card-body {
+                padding: 20px;
+            }
+
+            .resource-links li {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="profile">
+                <img src="../images/sym_photo.jpg" alt="个人照片" class="profile-img">
+                <div class="profile-info">
+                    <h1>孙远鸣</h1>
+                    <p class="title">独善其身</p>
+                    <p class="keywords">CS | SE</p>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">首页</a></li>
+                    <li><a href="../blog.html">博客</a></li>
+                    <li><a href="../ai.html">AI聊天</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="active">工具箱</a>
+                        <div class="dropdown-content">
+                            <a href="code_runner.html">代码高亮</a>
+                            <a href="markdown_to_word.html" class="active">Markdown工具</a>
+                            <a href="python_nav.html">Python学习</a>
+                            <a href="deep_learning.html" class="active">深度学习</a>
+                        </div>
+                    </li>
+                    <li><a href="../leave_message.html">留言板</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="welcome-section">
+        <h1>深度学习资源中心</h1>
+        <p>这里汇集了深度学习的优质教程、框架文档和学习资源，帮助您系统学习深度学习知识</p>
+    </section>
+
+    <main>
+        <div class="resource-grid">
+            <div class="resource-card">
+                <div class="resource-card-header">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h2>入门教程</h2>
+                </div>
+                <div class="resource-card-body">
+                    <p>适合初学者的深度学习入门课程和教程，从基础概念到简单实践</p>
+                    <div class="resource-links">
+                        <a href="https://www.deeplearning.ai/" target="_blank"><i class="fas fa-external-link-alt"></i> deeplearning.ai 课程</a>
+                        <a href="https://www.coursera.org/specializations/deep-learning" target="_blank"><i class="fas fa-external-link-alt"></i> Andrew Ng 深度学习专项课程</a>
+                        <a href="https://github.com/fastai/fastbook" target="_blank"><i class="fas fa-external-link-alt"></i> fast.ai 深度学习教程</a>
+                        <a href="https://d2l.ai/index.html" target="_blank"><i class="fas fa-external-link-alt"></i> 动手学深度学习</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resource-card">
+                <div class="resource-card-header">
+                    <i class="fas fa-book"></i>
+                    <h2>经典书籍</h2>
+                </div>
+                <div class="resource-card-body">
+                    <p>深度学习领域的经典教材和参考书籍</p>
+                    <div class="resource-links">
+                        <a href="https://www.deeplearningbook.org/" target="_blank"><i class="fas fa-external-link-alt"></i> Deep Learning (Goodfellow等著)</a>
+                        <a href="https://pytorch.org/deep-learning-with-pytorch" target="_blank"><i class="fas fa-external-link-alt"></i> Deep Learning with PyTorch</a>
+                        <a href="https://github.com/ageron/handson-ml2" target="_blank"><i class="fas fa-external-link-alt"></i> Hands-on Machine Learning with Scikit-Learn and TensorFlow</a>
+                        <a href="https://github.com/changwookjun/StudyBook" target="_blank"><i class="fas fa-external-link-alt"></i> 深度学习推荐书籍集合</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resource-card">
+                <div class="resource-card-header">
+                    <i class="fas fa-video"></i>
+                    <h2>视频教程</h2>
+                </div>
+                <div class="resource-card-body">
+                    <p>精选视频课程和讲座，通过观看学习深度学习知识</p>
+                    <div class="resource-links">
+                        <a href="https://www.bilibili.com/video/BV1g54y1i7QL" target="_blank"><i class="fas fa-external-link-alt"></i> 吴恩达深度学习课程（中文字幕）</a>
+                        <a href="https://www.bilibili.com/video/BV1Wv411h7kN" target="_blank"><i class="fas fa-external-link-alt"></i> 李宏毅2021/2022机器学习课程</a>
+                        <a href="https://www.bilibili.com/video/BV1fA411v7cM" target="_blank"><i class="fas fa-external-link-alt"></i> PyTorch深度学习实战</a>
+                        <a href="https://www.youtube.com/c/3blue1brown" target="_blank"><i class="fas fa-external-link-alt"></i> 3Blue1Brown 神经网络可视化讲解</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resource-card">
+                <div class="resource-card-header">
+                    <i class="fas fa-code"></i>
+                    <h2>实战项目</h2>
+                </div>
+                <div class="resource-card-body">
+                    <p>动手实践的深度学习项目和代码案例</p>
+                    <div class="resource-links">
+                        <a href="https://github.com/aymericdamien/TensorFlow-Examples" target="_blank"><i class="fas fa-external-link-alt"></i> TensorFlow 示例代码</a>
+                        <a href="https://github.com/pytorch/examples" target="_blank"><i class="fas fa-external-link-alt"></i> PyTorch 官方示例</a>
+                        <a href="https://github.com/dmlc/gluon-cv" target="_blank"><i class="fas fa-external-link-alt"></i> GluonCV 计算机视觉工具包</a>
+                        <a href="https://github.com/huggingface/transformers" target="_blank"><i class="fas fa-external-link-alt"></i> Hugging Face Transformers</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="frameworks-section">
+            <h2>主流深度学习框架</h2>
+            <div class="framework-cards">
+                <div class="framework-card">
+                    <img src="https://www.tensorflow.org/images/tf_logo_social.png" alt="TensorFlow Logo">
+                    <h3>TensorFlow</h3>
+                    <p>Google开发的端到端开源平台，拥有全面的工具、库和社区资源</p>
+                    <a href="https://www.tensorflow.org/" target="_blank" class="framework-btn">官方文档</a>
+                </div>
+                
+                <div class="framework-card">
+                    <img src="https://pytorch.org/assets/images/pytorch-logo.png" alt="PyTorch Logo">
+                    <h3>PyTorch</h3>
+                    <p>由Facebook开发的灵活深度学习框架，以动态计算图和直观API著称</p>
+                    <a href="https://pytorch.org/" target="_blank" class="framework-btn">官方文档</a>
+                </div>
+                
+                <div class="framework-card">
+                    <img src="https://keras.io/img/logo.png" alt="Keras Logo">
+                    <h3>Keras</h3>
+                    <p>专注于用户体验的高级神经网络API，以简洁、灵活和功能强大著称</p>
+                    <a href="https://keras.io/" target="_blank" class="framework-btn">官方文档</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>WEB</h3>
+                </div>
+                <div class="footer-links">
+                    <h4>快速链接</h4>
+                    <ul>
+                        <li><a href="../index.html">首页</a></li>
+                        <li><a href="../blog.html">博客</a></li>
+                        <li><a href="../ai.html">AI聊天</a></li>
+                        <li><a href="../leave_message.html">留言板</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>联系方式</h4>
+                    <p>邮箱：xxxxx@xx.com</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-weixin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 孙远鸣的个人网站. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/script.js"></script>
+</body>
+</html> 
