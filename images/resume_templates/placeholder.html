@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>简历模板占位图</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .template {
+            width: 240px;
+            height: 320px;
+            border: 1px solid #ddd;
+            margin: 10px;
+            position: relative;
+        }
+        .simple {
+            background: white;
+            font-family: Arial;
+        }
+        .pikachu {
+            background: #fff9c4;
+            border: 10px solid #ffeb3b;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS';
+        }
+        .active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-family: 'Segoe UI';
+        }
+        .mingrui {
+            background: #f8f9fa;
+            border-left: 15px solid #e74c3c;
+            box-sizing: border-box;
+            font-family: 'Georgia';
+        }
+        .glacier {
+            background: linear-gradient(to bottom, #e0f7fa, #ffffff);
+            border: 1px solid #b2ebf2;
+            box-sizing: border-box;
+            font-family: 'Helvetica';
+        }
+        .star {
+            background: white;
+            border-top: 10px solid #4caf50;
+            border-bottom: 10px solid #4caf50;
+            box-sizing: border-box;
+            font-family: 'Calibri';
+        }
+        .header {
+            height: 40px;
+            background: #f0f0f0;
+            border-bottom: 2px solid #ddd;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            font-weight: bold;
+        }
+        .content {
+            padding: 10px;
+            font-size: 10px;
+        }
+        .name {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="template simple">
+        <div class="header" style="color: #2c3e50; border-color: #3498db;">个人信息</div>
+        <div class="content">
+            <p>姓名：张三</p>
+            <p>电话：13800138000</p>
+            <p>邮箱：example@mail.com</p>
+            <div style="height: 30px; background: #f5f5f5; margin: 5px 0;"></div>
+            <p>工作经验：5年</p>
+            <div style="height: 50px; background: #f5f5f5; margin: 5px 0;"></div>
+        </div>
+        <div class="name">简约</div>
+    </div>
+
+    <div class="template pikachu">
+        <div class="header" style="color: #e53935; border-bottom: 3px dashed #e53935; text-align: center; background: transparent;">个人信息</div>
+        <div class="content">
+            <p>姓名：张三</p>
+            <p>电话：13800138000</p>
+            <p>邮箱：example@mail.com</p>
+            <div style="height: 30px; background: #fff; margin: 5px 0; border-radius: 10px;"></div>
+            <p>⚡ 工作经验：5年</p>
+            <div style="height: 50px; background: #fff; margin: 5px 0; border-radius: 10px;"></div>
+        </div>
+        <div class="name">皮卡丘</div>
+    </div>
+
+    <div class="template active">
+        <div class="header" style="color: #fff; border-color: rgba(255, 255, 255, 0.5); background: transparent;">个人信息</div>
+        <div class="content">
+            <p>姓名：张三</p>
+            <p>电话：13800138000</p>
+            <p>邮箱：example@mail.com</p>
+            <div style="height: 30px; background: rgba(255, 255, 255, 0.2); margin: 5px 0; border-radius: 4px;"></div>
+            <p>▶ 工作经验：5年</p>
+            <div style="height: 50px; background: rgba(255, 255, 255, 0.2); margin: 5px 0; border-radius: 4px;"></div>
+        </div>
+        <div class="name">活力</div>
+    </div>
+
+    <div class="template mingrui">
+        <div class="header" style="color: #e74c3c; border: none; background: transparent;">个人信息</div>
+        <div class="content">
+            <p>姓名：张三</p>
+            <p>电话：13800138000</p>
+            <p>邮箱：example@mail.com</p>
+            <div style="height: 30px; background: #f0f0f0; margin: 5px 0;"></div>
+            <p>工作经验：5年</p>
+            <div style="height: 50px; background: #f0f0f0; margin: 5px 0;"></div>
+        </div>
+        <div class="name">明瑞</div>
+    </div>
+
+    <div class="template glacier">
+        <div class="header" style="color: #0097a7; border-color: #0097a7; background: transparent;">个人信息</div>
+        <div class="content">
+            <p>姓名：张三</p>
+            <p>电话：13800138000</p>
+            <p>邮箱：example@mail.com</p>
+            <div style="height: 30px; background: rgba(178, 235, 242, 0.3); margin: 5px 0;"></div>
+            <p>❄ 工作经验：5年</p>
+            <div style="height: 50px; background: rgba(178, 235, 242, 0.3); margin: 5px 0;"></div>
+        </div>
+        <div class="name">冰川</div>
+    </div>
+
+    <div class="template star">
+        <div class="header" style="color: #2e7d32; border-color: #4caf50; text-align: center; background: transparent; text-transform: uppercase; letter-spacing: 1px;">个人信息</div>
+        <div class="content">
+            <p>姓名：张三</p>
+            <p>电话：13800138000</p>
+            <p>邮箱：example@mail.com</p>
+            <div style="height: 30px; background: #f5f5f5; margin: 5px 0;"></div>
+            <p>★ 工作经验：5年</p>
+            <div style="height: 50px; background: #f5f5f5; margin: 5px 0;"></div>
+        </div>
+        <div class="name">明星</div>
+    </div>
+</body>
+</html> 

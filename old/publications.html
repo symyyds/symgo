@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>论文发表 - 学术个人网站</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="profile">
+                <img src="images/profile.jpg" alt="个人照片" class="profile-img">
+                <div class="profile-info">
+                    <h1>您的姓名</h1>
+                    <p class="title">XXX大学XX学院研究员</p>
+                    <p class="keywords">人工智能 | 生物信息学 | 计算化学</p>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="about.html">关于我</a></li>
+                    <li><a href="research.html">研究方向</a></li>
+                    <li><a href="publications.html" class="active">论文发表</a></li>
+                    <li><a href="blog.html">博客</a></li>
+                    <li><a href="resources.html">学术资源</a></li>
+                    <li><a href="contact.html">联系方式</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <div class="container">
+                <h1>论文发表</h1>
+                <p>我的研究成果和学术出版物</p>
+            </div>
+        </section>
+
+        <section class="publications-content">
+            <div class="container">
+                <div class="publications-filter">
+                    <div class="filter-group">
+                        <label>按年份筛选：</label>
+                        <select id="year-filter">
+                            <option value="all">全部年份</option>
+                            <option value="2023">2023</option>
+                            <option value="2022">2022</option>
+                            <option value="2021">2021</option>
+                            <option value="2020">2020</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>按类型筛选：</label>
+                        <select id="type-filter">
+                            <option value="all">全部类型</option>
+                            <option value="journal">期刊论文</option>
+                            <option value="conference">会议论文</option>
+                            <option value="book">书籍章节</option>
+                            <option value="preprint">预印本</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>按主题筛选：</label>
+                        <select id="topic-filter">
+                            <option value="all">全部主题</option>
+                            <option value="ai">人工智能</option>
+                            <option value="bio">生物信息学</option>
+                            <option value="chem">计算化学</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="publications-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">XX</div>
+                        <div class="stat-label">发表论文</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">XX</div>
+                        <div class="stat-label">引用次数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">XX</div>
+                        <div class="stat-label">h指数</div>
+                    </div>
+                </div>
+
+                <div class="publications-list">
+                    <!-- 2023年论文 -->
+                    <h2 class="pub-year">2023</h2>
+                    
+                    <div class="publication-item" data-year="2023" data-type="journal" data-topic="ai">
+                        <h3 class="publication-title">基于深度学习的XXX预测方法研究</h3>
+                        <p class="publication-authors"><strong>您的姓名</strong>, 合作者A, 合作者B</p>
+                        <p class="publication-journal">《XXX期刊》, 23(4), 567-580</p>
+                        <p class="publication-abstract">摘要：这项研究提出了一种新的深度学习方法，用于XXX...（摘要内容）</p>
+                        <div class="publication-links">
+                            <a href="#" class="pub-link"><i class="fas fa-external-link-alt"></i> 查看论文</a>
+                            <a href="#" class="pub-link"><i class="fas fa-download"></i> PDF下载</a>
+                            <a href="#" class="pub-link"><i class="fas fa-code"></i> 代码</a>
+                            <a href="#" class="pub-link"><i class="fas fa-database"></i> 数据集</a>
+                        </div>
+                    </div>
+                    
+                    <div class="publication-item" data-year="2023" data-type="conference" data-topic="bio">
+                        <h3 class="publication-title">XXX数据分析的新方法及其在XXX中的应用</h3>
+                        <p class="publication-authors"><strong>您的姓名</strong>, 合作者C</p>
+                        <p class="publication-journal">第XX届XXX国际会议论文集, 页码123-135</p>
+                        <p class="publication-abstract">摘要：本文介绍了一种新的XXX数据分析方法...（摘要内容）</p>
+                        <div class="publication-links">
+                            <a href="#" class="pub-link"><i class="fas fa-external-link-alt"></i> 查看论文</a>
+                            <a href="#" class="pub-link"><i class="fas fa-download"></i> PDF下载</a>
+                            <a href="#" class="pub-link"><i class="fas fa-desktop"></i> 幻灯片</a>
+                        </div>
+                    </div>
+
+                    <!-- 2022年论文 -->
+                    <h2 class="pub-year">2022</h2>
+                    
+                    <div class="publication-item" data-year="2022" data-type="journal" data-topic="chem">
+                        <h3 class="publication-title">计算模拟在XXX分子设计中的应用</h3>
+                        <p class="publication-authors"><strong>您的姓名</strong>, 合作者D, 合作者E, 合作者F</p>
+                        <p class="publication-journal">《XXX杂志》, 45(2), 234-249</p>
+                        <p class="publication-abstract">摘要：本研究利用计算模拟方法对XXX分子进行了设计与优化...（摘要内容）</p>
+                        <div class="publication-links">
+                            <a href="#" class="pub-link"><i class="fas fa-external-link-alt"></i> 查看论文</a>
+                            <a href="#" class="pub-link"><i class="fas fa-download"></i> PDF下载</a>
+                            <a href="#" class="pub-link"><i class="fas fa-code"></i> 代码</a>
+                        </div>
+                    </div>
+                    
+                    <div class="publication-item" data-year="2022" data-type="book" data-topic="ai">
+                        <h3 class="publication-title">XXX方法在XXX领域的应用</h3>
+                        <p class="publication-authors"><strong>您的姓名</strong>, 合作者G</p>
+                        <p class="publication-journal">《XXX学科前沿》一书第X章, XXX出版社, 页码78-95</p>
+                        <p class="publication-abstract">摘要：本章详细介绍了XXX方法在XXX领域的最新应用进展...（摘要内容）</p>
+                        <div class="publication-links">
+                            <a href="#" class="pub-link"><i class="fas fa-external-link-alt"></i> 查看详情</a>
+                            <a href="#" class="pub-link"><i class="fas fa-download"></i> PDF下载</a>
+                        </div>
+                    </div>
+
+                    <!-- 2021年论文 -->
+                    <h2 class="pub-year">2021</h2>
+                    
+                    <div class="publication-item" data-year="2021" data-type="journal" data-topic="bio">
+                        <h3 class="publication-title">基于机器学习的XXX预测模型研究</h3>
+                        <p class="publication-authors"><strong>您的姓名</strong>, 合作者H, 合作者I</p>
+                        <p class="publication-journal">《XXX学报》, 12(3), 345-360</p>
+                        <p class="publication-abstract">摘要：本研究开发了一种基于机器学习的新型XXX预测模型...（摘要内容）</p>
+                        <div class="publication-links">
+                            <a href="#" class="pub-link"><i class="fas fa-external-link-alt"></i> 查看论文</a>
+                            <a href="#" class="pub-link"><i class="fas fa-download"></i> PDF下载</a>
+                            <a href="#" class="pub-link"><i class="fas fa-code"></i> 代码</a>
+                            <a href="#" class="pub-link"><i class="fas fa-database"></i> 数据集</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>您的姓名</h3>
+                    <p>XXX大学XX学院</p>
+                </div>
+                <div class="footer-links">
+                    <h4>快速链接</h4>
+                    <ul>
+                        <li><a href="index.html">首页</a></li>
+                        <li><a href="publications.html">论文发表</a></li>
+                        <li><a href="resources.html">学术资源</a></li>
+                        <li><a href="contact.html">联系方式</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>联系方式</h4>
+                    <p><i class="fas fa-envelope"></i> email@university.edu</p>
+                    <p><i class="fas fa-map-marker-alt"></i> XXX大学XX学院XX楼XXX室</p>
+                    <div class="social-icons">
+                        <a href="#" title="Google Scholar"><i class="fas fa-graduation-cap"></i></a>
+                        <a href="#" title="ResearchGate"><i class="fab fa-researchgate"></i></a>
+                        <a href="#" title="ORCID"><i class="fab fa-orcid"></i></a>
+                        <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 您的姓名. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script>
+        // 论文筛选功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const yearFilter = document.getElementById('year-filter');
+            const typeFilter = document.getElementById('type-filter');
+            const topicFilter = document.getElementById('topic-filter');
+            const pubItems = document.querySelectorAll('.publication-item');
+            const pubYears = document.querySelectorAll('.pub-year');
+            
+            function filterPublications() {
+                const yearValue = yearFilter.value;
+                const typeValue = typeFilter.value;
+                const topicValue = topicFilter.value;
+                
+                // 首先隐藏所有年份标题
+                pubYears.forEach(year => {
+                    year.style.display = 'none';
+                });
+                
+                // 遍历每个论文项
+                pubItems.forEach(item => {
+                    const year = item.getAttribute('data-year');
+                    const type = item.getAttribute('data-type');
+                    const topic = item.getAttribute('data-topic');
+                    
+                    const yearMatch = yearValue === 'all' || year === yearValue;
+                    const typeMatch = typeValue === 'all' || type === typeValue;
+                    const topicMatch = topicValue === 'all' || topic === topicValue;
+                    
+                    if (yearMatch && typeMatch && topicMatch) {
+                        item.style.display = 'block';
+                        // 显示对应的年份标题
+                        document.querySelector('.pub-year:contains("' + year + '")').style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                
+                // 检查是否有任何论文显示
+                let anyVisible = false;
+                pubItems.forEach(item => {
+                    if (item.style.display !== 'none') {
+                        anyVisible = true;
+                    }
+                });
+                
+                // 如果没有论文显示，显示"无结果"消息
+                const noResultsMsg = document.querySelector('.no-results');
+                if (!anyVisible) {
+                    if (!noResultsMsg) {
+                        const msg = document.createElement('p');
+                        msg.className = 'no-results';
+                        msg.textContent = '没有符合筛选条件的论文。';
+                        document.querySelector('.publications-list').appendChild(msg);
+                    }
+                } else if (noResultsMsg) {
+                    noResultsMsg.remove();
+                }
+            }
+            
+            yearFilter.addEventListener('change', filterPublications);
+            typeFilter.addEventListener('change', filterPublications);
+            topicFilter.addEventListener('change', filterPublications);
+            
+            // 模拟jQuery的:contains选择器
+            document.querySelectorAll('.pub-year').forEach(heading => {
+                const text = heading.textContent.trim();
+                heading.setAttribute('data-year', text);
+            });
+            
+            document.querySelector = document.querySelector || function(selector) {
+                if (selector.includes(':contains')) {
+                    const parts = selector.split(':contains');
+                    const baseSelector = parts[0];
+                    const textToFind = parts[1].replace(/['"()]/g, '');
+                    
+                    const elements = document.querySelectorAll(baseSelector);
+                    for (let i = 0; i < elements.length; i++) {
+                        if (elements[i].textContent.includes(textToFind)) {
+                            return elements[i];
+                        }
+                    }
+                    return null;
+                } else {
+                    return document.querySelector(selector);
+                }
+            };
+        });
+    </script>
+</body>
+</html> 
