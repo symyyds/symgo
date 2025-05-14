@@ -793,6 +793,218 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
                 });
             }
             
+            // 添加编辑器变更监听
+            editor.on('change', function() {
+                const markdownText = editor.getValue();
+                const html = converter.makeHtml(markdownText);
+                document.getElementById('preview-content').innerHTML = html;
+                
+                // 渲染新内容中的数学公式
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typesetPromise([document.getElementById('preview-content')]).catch(function (err) {
+                        console.log('MathJax渲染出错:', err);
+                    });
+                }
+                
+                // 为新渲染的内容添加点击事件处理
+                addClickHandlersToPreviewElements();
+            });
+            
+            // 为预览元素添加点击事件处理
+            function addClickHandlersToPreviewElements() {
+                // 这里可以添加代码区域高亮等交互功能
+                const codeBlocks = document.querySelectorAll('.preview-content pre code');
+                codeBlocks.forEach(block => {
+                    // 代码区块点击事件处理
+                });
+            }
+            
+            // 导出Word文档功能
+            document.getElementById('export-word-btn').addEventListener('click', function() {
+                // 显示加载指示器
+                document.getElementById('loading-indicator').style.display = 'flex';
+                
+                setTimeout(function() {
+                    try {
+                        const markdownText = editor.getValue();
+                        const html = converter.makeHtml(markdownText);
+                        
+                        // 创建Word文档
+                        const doc = new docx.Document({
+                            sections: [{
+                                properties: {},
+                                children: [
+                                    new docx.Paragraph({
+                                        children: [
+                                            new docx.TextRun({
+                                                text: "导出的Markdown文档",
+                                                bold: true,
+                                                size: 36
+                                            })
+                                        ],
+                                        spacing: {
+                                            after: 200
+                                        }
+                                    }),
+                                    new docx.Paragraph({
+                                        children: [
+                                            new docx.TextRun({
+                                                text: markdownText
+                                            })
+                                        ]
+                                    })
+                                ]
+                            }]
+                        });
+                        
+                        // 生成并保存文档
+                        docx.Packer.toBlob(doc).then(blob => {
+                            saveAs(blob, "markdown_document.docx");
+                            // 隐藏加载指示器
+                            document.getElementById('loading-indicator').style.display = 'none';
+                        });
+                    } catch (error) {
+                        console.error("导出Word文档时出错:", error);
+                        // 隐藏加载指示器
+                        document.getElementById('loading-indicator').style.display = 'none';
+                        alert("导出Word文档时出错: " + error.message);
+                    }
+                }, 500);
+            });
+            
+            // 导出图片相关功能
+            const imgExportBtn = document.getElementById('export-img-btn');
+            const imgExportOptions = document.getElementById('img-export-options');
+            
+            // 显示图片导出选项
+            imgExportBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                imgExportOptions.classList.toggle('show');
+                
+                // 定位选项面板
+                const btnRect = imgExportBtn.getBoundingClientRect();
+                imgExportOptions.style.top = (btnRect.bottom + window.scrollY) + 'px';
+                imgExportOptions.style.right = (window.innerWidth - btnRect.right) + 'px';
+            });
+            
+            // 点击其他地方关闭选项面板
+            document.addEventListener('click', function(e) {
+                if (!imgExportOptions.contains(e.target) && e.target !== imgExportBtn) {
+                    imgExportOptions.classList.remove('show');
+                }
+            });
+            
+            // 取消导出图片
+            document.getElementById('export-img-cancel').addEventListener('click', function() {
+                imgExportOptions.classList.remove('show');
+            });
+            
+            // 确认导出图片
+            document.getElementById('export-img-confirm').addEventListener('click', function() {
+                // 显示加载指示器
+                document.getElementById('loading-indicator').style.display = 'flex';
+                imgExportOptions.classList.remove('show');
+                
+                setTimeout(function() {
+                    try {
+                        // 获取设置
+                        const format = document.getElementById('img-format').value;
+                        const scale = parseFloat(document.getElementById('img-scale').value);
+                        const bgColor = document.getElementById('img-bg-color').value;
+                        const textColor = document.getElementById('img-text-color').value;
+                        const zhFont = document.getElementById('img-zh-font').value;
+                        const enFont = document.getElementById('img-en-font').value;
+                        const fontSize = document.getElementById('img-font-size').value;
+                        const lineHeight = document.getElementById('img-line-height').value;
+                        
+                        // 准备导出预览
+                        const exportContent = document.getElementById('export-content');
+                        exportContent.innerHTML = document.getElementById('preview-content').innerHTML;
+                        
+                        // 应用样式
+                        exportContent.style.backgroundColor = bgColor;
+                        exportContent.style.color = textColor;
+                        exportContent.style.fontFamily = `${zhFont}, ${enFont}`;
+                        exportContent.style.fontSize = `${fontSize}px`;
+                        exportContent.style.lineHeight = lineHeight;
+                        
+                        // 显示预览
+                        document.getElementById('export-preview').classList.add('show');
+                        
+                        // 触发MathJax重新渲染
+                        if (typeof MathJax !== 'undefined') {
+                            MathJax.typesetPromise([exportContent]).then(function() {
+                                // 隐藏加载指示器
+                                document.getElementById('loading-indicator').style.display = 'none';
+                            }).catch(function(err) {
+                                console.log('预览MathJax渲染出错:', err);
+                                document.getElementById('loading-indicator').style.display = 'none';
+                            });
+                        } else {
+                            document.getElementById('loading-indicator').style.display = 'none';
+                        }
+                    } catch (error) {
+                        console.error("导出图片预览时出错:", error);
+                        document.getElementById('loading-indicator').style.display = 'none';
+                        alert("导出图片预览时出错: " + error.message);
+                    }
+                }, 500);
+            });
+            
+            // 关闭预览
+            document.getElementById('close-preview').addEventListener('click', function() {
+                document.getElementById('export-preview').classList.remove('show');
+            });
+            
+            // 确认导出为图片
+            document.getElementById('confirm-export-btn').addEventListener('click', function() {
+                // 显示加载指示器
+                document.getElementById('loading-indicator').style.display = 'flex';
+                
+                const exportContent = document.getElementById('export-content');
+                const format = document.getElementById('img-format').value;
+                const scale = parseFloat(document.getElementById('img-scale').value);
+                
+                setTimeout(function() {
+                    try {
+                        // 使用html-to-image库导出图片
+                        htmlToImage.toBlob(exportContent, {
+                            quality: 0.95,
+                            pixelRatio: scale,
+                            backgroundColor: document.getElementById('img-bg-color').value
+                        })
+                        .then(function(blob) {
+                            saveAs(blob, `markdown_export.${format}`);
+                            document.getElementById('loading-indicator').style.display = 'none';
+                        })
+                        .catch(function(error) {
+                            console.error("生成图片时出错:", error);
+                            document.getElementById('loading-indicator').style.display = 'none';
+                            alert("生成图片时出错: " + error.message);
+                        });
+                    } catch (error) {
+                        console.error("导出图片时出错:", error);
+                        document.getElementById('loading-indicator').style.display = 'none';
+                        alert("导出图片时出错: " + error.message);
+                    }
+                }, 500);
+            });
+            
+            // 打印预览
+            document.getElementById('print-preview-btn').addEventListener('click', function() {
+                window.print();
+            });
+            
+            // 水印选项显示控制
+            document.getElementById('img-watermark-enable').addEventListener('change', function() {
+                const watermarkOptions = document.querySelector('.watermark-options');
+                if (this.checked) {
+                    watermarkOptions.style.display = 'block';
+                } else {
+                    watermarkOptions.style.display = 'none';
+                }
+            });
+            
             // 初始添加点击事件处理
             addClickHandlersToPreviewElements();
         });
