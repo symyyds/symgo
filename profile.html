@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="孙远鸣的个人档案、能力矩阵、技术栈和成长路线，面向求职、申博和科研合作展示。">
+    <title>个人档案 | 孙远鸣</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dropdown.css">
+    <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="canonical" href="https://symgo.netlify.app/profile.html">
+    <meta property="og:title" content="个人档案 | 孙远鸣">
+    <meta property="og:description" content="孙远鸣的个人档案、能力矩阵、技术栈和成长路线，面向求职、申博和科研合作展示。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://symgo.netlify.app/profile.html">
+    <meta property="og:image" content="https://symgo.netlify.app/images/sym_photo.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="site-shell">
+    <header>
+        <div class="container">
+            <a class="site-brand" href="index.html" aria-label="返回首页">
+                <img src="images/sym_photo.jpg" alt="孙远鸣个人照片" class="profile-img">
+                <div class="profile-info">
+                    <h1>孙远鸣</h1>
+                    <p class="title">Computer Science / Software Engineering</p>
+                    <p class="keywords">研究 · 工程 · 写作</p>
+                </div>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="profile.html" class="active">档案</a></li>
+                    <li><a href="publications.html">论文</a></li>
+                    <li><a href="projects.html">项目</a></li>
+                    <li><a href="materials.html">材料</a></li>
+                    <li><a href="blog.html">博客</a></li>
+                    <li><a href="ai.html">AI助手</a></li>
+                    <li class="dropdown">
+                        <a href="#">工具箱</a>
+                        <div class="dropdown-content">
+                            <a href="tools/code_runner.html">代码高亮</a>
+                            <a href="tools/markdown_to_word.html">Markdown工具</a>
+                            <a href="tools/python_nav.html">Python学习</a>
+                            <a href="tools/deep_learning.html">深度学习</a>
+                            <a href="tools/resume_builder.html">简历制作</a>
+                        </div>
+                    </li>
+                    <li><a href="leave_message.html">留言</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-hero">
+            <div class="container">
+                <div class="eyebrow"><i class="fas fa-id-card"></i> Profile / Capability Matrix</div>
+                <h1>个人档案</h1>
+                <p>这页用于回答“你是谁、你能做什么、证据在哪里”。它把技能、项目、论文、材料和技术栈整理成面试官或导师可以快速扫描的结构。</p>
+            </div>
+        </section>
+
+        <section class="section-band white">
+            <div class="container profile-brief">
+                <div class="identity-panel">
+                    <img src="images/sym_photo.jpg" alt="孙远鸣个人照片">
+                    <div>
+                        <div class="section-kicker">IDENTITY</div>
+                        <h2>孙远鸣</h2>
+                        <p>计算机方向学生 / 软件工程实践者 / 个人知识库与展示系统维护者。</p>
+                        <div class="tag-row">
+                            <span class="pill status">求职展示</span>
+                            <span class="pill status">申博材料</span>
+                            <span class="pill status">横向合作</span>
+                        </div>
+                    </div>
+                </div>
+                <aside class="surface-card">
+                    <div class="card-icon"><i class="fas fa-bullseye"></i></div>
+                    <h2>定位</h2>
+                    <p>我希望这个站点承担“简历之外的证据层”：简历给摘要，网站给论文、项目细节、真实材料、复盘过程和可访问工具。</p>
+                </aside>
+            </div>
+        </section>
+
+        <section class="section-band">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">CAPABILITY</div>
+                        <h2>能力矩阵</h2>
+                    </div>
+                    <p>这里不是简单罗列技能名，而是把技能和可追溯证据绑定起来，方便面试或导师沟通时展开。</p>
+                </div>
+                <div class="capability-grid" data-capabilities></div>
+            </div>
+        </section>
+
+        <section class="section-band white">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">STACK</div>
+                        <h2>技术栈与工作流</h2>
+                    </div>
+                    <p>从静态页面、文档处理、AI 接口、资料管理到部署发布，形成可迁移的个人工程工作流。</p>
+                </div>
+                <div class="stack-board">
+                    <div class="stack-lane">
+                        <h3><i class="fas fa-code"></i> 前端与交互</h3>
+                        <span>HTML/CSS/JavaScript</span>
+                        <span>响应式布局</span>
+                        <span>搜索筛选</span>
+                        <span>LocalStorage</span>
+                    </div>
+                    <div class="stack-lane">
+                        <h3><i class="fas fa-robot"></i> AI 与文档</h3>
+                        <span>DeepSeek API</span>
+                        <span>PDF.js</span>
+                        <span>Mammoth.js</span>
+                        <span>Markdown 渲染</span>
+                    </div>
+                    <div class="stack-lane">
+                        <h3><i class="fas fa-cloud"></i> 发布与维护</h3>
+                        <span>Netlify</span>
+                        <span>GitHub</span>
+                        <span>白名单构建</span>
+                        <span>静态安全策略</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-band">
+            <div class="container two-column">
+                <article class="timeline-card">
+                    <div class="section-kicker">ROADMAP</div>
+                    <h2>成长路线</h2>
+                    <div class="resume-timeline" data-milestones></div>
+                </article>
+                <aside class="surface-card">
+                    <div class="card-icon"><i class="fas fa-compass"></i></div>
+                    <h2>后续补强方向</h2>
+                    <ul class="compact-list">
+                        <li><i class="fas fa-check"></i><span>替换真实论文 PDF、DOI、代码仓库和数据集链接。</span></li>
+                        <li><i class="fas fa-check"></i><span>把横向项目补充为真实需求背景、交付截图和验收材料。</span></li>
+                        <li><i class="fas fa-check"></i><span>接入 Netlify Forms 或轻量后端，让留言板成为公开反馈入口。</span></li>
+                    </ul>
+                </aside>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3>孙远鸣</h3>
+                    <p>个人档案页用于把能力、证据和材料入口集中展示。</p>
+                </div>
+                <div>
+                    <h4>快速链接</h4>
+                    <ul>
+                        <li><a href="publications.html">论文发表</a></li>
+                        <li><a href="projects.html">项目展示</a></li>
+                        <li><a href="materials.html">材料库</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>联系</h4>
+                    <p><i class="fas fa-envelope"></i> 19861208800@163.com</p>
+                    <p><i class="fab fa-github"></i> <a href="https://github.com/symyyds/symgo" target="_blank">github.com/symyyds/symgo</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 孙远鸣. Static site ready for Netlify.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/site-data.js"></script>
+</body>
+</html>

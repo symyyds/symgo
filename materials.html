@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="孙远鸣的材料库，集中展示 CV、论文 PDF、项目证据、升学资料、工具演示和博客材料。">
+    <title>材料库 | 孙远鸣</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dropdown.css">
+    <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="canonical" href="https://symgo.netlify.app/materials.html">
+    <meta property="og:title" content="材料库 | 孙远鸣">
+    <meta property="og:description" content="孙远鸣的材料库，集中展示 CV、论文 PDF、项目证据、升学资料、工具演示和博客材料。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://symgo.netlify.app/materials.html">
+    <meta property="og:image" content="https://symgo.netlify.app/images/sym_photo.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="site-shell">
+    <header>
+        <div class="container">
+            <a class="site-brand" href="index.html" aria-label="返回首页">
+                <img src="images/sym_photo.jpg" alt="孙远鸣个人照片" class="profile-img">
+                <div class="profile-info">
+                    <h1>孙远鸣</h1>
+                    <p class="title">Computer Science / Software Engineering</p>
+                    <p class="keywords">研究 · 工程 · 写作</p>
+                </div>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="profile.html">档案</a></li>
+                    <li><a href="publications.html">论文</a></li>
+                    <li><a href="projects.html">项目</a></li>
+                    <li><a href="materials.html" class="active">材料</a></li>
+                    <li><a href="blog.html">博客</a></li>
+                    <li><a href="ai.html">AI助手</a></li>
+                    <li class="dropdown">
+                        <a href="#">工具箱</a>
+                        <div class="dropdown-content">
+                            <a href="tools/code_runner.html">代码高亮</a>
+                            <a href="tools/markdown_to_word.html">Markdown工具</a>
+                            <a href="tools/python_nav.html">Python学习</a>
+                            <a href="tools/deep_learning.html">深度学习</a>
+                            <a href="tools/resume_builder.html">简历制作</a>
+                        </div>
+                    </li>
+                    <li><a href="leave_message.html">留言</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-hero">
+            <div class="container">
+                <div class="eyebrow"><i class="fas fa-box-archive"></i> Evidence Library</div>
+                <h1>材料库</h1>
+                <p>把简历之外的材料集中成一个可检索入口：CV、论文、项目证据、升学资料、工具演示和写作证明。后续替换真实材料时，只需要更新数据和文件。</p>
+            </div>
+        </section>
+
+        <section class="section-band">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">LIBRARY</div>
+                        <h2>可展示材料</h2>
+                    </div>
+                    <p>按类型筛选，也可以直接搜索关键词。这个页面适合作为邮件、简历二维码或面试补充材料入口。</p>
+                </div>
+                <div class="page-tools">
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-material-filter="all">全部</button>
+                        <button class="filter-tab" data-material-filter="resume">简历</button>
+                        <button class="filter-tab" data-material-filter="paper">论文</button>
+                        <button class="filter-tab" data-material-filter="project">项目</button>
+                        <button class="filter-tab" data-material-filter="study">升学</button>
+                        <button class="filter-tab" data-material-filter="tool">工具</button>
+                        <button class="filter-tab" data-material-filter="blog">写作</button>
+                    </div>
+                    <div class="search-box">
+                        <input type="search" data-material-search placeholder="搜索材料、标签、状态或用途">
+                    </div>
+                </div>
+                <div class="materials-grid" data-materials></div>
+                <div class="empty-state" data-material-empty style="display: none;">没有找到匹配材料。</div>
+            </div>
+        </section>
+
+        <section class="section-band white">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">QUALITY BAR</div>
+                        <h2>材料更新标准</h2>
+                    </div>
+                    <p>每次补充真实材料时，建议至少满足“可访问、可解释、可追溯、可替换”四点。</p>
+                </div>
+                <div class="focus-grid">
+                    <article class="surface-card">
+                        <div class="card-icon"><i class="fas fa-link"></i></div>
+                        <h3>可访问</h3>
+                        <p>材料链接必须能在公开环境打开，PDF/图片/表格路径必须经过部署后验证。</p>
+                    </article>
+                    <article class="surface-card">
+                        <div class="card-icon"><i class="fas fa-message"></i></div>
+                        <h3>可解释</h3>
+                        <p>每份材料要说明用途、背景和它证明了什么能力，避免只堆文件名。</p>
+                    </article>
+                    <article class="surface-card">
+                        <div class="card-icon"><i class="fas fa-rotate"></i></div>
+                        <h3>可替换</h3>
+                        <p>真实论文、项目截图、验收材料可以逐步替换占位内容，不影响页面结构。</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3>孙远鸣</h3>
+                    <p>材料库用于集中展示简历之外的证明材料。</p>
+                </div>
+                <div>
+                    <h4>快速链接</h4>
+                    <ul>
+                        <li><a href="profile.html">个人档案</a></li>
+                        <li><a href="publications.html">论文发表</a></li>
+                        <li><a href="projects.html">项目展示</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>联系</h4>
+                    <p><i class="fas fa-envelope"></i> 19861208800@163.com</p>
+                    <p><i class="fab fa-github"></i> <a href="https://github.com/symyyds/symgo" target="_blank">github.com/symyyds/symgo</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 孙远鸣. Static site ready for Netlify.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/site-data.js"></script>
+</body>
+</html>

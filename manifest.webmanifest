@@ -1,0 +1,16 @@
+{
+  "name": "孙远鸣个人博客与学术展示",
+  "short_name": "Symgo",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#f7f9fb",
+  "theme_color": "#116149",
+  "description": "面向求职、申博和科研合作的个人作品集、论文、项目和材料展示站。",
+  "icons": [
+    {
+      "src": "images/sym_photo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    }
+  ]
+}

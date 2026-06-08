@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="孙远鸣的项目展示页面，展开项目背景、技术栈、个人职责、产出和复盘。">
+    <title>项目展示 | 孙远鸣</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dropdown.css">
+    <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="canonical" href="https://symgo.netlify.app/projects.html">
+    <meta property="og:title" content="项目展示 | 孙远鸣">
+    <meta property="og:description" content="孙远鸣的项目展示页面，展开项目背景、技术栈、个人职责、产出和复盘。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://symgo.netlify.app/projects.html">
+    <meta property="og:image" content="https://symgo.netlify.app/images/sym_photo.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="site-shell">
+    <header>
+        <div class="container">
+            <a class="site-brand" href="index.html" aria-label="返回首页">
+                <img src="images/sym_photo.jpg" alt="孙远鸣个人照片" class="profile-img">
+                <div class="profile-info">
+                    <h1>孙远鸣</h1>
+                    <p class="title">Computer Science / Software Engineering</p>
+                    <p class="keywords">研究 · 工程 · 写作</p>
+                </div>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="profile.html">??</a></li>
+                    <li><a href="publications.html">论文</a></li>
+                    <li><a href="projects.html" class="active">项目</a></li>
+                    <li><a href="materials.html">??</a></li>
+                    <li><a href="blog.html">博客</a></li>
+                    <li><a href="ai.html">AI助手</a></li>
+                    <li class="dropdown">
+                        <a href="#">工具箱</a>
+                        <div class="dropdown-content">
+                            <a href="tools/code_runner.html">代码高亮</a>
+                            <a href="tools/markdown_to_word.html">Markdown工具</a>
+                            <a href="tools/python_nav.html">Python学习</a>
+                            <a href="tools/deep_learning.html">深度学习</a>
+                            <a href="tools/resume_builder.html">简历制作</a>
+                        </div>
+                    </li>
+                    <li><a href="leave_message.html">留言</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-hero">
+            <div class="container">
+                <div class="eyebrow"><i class="fas fa-diagram-project"></i> Selected Work</div>
+                <h1>项目展示</h1>
+                <p>项目分为工程项目和横向项目两类：前者展示独立开发、工具构建和部署能力，后者展示需求理解、协作交付和方案表达能力。</p>
+            </div>
+        </section>
+
+        <section class="section-band">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">CASE STUDIES</div>
+                        <h2>工程项目 / 横向项目</h2>
+                    </div>
+                    <p>每个项目都按“场景、职责、技术、产出”组织，尽量像 case study，而不是简历条目的重复。</p>
+                </div>
+                <div class="page-tools">
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-project-category="all">全部</button>
+                        <button class="filter-tab" data-project-category="engineering">工程项目</button>
+                        <button class="filter-tab" data-project-category="horizontal">横向项目</button>
+                    </div>
+                    <div class="search-box">
+                        <input type="search" data-project-search placeholder="搜索项目、技术、职责或交付">
+                    </div>
+                </div>
+                <div class="project-list" data-projects></div>
+            </div>
+        </section>
+
+        <section class="section-band white">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">RESUME PLUS</div>
+                        <h2>为什么单独做项目页</h2>
+                    </div>
+                    <p>项目页是简历的补充材料，不追求把所有东西塞进一页，而是让关键项目有足够空间解释“我真的做过”。</p>
+                </div>
+                <div class="focus-grid">
+                    <article class="surface-card">
+                        <div class="card-icon"><i class="fas fa-list-check"></i></div>
+                        <h3>补充职责细节</h3>
+                        <p>把“负责前端开发”拆成页面结构、交互、数据组织、部署、维护等具体动作。</p>
+                    </article>
+                    <article class="surface-card">
+                        <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+                        <h3>补充产出价值</h3>
+                        <p>说明项目解决了什么问题，给谁使用，沉淀了什么经验或工具链。</p>
+                    </article>
+                    <article class="surface-card">
+                        <div class="card-icon"><i class="fas fa-comments"></i></div>
+                        <h3>辅助面试表达</h3>
+                        <p>项目页本身就是一份讲稿，面试前可以按页面结构复盘自己的贡献。</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3>孙远鸣</h3>
+                    <p>项目页用于展示简历之外的细节、证据和复盘。</p>
+                </div>
+                <div>
+                    <h4>快速链接</h4>
+                    <ul>
+                        <li><a href="publications.html">论文发表</a></li>
+                        <li><a href="blog.html">博客文章</a></li>
+                        <li><a href="tools/resume_builder.html">简历制作</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>联系</h4>
+                    <p><i class="fas fa-envelope"></i> 19861208800@163.com</p>
+                    <p><i class="fab fa-github"></i> <a href="https://github.com/symyyds/symgo" target="_blank">github.com/symyyds/symgo</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 孙远鸣. Static site ready for Netlify.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/site-data.js"></script>
+</body>
+</html>

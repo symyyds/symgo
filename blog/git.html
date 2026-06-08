@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Git使用指南 - 技术笔记</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/site.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         /* 保持原有样式基础上新增代码块样式 */
@@ -82,11 +83,89 @@
             border-radius: 4px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
+    
+        .article-topbar {
+            background: #fff;
+            border-bottom: 1px solid #d9e2ec;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 12px 0;
+        }
+        .article-topbar .container {
+            max-width: 1180px;
+            margin: 0 auto;
+            width: 90%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+        .article-topbar .site-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            color: #1b2430;
+        }
+        .article-topbar nav ul {
+            display: flex;
+            list-style: none;
+            gap: 4px;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+        }
+        .article-topbar nav a {
+            display: block;
+            padding: 8px 12px;
+            border-radius: 999px;
+            color: #2e3a47;
+            font-weight: 500;
+        }
+        .article-topbar nav a.active,
+        .article-topbar nav a:hover {
+            background: #dff3ec;
+            color: #0b3f31;
+        }
+        .article-topbar .profile-img {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
     </style>
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="canonical" href="https://symgo.netlify.app/blog/git.html">
+    <meta property="og:title" content="Git使用指南 - 技术笔记">
+    <meta property="og:description" content="????????????????????????/??????????">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://symgo.netlify.app/blog/git.html">
+    <meta property="og:image" content="https://symgo.netlify.app/images/sym_photo.jpg">
+    <meta name="twitter:card" content="summary_large_image">
 </head>
-<body>
-    <header>
-        <!-- 导航栏 -->
+<body class="site-shell">
+    <header class="article-topbar">
+        <div class="container">
+            <a class="site-brand" href="../index.html" aria-label="返回首页">
+                <img src="../images/sym_photo.jpg" alt="孙远鸣个人照片" class="profile-img">
+                <div class="profile-info">
+                    <h1>孙远鸣</h1>
+                    <p class="title">Computer Science / Software Engineering</p>
+                    <p class="keywords">研究 · 工程 · 写作</p>
+                </div>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">首页</a></li>
+                    <li><a href="../publications.html">论文</a></li>
+                    <li><a href="../projects.html">项目</a></li>
+                    <li><a href="../blog.html" class="active">博客</a></li>
+                    <li><a href="../ai.html">AI助手</a></li>
+                    <li><a href="../leave_message.html">留言</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
 
     <main>
@@ -152,7 +231,7 @@ git rebase -i HEAD~3</code></pre>
                                 <div class="attachment-name">Git速查表.pdf</div>
                                 <div class="attachment-meta">PDF文档 - 1.8MB</div>
                             </div>
-                            <a href="../files/git_guide/cheatsheet.pdf" class="download-btn">
+                            <a href="../blog.html" class="download-btn">
                                 <i class="fas fa-download"></i> 下载
                             </a>
                         </div>
@@ -162,7 +241,7 @@ git rebase -i HEAD~3</code></pre>
                                 <div class="attachment-name">示例项目.zip</div>
                                 <div class="attachment-meta">ZIP压缩包 - 512KB</div>
                             </div>
-                            <a href="../files/git_guide/demo_project.zip" class="download-btn">
+                            <a href="../blog.html" class="download-btn">
                                 <i class="fas fa-download"></i> 下载
                             </a>
                         </div>
