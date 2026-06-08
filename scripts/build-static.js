@@ -10,6 +10,8 @@ const rootFiles = [
   "404.html",
   "index.html",
   "profile.html",
+  "research.html",
+  "snapshot.html",
   "publications.html",
   "projects.html",
   "materials.html",
@@ -25,6 +27,8 @@ const directories = ["css", "js", "images", "files", "blog", "tools"];
 const sitePages = [
   "",
   "profile.html",
+  "research.html",
+  "snapshot.html",
   "publications.html",
   "projects.html",
   "materials.html",
