@@ -521,7 +521,7 @@
             ].filter((group) => filtered.some((project) => project.category === group.key));
 
             root.innerHTML = groups.map((group) => `
-                <section class="project-category-block" aria-label="${group.title}">
+                <section class="project-category-block" id="${group.key}-projects" aria-label="${group.title}" tabindex="-1">
                     <div class="project-category-head">
                         <div>
                             <span class="section-kicker">${group.key === "engineering" ? "ENGINEERING" : "COLLABORATION"}</span>
@@ -565,6 +565,32 @@
                     </div>
                 </section>
             `).join("");
+
+            scheduleProjectHashScroll();
+        }
+
+        function scrollToProjectHash(behavior = "auto") {
+            if (!window.location.hash) return;
+            const target = document.getElementById(window.location.hash.slice(1));
+            if (!target) return;
+            const headerHeight = document.querySelector("header")?.offsetHeight || 0;
+            const top = target.getBoundingClientRect().top + window.scrollY - headerHeight - 18;
+            const targetTop = Math.max(0, top);
+            if (behavior === "smooth") {
+                window.scrollTo({ top: targetTop, behavior });
+                return;
+            }
+            if (document.scrollingElement) document.scrollingElement.scrollTop = targetTop;
+            document.documentElement.scrollTop = targetTop;
+            document.body.scrollTop = targetTop;
+            window.scrollTo(0, targetTop);
+        }
+
+        function scheduleProjectHashScroll(behavior = "auto") {
+            if (!window.location.hash) return;
+            requestAnimationFrame(() => scrollToProjectHash(behavior));
+            setTimeout(() => scrollToProjectHash(behavior), 80);
+            setTimeout(() => scrollToProjectHash(behavior), 320);
         }
 
         categoryTabs.forEach((tab) => {
@@ -575,6 +601,10 @@
                 paint();
             });
         });
+
+        window.addEventListener("hashchange", () => scheduleProjectHashScroll("smooth"));
+        window.addEventListener("load", () => scheduleProjectHashScroll("auto"));
+        window.addEventListener("pageshow", () => scheduleProjectHashScroll("auto"));
 
         if (searchInput) searchInput.addEventListener("input", paint);
         paint();

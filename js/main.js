@@ -9,43 +9,138 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const prefix = getAssetPrefix();
 
+    const navigationGroups = [
+        { label: "首页", href: "index.html", icon: "fa-house" },
+        {
+            label: "关于我",
+            icon: "fa-user-graduate",
+            children: [
+                { label: "个人档案", href: "profile.html", desc: "能力矩阵与经历概览" },
+                { label: "作品集仪表盘", href: "dashboard.html", desc: "页面、材料与质量总览" },
+                { label: "研究方向", href: "research.html", desc: "问题意识与未来课题" },
+                { label: "一页式档案", href: "snapshot.html", desc: "快速发给导师或 HR" },
+                { label: "成就与证明", href: "achievements.html", desc: "成果、荣誉与沉淀" },
+                { label: "路线图", href: "roadmap.html", desc: "后续补强计划" }
+            ]
+        },
+        {
+            label: "成果与证据",
+            icon: "fa-layer-group",
+            children: [
+                { label: "论文发表", href: "publications.html", desc: "论文、级别、PDF 与关联项目" },
+                { label: "项目总览", href: "projects.html", desc: "工程项目与横向项目 case study" },
+                { label: "工程项目", href: "projects.html#engineering-projects", desc: "独立开发、部署与维护能力" },
+                { label: "横向项目", href: "projects.html#horizontal-projects", desc: "需求理解、协作交付与验收" },
+                { label: "材料库", href: "materials.html", desc: "CV、论文、证明与申请材料" },
+                { label: "证据档案", href: "evidence/index.html", desc: "可追问材料与证据链" },
+                { label: "合作服务", href: "services.html", desc: "可交付原型与展示材料" },
+                { label: "面试故事", href: "interview.html", desc: "STAR 项目复盘" }
+            ]
+        },
+        {
+            label: "知识库",
+            icon: "fa-book-open",
+            children: [
+                { label: "博客文章", href: "blog.html", desc: "技术、升学与写作记录" },
+                { label: "作品集知识库", href: "library/index.html", desc: "项目深化、FAQ 与更新日志" },
+                { label: "案例库", href: "cases/index.html", desc: "模块级案例复盘" },
+                { label: "扩展手册", href: "handbook/index.html", desc: "工程、研究、求职与合作专题" }
+            ]
+        },
+        {
+            label: "工具",
+            icon: "fa-screwdriver-wrench",
+            children: [
+                { label: "AI 助手", href: "ai.html", desc: "本地历史记录与文档问答" },
+                { label: "代码高亮", href: "tools/code_runner.html", desc: "代码展示与片段处理" },
+                { label: "Markdown 工具", href: "tools/markdown_to_word.html", desc: "Markdown 转换与排版" },
+                { label: "Python 学习", href: "tools/python_nav.html", desc: "Python 内容导航" },
+                { label: "深度学习", href: "tools/deep_learning.html", desc: "学习路径与资料入口" },
+                { label: "简历制作", href: "tools/resume_builder.html", desc: "结构化简历编辑工具" }
+            ]
+        },
+        { label: "联系", href: "leave_message.html", icon: "fa-message" }
+    ];
+
     function enhanceNavigation() {
         const navList = document.querySelector("nav ul");
         if (!navList) return;
 
-        function normalizeHref(href) {
-            if (!href || href === "#") return href;
-            try {
-                const url = new URL(href, window.location.href);
-                return url.pathname.split("/").filter(Boolean).join("/") || "index.html";
-            } catch (error) {
-                return href.split("#")[0].split("?")[0];
-            }
+        navList.className = "nav-menu";
+        navList.innerHTML = "";
+
+        function buildHref(href) {
+            if (!href || href.startsWith("http") || href.startsWith("#")) return href;
+            return prefix + href;
         }
 
-        const existing = new Set(Array.from(navList.querySelectorAll("a")).map((link) => normalizeHref(link.getAttribute("href"))));
+        function createLink(item) {
+            const link = document.createElement("a");
+            link.href = buildHref(item.href);
+            link.className = item.desc ? "nav-dropdown-link" : "";
+            link.innerHTML = item.desc
+                ? `<span>${item.label}</span><small>${item.desc}</small>`
+                : `<i class="fas ${item.icon}" aria-hidden="true"></i><span>${item.label}</span>`;
+            return link;
+        }
 
-        function insertItem(href, label, beforeSelector) {
-            const targetHref = prefix + href;
-            const normalizedTarget = normalizeHref(targetHref);
-            if (existing.has(normalizedTarget)) return;
+        navigationGroups.forEach((item) => {
             const li = document.createElement("li");
-            const a = document.createElement("a");
-            a.href = targetHref;
-            a.textContent = label;
-            li.appendChild(a);
-            const before = beforeSelector ? navList.querySelector(beforeSelector)?.parentElement : null;
-            navList.insertBefore(li, before || null);
-            existing.add(normalizedTarget);
+            if (!item.children) {
+                li.className = "nav-single";
+                li.appendChild(createLink(item));
+                navList.appendChild(li);
+                return;
+            }
+
+            li.className = "nav-group";
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "nav-group-toggle";
+            button.setAttribute("aria-expanded", "false");
+            button.innerHTML = `<i class="fas ${item.icon}" aria-hidden="true"></i><span>${item.label}</span><i class="fas fa-chevron-down nav-chevron" aria-hidden="true"></i>`;
+
+            const dropdown = document.createElement("div");
+            dropdown.className = "nav-dropdown";
+            item.children.forEach((child) => dropdown.appendChild(createLink(child)));
+
+            li.appendChild(button);
+            li.appendChild(dropdown);
+            navList.appendChild(li);
+        });
+
+        const groups = Array.from(navList.querySelectorAll(".nav-group"));
+        function closeGroups(except) {
+            groups.forEach((group) => {
+                if (group === except) return;
+                group.classList.remove("open");
+                group.querySelector(".nav-group-toggle")?.setAttribute("aria-expanded", "false");
+            });
         }
 
-        insertItem("profile.html", "档案", 'a[href$="publications.html"]');
-        insertItem("dashboard.html", "仪表盘", 'a[href$="profile.html"]');
-        insertItem("research.html", "研究", 'a[href$="publications.html"]');
-        insertItem("achievements.html", "成就", 'a[href$="projects.html"]');
-        insertItem("handbook/index.html", "手册", 'a[href$="materials.html"]');
-        insertItem("evidence/index.html", "证据", 'a[href$="materials.html"]');
-        insertItem("materials.html", "材料", 'a[href$="blog.html"]');
+        groups.forEach((group) => {
+            const button = group.querySelector(".nav-group-toggle");
+            if (!button) return;
+            button.addEventListener("click", (event) => {
+                event.stopPropagation();
+                const willOpen = !group.classList.contains("open");
+                closeGroups(group);
+                group.classList.toggle("open", willOpen);
+                button.setAttribute("aria-expanded", String(willOpen));
+            });
+        });
+
+        navList.addEventListener("click", (event) => {
+            if (event.target.closest("a")) closeGroups();
+        });
+
+        document.addEventListener("click", (event) => {
+            if (!event.target.closest("nav")) closeGroups();
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") closeGroups();
+        });
     }
 
     function initHeaderState() {
@@ -63,31 +158,46 @@ document.addEventListener("DOMContentLoaded", function () {
     function markActiveNav() {
         const pathParts = window.location.pathname.split("/").filter(Boolean);
         const currentPath = pathParts.join("/") || "index.html";
-        const currentPage = pathParts[pathParts.length - 1] || "index.html";
         const currentTopSection = currentPath.includes("/") ? currentPath.split("/")[0] : "";
+        const currentHash = window.location.hash;
 
         function normalizePath(href) {
-            if (!href || href === "#") return href;
+            if (!href || href === "#") return { hash: "", path: href };
             try {
                 const url = new URL(href, window.location.href);
-                return url.pathname.split("/").filter(Boolean).join("/") || "index.html";
+                return {
+                    hash: url.hash,
+                    path: url.pathname.split("/").filter(Boolean).join("/") || "index.html"
+                };
             } catch (error) {
-                return href.split("#")[0].split("?")[0];
+                return {
+                    hash: href.includes("#") ? `#${href.split("#")[1].split("?")[0]}` : "",
+                    path: href.split("#")[0].split("?")[0]
+                };
             }
         }
 
-        document.querySelectorAll("nav ul li a").forEach((link) => {
+        document.querySelectorAll("nav a").forEach((link) => {
             const href = link.getAttribute("href") || "";
-            const targetPath = normalizePath(href);
+            const target = normalizePath(href);
+            const targetPath = target.path;
             const targetTopSection = targetPath.includes("/") ? targetPath.split("/")[0] : "";
-            const isExact = targetPath === currentPath;
+            const isExact = targetPath === currentPath && (target.hash ? target.hash === currentHash : !currentHash);
             const isHome = currentPath === "index.html" && targetPath === "index.html";
             const isSectionIndex = currentTopSection && targetPath === `${currentTopSection}/index.html`;
             const isBlogChild = currentTopSection === "blog" && targetPath === "blog.html";
             const isToolChild = currentTopSection === "tools" && targetPath === currentPath;
-            const isToolMenu = currentTopSection === "tools" && href === "#";
             const isGeneratedSection = ["library", "cases", "handbook", "evidence"].includes(currentTopSection) && targetTopSection === currentTopSection;
-            link.classList.toggle("active", isExact || isHome || isSectionIndex || isBlogChild || isToolChild || isToolMenu || isGeneratedSection);
+            const isActive = isExact || isHome || isSectionIndex || isBlogChild || isToolChild || isGeneratedSection;
+            link.classList.toggle("active", isActive);
+            if (isActive) link.setAttribute("aria-current", "page");
+            else link.removeAttribute("aria-current");
+        });
+
+        document.querySelectorAll(".nav-group").forEach((group) => {
+            const isActiveGroup = Boolean(group.querySelector("a.active"));
+            group.classList.toggle("active", isActiveGroup);
+            group.querySelector(".nav-group-toggle")?.classList.toggle("active", isActiveGroup);
         });
     }
 
@@ -257,6 +367,7 @@ document.addEventListener("DOMContentLoaded", function () {
     enhanceNavigation();
     initHeaderState();
     markActiveNav();
+    window.addEventListener("hashchange", markActiveNav);
     initThemeToggle();
     initReadingProgress();
     initCommandPalette();
