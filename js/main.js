@@ -21,7 +21,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         insertItem("profile.html", "档案", 'a[href$="publications.html"]');
+        insertItem("dashboard.html", "仪表盘", 'a[href$="profile.html"]');
         insertItem("research.html", "研究", 'a[href$="publications.html"]');
+        insertItem("achievements.html", "成就", 'a[href$="projects.html"]');
         insertItem("materials.html", "材料", 'a[href$="blog.html"]');
     }
 
@@ -90,9 +92,14 @@ document.addEventListener("DOMContentLoaded", function () {
     function initCommandPalette() {
         const items = [
             { label: "首页", desc: "总体入口与精选项目", href: "index.html", icon: "fa-house" },
+            { label: "作品集仪表盘", desc: "页面、项目、材料和质量总览", href: "dashboard.html", icon: "fa-chart-line" },
             { label: "个人档案", desc: "能力矩阵与技术栈", href: "profile.html", icon: "fa-id-card" },
             { label: "研究方向", desc: "问题意识、方法栈和未来课题", href: "research.html", icon: "fa-microscope" },
             { label: "一页式档案", desc: "适合快速发给导师或 HR", href: "snapshot.html", icon: "fa-bolt" },
+            { label: "成就与证明", desc: "工程成果、内容成果和学习沉淀", href: "achievements.html", icon: "fa-award" },
+            { label: "合作与能力服务", desc: "可提供的原型、材料和展示能力", href: "services.html", icon: "fa-handshake" },
+            { label: "路线图", desc: "下一步材料替换和能力升级计划", href: "roadmap.html", icon: "fa-route" },
+            { label: "面试故事库", desc: "STAR 结构项目复盘", href: "interview.html", icon: "fa-comments" },
             { label: "论文发表", desc: "论文、级别、PDF 与相关项目", href: "publications.html", icon: "fa-file-lines" },
             { label: "项目展示", desc: "工程项目与横向项目 case study", href: "projects.html", icon: "fa-diagram-project" },
             { label: "材料库", desc: "CV、论文、项目证据和升学资料", href: "materials.html", icon: "fa-box-archive" },

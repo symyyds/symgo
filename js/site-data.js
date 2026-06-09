@@ -308,6 +308,130 @@
         { year: "2024", title: "技术博客与工具学习", desc: "沉淀 Git、Python、深度学习和个人效率工具相关内容。" }
     ];
 
+    const dashboardStats = [
+        { label: "核心页面", value: "11", desc: "首页、档案、研究、论文、项目、材料、仪表盘、成就、服务、路线图、博客" },
+        { label: "项目档案", value: "6", desc: "4 个工程项目 + 2 个横向项目" },
+        { label: "材料入口", value: "8", desc: "CV、论文、项目证据、升学资料、工具和写作证明" },
+        { label: "发布质量", value: "A", desc: "白名单构建、SEO、404、headers、manifest、sitemap" }
+    ];
+
+    const achievements = [
+        {
+            year: "2026",
+            title: "个人学术展示站产品化升级",
+            type: "工程成果",
+            level: "Portfolio System",
+            description: "把旧博客升级为覆盖论文、项目、材料、研究方向、AI 助手和 Netlify 发布工程的展示系统。",
+            proof: "projects.html#symgo-portfolio",
+            tags: ["Static Site", "Portfolio", "Netlify"]
+        },
+        {
+            year: "2025",
+            title: "升学复试与保研资料体系沉淀",
+            type: "内容成果",
+            level: "Knowledge Asset",
+            description: "把复试技巧、保研材料、导师联系和经验分享沉淀为可访问页面与下载资料。",
+            proof: "blog/25_skills.html",
+            tags: ["保研", "复试", "写作"]
+        },
+        {
+            year: "2025",
+            title: "学术 AI 助手原型",
+            type: "工具成果",
+            level: "Prototype",
+            description: "实现本地会话、文档解析、Markdown 渲染和 API Key 本地保存策略。",
+            proof: "ai.html",
+            tags: ["AI", "LocalStorage", "PDF.js"]
+        },
+        {
+            year: "2024",
+            title: "Git / Python / 深度学习学习材料维护",
+            type: "学习成果",
+            level: "Long-term Notes",
+            description: "持续整理技术学习材料、工具页面和博客笔记，形成长期维护习惯。",
+            proof: "blog.html",
+            tags: ["Git", "Python", "Learning"]
+        }
+    ];
+
+    const services = [
+        {
+            title: "静态个人站/作品集搭建",
+            audience: "求职、申博、个人品牌展示",
+            deliverables: ["信息架构", "页面设计", "响应式前端", "Netlify 部署", "SEO 基础配置"],
+            value: "把简历无法展开的论文、项目和材料做成公开证据库。"
+        },
+        {
+            title: "项目材料与 Case Study 整理",
+            audience: "面试复盘、横向项目汇报、实验室成果展示",
+            deliverables: ["项目背景梳理", "职责拆解", "技术栈说明", "产出价值描述", "展示页面"],
+            value: "把“做过什么”整理成别人能追问、能验证、能理解的材料。"
+        },
+        {
+            title: "AI 文档助手原型",
+            audience: "个人学习、实验室资料问答、企业文档整理",
+            deliverables: ["聊天界面", "文件解析", "本地会话", "API Key 策略", "后端迁移建议"],
+            value: "把大模型能力接到真实学习/科研/项目资料工作流里。"
+        },
+        {
+            title: "学习资料与工具页面制作",
+            audience: "课程笔记、教程分享、升学资料沉淀",
+            deliverables: ["文章页面", "下载入口", "工具导航", "搜索筛选", "维护规范"],
+            value: "把零散资料变成可访问、可复用、可长期维护的知识资产。"
+        }
+    ];
+
+    const roadmap = [
+        {
+            phase: "Phase 1",
+            title: "真实材料替换",
+            status: "Next",
+            items: ["替换真实 CV", "补充真实论文 PDF/DOI", "上传项目截图", "补齐 GitHub 仓库链接"]
+        },
+        {
+            phase: "Phase 2",
+            title: "项目证据增强",
+            status: "Planned",
+            items: ["每个项目补截图/流程图", "增加 STAR 面试讲法", "增加技术难点复盘", "增加指标或用户反馈"]
+        },
+        {
+            phase: "Phase 3",
+            title: "动态能力升级",
+            status: "Planned",
+            items: ["Netlify Forms 留言", "Serverless API 代理", "文档搜索索引", "项目更新日志"]
+        },
+        {
+            phase: "Phase 4",
+            title: "申博/求职专项版本",
+            status: "Future",
+            items: ["导师邮件入口", "岗位匹配页", "英文版本", "PDF 打印版 portfolio"]
+        }
+    ];
+
+    const interviewStories = [
+        {
+            project: "Symgo 个人展示站",
+            situation: "旧博客页面和功能比较简陋，无法承担求职/申博时的材料展示任务。",
+            task: "需要把它升级成能展示论文、项目、材料、研究方向和工具能力的静态站。",
+            action: "重构首页信息架构，新增论文/项目/材料/档案/研究/仪表盘等页面，补齐 Netlify 构建、SEO 和安全策略。",
+            result: "形成一个可公开访问、可持续维护、可作为简历证据层的个人展示系统。"
+        },
+        {
+            project: "学术 AI 助手",
+            situation: "学习和科研资料分散在 PDF、Word、Markdown 和聊天记录里。",
+            task: "需要一个能辅助阅读、问答和记录历史的前端原型。",
+            action: "接入 Markdown 渲染、代码高亮、PDF/Word 文本提取、本地会话记录和 API Key 本地保存。",
+            result: "展示了对 AI 工具工作流、静态站限制和用户隐私策略的理解。"
+        },
+        {
+            project: "保研/复试资料体系",
+            situation: "升学经验通常停留在口头分享和零散文档。",
+            task: "需要把流程、材料、术语、技巧和下载资源组织成可复用页面。",
+            action: "整理保研入口、信息模板、复试技巧文章和视频/文档资源，放入博客和材料库。",
+            result: "降低重复答疑成本，也展示内容组织和长期维护能力。"
+        }
+    ];
+
     function normalize(text) {
         return (text || "").toString().trim().toLowerCase();
     }
@@ -547,6 +671,114 @@
         `).join("");
     }
 
+    function renderDashboard() {
+        const statsRoot = document.querySelector("[data-dashboard-stats]");
+        if (statsRoot) {
+            statsRoot.innerHTML = dashboardStats.map((item) => `
+                <article class="metric-card dashboard-stat">
+                    <div class="metric-number">${item.value}</div>
+                    <div class="metric-label">${item.label}</div>
+                    <p>${item.desc}</p>
+                </article>
+            `).join("");
+        }
+
+        const projectRoot = document.querySelector("[data-dashboard-projects]");
+        if (projectRoot) {
+            projectRoot.innerHTML = projects.map((project) => `
+                <article class="dashboard-row">
+                    <div>
+                        <span class="pill category">${project.categoryLabel}</span>
+                        <h3>${project.name}</h3>
+                        <p>${project.summary}</p>
+                    </div>
+                    <div class="dashboard-row-meta">
+                        <span>${project.year}</span>
+                        <strong>${project.status}</strong>
+                    </div>
+                </article>
+            `).join("");
+        }
+
+        const materialRoot = document.querySelector("[data-dashboard-materials]");
+        if (materialRoot) {
+            materialRoot.innerHTML = materials.slice(0, 6).map((item) => `
+                <a class="mini-resource" href="${item.href}">
+                    <span>${item.typeLabel}</span>
+                    <strong>${item.title}</strong>
+                </a>
+            `).join("");
+        }
+    }
+
+    function renderAchievements() {
+        const root = document.querySelector("[data-achievements]");
+        if (!root) return;
+
+        root.innerHTML = achievements.map((item) => `
+            <article class="achievement-card">
+                <div class="achievement-year">${item.year}</div>
+                <div>
+                    <span class="section-kicker">${item.type} · ${item.level}</span>
+                    <h2>${item.title}</h2>
+                    <p>${item.description}</p>
+                    <div class="tag-row">${item.tags.map((tag) => `<span class="pill">${tag}</span>`).join("")}</div>
+                    <a class="text-link" href="${item.proof}">查看证明 <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </article>
+        `).join("");
+    }
+
+    function renderServices() {
+        const root = document.querySelector("[data-services]");
+        if (!root) return;
+
+        root.innerHTML = services.map((item) => `
+            <article class="service-card">
+                <div class="card-icon"><i class="fas fa-briefcase"></i></div>
+                <span class="section-kicker">${item.audience}</span>
+                <h2>${item.title}</h2>
+                <p>${item.value}</p>
+                <div class="deliverable-list">
+                    ${item.deliverables.map((deliverable) => `<span><i class="fas fa-check"></i>${deliverable}</span>`).join("")}
+                </div>
+            </article>
+        `).join("");
+    }
+
+    function renderRoadmap() {
+        const root = document.querySelector("[data-roadmap]");
+        if (!root) return;
+
+        root.innerHTML = roadmap.map((item) => `
+            <article class="roadmap-card">
+                <div class="roadmap-phase">${item.phase}</div>
+                <div>
+                    <span class="pill status">${item.status}</span>
+                    <h2>${item.title}</h2>
+                    <ul>${item.items.map((task) => `<li>${task}</li>`).join("")}</ul>
+                </div>
+            </article>
+        `).join("");
+    }
+
+    function renderInterviewStories() {
+        const root = document.querySelector("[data-interview-stories]");
+        if (!root) return;
+
+        root.innerHTML = interviewStories.map((item) => `
+            <article class="story-card">
+                <h2>${item.project}</h2>
+                <dl>
+                    <dt>S</dt><dd>${item.situation}</dd>
+                    <dt>T</dt><dd>${item.task}</dd>
+                    <dt>A</dt><dd>${item.action}</dd>
+                    <dt>R</dt><dd>${item.result}</dd>
+                </dl>
+            </article>
+        `).join("");
+    }
+
     function initBlogFilters() {
         const cards = document.querySelectorAll("[data-blog-card]");
         if (!cards.length) return;
@@ -628,6 +860,11 @@
         capabilities,
         materials,
         milestones,
+        dashboardStats,
+        achievements,
+        services,
+        roadmap,
+        interviewStories,
         getApiKey: function () {
             return localStorage.getItem("deepseek_api_key") || "";
         }
@@ -639,6 +876,11 @@
         renderCapabilities();
         renderMaterials();
         renderMilestones();
+        renderDashboard();
+        renderAchievements();
+        renderServices();
+        renderRoadmap();
+        renderInterviewStories();
         initBlogFilters();
         initApiKeyPanel();
     });

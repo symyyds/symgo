@@ -1432,10 +1432,176 @@ body.site-shell.dark-mode .command-item {
     color: var(--muted);
 }
 
+.dashboard-stat p {
+    margin: 10px 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.dashboard-list,
+.achievement-list,
+.roadmap-grid,
+.story-grid,
+.service-grid {
+    display: grid;
+    gap: 16px;
+}
+
+.service-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.dashboard-row,
+.achievement-card,
+.roadmap-card,
+.story-card,
+.service-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 24px 70px rgba(18, 35, 49, 0.09);
+}
+
+.dashboard-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 150px;
+    gap: 16px;
+    align-items: start;
+    padding: 20px;
+}
+
+.dashboard-row h3 {
+    font-size: 1.08rem;
+    margin: 10px 0 6px;
+}
+
+.dashboard-row p {
+    color: var(--muted);
+    margin-bottom: 0;
+}
+
+.dashboard-row-meta {
+    display: grid;
+    justify-items: end;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.mini-resource-grid {
+    display: grid;
+    gap: 10px;
+    margin: 16px 0;
+}
+
+.mini-resource {
+    display: grid;
+    gap: 4px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.mini-resource span {
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 900;
+}
+
+.achievement-card,
+.roadmap-card {
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1fr);
+    gap: 18px;
+    padding: 24px;
+}
+
+.achievement-year,
+.roadmap-phase {
+    color: rgba(17, 97, 73, 0.28);
+    font-size: 2.2rem;
+    font-weight: 900;
+    line-height: 1;
+}
+
+.roadmap-card ul {
+    margin: 14px 0 0;
+    padding-left: 18px;
+    color: var(--muted);
+}
+
+.service-card {
+    padding: 24px;
+}
+
+.deliverable-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.deliverable-list span {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 9px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.deliverable-list i {
+    color: var(--brand);
+}
+
+.story-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.story-card {
+    padding: 22px;
+}
+
+.story-card h2 {
+    font-size: 1.12rem;
+}
+
+.story-card dl {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    gap: 10px 12px;
+    margin: 0;
+}
+
+.story-card dt {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--brand-soft);
+    color: var(--brand-dark);
+    font-weight: 900;
+}
+
+.story-card dd {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.65;
+}
+
 @media (max-width: 980px) {
     .capability-grid,
     .materials-grid,
-    .stack-board {
+    .stack-board,
+    .service-grid,
+    .story-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
@@ -1445,6 +1611,25 @@ body.site-shell.dark-mode .command-item {
     .materials-grid,
     .profile-brief,
     .stack-board {
+        grid-template-columns: 1fr;
+    }
+
+    .service-grid,
+    .story-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-row,
+    .achievement-card,
+    .roadmap-card {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-row-meta {
+        justify-items: start;
+    }
+
+    .deliverable-list {
         grid-template-columns: 1fr;
     }
 
@@ -1473,5 +1658,57 @@ body.site-shell.dark-mode .command-item {
 
     .command-item small {
         grid-column: 2;
+    }
+}
+
+@media print {
+    body.site-shell {
+        background: #fff !important;
+        color: #111 !important;
+    }
+
+    header,
+    .floating-tool,
+    .command-palette,
+    .reading-progress,
+    .hero-actions,
+    .site-footer {
+        display: none !important;
+    }
+
+    .page-hero,
+    .hero-redesign {
+        color: #111 !important;
+        background: #fff !important;
+        padding: 24px 0 !important;
+    }
+
+    .page-hero h1,
+    .hero-redesign h1,
+    .page-hero p,
+    .hero-redesign p {
+        color: #111 !important;
+    }
+
+    .section-band,
+    .section-band.white {
+        padding: 18px 0 !important;
+        background: #fff !important;
+    }
+
+    .surface-card,
+    .project-showcase,
+    .publication-card,
+    .capability-card,
+    .material-card,
+    .metric-card,
+    .achievement-card,
+    .service-card,
+    .roadmap-card,
+    .story-card,
+    .timeline-card {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+        break-inside: avoid;
     }
 }
