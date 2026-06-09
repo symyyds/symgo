@@ -100,7 +100,7 @@
         .console-output {
             color: #4cd137;
         }
-        
+
         /* 响应式布局 */
         @media screen and (max-width: 768px) {
             .code-panel {
@@ -181,7 +181,7 @@
                     <li><a href="../blog.html">博客</a></li>
                     <li><a href="../ai.html">AI助手</a></li>
                     <li class="dropdown">
-                        <a href="#" class="active">工具箱</a>
+                        <a href="markdown_to_word.html" class="active">工具箱</a>
                         <div class="dropdown-content">
                             <a href="code_runner.html" class="active">代码高亮</a>
                             <a href="markdown_to_word.html">Markdown工具</a>
@@ -332,13 +332,13 @@ int main() {
         let outputContent = [];
 
         console.log = function() {
-            outputContent.push('<span class="console-output">' + 
+            outputContent.push('<span class="console-output">' +
                 Array.from(arguments).join(' ') + '</span>');
             originalConsoleLog.apply(console, arguments);
         };
 
         console.error = function() {
-            outputContent.push('<span class="error-output">' + 
+            outputContent.push('<span class="error-output">' +
                 Array.from(arguments).join(' ') + '</span>');
             originalConsoleError.apply(console, arguments);
         };
@@ -349,14 +349,14 @@ int main() {
             const runBtn = document.getElementById('run-btn');
             const languageInfo = document.getElementById('language-info');
 
-            editor.setOption("mode", language === "python" ? "python" : 
+            editor.setOption("mode", language === "python" ? "python" :
                                    language === "javascript" ? "javascript" : "text/x-c++src");
             editor.setValue(defaultCode[language]);
 
             // 只有JavaScript可以运行
             runBtn.disabled = language !== 'javascript';
-            languageInfo.textContent = language === 'javascript' ? 
-                "当前支持运行 JavaScript 代码" : 
+            languageInfo.textContent = language === 'javascript' ?
+                "当前支持运行 JavaScript 代码" :
                 "该语言仅支持代码编辑，不支持运行";
             updateCodePreview();
         });
@@ -394,17 +394,17 @@ int main() {
             const previewElement = document.getElementById('code-preview');
             const codeElement = previewElement.querySelector('code');
             const theme = document.getElementById('highlight-theme-select').value;
-            
+
             // 移除之前的所有样式链接
             document.querySelectorAll('link[data-highlight-theme]').forEach(link => link.remove());
-            
+
             // 添加新的主题样式
             const themeLink = document.createElement('link');
             themeLink.rel = 'stylesheet';
             themeLink.href = `https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/${theme}.min.css`;
             themeLink.setAttribute('data-highlight-theme', theme);
             document.head.appendChild(themeLink);
-            
+
             codeElement.className = `language-${language}`;
             codeElement.textContent = code;
             hljs.highlightElement(codeElement);
@@ -422,7 +422,7 @@ int main() {
                     margin: 0,
                     borderRadius: 0
                 });
-                
+
                 const link = document.createElement('a');
                 link.download = `code-${document.getElementById('language-select').value}.png`;
                 link.href = canvas.toDataURL('image/png');
@@ -443,4 +443,4 @@ int main() {
     </script>
     <script src="../js/main.js"></script>
 </body>
-</html> 
+</html>

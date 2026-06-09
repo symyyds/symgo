@@ -311,7 +311,7 @@
             font-family: 'Consolas', 'Monaco', monospace;
             line-height: 1.5;
         }
-        
+
         .CodeMirror {
             height: 100% !important;
             font-size: 14px;
@@ -323,16 +323,16 @@
             width: 100%; /* 确保宽度固定 */
             box-sizing: border-box; /* 防止padding影响宽度计算 */
         }
-        
+
         .CodeMirror-scroll {
             overflow-x: hidden !important; /* 防止水平滚动条出现 */
             overflow-y: auto !important;
         }
-        
+
         .CodeMirror-sizer {
             min-width: 0 !important; /* 允许缩小到容器宽度 */
         }
-        
+
         .help-section {
             margin-top: 2rem;
             background: #f8f9fa;
@@ -469,7 +469,7 @@
                     <li><a href="../blog.html">博客</a></li>
                     <li><a href="../ai.html">AI助手</a></li>
                     <li class="dropdown">
-                        <a href="#" class="active">工具箱</a>
+                        <a href="markdown_to_word.html" class="active">工具箱</a>
                         <div class="dropdown-content">
                             <a href="code_runner.html">代码高亮</a>
                             <a href="markdown_to_word.html" class="active">Markdown工具</a>
@@ -491,7 +491,7 @@
                 在编辑器中输入Markdown格式的文本，左侧编辑、右侧预览，并可一键导出为Word文档或高质量图片。
                 支持数学公式、表格和各种格式化选项。
             </p>
-            
+
             <div class="control-panel">
                 <button id="export-word-btn" class="export-btn">
                     <i class="fas fa-file-word"></i> 导出为Word
@@ -503,7 +503,7 @@
                     <div class="spinner"></div>
                     <span>正在生成文档...</span>
                 </div>
-                
+
                 <!-- 图片导出选项 -->
                 <div id="img-export-options" class="export-options">
                     <div class="option-group">
@@ -617,7 +617,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="markdown-panel">
                 <div class="editor-section">
                     <h3 class="panel-title">Markdown编辑器</h3>
@@ -628,11 +628,11 @@
                     <div id="preview-content" class="preview-content"></div>
                 </div>
             </div>
-            
+
             <div class="help-section">
                 <h3>Markdown语法帮助</h3>
                 <p>以下是一些常用的Markdown语法示例，可以直接在编辑器中使用：</p>
-                
+
                 <div class="markdown-examples">
                     <div class="example-card">
                         <h4>标题</h4>
@@ -796,31 +796,31 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
             // 初始渲染预览内容
             const initialHtml = converter.makeHtml(sampleMarkdown);
             document.getElementById('preview-content').innerHTML = initialHtml;
-            
+
             // 渲染数学公式
             if (typeof MathJax !== 'undefined') {
                 MathJax.typesetPromise([document.getElementById('preview-content')]).catch(function (err) {
                     console.log('MathJax初始化出错:', err);
                 });
             }
-            
+
             // 添加编辑器变更监听
             editor.on('change', function() {
                 const markdownText = editor.getValue();
                 const html = converter.makeHtml(markdownText);
                 document.getElementById('preview-content').innerHTML = html;
-                
+
                 // 渲染新内容中的数学公式
                 if (typeof MathJax !== 'undefined') {
                     MathJax.typesetPromise([document.getElementById('preview-content')]).catch(function (err) {
                         console.log('MathJax渲染出错:', err);
                     });
                 }
-                
+
                 // 为新渲染的内容添加点击事件处理
                 addClickHandlersToPreviewElements();
             });
-            
+
             // 为预览元素添加点击事件处理
             function addClickHandlersToPreviewElements() {
                 // 这里可以添加代码区域高亮等交互功能
@@ -829,17 +829,17 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
                     // 代码区块点击事件处理
                 });
             }
-            
+
             // 导出Word文档功能
             document.getElementById('export-word-btn').addEventListener('click', function() {
                 // 显示加载指示器
                 document.getElementById('loading-indicator').style.display = 'flex';
-                
+
                 setTimeout(function() {
                     try {
                         const markdownText = editor.getValue();
                         const html = converter.makeHtml(markdownText);
-                        
+
                         // 创建Word文档
                         const doc = new docx.Document({
                             sections: [{
@@ -867,7 +867,7 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
                                 ]
                             }]
                         });
-                        
+
                         // 生成并保存文档
                         docx.Packer.toBlob(doc).then(blob => {
                             saveAs(blob, "markdown_document.docx");
@@ -882,40 +882,40 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
                     }
                 }, 500);
             });
-            
+
             // 导出图片相关功能
             const imgExportBtn = document.getElementById('export-img-btn');
             const imgExportOptions = document.getElementById('img-export-options');
-            
+
             // 显示图片导出选项
             imgExportBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 imgExportOptions.classList.toggle('show');
-                
+
                 // 定位选项面板
                 const btnRect = imgExportBtn.getBoundingClientRect();
                 imgExportOptions.style.top = (btnRect.bottom + window.scrollY) + 'px';
                 imgExportOptions.style.right = (window.innerWidth - btnRect.right) + 'px';
             });
-            
+
             // 点击其他地方关闭选项面板
             document.addEventListener('click', function(e) {
                 if (!imgExportOptions.contains(e.target) && e.target !== imgExportBtn) {
                     imgExportOptions.classList.remove('show');
                 }
             });
-            
+
             // 取消导出图片
             document.getElementById('export-img-cancel').addEventListener('click', function() {
                 imgExportOptions.classList.remove('show');
             });
-            
+
             // 确认导出图片
             document.getElementById('export-img-confirm').addEventListener('click', function() {
                 // 显示加载指示器
                 document.getElementById('loading-indicator').style.display = 'flex';
                 imgExportOptions.classList.remove('show');
-                
+
                 setTimeout(function() {
                     try {
                         // 获取设置
@@ -927,21 +927,21 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
                         const enFont = document.getElementById('img-en-font').value;
                         const fontSize = document.getElementById('img-font-size').value;
                         const lineHeight = document.getElementById('img-line-height').value;
-                        
+
                         // 准备导出预览
                         const exportContent = document.getElementById('export-content');
                         exportContent.innerHTML = document.getElementById('preview-content').innerHTML;
-                        
+
                         // 应用样式
                         exportContent.style.backgroundColor = bgColor;
                         exportContent.style.color = textColor;
                         exportContent.style.fontFamily = `${zhFont}, ${enFont}`;
                         exportContent.style.fontSize = `${fontSize}px`;
                         exportContent.style.lineHeight = lineHeight;
-                        
+
                         // 显示预览
                         document.getElementById('export-preview').classList.add('show');
-                        
+
                         // 触发MathJax重新渲染
                         if (typeof MathJax !== 'undefined') {
                             MathJax.typesetPromise([exportContent]).then(function() {
@@ -961,21 +961,21 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
                     }
                 }, 500);
             });
-            
+
             // 关闭预览
             document.getElementById('close-preview').addEventListener('click', function() {
                 document.getElementById('export-preview').classList.remove('show');
             });
-            
+
             // 确认导出为图片
             document.getElementById('confirm-export-btn').addEventListener('click', function() {
                 // 显示加载指示器
                 document.getElementById('loading-indicator').style.display = 'flex';
-                
+
                 const exportContent = document.getElementById('export-content');
                 const format = document.getElementById('img-format').value;
                 const scale = parseFloat(document.getElementById('img-scale').value);
-                
+
                 setTimeout(function() {
                     try {
                         // 使用html-to-image库导出图片
@@ -1000,12 +1000,12 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
                     }
                 }, 500);
             });
-            
+
             // 打印预览
             document.getElementById('print-preview-btn').addEventListener('click', function() {
                 window.print();
             });
-            
+
             // 水印选项显示控制
             document.getElementById('img-watermark-enable').addEventListener('change', function() {
                 const watermarkOptions = document.querySelector('.watermark-options');
@@ -1015,11 +1015,11 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
                     watermarkOptions.style.display = 'none';
                 }
             });
-            
+
             // 初始添加点击事件处理
             addClickHandlersToPreviewElements();
         });
     </script>
     <script src="../js/main.js"></script>
 </body>
-</html> 
+</html>

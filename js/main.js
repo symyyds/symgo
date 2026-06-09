@@ -243,6 +243,22 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    function showToast(message) {
+        let toast = document.querySelector(".site-toast");
+        if (!toast) {
+            toast = document.createElement("div");
+            toast.className = "site-toast";
+            toast.setAttribute("role", "status");
+            toast.setAttribute("aria-live", "polite");
+            document.body.appendChild(toast);
+        }
+
+        toast.textContent = message;
+        toast.classList.add("show");
+        clearTimeout(showToast.timer);
+        showToast.timer = setTimeout(() => toast.classList.remove("show"), 2200);
+    }
+
     function initReadingProgress() {
         const progress = document.createElement("div");
         progress.className = "reading-progress";
@@ -347,6 +363,57 @@ document.addEventListener("DOMContentLoaded", function () {
         render();
     }
 
+    function initPageActionBar() {
+        if (document.querySelector(".page-action-bar")) return;
+
+        const bar = document.createElement("div");
+        bar.className = "page-action-bar";
+        bar.setAttribute("aria-label", "页面操作");
+        bar.innerHTML = `
+            <button type="button" data-page-action="copy" aria-label="复制当前页面链接"><i class="fas fa-link"></i></button>
+            <button type="button" data-page-action="print" aria-label="打印或另存为 PDF"><i class="fas fa-print"></i></button>
+            <button type="button" data-page-action="top" aria-label="返回页面顶部"><i class="fas fa-arrow-up"></i></button>
+        `;
+        document.body.appendChild(bar);
+
+        bar.addEventListener("click", async (event) => {
+            const button = event.target.closest("button");
+            if (!button) return;
+
+            const action = button.dataset.pageAction;
+            if (action === "top") {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                return;
+            }
+
+            if (action === "print") {
+                window.print();
+                return;
+            }
+
+            if (action === "copy") {
+                const url = window.location.href;
+                try {
+                    if (navigator.clipboard?.writeText) {
+                        await navigator.clipboard.writeText(url);
+                    } else {
+                        const input = document.createElement("input");
+                        input.value = url;
+                        input.style.position = "fixed";
+                        input.style.opacity = "0";
+                        document.body.appendChild(input);
+                        input.select();
+                        document.execCommand("copy");
+                        input.remove();
+                    }
+                    showToast("页面链接已复制");
+                } catch (error) {
+                    showToast("复制失败，请手动复制地址栏链接");
+                }
+            }
+        });
+    }
+
     function initScrollTopButton() {
         const scrollTopBtn = document.getElementById("scroll-top");
         if (!scrollTopBtn) return;
@@ -387,6 +454,29 @@ document.addEventListener("DOMContentLoaded", function () {
                 event.preventDefault();
                 showError(email, "请输入有效的电子邮件地址");
             }
+        });
+    }
+
+    function sanitizeLinks() {
+        document.querySelectorAll('a[target="_blank"]').forEach((link) => {
+            const rel = new Set((link.getAttribute("rel") || "").split(/\s+/).filter(Boolean));
+            rel.add("noopener");
+            rel.add("noreferrer");
+            link.setAttribute("rel", Array.from(rel).join(" "));
+        });
+
+        document.querySelectorAll("a").forEach((link) => {
+            const href = link.getAttribute("href");
+            if (href !== "#" && href !== "") return;
+            const text = link.textContent.trim();
+            if (text === "工具箱" || link.closest(".nav-group")) return;
+            link.setAttribute("role", "button");
+            link.setAttribute("aria-disabled", "true");
+            link.classList.add("is-disabled-link");
+            link.addEventListener("click", (event) => {
+                event.preventDefault();
+                showToast("这个入口还在整理，已先保留为占位。");
+            });
         });
     }
 
@@ -436,6 +526,11 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    function refreshEnhancements() {
+        sanitizeLinks();
+        initPageEnhancements();
+    }
+
     enhanceNavigation();
     initHeaderState();
     markActiveNav();
@@ -443,7 +538,10 @@ document.addEventListener("DOMContentLoaded", function () {
     initThemeToggle();
     initReadingProgress();
     initCommandPalette();
+    initPageActionBar();
     initScrollTopButton();
     initContactValidation();
-    initPageEnhancements();
+    refreshEnhancements();
+    window.symgoRefreshEnhancements = refreshEnhancements;
+    document.addEventListener("symgo:content-updated", refreshEnhancements);
 });

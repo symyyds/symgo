@@ -436,6 +436,21 @@
         return (text || "").toString().trim().toLowerCase();
     }
 
+    function contentUpdated() {
+        document.dispatchEvent(new Event("symgo:content-updated"));
+    }
+
+    function setResultSummary(anchor, visible, total, label) {
+        if (!anchor) return;
+        let summary = anchor.parentElement.querySelector(".result-summary");
+        if (!summary) {
+            summary = document.createElement("div");
+            summary.className = "result-summary";
+            anchor.parentElement.appendChild(summary);
+        }
+        summary.innerHTML = `<i class="fas fa-filter"></i><span>当前显示 <strong>${visible}</strong> / ${total} ${label}</span>`;
+    }
+
     function renderPublications() {
         const root = document.querySelector("[data-publications]");
         if (!root) return;
@@ -456,8 +471,11 @@
                     && (!keyword || haystack.includes(keyword));
             });
 
+            setResultSummary(root, filtered.length, publications.length, "篇论文/手稿");
+
             if (!filtered.length) {
                 root.innerHTML = '<div class="empty-state">没有符合条件的论文。换个年份、类型或关键词试试。</div>';
+                contentUpdated();
                 return;
             }
 
@@ -479,11 +497,12 @@
                     </div>
                     <p>${item.abstract}</p>
                     <div class="publication-actions">
-                        <a class="text-link" href="${item.pdf}" target="_blank"><i class="fas fa-file-pdf"></i> PDF</a>
+                        <a class="text-link" href="${item.pdf}" target="_blank" rel="noopener noreferrer"><i class="fas fa-file-pdf"></i> PDF</a>
                         <a class="text-link" href="${item.code}"><i class="fas fa-diagram-project"></i> 相关项目</a>
                     </div>
                 </article>
             `).join("");
+            contentUpdated();
         }
 
         [yearFilter, typeFilter, searchInput].forEach((el) => {
@@ -510,8 +529,11 @@
                     && (!keyword || haystack.includes(keyword));
             });
 
+            setResultSummary(root, filtered.length, projects.length, "个项目");
+
             if (!filtered.length) {
                 root.innerHTML = '<div class="empty-state">没有符合条件的项目。可以清空搜索或切换状态。</div>';
+                contentUpdated();
                 return;
             }
 
@@ -558,7 +580,7 @@
                         </div>
                     </div>
                     <div class="project-actions">
-                        ${project.links.map((link) => `<a class="text-link" href="${link.href}" ${link.href.startsWith("http") ? 'target="_blank"' : ""}><i class="fas fa-arrow-up-right-from-square"></i> ${link.label}</a>`).join("")}
+                        ${project.links.map((link) => `<a class="text-link" href="${link.href}" ${link.href.startsWith("http") ? 'target="_blank" rel="noopener noreferrer"' : ""}><i class="fas fa-arrow-up-right-from-square"></i> ${link.label}</a>`).join("")}
                     </div>
                 </article>
                         `).join("")}
@@ -566,6 +588,7 @@
                 </section>
             `).join("");
 
+            contentUpdated();
             scheduleProjectHashScroll();
         }
 
@@ -652,9 +675,12 @@
                 return (active === "all" || item.type === active) && (!keyword || haystack.includes(keyword));
             });
 
+            setResultSummary(root, filtered.length, materials.length, "份材料");
+
             if (!filtered.length) {
                 root.innerHTML = "";
                 if (empty) empty.style.display = "block";
+                contentUpdated();
                 return;
             }
 
@@ -667,12 +693,13 @@
                     <div class="tag-row">${item.tags.map((tag) => `<span class="pill">${tag}</span>`).join("")}</div>
                     <div class="material-actions">
                         <span class="pill status">${item.status}</span>
-                        <a class="text-link" href="${item.href}" ${item.href.startsWith("http") || item.href.endsWith(".pdf") || item.href.endsWith(".xlsx") ? 'target="_blank"' : ""}>
+                        <a class="text-link" href="${item.href}" ${item.href.startsWith("http") || item.href.endsWith(".pdf") || item.href.endsWith(".xlsx") ? 'target="_blank" rel="noopener noreferrer"' : ""}>
                             打开材料 <i class="fas fa-arrow-up-right-from-square"></i>
                         </a>
                     </div>
                 </article>
             `).join("");
+            contentUpdated();
         }
 
         tabs.forEach((tab) => {
@@ -816,6 +843,7 @@
         const tabs = document.querySelectorAll("[data-blog-category]");
         const searchInput = document.querySelector("[data-blog-search]");
         const empty = document.querySelector("[data-blog-empty]");
+        const anchor = document.querySelector(".blog-grid.clean");
         let active = "all";
 
         function apply() {
@@ -831,7 +859,9 @@
                 if (show) visible += 1;
             });
 
+            setResultSummary(anchor, visible, cards.length, "篇文章");
             if (empty) empty.style.display = visible ? "none" : "block";
+            contentUpdated();
         }
 
         tabs.forEach((tab) => {

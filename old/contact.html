@@ -95,19 +95,19 @@
                             <h2>学术资料</h2>
                             <ul class="resource-links">
                                 <li>
-                                    <a href="#"><i class="fas fa-file-pdf"></i> 完整简历 (PDF)</a>
+                                    <a class="is-disabled-link" aria-disabled="true" role="button" data-placeholder="true"><i class="fas fa-file-pdf"></i> 完整简历 (PDF)</a>
                                 </li>
                                 <li>
-                                    <a href="#"><i class="fas fa-graduation-cap"></i> Google Scholar主页</a>
+                                    <a class="is-disabled-link" aria-disabled="true" role="button" data-placeholder="true"><i class="fas fa-graduation-cap"></i> Google Scholar主页</a>
                                 </li>
                                 <li>
-                                    <a href="#"><i class="fab fa-researchgate"></i> ResearchGate主页</a>
+                                    <a class="is-disabled-link" aria-disabled="true" role="button" data-placeholder="true"><i class="fab fa-researchgate"></i> ResearchGate主页</a>
                                 </li>
                                 <li>
-                                    <a href="#"><i class="fab fa-orcid"></i> ORCID: 0000-0000-0000-0000</a>
+                                    <a class="is-disabled-link" aria-disabled="true" role="button" data-placeholder="true"><i class="fab fa-orcid"></i> ORCID: 0000-0000-0000-0000</a>
                                 </li>
                                 <li>
-                                    <a href="#"><i class="fas fa-university"></i> 学院个人主页</a>
+                                    <a class="is-disabled-link" aria-disabled="true" role="button" data-placeholder="true"><i class="fas fa-university"></i> 学院个人主页</a>
                                 </li>
                             </ul>
                         </div>
@@ -117,23 +117,23 @@
                         <div class="form-card">
                             <h2>发送信息</h2>
                             <p class="form-intro">如有合作意向或学术咨询，请填写以下表单，我会尽快回复。</p>
-                            
+
                             <form id="contact-form" class="contact-form" action="#" method="POST">
                                 <div class="form-group">
                                     <label for="name">姓名 <span class="required">*</span></label>
                                     <input type="text" id="name" name="name" required>
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <label for="email">电子邮箱 <span class="required">*</span></label>
                                     <input type="email" id="email" name="email" required>
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <label for="affiliation">所属机构</label>
                                     <input type="text" id="affiliation" name="affiliation">
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <label for="subject">主题 <span class="required">*</span></label>
                                     <select id="subject" name="subject" required>
@@ -145,12 +145,12 @@
                                         <option value="other">其他</option>
                                     </select>
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <label for="message">信息内容 <span class="required">*</span></label>
                                     <textarea id="message" name="message" rows="6" required></textarea>
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <button type="submit" class="btn primary submit-btn">
                                         <i class="fas fa-paper-plane"></i> 发送信息
@@ -205,10 +205,10 @@
                     <p><i class="fas fa-envelope"></i> email@university.edu</p>
                     <p><i class="fas fa-map-marker-alt"></i> XXX大学XX学院XX楼XXX室</p>
                     <div class="social-icons">
-                        <a href="#" title="Google Scholar"><i class="fas fa-graduation-cap"></i></a>
-                        <a href="#" title="ResearchGate"><i class="fab fa-researchgate"></i></a>
-                        <a href="#" title="ORCID"><i class="fab fa-orcid"></i></a>
-                        <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
+                        <a title="Google Scholar" class="is-disabled-link" aria-disabled="true" role="button" data-placeholder="true"><i class="fas fa-graduation-cap"></i></a>
+                        <a title="ResearchGate" class="is-disabled-link" aria-disabled="true" role="button" data-placeholder="true"><i class="fab fa-researchgate"></i></a>
+                        <a title="ORCID" class="is-disabled-link" aria-disabled="true" role="button" data-placeholder="true"><i class="fab fa-orcid"></i></a>
+                        <a title="GitHub" class="is-disabled-link" aria-disabled="true" role="button" data-placeholder="true"><i class="fab fa-github"></i></a>
                     </div>
                 </div>
             </div>
@@ -223,23 +223,23 @@
         // 简单的表单验证
         document.addEventListener('DOMContentLoaded', function() {
             const contactForm = document.getElementById('contact-form');
-            
+
             if (contactForm) {
                 contactForm.addEventListener('submit', function(e) {
                     // 在实际项目中，这里应替换为真实的表单处理逻辑
                     e.preventDefault();
-                    
+
                     // 简单验证示例
                     let isValid = true;
                     const name = document.getElementById('name');
                     const email = document.getElementById('email');
                     const message = document.getElementById('message');
-                    
+
                     if (!name.value.trim()) {
                         isValid = false;
                         showError(name, '请输入您的姓名');
                     }
-                    
+
                     if (!email.value.trim()) {
                         isValid = false;
                         showError(email, '请输入您的电子邮箱');
@@ -247,12 +247,12 @@
                         isValid = false;
                         showError(email, '请输入有效的电子邮箱地址');
                     }
-                    
+
                     if (!message.value.trim()) {
                         isValid = false;
                         showError(message, '请输入信息内容');
                     }
-                    
+
                     if (isValid) {
                         // 实际项目中这里应替换为表单提交逻辑
                         alert('感谢您的留言！我会尽快回复。');
@@ -260,12 +260,12 @@
                     }
                 });
             }
-            
+
             // 辅助函数
             function showError(input, message) {
                 const formGroup = input.parentElement;
                 const errorElement = formGroup.querySelector('.error-message');
-                
+
                 if (errorElement) {
                     errorElement.textContent = message;
                 } else {
@@ -274,15 +274,15 @@
                     errorDiv.textContent = message;
                     formGroup.appendChild(errorDiv);
                 }
-                
+
                 input.classList.add('error');
             }
-            
+
             function isValidEmail(email) {
                 const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
                 return re.test(email.toLowerCase());
             }
-            
+
             // 清除错误提示
             const formInputs = document.querySelectorAll('.contact-form input, .contact-form textarea, .contact-form select');
             formInputs.forEach(input => {
@@ -299,5 +299,5 @@
 
 <script src="../js/legacy.js"></script>
 </body>
-</html> 
- 
+</html>
+

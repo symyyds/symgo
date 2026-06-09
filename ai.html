@@ -351,16 +351,16 @@
             gap: 6px;
         }
 
-        #clearBtn { 
+        #clearBtn {
             background: #dc3545;
         }
-        #exportBtn { 
+        #exportBtn {
             background: var(--success-color);
         }
-        #importBtn { 
+        #importBtn {
             background: var(--accent-color);
         }
-        
+
         .tool-btn:hover {
             transform: translateY(-1px);
             box-shadow: 0 2px 6px rgba(0,0,0,0.2);
@@ -610,7 +610,7 @@
                     <li><a href="blog.html">博客</a></li>
                     <li><a href="ai.html" class="active">AI助手</a></li>
                     <li class="dropdown">
-                        <a href="#">工具箱</a>
+                        <a href="tools/markdown_to_word.html">工具箱</a>
                         <div class="dropdown-content">
                             <a href="tools/code_runner.html">代码高亮</a>
                             <a href="tools/markdown_to_word.html">Markdown工具</a>
@@ -708,14 +708,14 @@
             }
 
             currentFile = file;
-            
+
             // 获取文件图标
             const fileIcon = getFileIcon(file);
-            
+
             try {
                 // 预览文件内容
                 const previewContent = await readFileContent(file);
-                
+
                 // 创建或更新文件预览
                 const previewDiv = document.createElement('div');
                 previewDiv.className = 'file-preview';
@@ -730,13 +730,13 @@
                     <div class="file-preview-content">${previewContent}</div>
                     <i class="fas fa-times remove-file" onclick="removeFile()"></i>
                 `;
-                
+
                 // 移除旧的预览（如果存在）
                 const oldPreview = document.querySelector('.file-preview');
                 if (oldPreview) {
                     oldPreview.remove();
                 }
-                
+
                 // 添加新的预览
                 document.querySelector('.input-wrapper').appendChild(previewDiv);
             } catch (error) {
@@ -832,7 +832,7 @@
                     try {
                         const encoding = await detectEncoding(arrayBuffer);
                         let content;
-                        
+
                         if (encoding === 'gbk') {
                             content = gbkDecoder.decode(arrayBuffer);
                         } else {
@@ -840,8 +840,8 @@
                         }
 
                         // 预览前10000个字符，如果内容更长则显示省略号
-                        const preview = content.length > 10000 ? 
-                            content.substring(0, 10000) + '...\n\n[内容过长，仅显示前10000个字符]' : 
+                        const preview = content.length > 10000 ?
+                            content.substring(0, 10000) + '...\n\n[内容过长，仅显示前10000个字符]' :
                             content;
                         return `[文本文件内容预览]\n${preview}`;
                     } catch (error) {
@@ -858,7 +858,7 @@
                             const typedArray = new Uint8Array(e.target.result);
                             const loadingTask = pdfjsLib.getDocument(typedArray);
                             const pdf = await loadingTask.promise;
-                            
+
                             let fullText = '';
                             for (let i = 1; i <= pdf.numPages; i++) {
                                 const page = await pdf.getPage(i);
@@ -866,12 +866,12 @@
                                 const pageText = textContent.items.map(item => item.str).join(' ');
                                 fullText += `\n--- 第${i}页 ---\n${pageText}`;
                             }
-                            
+
                             // 如果内容太长，只显示前10000个字符
-                            const previewText = fullText.length > 10000 ? 
-                                fullText.substring(0, 10000) + '...\n\n[内容过长，仅显示前10000个字符]' : 
+                            const previewText = fullText.length > 10000 ?
+                                fullText.substring(0, 10000) + '...\n\n[内容过长，仅显示前10000个字符]' :
                                 fullText;
-                            
+
                             resolve(`[PDF文件内容预览]\n文件名: ${file.name}\n大小: ${(file.size/1024).toFixed(2)}KB\n总页数: ${pdf.numPages}页\n\n${previewText}`);
                         } catch (error) {
                             reject(new Error('PDF文件处理失败: ' + error.message));
@@ -886,12 +886,12 @@
                             const arrayBuffer = e.target.result;
                             const result = await mammoth.extractRawText({arrayBuffer});
                             const text = result.value;
-                            
+
                             // 如果内容太长，只显示前10000个字符
-                            const previewText = text.length > 10000 ? 
-                                text.substring(0, 10000) + '...\n\n[内容过长，仅显示前10000个字符]' : 
+                            const previewText = text.length > 10000 ?
+                                text.substring(0, 10000) + '...\n\n[内容过长，仅显示前10000个字符]' :
                                 text;
-                            
+
                             resolve(`[Word文档内容预览]\n文件名: ${file.name}\n大小: ${(file.size/1024).toFixed(2)}KB\n\n${previewText}`);
                         } catch (error) {
                             reject(new Error('Word文档处理失败: ' + error.message));
@@ -955,7 +955,7 @@
             if (savedData) {
                 Object.assign(chatData, JSON.parse(savedData));
             }
-            
+
             if (chatData.chatList.length === 0) {
                 // 如果没有任何聊天，创建一个新的
                 createNewChat();
@@ -977,13 +977,13 @@
                 createdAt: Date.now(),
                 lastMessageAt: Date.now()
             };
-            
+
             chatData.chats[chatId] = newChat;
             chatData.chatList.push(chatId);
-            
+
             // 保存到本地存储
             saveChatsToStorage();
-            
+
             // 更新UI
             renderChatList();
             switchToChat(chatId);
@@ -993,7 +993,7 @@
         function switchToChat(chatId) {
             currentChatId = chatId;
             const chat = chatData.chats[chatId];
-            
+
             // 更新聊天列表UI
             document.querySelectorAll('.chat-item').forEach(item => {
                 item.classList.remove('active');
@@ -1001,11 +1001,11 @@
                     item.classList.add('active');
                 }
             });
-            
+
             // 清空并重新渲染聊天消息
             const chatBox = document.getElementById('chat-box');
             chatBox.innerHTML = '';
-            
+
             // 添加欢迎消息
             appendMessage({
                 content: `欢迎使用学术助手！功能说明：
@@ -1018,7 +1018,7 @@
                 sender: 'ai',
                 timestamp: chat.createdAt
             }, false);
-            
+
             // 加载聊天历史
             chat.messages.forEach(msg => {
                 appendMessage({
@@ -1033,17 +1033,17 @@
         function renderChatList() {
             const chatList = document.getElementById('chat-list');
             chatList.innerHTML = '';
-            
+
             // 反转数组顺序显示
             [...chatData.chatList].reverse().forEach(chatId => {
                 const chat = chatData.chats[chatId];
                 const chatItem = document.createElement('div');
                 chatItem.className = `chat-item ${chatId === currentChatId ? 'active' : ''}`;
                 chatItem.dataset.chatId = chatId;
-                
+
                 // 获取聊天标题
                 const title = chat.title || '新的对话';
-                
+
                 chatItem.innerHTML = `
                     <div class="chat-item-icon">
                         <i class="fas fa-comments"></i>
@@ -1061,18 +1061,18 @@
                         </button>
                     </div>
                 `;
-                
+
                 chatList.appendChild(chatItem);
-                
+
                 // 添加点击事件
                 chatItem.querySelector('.chat-item-content').addEventListener('click', () => switchToChat(chatId));
-                
+
                 // 添加重命名按钮事件
                 chatItem.querySelector('.rename-btn').addEventListener('click', (e) => {
                     e.stopPropagation();
                     renameChat(chatId, chatItem);
                 });
-                
+
                 // 添加删除按钮事件
                 chatItem.querySelector('.delete-btn').addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -1080,25 +1080,25 @@
                 });
             });
         }
-        
+
         // 重命名聊天记录
         function renameChat(chatId, chatItem) {
             // 获取当前标题
             const titleElement = chatItem.querySelector('.chat-item-title');
             const currentTitle = chatData.chats[chatId].title || '新的对话';
-            
+
             // 创建输入框
             const input = document.createElement('input');
             input.type = 'text';
             input.className = 'rename-input';
             input.value = currentTitle;
-            
+
             // 替换标题为输入框
             titleElement.innerHTML = '';
             titleElement.appendChild(input);
             input.focus();
             input.select();
-            
+
             // 处理输入框事件
             function handleRename() {
                 const newTitle = input.value.trim();
@@ -1108,7 +1108,7 @@
                 }
                 renderChatList();
             }
-            
+
             // 添加输入框事件
             input.addEventListener('blur', handleRename);
             input.addEventListener('keydown', (e) => {
@@ -1119,11 +1119,11 @@
                     renderChatList();
                 }
             });
-            
+
             // 阻止冒泡
             input.addEventListener('click', (e) => e.stopPropagation());
         }
-        
+
         // 删除聊天记录
         function deleteChat(chatId) {
             if (confirm('确定要删除此聊天记录吗？')) {
@@ -1132,13 +1132,13 @@
                 if (index > -1) {
                     chatData.chatList.splice(index, 1);
                 }
-                
+
                 // 从chats中删除
                 delete chatData.chats[chatId];
-                
+
                 // 保存更改
                 saveChatsToStorage();
-                
+
                 // 如果删除的是当前聊天，切换到另一个聊天
                 if (chatId === currentChatId) {
                     if (chatData.chatList.length > 0) {
@@ -1162,22 +1162,22 @@
         // 修改现有的saveMessage函数
         function saveMessage(content, sender) {
             if (!currentChatId) return;
-            
+
             const message = {
                 content,
                 sender,
                 timestamp: Date.now()
             };
-            
+
             const chat = chatData.chats[currentChatId];
             chat.messages.push(message);
             chat.lastMessageAt = message.timestamp;
-            
+
             // 如果消息数超过限制，删除最早的消息
             if (chat.messages.length > CONFIG.MAX_HISTORY) {
                 chat.messages.splice(0, chat.messages.length - CONFIG.MAX_HISTORY);
             }
-            
+
             // 更新存储
             saveChatsToStorage();
             // 更新聊天列表显示
@@ -1231,17 +1231,17 @@
         // 初始化文本框自动调整高度
         function initTextareaAutoResize() {
             const textarea = document.getElementById('user-input');
-            
+
             // 设置初始高度
             textarea.style.height = 'auto';
             textarea.style.height = textarea.scrollHeight + 'px';
-            
+
             // 监听输入事件
             textarea.addEventListener('input', function() {
                 this.style.height = 'auto';
                 this.style.height = Math.min(this.scrollHeight, 200) + 'px';
             });
-            
+
             // 监听回车键发送消息
             textarea.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter' && !e.shiftKey) {
@@ -1257,24 +1257,24 @@
             const btn = document.querySelector('.btn.primary');
             const userInput = input.value.trim();
             const apiKey = window.symgoSite?.getApiKey?.() || localStorage.getItem('deepseek_api_key') || '';
-            
+
             if (!userInput && !currentFile) return;
             if (!apiKey) {
                 alert('请先在页面上方保存 DeepSeek API Key。Key 只会保存在当前浏览器本地。');
                 return;
             }
-            
+
             input.disabled = true;
             btn.disabled = true;
-            
+
             try {
                 let messageContent = userInput;
-                
+
                 // 如果有文件，则读取文件内容
                 if (currentFile) {
                     const fileContent = await readFileContent(currentFile);
                     const fileName = currentFile.name.toLowerCase();
-                    
+
                     // 根据文件类型构建不同的消息内容
                     if (fileName.endsWith('.pdf')) {
                         messageContent = `分析PDF文件：${currentFile.name}\n${userInput || '请分析这个PDF文件的内容。'}\n\n${fileContent}`;
@@ -1402,7 +1402,7 @@
             const chatBox = document.getElementById('chat-box');
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${message.sender}-message`;
-            
+
             const timestamp = new Date(message.timestamp).toLocaleString('zh-CN', {
                 year: 'numeric',
                 month: '2-digit',
@@ -1427,8 +1427,8 @@
                 await typewriterEffect(contentDiv, message.content);
             } else {
                 // 用户消息和历史AI消息直接显示
-                contentDiv.innerHTML = message.sender === 'ai' ? 
-                    marked.parse(message.content) : 
+                contentDiv.innerHTML = message.sender === 'ai' ?
+                    marked.parse(message.content) :
                     message.content.replace(/\n/g, '<br>');
                 if (message.sender === 'ai') {
                     contentDiv.querySelectorAll('pre code').forEach((block) => {
@@ -1445,13 +1445,13 @@
             element.classList.add('typing');
             const markdownContent = marked.parse(text);
             element.innerHTML = '';
-            
+
             // 创建一个隐藏的临时元素来存储完整的HTML
             const tempDiv = document.createElement('div');
             tempDiv.style.display = 'none';
             tempDiv.innerHTML = markdownContent;
             document.body.appendChild(tempDiv);
-            
+
             // 递归函数来处理节点
             async function processNode(node) {
                 if (node.nodeType === Node.TEXT_NODE) {
@@ -1473,23 +1473,23 @@
                         newElement.setAttribute(attr.name, attr.value);
                     });
                     element.appendChild(newElement);
-                    
+
                     // 递归处理子节点
                     for (const childNode of node.childNodes) {
                         await processNode(childNode);
                     }
                 }
             }
-            
+
             // 处理所有节点
             for (const node of tempDiv.childNodes) {
                 await processNode(node);
             }
-            
+
             // 清理临时元素
             document.body.removeChild(tempDiv);
             element.classList.remove('typing');
-            
+
             // 处理代码高亮
             element.querySelectorAll('pre code').forEach((block) => {
                 hljs.highlightElement(block);

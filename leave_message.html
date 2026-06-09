@@ -286,7 +286,7 @@
                     <li><a href="blog.html">博客</a></li>
                     <li><a href="ai.html">AI助手</a></li>
                     <li class="dropdown">
-                        <a href="#">工具箱</a>
+                        <a href="tools/markdown_to_word.html">工具箱</a>
                         <div class="dropdown-content">
                             <a href="tools/code_runner.html">代码高亮</a>
                             <a href="tools/markdown_to_word.html">Markdown工具</a>
@@ -311,7 +311,7 @@
         </section>
         <div class="container">
             <div id="adminMode" class="admin-mode" style="display: none;">管理员模式</div>
-            
+
             <div class="message-board" id="messageBoard">
                 <!-- 留言内容将通过 JavaScript 动态加载 -->
             </div>
@@ -368,7 +368,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadMessages();
             checkAdminMode();
-            
+
             // 添加快捷键支持
             document.addEventListener('keydown', (e) => {
                 // Alt + S 打开管理员登录
@@ -382,7 +382,7 @@
         function loadMessages() {
             const messages = getMessages();
             const messageBoard = document.getElementById('messageBoard');
-            
+
             if (messages.length === 0) {
                 messageBoard.innerHTML = '<div class="empty-message">暂无留言，来说点什么吧~</div>';
                 document.getElementById('pagination').style.display = 'none';
@@ -468,7 +468,7 @@
         function submitMessage() {
             const nickname = document.getElementById('nickname').value.trim();
             const content = document.getElementById('messageContent').value.trim();
-            
+
             if (!content) {
                 alert('请输入留言内容');
                 return;
@@ -482,17 +482,17 @@
             });
 
             localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(messages));
-            
+
             // 清空输入框
             document.getElementById('messageContent').value = '';
             document.getElementById('nickname').value = '';
-            
+
             // 确保显示第一页
             currentPage = 1;
-            
+
             // 重新加载留言
             loadMessages();
-            
+
             // 平滑滚动到留言板顶部
             document.getElementById('messageBoard').scrollIntoView({ behavior: 'smooth' });
         }
@@ -500,7 +500,7 @@
         // 删除留言
         function deleteMessage(index) {
             if (!isAdminMode()) return;
-            
+
             if (confirm('确定要删除这条留言吗？')) {
                 const messages = getMessages();
                 messages.splice(index, 1);
