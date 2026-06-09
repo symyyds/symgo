@@ -17,6 +17,8 @@
 body.site-shell {
     color: var(--ink);
     background: #f7f9fb;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
 }
 
 .site-shell header {
@@ -240,6 +242,7 @@ body.site-shell {
 .site-shell main {
     background: #f7f9fb;
     min-height: 72vh;
+    position: relative;
 }
 
 .hero-redesign {
@@ -355,6 +358,7 @@ body.site-shell {
 
 .section-band {
     padding: 54px 0;
+    position: relative;
 }
 
 .section-band.white {
@@ -408,6 +412,33 @@ body.site-shell {
     box-shadow: 0 10px 28px rgba(27, 36, 48, 0.06);
 }
 
+.premium-surface {
+    position: relative;
+    isolation: isolate;
+}
+
+.premium-surface:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.48), rgba(255, 255, 255, 0));
+    pointer-events: none;
+}
+
+.reveal-ready {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+    transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal-ready.reveal-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 .metric-card {
     padding: 18px;
 }
@@ -439,6 +470,16 @@ body.site-shell {
 .surface-card h3,
 .surface-card p {
     overflow-wrap: anywhere;
+}
+
+.surface-card h3,
+.publication-title,
+.project-list-group .project-head h2,
+.material-card h2,
+.capability-top h2,
+.handbook-section h2,
+.evidence-section h2 {
+    letter-spacing: 0;
 }
 
 .surface-card .card-icon {
@@ -547,6 +588,7 @@ body.site-shell {
     background: #112b3c;
     color: white;
     padding: 54px 0 42px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .page-hero h1 {
@@ -601,6 +643,15 @@ body.site-shell {
     padding: 10px 12px;
     background: white;
     color: var(--ink);
+}
+
+.search-box input:focus,
+.filter-select:focus,
+.key-input:focus,
+.site-shell input:focus,
+.site-shell textarea:focus {
+    outline: 2px solid rgba(17, 97, 73, 0.2);
+    border-color: rgba(17, 97, 73, 0.46);
 }
 
 .publication-list,
@@ -678,6 +729,14 @@ body.site-shell {
 
 .text-link:hover {
     color: var(--brand-dark);
+}
+
+.text-link i {
+    transition: transform 0.18s ease;
+}
+
+.text-link:hover i {
+    transform: translateX(2px);
 }
 
 .project-showcase {
@@ -1090,6 +1149,19 @@ body.site-shell {
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.42), transparent);
 }
 
+.page-hero:before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    background-size: 38px 38px;
+    opacity: 0.55;
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.72), transparent 85%);
+}
+
 .page-hero .container {
     position: relative;
     z-index: 1;
@@ -1150,6 +1222,106 @@ body.site-shell {
 
 .project-showcase > * {
     position: relative;
+}
+
+.project-showcase:hover:before,
+.material-card:hover:before {
+    filter: saturate(1.25);
+}
+
+.publication-card,
+.project-showcase,
+.surface-card,
+.material-card,
+.capability-card,
+.timeline-card,
+.message-board,
+.input-container,
+.handbook-section,
+.evidence-section,
+.library-card,
+.case-block,
+.service-card,
+.story-card,
+.roadmap-card,
+.achievement-card {
+    backdrop-filter: blur(10px);
+}
+
+.page-side-rail {
+    position: fixed;
+    top: 132px;
+    right: max(18px, calc((100vw - 1180px) / 2 - 150px));
+    z-index: 900;
+    display: grid;
+    gap: 6px;
+    width: 132px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.86);
+    box-shadow: 0 18px 46px rgba(18, 35, 49, 0.1);
+    backdrop-filter: blur(14px);
+}
+
+.page-side-rail .rail-title {
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.page-side-rail a {
+    display: block;
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.35;
+    padding: 5px 6px;
+    border-radius: 6px;
+}
+
+.page-side-rail a:hover {
+    color: var(--brand-dark);
+    background: var(--brand-soft);
+}
+
+.site-shell article p,
+.site-shell .handbook-section li,
+.site-shell .evidence-section li,
+.site-shell .work-box li {
+    line-height: 1.74;
+}
+
+.site-shell pre,
+.site-shell code {
+    border-radius: 8px;
+}
+
+.site-shell pre {
+    max-width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    background: #0f172a;
+    color: #e5edf7;
+    padding: 14px;
+}
+
+.site-shell table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.site-shell th,
+.site-shell td {
+    border: 1px solid var(--line);
+    padding: 10px 12px;
+}
+
+.site-shell th {
+    background: var(--soft);
+    color: var(--ink);
 }
 
 .work-box {
@@ -1320,6 +1492,14 @@ body.site-shell.dark-mode .hero-panel {
 
 body.site-shell.dark-mode .nav-dropdown {
     background: rgba(15, 27, 32, 0.98);
+}
+
+body.site-shell.dark-mode .page-side-rail {
+    background: rgba(15, 27, 32, 0.88);
+}
+
+body.site-shell.dark-mode .premium-surface:after {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0));
 }
 
 .profile-brief {
@@ -1969,6 +2149,10 @@ body.site-shell.dark-mode .command-item {
     .story-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .page-side-rail {
+        display: none;
+    }
 }
 
 @media (max-width: 768px) {
@@ -2046,6 +2230,7 @@ body.site-shell.dark-mode .command-item {
     .floating-tool,
     .command-palette,
     .reading-progress,
+    .page-side-rail,
     .hero-actions,
     .site-footer {
         display: none !important;

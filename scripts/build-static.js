@@ -23,12 +23,13 @@ const rootFiles = [
   "blog.html",
   "ai.html",
   "leave_message.html",
+  "test.html",
   "manifest.webmanifest",
   "robots.txt",
   "sitemap.xml",
 ];
 
-const directories = ["css", "js", "images", "files", "blog", "tools", "library", "cases", "handbook", "evidence"];
+const directories = ["css", "js", "images", "files", "blog", "tools", "library", "cases", "handbook", "evidence", "old"];
 const baseSitePages = [
   "",
   "dashboard.html",
@@ -49,7 +50,9 @@ const baseSitePages = [
   "blog.html",
   "ai.html",
   "leave_message.html",
+  "test.html",
 ];
+const sitemapDirectories = ["blog", "tools", "library", "cases", "handbook", "evidence", "old", "images"];
 
 function resetDir(dir) {
   fs.rmSync(dir, { recursive: true, force: true });
@@ -101,10 +104,7 @@ const siteUrl = (process.env.URL || process.env.DEPLOY_PRIME_URL || "https://sym
 rewriteHtmlUrls(siteUrl);
 const sitePages = Array.from(new Set([
   ...baseSitePages,
-  ...collectHtmlPages("library"),
-  ...collectHtmlPages("cases"),
-  ...collectHtmlPages("handbook"),
-  ...collectHtmlPages("evidence")
+  ...sitemapDirectories.flatMap(collectHtmlPages)
 ]));
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

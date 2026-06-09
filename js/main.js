@@ -56,6 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 { label: "Markdown 工具", href: "tools/markdown_to_word.html", desc: "Markdown 转换与排版" },
                 { label: "Python 学习", href: "tools/python_nav.html", desc: "Python 内容导航" },
                 { label: "深度学习", href: "tools/deep_learning.html", desc: "学习路径与资料入口" },
+                { label: "复试抽题", href: "test.html", desc: "专业课随机抽题练习" },
                 { label: "简历制作", href: "tools/resume_builder.html", desc: "结构化简历编辑工具" }
             ]
         },
@@ -255,6 +256,7 @@ document.addEventListener("DOMContentLoaded", function () {
             { label: "材料库", desc: "CV、论文、项目证据和升学资料", href: "materials.html", icon: "fa-box-archive" },
             { label: "博客文章", desc: "升学经验、技术笔记和写作证明", href: "blog.html", icon: "fa-pen-nib" },
             { label: "AI助手", desc: "本地历史记录和文档问答", href: "ai.html", icon: "fa-wand-magic-sparkles" },
+            { label: "复试抽题", desc: "专业课随机抽题练习", href: "test.html", icon: "fa-shuffle" },
             { label: "简历制作", desc: "在线简历工具原型", href: "tools/resume_builder.html", icon: "fa-file-signature" }
         ];
 
@@ -364,6 +366,52 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    function initPageEnhancements() {
+        const main = document.querySelector("main");
+        if (main && !main.querySelector(".page-side-rail")) {
+            const rail = document.createElement("aside");
+            rail.className = "page-side-rail";
+            rail.setAttribute("aria-label", "页面快速定位");
+
+            const headings = Array.from(main.querySelectorAll("h2"))
+                .filter((heading) => heading.textContent.trim().length > 0)
+                .slice(0, 8);
+            if (headings.length >= 2) {
+                rail.innerHTML = `
+                    <div class="rail-title">On this page</div>
+                    ${headings.map((heading, index) => {
+                        if (!heading.id) heading.id = `section-${index + 1}`;
+                        return `<a href="#${heading.id}">${heading.textContent.trim()}</a>`;
+                    }).join("")}
+                `;
+                main.appendChild(rail);
+            }
+        }
+
+        const revealItems = document.querySelectorAll(".section-band, .surface-card, .project-showcase, .publication-card, .handbook-section, .evidence-section, .blog-card, .timeline-card, .metric-card, .material-card, .capability-card");
+        revealItems.forEach((item, index) => {
+            item.classList.add("reveal-ready");
+            item.style.setProperty("--reveal-delay", `${Math.min(index, 8) * 35}ms`);
+        });
+
+        if ("IntersectionObserver" in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add("reveal-in");
+                    observer.unobserve(entry.target);
+                });
+            }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
+            revealItems.forEach((item) => observer.observe(item));
+        } else {
+            revealItems.forEach((item) => item.classList.add("reveal-in"));
+        }
+
+        document.querySelectorAll(".publication-card, .project-showcase, .surface-card, .material-card, .capability-card, .blog-card").forEach((card) => {
+            card.classList.add("premium-surface");
+        });
+    }
+
     enhanceNavigation();
     initHeaderState();
     markActiveNav();
@@ -373,4 +421,5 @@ document.addEventListener("DOMContentLoaded", function () {
     initCommandPalette();
     initScrollTopButton();
     initContactValidation();
+    initPageEnhancements();
 });
