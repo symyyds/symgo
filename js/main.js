@@ -121,7 +121,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
         groups.forEach((group) => {
             const button = group.querySelector(".nav-group-toggle");
+            let hoverTimer;
             if (!button) return;
+            function openGroup() {
+                clearTimeout(hoverTimer);
+                closeGroups(group);
+                group.classList.add("open");
+                button.setAttribute("aria-expanded", "true");
+            }
+
+            function queueCloseGroup() {
+                clearTimeout(hoverTimer);
+                hoverTimer = setTimeout(() => {
+                    group.classList.remove("open");
+                    button.setAttribute("aria-expanded", "false");
+                }, 160);
+            }
+
+            group.addEventListener("mouseover", (event) => {
+                if (group.contains(event.relatedTarget)) return;
+                openGroup();
+            });
+            group.addEventListener("mouseout", (event) => {
+                if (group.contains(event.relatedTarget)) return;
+                queueCloseGroup();
+            });
             button.addEventListener("click", (event) => {
                 event.stopPropagation();
                 const willOpen = !group.classList.contains("open");

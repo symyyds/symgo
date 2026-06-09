@@ -123,6 +123,15 @@ body.site-shell {
     position: relative;
 }
 
+.site-shell .nav-group::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 14px;
+}
+
 .site-shell .nav-chevron {
     font-size: 0.7rem;
     transition: transform 0.18s ease;
@@ -952,6 +961,10 @@ body.site-shell {
 
     .site-shell .nav-group {
         position: static;
+    }
+
+    .site-shell .nav-group::after {
+        display: none;
     }
 
     .site-shell .nav-dropdown {
