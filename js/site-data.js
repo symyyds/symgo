@@ -11,7 +11,7 @@
             topic: "AI",
             abstract: "围绕学术履历、项目经历和文本材料的结构化抽取，设计可解释的表示学习流程，用于辅助简历增强与科研经历整理。",
             pdf: "files/papers/placeholder-profile-mining.pdf",
-            code: "projects.html#academic-profile",
+            code: "projects.html#academic-ai",
             tags: ["Representation Learning", "NLP", "Profile Mining"]
         },
         {

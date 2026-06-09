@@ -13,18 +13,30 @@ document.addEventListener("DOMContentLoaded", function () {
         const navList = document.querySelector("nav ul");
         if (!navList) return;
 
-        const existing = new Set(Array.from(navList.querySelectorAll("a")).map((link) => link.getAttribute("href")));
+        function normalizeHref(href) {
+            if (!href || href === "#") return href;
+            try {
+                const url = new URL(href, window.location.href);
+                return url.pathname.split("/").filter(Boolean).join("/") || "index.html";
+            } catch (error) {
+                return href.split("#")[0].split("?")[0];
+            }
+        }
+
+        const existing = new Set(Array.from(navList.querySelectorAll("a")).map((link) => normalizeHref(link.getAttribute("href"))));
 
         function insertItem(href, label, beforeSelector) {
-            if (existing.has(href) || existing.has(prefix + href)) return;
+            const targetHref = prefix + href;
+            const normalizedTarget = normalizeHref(targetHref);
+            if (existing.has(normalizedTarget)) return;
             const li = document.createElement("li");
             const a = document.createElement("a");
-            a.href = prefix + href;
+            a.href = targetHref;
             a.textContent = label;
             li.appendChild(a);
             const before = beforeSelector ? navList.querySelector(beforeSelector)?.parentElement : null;
             navList.insertBefore(li, before || null);
-            existing.add(prefix + href);
+            existing.add(normalizedTarget);
         }
 
         insertItem("profile.html", "档案", 'a[href$="publications.html"]');
@@ -32,6 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
         insertItem("research.html", "研究", 'a[href$="publications.html"]');
         insertItem("achievements.html", "成就", 'a[href$="projects.html"]');
         insertItem("handbook/index.html", "手册", 'a[href$="materials.html"]');
+        insertItem("evidence/index.html", "证据", 'a[href$="materials.html"]');
         insertItem("materials.html", "材料", 'a[href$="blog.html"]');
     }
 
@@ -49,17 +62,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function markActiveNav() {
         const pathParts = window.location.pathname.split("/").filter(Boolean);
+        const currentPath = pathParts.join("/") || "index.html";
         const currentPage = pathParts[pathParts.length - 1] || "index.html";
-        const currentSection = pathParts.length > 1 ? pathParts[pathParts.length - 2] : "";
+        const currentTopSection = currentPath.includes("/") ? currentPath.split("/")[0] : "";
+
+        function normalizePath(href) {
+            if (!href || href === "#") return href;
+            try {
+                const url = new URL(href, window.location.href);
+                return url.pathname.split("/").filter(Boolean).join("/") || "index.html";
+            } catch (error) {
+                return href.split("#")[0].split("?")[0];
+            }
+        }
 
         document.querySelectorAll("nav ul li a").forEach((link) => {
             const href = link.getAttribute("href") || "";
-            const normalized = href.split("/").pop();
-            const isHome = currentPage === "" && normalized === "index.html";
-            const isBlogChild = currentSection === "blog" && normalized === "blog.html";
-            const isToolChild = currentSection === "tools" && normalized === currentPage;
-            const isToolMenu = currentSection === "tools" && href === "#";
-            link.classList.toggle("active", normalized === currentPage || isHome || isBlogChild || isToolChild || isToolMenu);
+            const targetPath = normalizePath(href);
+            const targetTopSection = targetPath.includes("/") ? targetPath.split("/")[0] : "";
+            const isExact = targetPath === currentPath;
+            const isHome = currentPath === "index.html" && targetPath === "index.html";
+            const isSectionIndex = currentTopSection && targetPath === `${currentTopSection}/index.html`;
+            const isBlogChild = currentTopSection === "blog" && targetPath === "blog.html";
+            const isToolChild = currentTopSection === "tools" && targetPath === currentPath;
+            const isToolMenu = currentTopSection === "tools" && href === "#";
+            const isGeneratedSection = ["library", "cases", "handbook", "evidence"].includes(currentTopSection) && targetTopSection === currentTopSection;
+            link.classList.toggle("active", isExact || isHome || isSectionIndex || isBlogChild || isToolChild || isToolMenu || isGeneratedSection);
         });
     }
 
