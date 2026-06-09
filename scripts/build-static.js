@@ -28,8 +28,8 @@ const rootFiles = [
   "sitemap.xml",
 ];
 
-const directories = ["css", "js", "images", "files", "blog", "tools", "library", "cases"];
-const sitePages = [
+const directories = ["css", "js", "images", "files", "blog", "tools", "library", "cases", "handbook", "evidence"];
+const baseSitePages = [
   "",
   "dashboard.html",
   "profile.html",
@@ -41,6 +41,8 @@ const sitePages = [
   "interview.html",
   "library/",
   "cases/",
+  "handbook/",
+  "evidence/",
   "publications.html",
   "projects.html",
   "materials.html",
@@ -69,6 +71,18 @@ function copyDir(relativePath) {
   fs.cpSync(from, to, { recursive: true });
 }
 
+function collectHtmlPages(relativeDir) {
+  const from = path.join(root, relativeDir);
+  if (!fs.existsSync(from)) return [];
+
+  return fs.readdirSync(from, { recursive: true })
+    .filter((file) => file.endsWith(".html"))
+    .map((file) => {
+      const page = `${relativeDir}/${file.split(path.sep).join("/")}`;
+      return page.endsWith("/index.html") ? page.replace(/index\.html$/, "") : page;
+    });
+}
+
 function rewriteHtmlUrls(siteUrl) {
   for (const file of fs.readdirSync(outDir, { recursive: true })) {
     if (!file.endsWith(".html")) continue;
@@ -85,9 +99,16 @@ directories.forEach(copyDir);
 
 const siteUrl = (process.env.URL || process.env.DEPLOY_PRIME_URL || "https://symgo.netlify.app").replace(/\/$/, "");
 rewriteHtmlUrls(siteUrl);
+const sitePages = Array.from(new Set([
+  ...baseSitePages,
+  ...collectHtmlPages("library"),
+  ...collectHtmlPages("cases"),
+  ...collectHtmlPages("handbook"),
+  ...collectHtmlPages("evidence")
+]));
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${sitePages.map((page) => `  <url><loc>${siteUrl}/${page}</loc><priority>${page ? "0.8" : "1.0"}</priority></url>`).join("\n")}
+${sitePages.map((page) => `  <url><loc>${siteUrl}/${encodeURI(page)}</loc><priority>${page ? "0.8" : "1.0"}</priority></url>`).join("\n")}
 </urlset>
 `;
 fs.writeFileSync(path.join(outDir, "sitemap.xml"), sitemap, "utf8");

@@ -1,6 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const isNestedPage = window.location.pathname.includes("/blog/") || window.location.pathname.includes("/tools/");
-    const prefix = isNestedPage ? "../" : "";
+    function getAssetPrefix() {
+        const pathParts = window.location.pathname.split("/").filter(Boolean);
+        if (!pathParts.length) return "";
+        const lastPart = pathParts[pathParts.length - 1];
+        const depth = lastPart.includes(".") ? pathParts.length - 1 : pathParts.length;
+        return depth > 0 ? "../".repeat(depth) : "";
+    }
+
+    const prefix = getAssetPrefix();
 
     function enhanceNavigation() {
         const navList = document.querySelector("nav ul");
@@ -24,6 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
         insertItem("dashboard.html", "仪表盘", 'a[href$="profile.html"]');
         insertItem("research.html", "研究", 'a[href$="publications.html"]');
         insertItem("achievements.html", "成就", 'a[href$="projects.html"]');
+        insertItem("handbook/index.html", "手册", 'a[href$="materials.html"]');
         insertItem("materials.html", "材料", 'a[href$="blog.html"]');
     }
 
@@ -102,6 +110,8 @@ document.addEventListener("DOMContentLoaded", function () {
             { label: "面试故事库", desc: "STAR 结构项目复盘", href: "interview.html", icon: "fa-comments" },
             { label: "作品集知识库", desc: "项目深挖、研究笔记、FAQ 和更新日志", href: "library/index.html", icon: "fa-book-open" },
             { label: "案例备忘录", desc: "20 个模块级案例复盘", href: "cases/index.html", icon: "fa-layer-group" },
+            { label: "扩展手册", desc: "工程、研究、求职、合作、内容和产品化专题", href: "handbook/index.html", icon: "fa-book" },
+            { label: "证据档案库", desc: "项目、论文、合作和申请材料的证据链", href: "evidence/index.html", icon: "fa-boxes-stacked" },
             { label: "论文发表", desc: "论文、级别、PDF 与相关项目", href: "publications.html", icon: "fa-file-lines" },
             { label: "项目展示", desc: "工程项目与横向项目 case study", href: "projects.html", icon: "fa-diagram-project" },
             { label: "材料库", desc: "CV、论文、项目证据和升学资料", href: "materials.html", icon: "fa-box-archive" },
