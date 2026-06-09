@@ -28,7 +28,7 @@ const rootFiles = [
   "sitemap.xml",
 ];
 
-const directories = ["css", "js", "images", "files", "blog", "tools"];
+const directories = ["css", "js", "images", "files", "blog", "tools", "library", "cases"];
 const sitePages = [
   "",
   "dashboard.html",
@@ -39,6 +39,8 @@ const sitePages = [
   "services.html",
   "roadmap.html",
   "interview.html",
+  "library/",
+  "cases/",
   "publications.html",
   "projects.html",
   "materials.html",

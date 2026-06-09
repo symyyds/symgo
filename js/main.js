@@ -100,6 +100,8 @@ document.addEventListener("DOMContentLoaded", function () {
             { label: "合作与能力服务", desc: "可提供的原型、材料和展示能力", href: "services.html", icon: "fa-handshake" },
             { label: "路线图", desc: "下一步材料替换和能力升级计划", href: "roadmap.html", icon: "fa-route" },
             { label: "面试故事库", desc: "STAR 结构项目复盘", href: "interview.html", icon: "fa-comments" },
+            { label: "作品集知识库", desc: "项目深挖、研究笔记、FAQ 和更新日志", href: "library/index.html", icon: "fa-book-open" },
+            { label: "案例备忘录", desc: "20 个模块级案例复盘", href: "cases/index.html", icon: "fa-layer-group" },
             { label: "论文发表", desc: "论文、级别、PDF 与相关项目", href: "publications.html", icon: "fa-file-lines" },
             { label: "项目展示", desc: "工程项目与横向项目 case study", href: "projects.html", icon: "fa-diagram-project" },
             { label: "材料库", desc: "CV、论文、项目证据和升学资料", href: "materials.html", icon: "fa-box-archive" },
