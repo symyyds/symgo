@@ -11,6 +11,7 @@
             topic: "Machine Learning",
             abstract: "基于麻雀搜索算法优化随机森林模型，用于体重类别预测；围绕年龄、身高、体重和 BMI 等特征完成相关性分析，并对传统随机森林与优化模型的预测效果进行比较。",
             pdf: "files/papers/sun-2024-sparrow-random-forest-weight-class.pdf",
+            cover: "images/publications/sun-2024-sparrow-random-forest-weight-class.png",
             code: "https://www.ewadirect.com/proceedings/ace/article/view/14846",
             doi: "10.54254/2755-2721/69/20241624",
             tags: ["Random Forest", "Sparrow Search Algorithm", "BMI", "Classification"]
@@ -26,6 +27,7 @@
             topic: "AI",
             abstract: "围绕学术履历、项目经历和文本材料的结构化抽取，设计可解释的表示学习流程，用于辅助简历增强与科研经历整理。",
             pdf: "files/papers/placeholder-profile-mining.pdf",
+            cover: "images/publications/placeholder-profile-mining.png",
             code: "projects.html#academic-ai",
             tags: ["Representation Learning", "NLP", "Profile Mining"]
         },
@@ -40,6 +42,7 @@
             topic: "Software Engineering",
             abstract: "将保研、考研复试和求职准备中的材料清单、项目陈述、问答准备整合为可复用工具链，强调低成本维护和可迁移展示。",
             pdf: "files/papers/placeholder-toolkit.pdf",
+            cover: "images/publications/placeholder-toolkit.png",
             code: "projects.html#interview-toolkit",
             tags: ["Knowledge Management", "Tooling", "Static Web"]
         },
@@ -54,6 +57,7 @@
             topic: "Human-Computer Interaction",
             abstract: "讨论个人网站在求职、申博、科研合作中的补充作用，并给出论文、项目、博客、资料下载等模块的内容组织建议。",
             pdf: "files/papers/placeholder-portfolio.pdf",
+            cover: "images/publications/placeholder-portfolio.png",
             code: "index.html",
             tags: ["Portfolio", "HCI", "Personal Website"]
         }
@@ -466,6 +470,25 @@
         summary.innerHTML = `<i class="fas fa-filter"></i><span>当前显示 <strong>${visible}</strong> / ${total} ${label}</span>`;
     }
 
+    function renderPublicationPreview(item) {
+        const label = `${item.title} 论文第一页截图`;
+        if (item.cover) {
+            return `
+                <a class="publication-preview" href="${item.pdf}" target="_blank" rel="noopener noreferrer" aria-label="打开 ${item.title} PDF">
+                    <img src="${item.cover}" alt="${label}" loading="eager" decoding="async">
+                    <span><i class="fas fa-file-pdf"></i> 查看全文</span>
+                </a>
+            `;
+        }
+
+        return `
+            <a class="publication-preview placeholder" href="${item.pdf}" target="_blank" rel="noopener noreferrer" aria-label="打开 ${item.title} PDF">
+                <i class="fas fa-file-pdf"></i>
+                <span>PDF 预览待补充</span>
+            </a>
+        `;
+    }
+
     function renderPublications() {
         const root = document.querySelector("[data-publications]");
         if (!root) return;
@@ -496,25 +519,28 @@
 
             root.innerHTML = filtered.map((item) => `
                 <article class="publication-card" data-year="${item.year}" data-type="${item.type}">
-                    <div class="publication-top">
-                        <div>
-                            <div class="resume-date">${item.year} · ${item.role}</div>
-                            <h2 class="publication-title">${item.title}</h2>
-                            <p><strong>${item.authors}</strong></p>
-                            <p>${item.venue}</p>
+                    ${renderPublicationPreview(item)}
+                    <div class="publication-body">
+                        <div class="publication-top">
+                            <div>
+                                <div class="resume-date">${item.year} · ${item.role}</div>
+                                <h2 class="publication-title">${item.title}</h2>
+                                <p><strong>${item.authors}</strong></p>
+                                <p>${item.venue}</p>
+                            </div>
+                            <span class="pill level">${item.level}</span>
                         </div>
-                        <span class="pill level">${item.level}</span>
-                    </div>
-                    <div class="tag-row">
-                        <span class="pill status">${item.type}</span>
-                        <span class="pill">${item.topic}</span>
-                        ${item.tags.map((tag) => `<span class="pill">${tag}</span>`).join("")}
-                    </div>
-                    <p>${item.abstract}</p>
-                    <div class="publication-actions">
-                        <a class="text-link" href="${item.pdf}" target="_blank" rel="noopener noreferrer"><i class="fas fa-file-pdf"></i> PDF</a>
-                        <a class="text-link" href="${item.code}" ${item.code.startsWith("http") ? 'target="_blank" rel="noopener noreferrer"' : ""}><i class="fas ${item.code.startsWith("http") ? "fa-arrow-up-right-from-square" : "fa-diagram-project"}"></i> ${item.code.startsWith("http") ? "论文官网" : "相关项目"}</a>
-                        ${item.doi ? `<a class="text-link" href="https://doi.org/${item.doi}" target="_blank" rel="noopener noreferrer"><i class="fas fa-fingerprint"></i> DOI</a>` : ""}
+                        <div class="tag-row">
+                            <span class="pill status">${item.type}</span>
+                            <span class="pill">${item.topic}</span>
+                            ${item.tags.map((tag) => `<span class="pill">${tag}</span>`).join("")}
+                        </div>
+                        <p>${item.abstract}</p>
+                        <div class="publication-actions">
+                            <a class="text-link" href="${item.pdf}" target="_blank" rel="noopener noreferrer"><i class="fas fa-file-pdf"></i> PDF 全文</a>
+                            <a class="text-link" href="${item.code}" ${item.code.startsWith("http") ? 'target="_blank" rel="noopener noreferrer"' : ""}><i class="fas ${item.code.startsWith("http") ? "fa-arrow-up-right-from-square" : "fa-diagram-project"}"></i> ${item.code.startsWith("http") ? "论文官网" : "相关项目"}</a>
+                            ${item.doi ? `<a class="text-link" href="https://doi.org/${item.doi}" target="_blank" rel="noopener noreferrer"><i class="fas fa-fingerprint"></i> DOI</a>` : ""}
+                        </div>
                     </div>
                 </article>
             `).join("");
