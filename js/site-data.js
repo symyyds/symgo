@@ -1,6 +1,21 @@
 (function () {
     const publications = [
         {
+            year: "2024",
+            type: "proceedings",
+            level: "Proceedings / Applied and Computational Engineering",
+            title: "Weight class prediction based on sparrow search algorithm optimised random forest model",
+            authors: "Yuanming Sun",
+            venue: "Applied and Computational Engineering, Vol. 69, pp. 109-115, 2024",
+            role: "作者",
+            topic: "Machine Learning",
+            abstract: "基于麻雀搜索算法优化随机森林模型，用于体重类别预测；围绕年龄、身高、体重和 BMI 等特征完成相关性分析，并对传统随机森林与优化模型的预测效果进行比较。",
+            pdf: "files/papers/sun-2024-sparrow-random-forest-weight-class.pdf",
+            code: "https://www.ewadirect.com/proceedings/ace/article/view/14846",
+            doi: "10.54254/2755-2721/69/20241624",
+            tags: ["Random Forest", "Sparrow Search Algorithm", "BMI", "Classification"]
+        },
+        {
             year: "2026",
             type: "preprint",
             level: "预印本 / 投稿准备",
@@ -240,10 +255,10 @@
         {
             type: "paper",
             typeLabel: "论文材料",
-            title: "论文 PDF 占位包",
-            description: "用于展示论文详情页的文件结构，真实论文可直接放入 files/papers/ 并替换链接。",
+            title: "论文 PDF 与占位包",
+            description: "已接入一篇真实论文 PDF，其余占位论文可继续替换为正式发表版本、DOI、代码和数据集。",
             href: "publications.html",
-            status: "占位可替换",
+            status: "真实论文已接入",
             tags: ["Publication", "PDF", "Research"]
         },
         {
@@ -311,7 +326,7 @@
     const dashboardStats = [
         { label: "核心页面", value: "11", desc: "首页、档案、研究、论文、项目、材料、仪表盘、成就、服务、路线图、博客" },
         { label: "项目档案", value: "6", desc: "4 个工程项目 + 2 个横向项目" },
-        { label: "材料入口", value: "8", desc: "CV、论文、项目证据、升学资料、工具和写作证明" },
+        { label: "论文/手稿", value: "4", desc: "1 篇真实 proceedings 论文 + 3 个可替换展示位" },
         { label: "发布质量", value: "A", desc: "白名单构建、SEO、404、headers、manifest、sitemap" }
     ];
 
@@ -498,7 +513,8 @@
                     <p>${item.abstract}</p>
                     <div class="publication-actions">
                         <a class="text-link" href="${item.pdf}" target="_blank" rel="noopener noreferrer"><i class="fas fa-file-pdf"></i> PDF</a>
-                        <a class="text-link" href="${item.code}"><i class="fas fa-diagram-project"></i> 相关项目</a>
+                        <a class="text-link" href="${item.code}" ${item.code.startsWith("http") ? 'target="_blank" rel="noopener noreferrer"' : ""}><i class="fas ${item.code.startsWith("http") ? "fa-arrow-up-right-from-square" : "fa-diagram-project"}"></i> ${item.code.startsWith("http") ? "论文官网" : "相关项目"}</a>
+                        ${item.doi ? `<a class="text-link" href="https://doi.org/${item.doi}" target="_blank" rel="noopener noreferrer"><i class="fas fa-fingerprint"></i> DOI</a>` : ""}
                     </div>
                 </article>
             `).join("");
