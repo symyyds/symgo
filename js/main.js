@@ -524,6 +524,28 @@ document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".publication-card, .project-showcase, .surface-card, .material-card, .capability-card, .blog-card").forEach((card) => {
             card.classList.add("premium-surface");
         });
+
+        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && window.matchMedia("(pointer: fine)").matches) {
+            document.querySelectorAll(".premium-surface").forEach((card) => {
+                if (card.dataset.tiltReady === "true") return;
+                card.dataset.tiltReady = "true";
+                card.addEventListener("pointermove", (event) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+                    const y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+                    card.style.setProperty("--tilt-x", `${(-y * 3).toFixed(2)}deg`);
+                    card.style.setProperty("--tilt-y", `${(x * 3).toFixed(2)}deg`);
+                    card.style.setProperty("--glow-x", `${event.clientX - rect.left}px`);
+                    card.style.setProperty("--glow-y", `${event.clientY - rect.top}px`);
+                }, { passive: true });
+                card.addEventListener("pointerleave", () => {
+                    card.style.setProperty("--tilt-x", "0deg");
+                    card.style.setProperty("--tilt-y", "0deg");
+                    card.style.removeProperty("--glow-x");
+                    card.style.removeProperty("--glow-y");
+                });
+            });
+        }
     }
 
     function refreshEnhancements() {
