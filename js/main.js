@@ -313,7 +313,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="command-dialog" role="dialog" aria-modal="true" aria-label="快速导航">
                 <div class="command-head">
                     <i class="fas fa-magnifying-glass"></i>
-                    <input type="search" placeholder="搜索页面、材料、项目或功能">
+                    <input type="search" aria-label="搜索页面、材料、项目或功能" placeholder="搜索页面、材料、项目或功能">
                     <button type="button" aria-label="关闭"><i class="fas fa-xmark"></i></button>
                 </div>
                 <div class="command-results"></div>
