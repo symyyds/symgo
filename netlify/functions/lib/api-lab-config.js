@@ -912,6 +912,229 @@ const liveApis = [
         }
     },
     {
+        id: "github-search-portfolio",
+        title: "GitHub Repository Search API",
+        source: "GitHub Search",
+        category: "portfolio",
+        icon: "fa-magnifying-glass-chart",
+        publicApisCategory: "Development",
+        purpose: "Search JavaScript portfolio repositories to benchmark project presentation, naming and technology keywords.",
+        endpoint: "https://api.github.com/search/repositories?q=portfolio%20language:javascript&per_page=3",
+        docs: "https://docs.github.com/en/rest/search/search#search-repositories",
+        parse(data) {
+            const items = data.items || [];
+            const first = items[0] || {};
+            return {
+                summary: `GitHub found ${data.total_count || items.length || 0} JavaScript portfolio repositories`,
+                facts: [
+                    ["Repository", first.full_name || "--"],
+                    ["Stars", first.stargazers_count ?? "--"],
+                    ["Language", first.language || "JavaScript"]
+                ]
+            };
+        }
+    },
+    {
+        id: "arxiv-random-forest",
+        title: "arXiv Search API",
+        source: "arXiv",
+        category: "research",
+        icon: "fa-scroll",
+        publicApisCategory: "Science & Math",
+        purpose: "Search random forest preprints for research trend tracking and citation discovery.",
+        endpoint: "https://export.arxiv.org/api/query?search_query=all:random%20forest&start=0&max_results=3",
+        docs: "https://info.arxiv.org/help/api/index.html",
+        parse(data) {
+            const text = typeof data === "string" ? data : "";
+            const total = (text.match(/<entry>/g) || []).length;
+            const title = (text.match(/<entry>[\s\S]*?<title>([\s\S]*?)<\/title>/) || [])[1];
+            const published = (text.match(/<entry>[\s\S]*?<published>(.*?)<\/published>/) || [])[1];
+            return {
+                summary: `arXiv returned ${total} random forest preprints`,
+                facts: [
+                    ["Title", trimText((title || "").replace(/\s+/g, " "), 74) || "--"],
+                    ["Published", formatDate(published)],
+                    ["Use", "Research trends"]
+                ]
+            };
+        }
+    },
+    {
+        id: "world-bank-education",
+        title: "World Bank Education Indicator",
+        source: "World Bank",
+        category: "data",
+        icon: "fa-earth-asia",
+        publicApisCategory: "Open Data",
+        purpose: "Read education investment indicators for application planning, international context and research background.",
+        endpoint: "https://api.worldbank.org/v2/country/CN/indicator/SE.XPD.TOTL.GD.ZS?format=json&per_page=3",
+        docs: "https://datahelpdesk.worldbank.org/knowledgebase/topics/125589-developer-information",
+        parse(data) {
+            const rows = Array.isArray(data?.[1]) ? data[1] : [];
+            const first = rows.find((row) => row.value !== null) || rows[0] || {};
+            return {
+                summary: `World Bank education indicator returned ${data?.[0]?.total || rows.length || 0} records`,
+                facts: [
+                    ["Country", first.country?.value || "China"],
+                    ["Year", first.date || "--"],
+                    ["Value", first.value === null || first.value === undefined ? "--" : Number(first.value).toFixed(2)]
+                ]
+            };
+        }
+    },
+    {
+        id: "open-trivia-cs",
+        title: "Open Trivia Computer Science API",
+        source: "Open Trivia DB",
+        category: "utility",
+        icon: "fa-circle-question",
+        publicApisCategory: "Games & Comics",
+        purpose: "Generate computer science quiz questions for interview drills, blog interaction and learning widgets.",
+        endpoint: "https://opentdb.com/api.php?amount=3&category=18&type=multiple",
+        docs: "https://opentdb.com/api_config.php",
+        parse(data) {
+            const questions = data.results || [];
+            const first = questions[0] || {};
+            return {
+                summary: `Open Trivia returned ${questions.length} computer science questions`,
+                facts: [
+                    ["Difficulty", first.difficulty || "--"],
+                    ["Question", trimText(first.question, 80) || "--"],
+                    ["Answer", trimText(first.correct_answer, 50) || "--"]
+                ]
+            };
+        }
+    },
+    {
+        id: "frankfurter-rates",
+        title: "Frankfurter Exchange Rates API",
+        source: "Frankfurter",
+        category: "data",
+        icon: "fa-money-bill-transfer",
+        publicApisCategory: "Finance",
+        purpose: "Read USD to CNY/EUR exchange rates for conference budgets, application costs and collaboration estimates.",
+        endpoint: "https://api.frankfurter.app/latest?from=USD&to=CNY,EUR",
+        docs: "https://www.frankfurter.app/docs/",
+        parse(data) {
+            return {
+                summary: `1 ${data.base || "USD"} = ${data.rates?.CNY ?? "--"} CNY / ${data.rates?.EUR ?? "--"} EUR`,
+                facts: [
+                    ["Date", data.date || "--"],
+                    ["CNY", data.rates?.CNY ?? "--"],
+                    ["EUR", data.rates?.EUR ?? "--"]
+                ]
+            };
+        }
+    },
+    {
+        id: "ipapi-context",
+        title: "ipapi Visitor Context API",
+        source: "ipapi",
+        category: "utility",
+        icon: "fa-location-crosshairs",
+        publicApisCategory: "Geocoding",
+        purpose: "Read coarse visitor network and geography context for contact pages, dashboards and deployment diagnostics.",
+        endpoint: "https://ipapi.co/json/",
+        docs: "https://ipapi.co/api/",
+        parse(data) {
+            return {
+                summary: `${data.city || "Unknown city"} · ${data.country_name || data.country || "Unknown country"}`,
+                facts: [
+                    ["Region", [data.city, data.region].filter(Boolean).join(", ") || "--"],
+                    ["Country", data.country_name || data.country || "--"],
+                    ["Network", trimText(data.org, 58) || "--"]
+                ]
+            };
+        }
+    },
+    {
+        id: "agify-name",
+        title: "Agify Name Statistics API",
+        source: "Agify",
+        category: "data",
+        icon: "fa-chart-simple",
+        publicApisCategory: "Data Validation",
+        purpose: "Demonstrate lightweight statistical APIs for prototype forms, resume tools and mock profile validation.",
+        endpoint: "https://api.agify.io?name=sun",
+        docs: "https://agify.io/",
+        parse(data) {
+            return {
+                summary: `Name ${data.name || "sun"} has estimated age ${data.age ?? "--"}`,
+                facts: [
+                    ["Samples", data.count ?? "--"],
+                    ["Age", data.age ?? "--"],
+                    ["Use", "Prototype data"]
+                ]
+            };
+        }
+    },
+    {
+        id: "genderize-name",
+        title: "Genderize Name Statistics API",
+        source: "Genderize",
+        category: "data",
+        icon: "fa-percent",
+        publicApisCategory: "Data Validation",
+        purpose: "Demonstrate probability-based API responses for bias discussion, statistical inference and prototype validation.",
+        endpoint: "https://api.genderize.io?name=sun",
+        docs: "https://genderize.io/",
+        parse(data) {
+            return {
+                summary: `Name ${data.name || "sun"} gender statistic: ${data.gender || "unknown"} ${data.probability ?? "--"}`,
+                facts: [
+                    ["Samples", data.count ?? "--"],
+                    ["Probability", data.probability ?? "--"],
+                    ["Note", "Not identity data"]
+                ]
+            };
+        }
+    },
+    {
+        id: "nationalize-name",
+        title: "Nationalize Name Statistics API",
+        source: "Nationalize",
+        category: "data",
+        icon: "fa-globe",
+        publicApisCategory: "Data Validation",
+        purpose: "Return country probabilities for a name, useful for discussing data bias and internationalized prototypes.",
+        endpoint: "https://api.nationalize.io?name=sun",
+        docs: "https://nationalize.io/",
+        parse(data) {
+            const countries = data.country || [];
+            const first = countries[0] || {};
+            return {
+                summary: `Name ${data.name || "sun"} returned ${countries.length} country probability samples`,
+                facts: [
+                    ["Top country", first.country_id || "--"],
+                    ["Probability", first.probability ?? "--"],
+                    ["Samples", data.count ?? "--"]
+                ]
+            };
+        }
+    },
+    {
+        id: "nager-date-us",
+        title: "Nager.Date US Holidays API",
+        source: "Nager.Date",
+        category: "utility",
+        icon: "fa-calendar-check",
+        publicApisCategory: "Calendar",
+        purpose: "Add US holiday information for application plans, conference timelines and cross-time-zone collaboration.",
+        endpoint: "https://date.nager.at/api/v3/PublicHolidays/2026/US",
+        docs: "https://date.nager.at/Api",
+        parse(data) {
+            const first = data[0] || {};
+            return {
+                summary: `US 2026 public holidays: ${data.length || 0}`,
+                facts: [
+                    ["First", first.localName || first.name || "--"],
+                    ["Date", first.date || "--"],
+                    ["Country", first.countryCode || "US"]
+                ]
+            };
+        }
+    },
+    {
         id: "jsonplaceholder",
         title: "JSONPlaceholder API",
         source: "JSONPlaceholder",
@@ -1069,56 +1292,56 @@ const apiGroups = {
         description: "把 GitHub、论文、岗位和写作趋势压缩成首页可扫描的公开数据证据。",
         page: "index.html",
         icon: "fa-satellite-dish",
-        ids: ["github-repo", "github-user", "github-commits", "crossref-paper", "openalex-work", "remotive-jobs", "hacker-news", "npm-registry"]
+        ids: ["github-repo", "github-user", "github-commits", "github-search-portfolio", "crossref-paper", "openalex-work", "remotive-jobs", "hacker-news", "npm-registry", "frankfurter-rates"]
     },
     publications: {
         title: "论文学术元数据核验",
         description: "用 Crossref、OpenAlex、Semantic Scholar、DBLP 等公开学术 API 补充论文出处、引用、索引和数据集线索。",
         page: "publications.html",
         icon: "fa-file-circle-check",
-        ids: ["crossref-paper", "openalex-work", "semantic-scholar", "dblp", "europe-pmc", "zenodo", "openml-datasets"]
+        ids: ["crossref-paper", "openalex-work", "semantic-scholar", "dblp", "europe-pmc", "zenodo", "openml-datasets", "arxiv-random-forest", "world-bank-education"]
     },
     projects: {
         title: "工程项目外部信号",
         description: "用 GitHub、npm、PyPI、Stack Overflow 和 CDN API 证明项目不是孤立页面，而是连接真实开发生态。",
         page: "projects.html",
         icon: "fa-code-branch",
-        ids: ["github-repo", "github-commits", "github-contents", "cdnjs", "npm-registry", "pypi-package", "stackexchange", "sampleapis-coding", "jsonplaceholder"]
+        ids: ["github-repo", "github-commits", "github-contents", "github-search-portfolio", "cdnjs", "npm-registry", "pypi-package", "stackexchange", "sampleapis-coding", "open-trivia-cs", "jsonplaceholder"]
     },
     blog: {
         title: "博客写作趋势雷达",
         description: "用 HN、DEV.to、Datamuse、词典、翻译和网页元信息 API 服务选题、术语和引用卡片。",
         page: "blog.html",
         icon: "fa-pen-nib",
-        ids: ["hacker-news", "devto-articles", "datamuse", "dictionary", "mymemory-translate", "microlink"]
+        ids: ["hacker-news", "devto-articles", "datamuse", "dictionary", "mymemory-translate", "microlink", "open-trivia-cs"]
     },
     research: {
         title: "研究开放数据窗口",
         description: "把开放科学、航天、地震、NASA 图像和机器学习数据集接入研究方向页，展示跨源数据理解能力。",
         page: "research.html",
         icon: "fa-microscope",
-        ids: ["launch-library", "usgs-earthquakes", "nasa-images", "openml-datasets", "zenodo", "europe-pmc", "openalex-work"]
+        ids: ["launch-library", "usgs-earthquakes", "nasa-images", "openml-datasets", "zenodo", "europe-pmc", "openalex-work", "arxiv-random-forest", "world-bank-education"]
     },
     profile: {
         title: "职业与协作环境信号",
         description: "把岗位、公司、日程、时间和地理信息 API 接到个人档案页，说明求职申博材料可以接入真实外部上下文。",
         page: "profile.html",
         icon: "fa-user-check",
-        ids: ["remotive-jobs", "themuse-jobs", "randomuser", "fakerapi-persons", "nager-date", "timeapi", "open-meteo-geocoding"]
+        ids: ["remotive-jobs", "themuse-jobs", "randomuser", "fakerapi-persons", "nager-date", "nager-date-us", "timeapi", "open-meteo-geocoding", "ipapi-context"]
     },
     materials: {
         title: "材料库设计与演示数据",
         description: "用艺术、色彩、假数据、商品数据和天气 API 给材料库提供封面、标签、原型与环境信息素材。",
         page: "materials.html",
         icon: "fa-box-archive",
-        ids: ["art-institute", "color-api", "xcolors", "emojihub", "dummyjson-posts", "fakestore", "open-meteo", "jsonplaceholder"]
+        ids: ["art-institute", "color-api", "xcolors", "emojihub", "dummyjson-posts", "fakestore", "open-meteo", "agify-name", "genderize-name", "nationalize-name", "jsonplaceholder"]
     },
     dashboard: {
         title: "作品集运行状态抽样",
         description: "用少量代表性 API 给仪表盘提供实时健康抽样，不让仪表盘承担全量 40 个接口的请求压力。",
         page: "dashboard.html",
         icon: "fa-chart-line",
-        ids: ["github-repo", "crossref-paper", "npm-registry", "hacker-news", "open-meteo"]
+        ids: ["github-repo", "crossref-paper", "npm-registry", "hacker-news", "open-meteo", "frankfurter-rates", "ipapi-context"]
     }
 };
 

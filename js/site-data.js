@@ -170,7 +170,7 @@
             stack: ["public-apis", "Netlify Functions", "Serverless Proxy", "Static UI"],
             summary: "参考 public-apis/public-apis，把适合个人博客、论文展示、项目证据、求职申博和写作辅助的免费公开 API 接入成可实时测试、可跨页面复用的后端代理控制台。",
             work: [
-                "筛选 40 个和个人站相关的公开 API，覆盖 GitHub、Crossref、OpenAlex、岗位、开发生态、AI 数据集、词典、新闻、天气、开放数据、假数据和设计素材等场景。",
+                "筛选 50 个和个人站相关的公开 API，覆盖 GitHub、Crossref、OpenAlex、arXiv、岗位、开发生态、AI 数据集、词典、新闻、天气、汇率、教育开放数据、题库、假数据和设计素材等场景。",
                 "把 endpoint、解析器和请求头放到 Netlify Functions 后端白名单，前端页面只传 API id 或页面 group，不暴露任意外部 URL。",
                 "实现并发健康检查、请求超时、结果缓存、失败降级、分类筛选和关键词搜索，并把页面分组结果植入首页、论文、项目、博客、研究、档案、材料和仪表盘。"
             ],

@@ -11,6 +11,9 @@ const {
 
 const DEFAULT_TIMEOUT_MS = 9000;
 const MAX_ALL_CONCURRENCY = 4;
+const API_CACHE_TTL_MS = 5 * 60 * 1000;
+const apiCache = new Map();
+const apiInflight = new Map();
 
 function json(statusCode, body, extraHeaders = {}) {
     return {
@@ -70,12 +73,11 @@ async function fetchJson(api) {
         if (!response.ok) {
             throw new Error(`上游 HTTP ${response.status}`);
         }
-        if (!contentType.includes("json") && !text.trim().startsWith("{") && !text.trim().startsWith("[")) {
-            throw new Error(`上游不是 JSON：${contentType || "unknown content-type"}`);
-        }
+        const trimmed = text.trim();
+        const isJson = contentType.includes("json") || trimmed.startsWith("{") || trimmed.startsWith("[");
 
         return {
-            data: text ? JSON.parse(text) : null,
+            data: isJson && text ? JSON.parse(text) : text,
             latency: Date.now() - started,
             upstreamStatus: response.status
         };
@@ -85,27 +87,51 @@ async function fetchJson(api) {
 }
 
 async function fetchJsonWithRetry(api) {
-    try {
-        return await fetchJson(api);
-    } catch (error) {
-        const retryable = error.name === "AbortError" ||
-            /fetch|network|timeout|超时/i.test(error.message || "") ||
-            /HTTP 5\d\d/.test(error.message || "") ||
-            /上游 HTTP 5\d\d/.test(error.message || "");
-        if (!retryable) throw error;
-        await new Promise((resolve) => setTimeout(resolve, 350));
-        return fetchJson(api);
+    let lastError;
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+        try {
+            return await fetchJson(api);
+        } catch (error) {
+            lastError = error;
+            const retryable = error.name === "AbortError" ||
+                /fetch|network|timeout|超时/i.test(error.message || "") ||
+                /HTTP 5\d\d/.test(error.message || "") ||
+                /上游 HTTP 5\d\d/.test(error.message || "");
+            if (!retryable || attempt === 2) throw error;
+            await new Promise((resolve) => setTimeout(resolve, 350 * (attempt + 1)));
+        }
     }
+    throw lastError;
 }
 
 async function resolveApi(api) {
+    const cached = apiCache.get(api.id);
+    if (cached && Date.now() - cached.savedAt < API_CACHE_TTL_MS) {
+        return {
+            ...cached.result,
+            cached: true
+        };
+    }
+
+    if (apiInflight.has(api.id)) {
+        return apiInflight.get(api.id);
+    }
+
+    const promise = resolveApiFresh(api).finally(() => {
+        apiInflight.delete(api.id);
+    });
+    apiInflight.set(api.id, promise);
+    return promise;
+}
+
+async function resolveApiFresh(api) {
     const checkedAt = new Date().toISOString();
     const started = Date.now();
 
     try {
         const { data, latency, upstreamStatus } = await fetchJsonWithRetry(api);
         const parsed = api.parse(data);
-        return {
+        const result = {
             id: api.id,
             status: "ok",
             latency,
@@ -115,6 +141,11 @@ async function resolveApi(api) {
             checkedAt,
             source: "netlify-function"
         };
+        apiCache.set(api.id, {
+            savedAt: Date.now(),
+            result
+        });
+        return result;
     } catch (error) {
         return {
             id: api.id,

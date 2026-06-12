@@ -53,7 +53,10 @@ async function runWithConcurrency(items, concurrency, worker) {
     const response = await callFunction({ group: groupKey });
     return {
       groupKey,
-      ok: response.statusCode === 200 && response.body.status === "ok" && response.body.group?.total === apiGroups[groupKey].ids.length,
+      ok: response.statusCode === 200 &&
+        response.body.status === "ok" &&
+        response.body.group?.total === apiGroups[groupKey].ids.length &&
+        response.body.group?.ok === response.body.group?.total,
       statusCode: response.statusCode,
       total: response.body.group?.total || 0,
       okCount: response.body.group?.ok || 0,
