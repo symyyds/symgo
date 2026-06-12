@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const navigationGroups = [
         { label: "首页", href: "index.html", icon: "fa-house" },
+        { label: "实时API", href: "tools/api_lab.html", icon: "fa-plug" },
         {
             label: "关于我",
             icon: "fa-user-graduate",

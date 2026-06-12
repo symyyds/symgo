@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="孙远鸣个人站 API 调用入口，直达 public-apis 与 Netlify Functions 后端代理实验室。">
+    <title>实时 API 入口 | 孙远鸣</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dropdown.css">
+    <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="canonical" href="https://symgo.netlify.app/api.html">
+    <meta http-equiv="refresh" content="0; url=tools/api_lab.html">
+</head>
+<body class="site-shell">
+    <header>
+        <div class="container">
+            <a class="site-brand" href="index.html" aria-label="返回首页">
+                <img src="images/sym_photo.jpg" alt="孙远鸣个人照片" class="profile-img">
+                <div class="profile-info">
+                    <h1>孙远鸣</h1>
+                    <p class="title">Computer Science / Software Engineering</p>
+                    <p class="keywords">研究 · 工程 · 写作</p>
+                </div>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="tools/api_lab.html" class="active">实时 API</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-hero api-hero">
+            <div class="container">
+                <div class="eyebrow"><i class="fas fa-plug"></i> API Redirect</div>
+                <h1>正在进入实时 API 实验室。</h1>
+                <p>如果浏览器没有自动跳转，请点击下面的按钮进入完整 API 调用页面。</p>
+                <div class="hero-actions">
+                    <a class="btn primary" href="tools/api_lab.html"><i class="fas fa-arrow-right"></i> 打开 API 实验室</a>
+                    <a class="btn secondary" href=".netlify/functions/api-lab?list=1"><i class="fas fa-code"></i> 查看后端白名单 JSON</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>API 页面由 <code>/.netlify/functions/api-lab</code> 提供后端代理能力。</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

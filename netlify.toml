@@ -14,6 +14,11 @@
     Cache-Control = "no-cache"
 
 [[redirects]]
+  from = "/api"
+  to = "/tools/api_lab.html"
+  status = 301
+
+[[redirects]]
   from = "/home"
   to = "/index.html"
   status = 301

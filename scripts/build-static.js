@@ -22,6 +22,7 @@ const rootFiles = [
   "materials.html",
   "blog.html",
   "ai.html",
+  "api.html",
   "leave_message.html",
   "test.html",
   "manifest.webmanifest",
@@ -49,6 +50,7 @@ const baseSitePages = [
   "materials.html",
   "blog.html",
   "ai.html",
+  "api.html",
   "leave_message.html",
   "test.html",
 ];

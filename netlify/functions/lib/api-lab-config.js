@@ -912,24 +912,23 @@ const liveApis = [
         }
     },
     {
-        id: "github-search-portfolio",
-        title: "GitHub Repository Search API",
-        source: "GitHub Search",
+        id: "github-topics",
+        title: "GitHub Repository Topics API",
+        source: "GitHub REST",
         category: "portfolio",
-        icon: "fa-magnifying-glass-chart",
+        icon: "fa-tags",
         publicApisCategory: "Development",
-        purpose: "Search JavaScript portfolio repositories to benchmark project presentation, naming and technology keywords.",
-        endpoint: "https://api.github.com/search/repositories?q=portfolio%20language:javascript&per_page=3",
-        docs: "https://docs.github.com/en/rest/search/search#search-repositories",
+        purpose: "读取博客仓库公开 topics，用技术标签证明作品集和真实工程仓库绑定。",
+        endpoint: "https://api.github.com/repos/symyyds/symgo/topics",
+        docs: "https://docs.github.com/en/rest/repos/repos#get-all-repository-topics",
         parse(data) {
-            const items = data.items || [];
-            const first = items[0] || {};
+            const names = Array.isArray(data.names) ? data.names : [];
             return {
-                summary: `GitHub found ${data.total_count || items.length || 0} JavaScript portfolio repositories`,
+                summary: names.length ? `仓库公开技术标签：${names.slice(0, 6).join(" · ")}` : "仓库 topics API 可用，后续可补充公开技术标签。",
                 facts: [
-                    ["Repository", first.full_name || "--"],
-                    ["Stars", first.stargazers_count ?? "--"],
-                    ["Language", first.language || "JavaScript"]
+                    ["标签数", names.length],
+                    ["核心标签", names.slice(0, 3).join(", ") || "--"],
+                    ["来源", "GitHub Topics"]
                 ]
             };
         }
@@ -1292,7 +1291,7 @@ const apiGroups = {
         description: "把 GitHub、论文、岗位和写作趋势压缩成首页可扫描的公开数据证据。",
         page: "index.html",
         icon: "fa-satellite-dish",
-        ids: ["github-repo", "github-user", "github-commits", "github-search-portfolio", "crossref-paper", "openalex-work", "remotive-jobs", "hacker-news", "npm-registry", "frankfurter-rates"]
+        ids: ["github-repo", "github-user", "github-commits", "github-topics", "crossref-paper", "openalex-work", "remotive-jobs", "hacker-news", "npm-registry", "frankfurter-rates"]
     },
     publications: {
         title: "论文学术元数据核验",
@@ -1306,7 +1305,7 @@ const apiGroups = {
         description: "用 GitHub、npm、PyPI、Stack Overflow 和 CDN API 证明项目不是孤立页面，而是连接真实开发生态。",
         page: "projects.html",
         icon: "fa-code-branch",
-        ids: ["github-repo", "github-commits", "github-contents", "github-search-portfolio", "cdnjs", "npm-registry", "pypi-package", "stackexchange", "sampleapis-coding", "open-trivia-cs", "jsonplaceholder"]
+        ids: ["github-repo", "github-commits", "github-contents", "github-topics", "cdnjs", "npm-registry", "pypi-package", "stackexchange", "sampleapis-coding", "open-trivia-cs", "jsonplaceholder"]
     },
     blog: {
         title: "博客写作趋势雷达",
