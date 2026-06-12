@@ -338,6 +338,29 @@
             }
         },
         {
+            id: "launch-library",
+            title: "Launch Library 2 API",
+            source: "The Space Devs",
+            category: "research",
+            icon: "fa-rocket",
+            publicApisCategory: "Science & Math",
+            purpose: "读取航天发射任务数据，适合作为科研动态、开放科学数据和时间线组件素材。",
+            endpoint: "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=3",
+            docs: "https://thespacedevs.com/llapi",
+            parse(data) {
+                const launches = data.results || [];
+                const launch = launches[0] || {};
+                return {
+                    summary: `近期航天发射 ${data.count || launches.length || 0} 条：${launch.name || "Launch"}`,
+                    facts: [
+                        ["机构", launch.launch_service_provider?.name || "--"],
+                        ["时间", formatDate(launch.net)],
+                        ["状态", launch.status?.name || "--"]
+                    ]
+                };
+            }
+        },
+        {
             id: "datamuse",
             title: "Datamuse Word API",
             source: "Datamuse",
@@ -736,6 +759,48 @@
             }
         },
         {
+            id: "xcolors",
+            title: "xColors API",
+            source: "xColors",
+            category: "design",
+            icon: "fa-swatchbook",
+            publicApisCategory: "Art & Design",
+            purpose: "生成随机色彩，适合做博客题图、项目标签和设计系统探索。",
+            endpoint: "https://x-colors.yurace.pro/api/random",
+            docs: "https://github.com/cheatsnake/xColors-api",
+            parse(data) {
+                return {
+                    summary: `随机色彩 ${data.hex || "--"}`,
+                    facts: [
+                        ["HEX", data.hex || "--"],
+                        ["RGB", data.rgb || "--"],
+                        ["HSL", data.hsl || "--"]
+                    ]
+                };
+            }
+        },
+        {
+            id: "emojihub",
+            title: "EmojiHub API",
+            source: "EmojiHub",
+            category: "design",
+            icon: "fa-icons",
+            publicApisCategory: "Art & Design",
+            purpose: "生成轻量符号素材，可用于标签、空状态和交互反馈的视觉探索。",
+            endpoint: "https://emojihub.yurace.pro/api/random",
+            docs: "https://github.com/cheatsnake/emojihub",
+            parse(data) {
+                return {
+                    summary: `${data.name || "emoji"} · ${data.category || "category"}`,
+                    facts: [
+                        ["分组", data.group || "--"],
+                        ["Unicode", data.unicode?.join(", ") || "--"],
+                        ["HTML", data.htmlCode?.join(" ") || "--"]
+                    ]
+                };
+            }
+        },
+        {
             id: "nasa-images",
             title: "NASA Image and Video Library",
             source: "NASA Images",
@@ -777,6 +842,75 @@
                         ["返回条数", posts.length],
                         ["标签", first.tags?.slice(0, 3).join(", ") || "--"],
                         ["反应", first.reactions?.likes ?? first.reactions ?? "--"]
+                    ]
+                };
+            }
+        },
+        {
+            id: "randomuser",
+            title: "RandomUser API",
+            source: "RandomUser",
+            category: "utility",
+            icon: "fa-users",
+            publicApisCategory: "Test Data",
+            purpose: "生成原型用户数据，适合演示简历工具、留言板、成员列表和 dashboard 卡片。",
+            endpoint: "https://randomuser.me/api/?results=3",
+            docs: "https://randomuser.me/documentation",
+            parse(data) {
+                const users = data.results || [];
+                const user = users[0] || {};
+                return {
+                    summary: `生成 ${users.length} 个测试用户：${[user.name?.first, user.name?.last].filter(Boolean).join(" ") || "Random User"}`,
+                    facts: [
+                        ["国家", user.location?.country || "--"],
+                        ["邮箱", user.email || "--"],
+                        ["头像", user.picture?.thumbnail ? "可用" : "--"]
+                    ]
+                };
+            }
+        },
+        {
+            id: "fakerapi-persons",
+            title: "FakerAPI Persons",
+            source: "FakerAPI",
+            category: "utility",
+            icon: "fa-address-card",
+            publicApisCategory: "Test Data",
+            purpose: "生成结构化人物假数据，用于工具页、表格页和原型交互演示。",
+            endpoint: "https://fakerapi.it/api/v1/persons?_quantity=3",
+            docs: "https://fakerapi.it/en",
+            parse(data) {
+                const persons = data.data || [];
+                const person = persons[0] || {};
+                return {
+                    summary: `FakerAPI 返回 ${persons.length} 条人物数据`,
+                    facts: [
+                        ["姓名", `${person.firstname || ""} ${person.lastname || ""}`.trim() || "--"],
+                        ["城市", person.address?.city || "--"],
+                        ["邮箱", person.email || "--"]
+                    ]
+                };
+            }
+        },
+        {
+            id: "fakestore",
+            title: "FakeStore API",
+            source: "FakeStore",
+            category: "utility",
+            icon: "fa-bag-shopping",
+            publicApisCategory: "Test Data",
+            purpose: "提供商品假数据，适合展示列表、筛选、评分和电商原型组件能力。",
+            endpoint: "https://fakestoreapi.com/products?limit=3",
+            docs: "https://fakestoreapi.com/docs",
+            parse(data) {
+                const products = Array.isArray(data) ? data : [];
+                const product = products[0] || {};
+                return {
+                    summary: `商品假数据 ${products.length} 条：${trimText(product.title, 74) || "Product"}`,
+                    facts: [
+                        ["类别", product.category || "--"],
+                        ["价格", product.price ? `$${product.price}` : "--"],
+                        ["评分", product.rating?.rate ?? "--"]
                     ]
                 };
             }
@@ -848,6 +982,13 @@
             destination: "阅读清单、百科摘要、模型生态和博客引用卡片"
         },
         {
+            title: "arXiv / PatentsView / GBIF",
+            source: "Research Data",
+            category: "research",
+            reason: "和科研/专利/开放科学相关，但响应较慢或返回格式不稳定，适合服务端定时同步。",
+            destination: "论文预印本、专利趋势、开放科学数据集"
+        },
+        {
             title: "CORE / Elsevier / Scopus",
             source: "Academic",
             category: "research",
@@ -876,6 +1017,13 @@
             destination: "欧洲岗位雷达、求职关键词采样和岗位趋势"
         },
         {
+            title: "KONTESTS / AI Dev Jobs / GraphQL Jobs",
+            source: "Career",
+            category: "career",
+            reason: "接口响应波动或需要 GraphQL POST，适合后端代理后整理成统一岗位/竞赛雷达。",
+            destination: "算法竞赛日历、AI 岗位聚合和求职技能地图"
+        },
+        {
             title: "World Bank / OECD / 学校排名数据",
             source: "Open Data",
             category: "data",
@@ -895,6 +1043,13 @@
             category: "research",
             reason: "Papers with Code 缺少稳定浏览器 CORS，Docker Hub 响应波动较大；都适合 Netlify Functions 缓存代理。",
             destination: "技术栈热度、模型论文与代码仓库追踪"
+        },
+        {
+            title: "Icon Horse / Shields.io / GitHub Readme Stats",
+            source: "Open Source",
+            category: "design",
+            reason: "返回图片或 SVG，更适合作为静态资源或服务端缓存，不进入 JSON 健康检查流。",
+            destination: "项目徽章、站点 favicon、GitHub 统计卡片"
         }
     ];
 

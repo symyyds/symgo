@@ -170,9 +170,9 @@
             stack: ["public-apis", "Fetch API", "CORS", "Netlify"],
             summary: "参考 public-apis/public-apis，把适合个人博客、论文展示、项目证据、求职申博和写作辅助的免费公开 API 接入成可实时测试的控制台。",
             work: [
-                "筛选无需 API Key、HTTPS、适合浏览器直连的 API，覆盖 GitHub、Crossref、OpenAlex、岗位、开发生态、AI 数据集、词典、新闻、天气、开放数据和设计素材等场景。",
+                "筛选无需 API Key、HTTPS、适合浏览器直连的 40 个 API，覆盖 GitHub、Crossref、OpenAlex、岗位、开发生态、AI 数据集、词典、新闻、天气、开放数据、假数据和设计素材等场景。",
                 "实现并发健康检查、请求超时、结果缓存、失败降级、分类筛选和关键词搜索，避免单个 API 故障拖垮整个页面。",
-                "为需要 Key/OAuth 的 API 建立后端代理候选清单，明确 Netlify Functions 与环境变量的安全边界。"
+                "为需要 Key/OAuth、慢响应、图片/SVG 或 CORS 不稳定的 API 建立后端代理候选清单，明确 Netlify Functions 与环境变量的安全边界。"
             ],
             outcomes: [
                 "把个人站从静态展示升级为可验证的 API 集成作品。",
