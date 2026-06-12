@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="孙远鸣个人站 API 实验室，聚合 public-apis 中适合个人博客、学术展示和作品集的免费公开 API。">
+    <title>API 实验室 | 孙远鸣</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dropdown.css">
+    <link rel="stylesheet" href="../css/site.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="canonical" href="https://symgo.netlify.app/tools/api_lab.html">
+</head>
+<body class="site-shell">
+    <header>
+        <div class="container">
+            <a class="site-brand" href="../index.html" aria-label="返回首页">
+                <img src="../images/sym_photo.jpg" alt="孙远鸣个人照片" class="profile-img">
+                <div class="profile-info">
+                    <h1>孙远鸣</h1>
+                    <p class="title">Computer Science / Software Engineering</p>
+                    <p class="keywords">研究 · 工程 · 写作</p>
+                </div>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">首页</a></li>
+                    <li><a href="../projects.html">项目</a></li>
+                    <li><a href="../publications.html">论文</a></li>
+                    <li><a href="../materials.html">材料</a></li>
+                    <li><a href="api_lab.html" class="active">API 实验室</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-hero api-hero">
+            <div class="container">
+                <div class="eyebrow"><i class="fas fa-plug"></i> Public API Lab</div>
+                <h1>把公开 API 变成作品集里的实时能力展示。</h1>
+                <p>这一页参考 public-apis 的免费公开接口，优先接入无需 API Key、HTTPS、适合静态站前端调用的服务。它不是简单链接库，而是可实时测试的个人站 API 控制台。</p>
+            </div>
+        </section>
+
+        <section class="section-band">
+            <div class="container">
+                <div class="api-control-panel premium-surface">
+                    <div>
+                        <span class="section-kicker">LIVE STATUS</span>
+                        <h2>API 健康检查</h2>
+                        <p>点击“刷新全部”会从浏览器直接请求各 API，并展示成功/失败状态、耗时和可用于站点的结果摘要。</p>
+                    </div>
+                    <div class="api-actions">
+                        <button class="btn primary" type="button" data-api-refresh-all><i class="fas fa-rotate"></i> 刷新全部</button>
+                        <button class="btn secondary" type="button" data-api-clear><i class="fas fa-eraser"></i> 清空结果</button>
+                    </div>
+                </div>
+
+                <div class="api-summary-grid" data-api-summary>
+                    <article class="metric-card">
+                        <div class="metric-number" data-api-total>0</div>
+                        <div class="metric-label">已接入 API</div>
+                    </article>
+                    <article class="metric-card">
+                        <div class="metric-number" data-api-ok>0</div>
+                        <div class="metric-label">当前可用</div>
+                    </article>
+                    <article class="metric-card">
+                        <div class="metric-number" data-api-failed>0</div>
+                        <div class="metric-label">请求失败</div>
+                    </article>
+                    <article class="metric-card">
+                        <div class="metric-number" data-api-avg>--</div>
+                        <div class="metric-label">平均耗时</div>
+                    </article>
+                </div>
+
+                <div class="page-tools api-tools">
+                    <div class="filter-tabs" aria-label="按 API 使用场景筛选">
+                        <button class="filter-tab active" type="button" data-api-filter="all">全部</button>
+                        <button class="filter-tab" type="button" data-api-filter="portfolio">作品集</button>
+                        <button class="filter-tab" type="button" data-api-filter="research">研究</button>
+                        <button class="filter-tab" type="button" data-api-filter="writing">写作</button>
+                        <button class="filter-tab" type="button" data-api-filter="utility">工具</button>
+                        <button class="filter-tab" type="button" data-api-filter="design">设计</button>
+                    </div>
+                    <div class="search-box">
+                        <input type="search" data-api-search aria-label="搜索 API" placeholder="搜索 API、用途或数据源">
+                    </div>
+                </div>
+
+                <div class="api-grid" data-api-grid></div>
+            </div>
+        </section>
+
+        <section class="section-band white">
+            <div class="container api-strategy-layout">
+                <article class="surface-card api-strategy-card">
+                    <div class="card-icon"><i class="fas fa-route"></i></div>
+                    <span class="section-kicker">INTEGRATION STRATEGY</span>
+                    <h2>public-apis 接入策略</h2>
+                    <p>这个页面把 public-apis 中和个人博客最相关的能力拆成三类：可以在 Netlify 静态前端直接请求的实时 API、适合沉淀到论文/项目/博客页面的数据源、以及需要密钥时必须走后端代理的候选 API。</p>
+                    <div class="api-strategy-grid">
+                        <div><strong>实时直连</strong><span>免 Key、HTTPS、CORS 友好，已接入健康检查。</span></div>
+                        <div><strong>内容增强</strong><span>论文 DOI、学术图谱、图书、术语、技术讨论与设计素材。</span></div>
+                        <div><strong>安全边界</strong><span>任何需要 Key/OAuth 的 API 均不写进 HTML/JS。</span></div>
+                    </div>
+                </article>
+                <aside class="surface-card api-log-card">
+                    <div class="card-icon"><i class="fas fa-terminal"></i></div>
+                    <h2>测试日志</h2>
+                    <ul class="api-log" data-api-log>
+                        <li class="info"><span>--:--:--</span><strong>等待 API 测试。</strong></li>
+                    </ul>
+                </aside>
+            </div>
+        </section>
+
+        <section class="section-band white">
+            <div class="container two-column">
+                <article class="surface-card">
+                    <div class="card-icon"><i class="fas fa-shield-halved"></i></div>
+                    <h2>为什么不把 API Key 写进网页</h2>
+                    <p>静态站前端代码会被所有访客看到。需要申请 Key 的接口可以后续迁移到 Netlify Functions 或其他后端代理；当前页面只默认启用无需密钥的公开 API，避免把账号额度和密钥暴露出去。</p>
+                </article>
+                <aside class="surface-card">
+                    <div class="card-icon"><i class="fas fa-list-check"></i></div>
+                    <h2>已筛选标准</h2>
+                    <ul class="compact-list">
+                        <li><i class="fas fa-check"></i><span>无需 API Key 或 OAuth。</span></li>
+                        <li><i class="fas fa-check"></i><span>HTTPS 可访问，适合 Netlify 静态站。</span></li>
+                        <li><i class="fas fa-check"></i><span>能服务博客、论文、项目、材料或设计展示。</span></li>
+                    </ul>
+                </aside>
+            </div>
+        </section>
+
+        <section class="section-band">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">BACKEND CANDIDATES</div>
+                        <h2>适合后续走 Netlify Functions 的 API</h2>
+                    </div>
+                    <p>这些 API 和个人站也相关，但需要 Key、OAuth、服务端签名或更严格的配额治理。正确做法是把密钥放在 Netlify 环境变量里，由 Functions 代理请求。</p>
+                </div>
+                <div class="proxy-api-grid" data-api-proxy-grid></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3>API 实验室</h3>
+                    <p>把公开数据源接入个人站，展示工程整合、接口治理和前端容错能力。</p>
+                </div>
+                <div>
+                    <h4>相关页面</h4>
+                    <ul>
+                        <li><a href="../projects.html">项目展示</a></li>
+                        <li><a href="../publications.html">论文发表</a></li>
+                        <li><a href="../materials.html">材料库</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>数据源</h4>
+                    <p><a href="https://github.com/public-apis/public-apis" target="_blank" rel="noopener noreferrer">public-apis/public-apis</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/api-lab.js"></script>
+</body>
+</html>

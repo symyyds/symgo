@@ -57,7 +57,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 { label: "Python 学习", href: "tools/python_nav.html", desc: "Python 内容导航" },
                 { label: "深度学习", href: "tools/deep_learning.html", desc: "学习路径与资料入口" },
                 { label: "复试抽题", href: "test.html", desc: "专业课随机抽题练习" },
-                { label: "简历制作", href: "tools/resume_builder.html", desc: "结构化简历编辑工具" }
+                { label: "简历制作", href: "tools/resume_builder.html", desc: "结构化简历编辑工具" },
+                { label: "API 实验室", href: "tools/api_lab.html", desc: "public-apis 接入与健康检查" }
             ]
         },
         { label: "联系", href: "leave_message.html", icon: "fa-message" }
@@ -297,7 +298,8 @@ document.addEventListener("DOMContentLoaded", function () {
             { label: "博客文章", desc: "升学经验、技术笔记和写作证明", href: "blog.html", icon: "fa-pen-nib" },
             { label: "AI助手", desc: "本地历史记录和文档问答", href: "ai.html", icon: "fa-wand-magic-sparkles" },
             { label: "复试抽题", desc: "专业课随机抽题练习", href: "test.html", icon: "fa-shuffle" },
-            { label: "简历制作", desc: "在线简历工具原型", href: "tools/resume_builder.html", icon: "fa-file-signature" }
+            { label: "简历制作", desc: "在线简历工具原型", href: "tools/resume_builder.html", icon: "fa-file-signature" },
+            { label: "API 实验室", desc: "public-apis 接入、健康检查和后端代理候选", href: "tools/api_lab.html", icon: "fa-plug" }
         ];
 
         const openButton = document.createElement("button");
