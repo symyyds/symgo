@@ -1,64 +1,73 @@
-const fs = require("fs");
-const path = require("path");
+const { handler } = require("../netlify/functions/api-lab");
+const { liveApis } = require("../netlify/functions/lib/api-lab-config");
 
-const root = path.resolve(__dirname, "..");
-const scriptPath = path.join(root, "js", "api-lab.js");
-const source = fs.readFileSync(scriptPath, "utf8");
-const endpoints = [...source.matchAll(/endpoint:\s*"([^"]+)"/g)].map((match) => match[1]);
-const siteOrigin = process.env.API_LAB_ORIGIN || "https://symgo.netlify.app";
-
-async function checkEndpoint(url) {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 15000);
-  const started = Date.now();
-
-  try {
-    const response = await fetch(url, {
-      signal: controller.signal,
-      headers: {
-        Accept: "application/json",
-        Origin: siteOrigin,
-        "User-Agent": "symgo-api-lab-check"
-      }
-    });
-    const cors = response.headers.get("access-control-allow-origin");
-    const contentType = response.headers.get("content-type") || "";
-    return {
-      url,
-      ok: response.ok && Boolean(cors),
-      status: response.status,
-      cors: cors || "",
-      contentType,
-      ms: Date.now() - started
-    };
-  } catch (error) {
-    return {
-      url,
-      ok: false,
-      error: error.name === "AbortError" ? "timeout" : error.message,
-      ms: Date.now() - started
-    };
-  } finally {
-    clearTimeout(timeout);
-  }
+function event(queryStringParameters) {
+  return {
+    httpMethod: "GET",
+    queryStringParameters
+  };
 }
 
-(async () => {
-  const queue = [...endpoints];
+async function callFunction(params) {
+  const response = await handler(event(params));
+  const body = response.body ? JSON.parse(response.body) : {};
+  return {
+    statusCode: response.statusCode,
+    body
+  };
+}
+
+async function runWithConcurrency(items, concurrency, worker) {
+  const queue = [...items];
   const results = [];
-  const workers = Array.from({ length: 6 }, async () => {
+  const workers = Array.from({ length: concurrency }, async () => {
     while (queue.length) {
-      const endpoint = queue.shift();
-      results.push(await checkEndpoint(endpoint));
+      const item = queue.shift();
+      results.push(await worker(item));
     }
   });
   await Promise.all(workers);
+  return results;
+}
+
+(async () => {
+  const list = await callFunction({ list: "1" });
+  if (list.statusCode !== 200) {
+    throw new Error(`Function list failed with HTTP ${list.statusCode}`);
+  }
+  if (!Array.isArray(list.body.apis) || list.body.apis.length !== liveApis.length) {
+    throw new Error(`Function list returned ${list.body.apis?.length || 0}/${liveApis.length} APIs`);
+  }
+
+  const results = await runWithConcurrency(liveApis, 6, async (api) => {
+    const started = Date.now();
+    try {
+      const response = await callFunction({ id: api.id });
+      return {
+        id: api.id,
+        title: api.title,
+        ok: response.statusCode === 200 && response.body.status === "ok",
+        statusCode: response.statusCode,
+        status: response.body.status,
+        error: response.body.error || "",
+        ms: Date.now() - started
+      };
+    } catch (error) {
+      return {
+        id: api.id,
+        title: api.title,
+        ok: false,
+        error: error.message,
+        ms: Date.now() - started
+      };
+    }
+  });
 
   const failed = results.filter((result) => !result.ok);
-  for (const result of results.sort((a, b) => a.url.localeCompare(b.url))) {
+  for (const result of results.sort((a, b) => a.id.localeCompare(b.id))) {
     const state = result.ok ? "OK" : "FAIL";
-    const detail = result.error || `HTTP ${result.status}, CORS ${result.cors || "missing"}`;
-    console.log(`${state} ${result.ms}ms ${detail} ${result.url}`);
+    const detail = result.error || `${result.status || "unknown"} HTTP ${result.statusCode || "--"}`;
+    console.log(`${state} ${result.ms}ms ${detail} ${result.id} ${result.title}`);
   }
 
   console.log(`SUMMARY ok=${results.length - failed.length} fail=${failed.length} total=${results.length}`);

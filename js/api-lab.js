@@ -4,6 +4,10 @@
     const apiGrid = document.querySelector("[data-api-grid]");
     if (!apiGrid) return;
 
+    const functionPath = "/.netlify/functions/api-lab";
+    const cacheKey = "symgo-api-lab-cache-v2";
+    const timeoutMs = 14000;
+
     const statusNodes = {
         total: document.querySelector("[data-api-total]"),
         ok: document.querySelector("[data-api-ok]"),
@@ -16,1044 +20,18 @@
     const proxyGrid = document.querySelector("[data-api-proxy-grid]");
     const activityLog = document.querySelector("[data-api-log]");
     const coverageStrip = document.querySelector("[data-api-coverage]");
+    const backendStatus = document.querySelector("[data-api-backend-status]");
+    const backendEndpoint = document.querySelector("[data-api-backend-endpoint]");
 
-    const cacheKey = "symgo-api-lab-cache-v1";
-    const timeoutMs = 9000;
     let currentFilter = "all";
     let currentSearch = "";
     let activeRequests = 0;
-
-    const categoryLabels = {
-        portfolio: "作品集",
-        research: "研究",
-        career: "求职申博",
-        writing: "写作",
-        utility: "工具",
-        design: "设计",
-        data: "开放数据"
-    };
-    const categoryDescriptions = {
-        portfolio: "GitHub 与站点证据",
-        research: "论文、模型与数据集",
-        career: "岗位与能力关键词",
-        writing: "博客选题和双语写作",
-        utility: "开发、排期与假数据",
-        design: "色彩、艺术和科技图像",
-        data: "汇率与 GeoJSON 开放数据"
-    };
-
-    const liveApis = [
-        {
-            id: "github-repo",
-            title: "GitHub Repository API",
-            source: "GitHub REST",
-            category: "portfolio",
-            icon: "fa-code-branch",
-            publicApisCategory: "Development",
-            purpose: "把个人博客仓库的 Star、Fork、更新时间和语言变成实时工程证据。",
-            endpoint: "https://api.github.com/repos/symyyds/symgo",
-            docs: "https://docs.github.com/en/rest/repos/repos#get-a-repository",
-            featured: true,
-            parse(data) {
-                return {
-                    summary: `${data.full_name || "symyyds/symgo"} · ${data.stargazers_count || 0} stars · ${data.forks_count || 0} forks`,
-                    facts: [
-                        ["主语言", data.language || "未标注"],
-                        ["最后更新", formatDate(data.updated_at)],
-                        ["默认分支", data.default_branch || "main"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "github-user",
-            title: "GitHub User API",
-            source: "GitHub REST",
-            category: "portfolio",
-            icon: "fa-user-gear",
-            publicApisCategory: "Development",
-            purpose: "展示开发者公开主页、仓库数量和 GitHub 账号活跃度。",
-            endpoint: "https://api.github.com/users/symyyds",
-            docs: "https://docs.github.com/en/rest/users/users#get-a-user",
-            parse(data) {
-                return {
-                    summary: `${data.login || "symyyds"} · ${data.public_repos || 0} public repos`,
-                    facts: [
-                        ["公开仓库", data.public_repos ?? "--"],
-                        ["关注者", data.followers ?? "--"],
-                        ["创建时间", formatDate(data.created_at)]
-                    ]
-                };
-            }
-        },
-        {
-            id: "github-commits",
-            title: "GitHub Commits API",
-            source: "GitHub REST",
-            category: "portfolio",
-            icon: "fa-code-commit",
-            publicApisCategory: "Development",
-            purpose: "读取博客仓库最近提交，用时间线证明作品集持续维护，而不是一次性静态页面。",
-            endpoint: "https://api.github.com/repos/symyyds/symgo/commits?per_page=3",
-            docs: "https://docs.github.com/en/rest/commits/commits#list-commits",
-            parse(data) {
-                const commits = Array.isArray(data) ? data : [];
-                const latest = commits[0]?.commit || {};
-                return {
-                    summary: latest.message ? trimText(latest.message, 110) : `最近提交 ${commits.length} 条`,
-                    facts: [
-                        ["提交数", commits.length],
-                        ["作者", latest.author?.name || "--"],
-                        ["时间", formatDate(latest.author?.date)]
-                    ]
-                };
-            }
-        },
-        {
-            id: "github-contents",
-            title: "GitHub Contents API",
-            source: "GitHub REST",
-            category: "portfolio",
-            icon: "fa-folder-open",
-            publicApisCategory: "Development",
-            purpose: "读取公开仓库目录结构，可用于证明站点有论文、工具、材料、项目等真实模块。",
-            endpoint: "https://api.github.com/repos/symyyds/symgo/contents",
-            docs: "https://docs.github.com/en/rest/repos/contents#get-repository-content",
-            parse(data) {
-                const entries = Array.isArray(data) ? data : [];
-                const dirs = entries.filter((entry) => entry.type === "dir").map((entry) => entry.name);
-                return {
-                    summary: `根目录 ${entries.length} 个条目，包含 ${dirs.slice(0, 5).join(" · ") || "公开文件"}`,
-                    facts: [
-                        ["目录数", dirs.length],
-                        ["文件数", entries.filter((entry) => entry.type === "file").length],
-                        ["核心目录", dirs.slice(0, 4).join(", ") || "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "remotive-jobs",
-            title: "Remotive Jobs API",
-            source: "Remotive",
-            category: "career",
-            icon: "fa-briefcase",
-            publicApisCategory: "Jobs",
-            purpose: "检索远程软件工程岗位，帮助求职版作品集展示和岗位关键词对齐。",
-            endpoint: "https://remotive.com/api/remote-jobs?search=software%20engineer&limit=3",
-            docs: "https://remotive.com/api-documentation",
-            timeoutMs: 15000,
-            parse(data) {
-                const jobs = data.jobs || [];
-                const job = jobs[0] || {};
-                return {
-                    summary: `远程岗位 ${jobs.length} 条样例：${job.title || "Software Engineer"}`,
-                    facts: [
-                        ["公司", job.company_name || "--"],
-                        ["岗位", trimText(job.title, 66) || "--"],
-                        ["地区", job.candidate_required_location || "Remote"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "themuse-jobs",
-            title: "The Muse Jobs API",
-            source: "The Muse",
-            category: "career",
-            icon: "fa-building",
-            publicApisCategory: "Jobs",
-            purpose: "检索软件工程岗位和公司信息，为简历/项目关键词优化提供参考。",
-            endpoint: "https://www.themuse.com/api/public/jobs?category=Software%20Engineering&page=1",
-            docs: "https://www.themuse.com/developers/api/v2",
-            parse(data) {
-                const results = data.results || [];
-                const job = results[0] || {};
-                return {
-                    summary: `岗位结果 ${results.length} 条：${job.name || "Software Engineering"}`,
-                    facts: [
-                        ["公司", job.company?.name || "--"],
-                        ["地点", job.locations?.[0]?.name || "--"],
-                        ["等级", job.levels?.[0]?.name || "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "crossref-paper",
-            title: "Crossref Works API",
-            source: "Crossref",
-            category: "research",
-            icon: "fa-file-lines",
-            publicApisCategory: "Science & Math",
-            purpose: "用 DOI 读取论文题名、期刊/会议来源和发表年份，补强论文页元数据。",
-            endpoint: "https://api.crossref.org/works/10.54254/2755-2721/69/20241624",
-            docs: "https://api.crossref.org/swagger-ui/index.html",
-            featured: true,
-            parse(data) {
-                const item = data.message || {};
-                const title = firstText(item.title) || "论文条目";
-                return {
-                    summary: title,
-                    facts: [
-                        ["年份", item.published?.["date-parts"]?.[0]?.[0] || item.issued?.["date-parts"]?.[0]?.[0] || "--"],
-                        ["来源", firstText(item["container-title"]) || "--"],
-                        ["DOI", item.DOI || "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "openalex-work",
-            title: "OpenAlex Works API",
-            source: "OpenAlex",
-            category: "research",
-            icon: "fa-diagram-project",
-            publicApisCategory: "Science & Math",
-            purpose: "查询开放学术图谱中的论文、引用和开放获取状态，适合论文页自动补充证据。",
-            endpoint: "https://api.openalex.org/works/https://doi.org/10.54254/2755-2721/69/20241624",
-            docs: "https://docs.openalex.org/api-entities/works",
-            featured: true,
-            parse(data) {
-                return {
-                    summary: data.display_name || "OpenAlex 论文条目",
-                    facts: [
-                        ["引用数", data.cited_by_count ?? "--"],
-                        ["年份", data.publication_year || "--"],
-                        ["开放获取", data.open_access?.is_oa ? "是" : "否/未知"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "semantic-scholar",
-            title: "Semantic Scholar Graph API",
-            source: "Semantic Scholar",
-            category: "research",
-            icon: "fa-network-wired",
-            publicApisCategory: "Science & Math",
-            purpose: "从 DOI 查询论文引用、作者和来源，可作为论文影响力的备用数据源。",
-            endpoint: "https://api.semanticscholar.org/graph/v1/paper/DOI:10.54254/2755-2721/69/20241624?fields=title,year,venue,citationCount,authors,url",
-            docs: "https://api.semanticscholar.org/api-docs/graph",
-            parse(data) {
-                const authors = Array.isArray(data.authors) ? data.authors.slice(0, 3).map((author) => author.name).join(", ") : "--";
-                return {
-                    summary: data.title || "Semantic Scholar 论文条目",
-                    facts: [
-                        ["年份", data.year || "--"],
-                        ["引用数", data.citationCount ?? "--"],
-                        ["作者", authors || "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "zenodo",
-            title: "Zenodo Records API",
-            source: "Zenodo",
-            category: "research",
-            icon: "fa-database",
-            publicApisCategory: "Science & Math",
-            purpose: "检索可公开引用的数据集、软件和研究产物，适合以后扩展材料库。",
-            endpoint: "https://zenodo.org/api/records?q=machine%20learning&size=3",
-            docs: "https://developers.zenodo.org/",
-            parse(data) {
-                const hits = data.hits?.hits || [];
-                return {
-                    summary: `找到 ${data.hits?.total || hits.length || 0} 条 Zenodo 记录`,
-                    facts: [
-                        ["样例", hits[0]?.metadata?.title || "--"],
-                        ["类型", hits[0]?.metadata?.resource_type?.title || "--"],
-                        ["返回条数", hits.length]
-                    ]
-                };
-            }
-        },
-        {
-            id: "dblp",
-            title: "DBLP Search API",
-            source: "DBLP",
-            category: "research",
-            icon: "fa-graduation-cap",
-            publicApisCategory: "Science & Math",
-            purpose: "检索计算机科学论文索引，适合给研究方向页补充相关论文和作者线索。",
-            endpoint: "https://dblp.org/search/publ/api?q=random%20forest&format=json&h=3",
-            docs: "https://dblp.org/faq/How+to+use+the+dblp+search+API.html",
-            parse(data) {
-                const hits = data.result?.hits?.hit || [];
-                const info = hits[0]?.info || {};
-                return {
-                    summary: `DBLP 返回 ${data.result?.hits?.["@total"] || hits.length || 0} 条论文索引`,
-                    facts: [
-                        ["样例", info.title || "--"],
-                        ["作者", typeof info.authors?.author === "string" ? info.authors.author : info.authors?.author?.[0]?.text || info.authors?.author?.[0] || "--"],
-                        ["年份", info.year || "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "europe-pmc",
-            title: "Europe PMC Search API",
-            source: "Europe PMC",
-            category: "research",
-            icon: "fa-microscope",
-            publicApisCategory: "Science & Math",
-            purpose: "检索开放学术文献摘要和 DOI，可作为论文页的备用元数据来源。",
-            endpoint: "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=random%20forest&format=json&pageSize=3",
-            docs: "https://europepmc.org/RestfulWebService",
-            parse(data) {
-                const result = data.resultList?.result?.[0] || {};
-                return {
-                    summary: `Europe PMC 返回 ${data.hitCount || 0} 条文献`,
-                    facts: [
-                        ["样例", result.title || "--"],
-                        ["期刊", result.journalTitle || "--"],
-                        ["年份", result.pubYear || "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "openml-datasets",
-            title: "OpenML Dataset API",
-            source: "OpenML",
-            category: "research",
-            icon: "fa-table",
-            publicApisCategory: "Machine Learning",
-            purpose: "检索开放机器学习数据集，适合论文复现实验、项目案例和材料库扩展。",
-            endpoint: "https://www.openml.org/api/v1/json/data/list/limit/3/status/active",
-            docs: "https://docs.openml.org/APIs/",
-            parse(data) {
-                const datasets = data.data?.dataset || [];
-                const first = datasets[0] || {};
-                return {
-                    summary: `OpenML 返回 ${datasets.length} 个开放数据集`,
-                    facts: [
-                        ["样例", first.name || "--"],
-                        ["特征数", first.NumberOfFeatures ?? "--"],
-                        ["样本数", first.NumberOfInstances ?? "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "launch-library",
-            title: "Launch Library 2 API",
-            source: "The Space Devs",
-            category: "research",
-            icon: "fa-rocket",
-            publicApisCategory: "Science & Math",
-            purpose: "读取航天发射任务数据，适合作为科研动态、开放科学数据和时间线组件素材。",
-            endpoint: "https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=3",
-            docs: "https://thespacedevs.com/llapi",
-            parse(data) {
-                const launches = data.results || [];
-                const launch = launches[0] || {};
-                return {
-                    summary: `近期航天发射 ${data.count || launches.length || 0} 条：${launch.name || "Launch"}`,
-                    facts: [
-                        ["机构", launch.launch_service_provider?.name || "--"],
-                        ["时间", formatDate(launch.net)],
-                        ["状态", launch.status?.name || "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "datamuse",
-            title: "Datamuse Word API",
-            source: "Datamuse",
-            category: "writing",
-            icon: "fa-pen-nib",
-            publicApisCategory: "Text Analysis",
-            purpose: "为英文摘要、项目描述和博客标题生成相关词，提升写作检索效率。",
-            endpoint: "https://api.datamuse.com/words?ml=portfolio&max=6",
-            docs: "https://www.datamuse.com/api/",
-            parse(data) {
-                const words = data.map((item) => item.word).slice(0, 6);
-                return {
-                    summary: words.join(" · ") || "Datamuse related words",
-                    facts: [
-                        ["返回词数", data.length],
-                        ["最高分", data[0]?.score ?? "--"],
-                        ["适用", "摘要/标题/关键词"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "dictionary",
-            title: "Free Dictionary API",
-            source: "DictionaryAPI",
-            category: "writing",
-            icon: "fa-spell-check",
-            publicApisCategory: "Dictionaries",
-            purpose: "给英文术语提供释义和音标，适合论文关键词和博客术语卡片。",
-            endpoint: "https://api.dictionaryapi.dev/api/v2/entries/en/algorithm",
-            docs: "https://dictionaryapi.dev/",
-            parse(data) {
-                const entry = data[0] || {};
-                const meaning = entry.meanings?.[0];
-                return {
-                    summary: `${entry.word || "algorithm"} · ${meaning?.partOfSpeech || "definition"}`,
-                    facts: [
-                        ["音标", entry.phonetic || entry.phonetics?.[0]?.text || "--"],
-                        ["释义", trimText(meaning?.definitions?.[0]?.definition, 86) || "--"],
-                        ["词性", meaning?.partOfSpeech || "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "hacker-news",
-            title: "Hacker News Search API",
-            source: "Algolia HN",
-            category: "writing",
-            icon: "fa-newspaper",
-            publicApisCategory: "News",
-            purpose: "给技术博客提供趋势话题和讨论入口，适合做写作选题雷达。",
-            endpoint: "https://hn.algolia.com/api/v1/search?query=machine%20learning%20portfolio&tags=story&hitsPerPage=3",
-            docs: "https://hn.algolia.com/api",
-            parse(data) {
-                const first = data.hits?.[0] || {};
-                return {
-                    summary: `检索到 ${data.nbHits || 0} 条 HN 讨论`,
-                    facts: [
-                        ["热门标题", trimText(first.title, 70) || "--"],
-                        ["点数", first.points ?? "--"],
-                        ["评论", first.num_comments ?? "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "devto-articles",
-            title: "DEV.to Articles API",
-            source: "DEV Community",
-            category: "writing",
-            icon: "fa-pen-to-square",
-            publicApisCategory: "News",
-            purpose: "检索技术社区文章，用作博客选题、技术栈趋势和写作参考。",
-            endpoint: "https://dev.to/api/articles?tag=machinelearning&per_page=3",
-            docs: "https://developers.forem.com/api",
-            parse(data) {
-                const articles = Array.isArray(data) ? data : [];
-                const article = articles[0] || {};
-                return {
-                    summary: `DEV.to 返回 ${articles.length} 篇文章：${article.title || "tech article"}`,
-                    facts: [
-                        ["作者", article.user?.name || "--"],
-                        ["反应数", article.public_reactions_count ?? "--"],
-                        ["发布时间", formatDate(article.published_at)]
-                    ]
-                };
-            }
-        },
-        {
-            id: "mymemory-translate",
-            title: "MyMemory Translation API",
-            source: "MyMemory",
-            category: "writing",
-            icon: "fa-language",
-            publicApisCategory: "Translation",
-            purpose: "为英文摘要、项目标题和双语材料提供轻量翻译参考。",
-            endpoint: "https://api.mymemory.translated.net/get?q=software%20engineering&langpair=en%7Czh-CN",
-            docs: "https://mymemory.translated.net/doc/spec.php",
-            parse(data) {
-                const translated = data.responseData?.translatedText || "";
-                return {
-                    summary: translated ? `software engineering → ${translated}` : "翻译结果已返回",
-                    facts: [
-                        ["匹配度", data.responseData?.match ?? "--"],
-                        ["语言", "en → zh-CN"],
-                        ["来源", data.matches?.[0]?.created_by || "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "microlink",
-            title: "Microlink Metadata API",
-            source: "Microlink",
-            category: "writing",
-            icon: "fa-link",
-            publicApisCategory: "URL Shorteners",
-            purpose: "抽取网页标题、描述和截图元信息，适合博客引用卡片和项目链接预览。",
-            endpoint: "https://api.microlink.io/?url=https%3A%2F%2Fsymgo.netlify.app",
-            docs: "https://microlink.io/docs/api/getting-started/overview",
-            parse(data) {
-                const meta = data.data || {};
-                return {
-                    summary: meta.title || "网页元信息已返回",
-                    facts: [
-                        ["站点", meta.publisher || meta.author || "--"],
-                        ["描述", trimText(meta.description, 78) || "--"],
-                        ["图片", meta.image?.url ? "有" : "无/未知"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "cdnjs",
-            title: "cdnjs Library API",
-            source: "cdnjs",
-            category: "utility",
-            icon: "fa-cubes",
-            publicApisCategory: "Development",
-            purpose: "快速查询前端库 CDN 地址，适合工具页和技术栈说明。",
-            endpoint: "https://api.cdnjs.com/libraries?search=three&fields=name,description,latest&limit=3",
-            docs: "https://cdnjs.com/api",
-            parse(data) {
-                const first = data.results?.[0] || {};
-                return {
-                    summary: `找到 ${data.total || data.results?.length || 0} 个 CDN 库`,
-                    facts: [
-                        ["样例库", first.name || "--"],
-                        ["最新地址", first.latest ? "已返回" : "--"],
-                        ["用途", trimText(first.description, 66) || "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "npm-registry",
-            title: "npm Registry Search API",
-            source: "npm Registry",
-            category: "utility",
-            icon: "fa-cube",
-            publicApisCategory: "Development",
-            purpose: "查询前端生态包，适合技术栈选型、工具页依赖说明和项目复盘。",
-            endpoint: "https://registry.npmjs.org/-/v1/search?text=portfolio&size=3",
-            docs: "https://github.com/npm/registry/blob/master/docs/REGISTRY-API.md",
-            parse(data) {
-                const objects = data.objects || [];
-                const pkg = objects[0]?.package || {};
-                return {
-                    summary: `npm 搜索返回 ${data.total || objects.length || 0} 个包`,
-                    facts: [
-                        ["包名", pkg.name || "--"],
-                        ["版本", pkg.version || "--"],
-                        ["描述", trimText(pkg.description, 70) || "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "pypi-package",
-            title: "PyPI Package API",
-            source: "PyPI",
-            category: "utility",
-            icon: "fa-box",
-            publicApisCategory: "Development",
-            purpose: "读取 Python 包信息，适合 Python 学习页和项目技术栈说明。",
-            endpoint: "https://pypi.org/pypi/requests/json",
-            docs: "https://docs.pypi.org/api/json/",
-            parse(data) {
-                const info = data.info || {};
-                return {
-                    summary: `${info.name || "requests"} · ${info.version || "--"}`,
-                    facts: [
-                        ["License", info.license || "--"],
-                        ["作者", info.author || "--"],
-                        ["摘要", trimText(info.summary, 76) || "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "stackexchange",
-            title: "Stack Exchange API",
-            source: "Stack Exchange",
-            category: "utility",
-            icon: "fa-layer-group",
-            publicApisCategory: "Development",
-            purpose: "检索技术问答，给工程项目复盘和博客参考资料提供入口。",
-            endpoint: "https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=activity&q=javascript%20portfolio&site=stackoverflow&pagesize=3",
-            docs: "https://api.stackexchange.com/docs",
-            parse(data) {
-                const first = data.items?.[0] || {};
-                return {
-                    summary: `Stack Overflow 返回 ${data.items?.length || 0} 条问题`,
-                    facts: [
-                        ["问题", trimText(first.title, 72) || "--"],
-                        ["回答数", first.answer_count ?? "--"],
-                        ["已解决", first.is_answered ? "是" : "否/未知"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "sampleapis-coding",
-            title: "SampleAPIs Coding Resources",
-            source: "SampleAPIs",
-            category: "utility",
-            icon: "fa-list-check",
-            publicApisCategory: "Development",
-            purpose: "获取编程学习资源，适合 Python/深度学习导航页补充外部资源。",
-            endpoint: "https://api.sampleapis.com/codingresources/codingResources",
-            docs: "https://sampleapis.com/api-list/codingresources",
-            parse(data) {
-                const resources = Array.isArray(data) ? data : [];
-                const resource = resources[0] || {};
-                return {
-                    summary: `编程资源 ${resources.length} 条：${resource.description || resource.url || "coding resource"}`,
-                    facts: [
-                        ["类型", resource.types || resource.type || "--"],
-                        ["主题", resource.topics || resource.topic || "--"],
-                        ["链接", resource.url ? "可访问" : "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "nager-date",
-            title: "Nager.Date API",
-            source: "Nager.Date",
-            category: "utility",
-            icon: "fa-calendar-days",
-            publicApisCategory: "Calendar",
-            purpose: "为申请、项目排期和内容计划补充节假日信息。",
-            endpoint: "https://date.nager.at/api/v3/PublicHolidays/2026/CN",
-            docs: "https://date.nager.at/Api",
-            parse(data) {
-                const first = data[0] || {};
-                return {
-                    summary: `中国 2026 年节假日 ${data.length || 0} 条`,
-                    facts: [
-                        ["首个节日", first.localName || first.name || "--"],
-                        ["日期", first.date || "--"],
-                        ["国家", first.countryCode || "CN"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "open-meteo-geocoding",
-            title: "Open-Meteo Geocoding API",
-            source: "Open-Meteo",
-            category: "utility",
-            icon: "fa-location-dot",
-            publicApisCategory: "Geocoding",
-            purpose: "把城市名称转换为经纬度和时区，适合给天气组件、联系页和项目活动页复用。",
-            endpoint: "https://geocoding-api.open-meteo.com/v1/search?name=Beijing&count=1&language=zh&format=json",
-            docs: "https://open-meteo.com/en/docs/geocoding-api",
-            parse(data) {
-                const place = data.results?.[0] || {};
-                return {
-                    summary: place.name ? `${place.name} · ${place.country || ""}` : "地理编码结果",
-                    facts: [
-                        ["纬度", place.latitude ?? "--"],
-                        ["经度", place.longitude ?? "--"],
-                        ["时区", place.timezone || "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "open-meteo",
-            title: "Open-Meteo Forecast API",
-            source: "Open-Meteo",
-            category: "utility",
-            icon: "fa-cloud-sun",
-            publicApisCategory: "Weather",
-            purpose: "可用于联系页、活动页或项目看板的天气/环境小组件。",
-            endpoint: "https://api.open-meteo.com/v1/forecast?latitude=39.9042&longitude=116.4074&current=temperature_2m,weather_code&timezone=Asia%2FShanghai",
-            docs: "https://open-meteo.com/en/docs",
-            parse(data) {
-                return {
-                    summary: `北京当前温度 ${data.current?.temperature_2m ?? "--"}${data.current_units?.temperature_2m || "°C"}`,
-                    facts: [
-                        ["天气代码", data.current?.weather_code ?? "--"],
-                        ["更新时间", data.current?.time || "--"],
-                        ["时区", data.timezone || "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "timeapi",
-            title: "TimeAPI Time Zone API",
-            source: "TimeAPI",
-            category: "utility",
-            icon: "fa-clock",
-            publicApisCategory: "Calendar",
-            purpose: "读取时区信息，适合项目排期、国际合作和联系页时间提示。",
-            endpoint: "https://timeapi.io/api/TimeZone/zone?timeZone=Asia/Shanghai",
-            docs: "https://www.timeapi.io/swagger/index.html",
-            parse(data) {
-                return {
-                    summary: `${data.timeZone || "Asia/Shanghai"} · ${data.currentLocalTime || "local time"}`,
-                    facts: [
-                        ["时区", data.timeZone || "--"],
-                        ["偏移", data.currentUtcOffset?.seconds ? `${data.currentUtcOffset.seconds / 3600}h` : "--"],
-                        ["夏令时", data.hasDayLightSaving ? "有" : "无/未知"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "usgs-earthquakes",
-            title: "USGS Earthquake Feed",
-            source: "USGS",
-            category: "data",
-            icon: "fa-chart-area",
-            publicApisCategory: "Environment",
-            purpose: "展示 GeoJSON 开放数据读取能力，适合数据可视化项目和 dashboard 经验补充。",
-            endpoint: "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson",
-            docs: "https://earthquake.usgs.gov/earthquakes/feed/v1.0/geojson.php",
-            parse(data) {
-                const features = data.features || [];
-                const first = features[0]?.properties || {};
-                return {
-                    summary: `最近 24 小时地震事件 ${features.length} 条`,
-                    facts: [
-                        ["地点", trimText(first.place, 74) || "--"],
-                        ["震级", first.mag ?? "--"],
-                        ["更新时间", first.time ? formatDate(first.time) : "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "art-institute",
-            title: "Art Institute of Chicago API",
-            source: "AIC",
-            category: "design",
-            icon: "fa-palette",
-            publicApisCategory: "Art & Design",
-            purpose: "为设计参考页或首页视觉模块提供可授权艺术作品元数据。",
-            endpoint: "https://api.artic.edu/api/v1/artworks/search?q=computer&limit=3&fields=id,title,artist_title,image_id",
-            docs: "https://api.artic.edu/docs/",
-            parse(data) {
-                const first = data.data?.[0] || {};
-                return {
-                    summary: `艺术检索返回 ${data.pagination?.total || data.data?.length || 0} 条`,
-                    facts: [
-                        ["作品", first.title || "--"],
-                        ["作者", first.artist_title || "--"],
-                        ["图像", first.image_id ? "可生成 IIIF 图片" : "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "color-api",
-            title: "The Color API",
-            source: "The Color API",
-            category: "design",
-            icon: "fa-eye-dropper",
-            publicApisCategory: "Art & Design",
-            purpose: "分析站点品牌色，帮助作品集视觉系统说明更专业。",
-            endpoint: "https://www.thecolorapi.com/id?hex=116149",
-            docs: "https://www.thecolorapi.com/docs",
-            parse(data) {
-                return {
-                    summary: `${data.name?.value || "Brand color"} · ${data.hex?.value || "#116149"}`,
-                    facts: [
-                        ["RGB", data.rgb?.value || "--"],
-                        ["HSL", data.hsl?.value || "--"],
-                        ["色值", data.hex?.value || "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "xcolors",
-            title: "xColors API",
-            source: "xColors",
-            category: "design",
-            icon: "fa-swatchbook",
-            publicApisCategory: "Art & Design",
-            purpose: "生成随机色彩，适合做博客题图、项目标签和设计系统探索。",
-            endpoint: "https://x-colors.yurace.pro/api/random",
-            docs: "https://github.com/cheatsnake/xColors-api",
-            parse(data) {
-                return {
-                    summary: `随机色彩 ${data.hex || "--"}`,
-                    facts: [
-                        ["HEX", data.hex || "--"],
-                        ["RGB", data.rgb || "--"],
-                        ["HSL", data.hsl || "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "emojihub",
-            title: "EmojiHub API",
-            source: "EmojiHub",
-            category: "design",
-            icon: "fa-icons",
-            publicApisCategory: "Art & Design",
-            purpose: "生成轻量符号素材，可用于标签、空状态和交互反馈的视觉探索。",
-            endpoint: "https://emojihub.yurace.pro/api/random",
-            docs: "https://github.com/cheatsnake/emojihub",
-            parse(data) {
-                return {
-                    summary: `${data.name || "emoji"} · ${data.category || "category"}`,
-                    facts: [
-                        ["分组", data.group || "--"],
-                        ["Unicode", data.unicode?.join(", ") || "--"],
-                        ["HTML", data.htmlCode?.join(" ") || "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "nasa-images",
-            title: "NASA Image and Video Library",
-            source: "NASA Images",
-            category: "design",
-            icon: "fa-image",
-            publicApisCategory: "Photography",
-            purpose: "检索公开科技图像素材，可用于科研视觉、Hero 背景和设计参考。",
-            endpoint: "https://images-api.nasa.gov/search?q=computer&media_type=image",
-            docs: "https://images.nasa.gov/docs/images.nasa.gov_api_docs.pdf",
-            parse(data) {
-                const items = data.collection?.items || [];
-                const first = items[0]?.data?.[0] || {};
-                return {
-                    summary: `NASA 图片检索 ${items.length} 条：${first.title || "science image"}`,
-                    facts: [
-                        ["中心", first.center || "--"],
-                        ["日期", formatDate(first.date_created)],
-                        ["素材", items[0]?.links?.[0]?.href ? "有预览图" : "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "dummyjson-posts",
-            title: "DummyJSON Posts API",
-            source: "DummyJSON",
-            category: "utility",
-            icon: "fa-vial",
-            publicApisCategory: "Development",
-            purpose: "提供结构化假数据，适合演示列表、搜索、分页和前端容错。",
-            endpoint: "https://dummyjson.com/posts?limit=3",
-            docs: "https://dummyjson.com/docs/posts",
-            parse(data) {
-                const posts = data.posts || [];
-                const first = posts[0] || {};
-                return {
-                    summary: `假数据文章 ${data.total || posts.length || 0} 条：${first.title || "post"}`,
-                    facts: [
-                        ["返回条数", posts.length],
-                        ["标签", first.tags?.slice(0, 3).join(", ") || "--"],
-                        ["反应", first.reactions?.likes ?? first.reactions ?? "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "randomuser",
-            title: "RandomUser API",
-            source: "RandomUser",
-            category: "utility",
-            icon: "fa-users",
-            publicApisCategory: "Test Data",
-            purpose: "生成原型用户数据，适合演示简历工具、留言板、成员列表和 dashboard 卡片。",
-            endpoint: "https://randomuser.me/api/?results=3",
-            docs: "https://randomuser.me/documentation",
-            parse(data) {
-                const users = data.results || [];
-                const user = users[0] || {};
-                return {
-                    summary: `生成 ${users.length} 个测试用户：${[user.name?.first, user.name?.last].filter(Boolean).join(" ") || "Random User"}`,
-                    facts: [
-                        ["国家", user.location?.country || "--"],
-                        ["邮箱", user.email || "--"],
-                        ["头像", user.picture?.thumbnail ? "可用" : "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "fakerapi-persons",
-            title: "FakerAPI Persons",
-            source: "FakerAPI",
-            category: "utility",
-            icon: "fa-address-card",
-            publicApisCategory: "Test Data",
-            purpose: "生成结构化人物假数据，用于工具页、表格页和原型交互演示。",
-            endpoint: "https://fakerapi.it/api/v1/persons?_quantity=3",
-            docs: "https://fakerapi.it/en",
-            parse(data) {
-                const persons = data.data || [];
-                const person = persons[0] || {};
-                return {
-                    summary: `FakerAPI 返回 ${persons.length} 条人物数据`,
-                    facts: [
-                        ["姓名", `${person.firstname || ""} ${person.lastname || ""}`.trim() || "--"],
-                        ["城市", person.address?.city || "--"],
-                        ["邮箱", person.email || "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "fakestore",
-            title: "FakeStore API",
-            source: "FakeStore",
-            category: "utility",
-            icon: "fa-bag-shopping",
-            publicApisCategory: "Test Data",
-            purpose: "提供商品假数据，适合展示列表、筛选、评分和电商原型组件能力。",
-            endpoint: "https://fakestoreapi.com/products?limit=3",
-            docs: "https://fakestoreapi.com/docs",
-            parse(data) {
-                const products = Array.isArray(data) ? data : [];
-                const product = products[0] || {};
-                return {
-                    summary: `商品假数据 ${products.length} 条：${trimText(product.title, 74) || "Product"}`,
-                    facts: [
-                        ["类别", product.category || "--"],
-                        ["价格", product.price ? `$${product.price}` : "--"],
-                        ["评分", product.rating?.rate ?? "--"]
-                    ]
-                };
-            }
-        },
-        {
-            id: "jsonplaceholder",
-            title: "JSONPlaceholder API",
-            source: "JSONPlaceholder",
-            category: "utility",
-            icon: "fa-code",
-            publicApisCategory: "Development",
-            purpose: "保留一个稳定的开发假数据源，方便演示前端请求、错误处理和卡片渲染。",
-            endpoint: "https://jsonplaceholder.typicode.com/posts/1",
-            docs: "https://jsonplaceholder.typicode.com/",
-            parse(data) {
-                return {
-                    summary: trimText(data.title, 92) || "测试数据返回成功",
-                    facts: [
-                        ["Post ID", data.id || "--"],
-                        ["User ID", data.userId || "--"],
-                        ["Body", trimText(data.body, 72) || "--"]
-                    ]
-                };
-            }
-        }
-    ];
-
-    const proxyCandidates = [
-        {
-            title: "NASA APOD / Earth",
-            source: "NASA Open APIs",
-            category: "design",
-            reason: "需要 API Key 或 DEMO_KEY 有限额，适合通过 Netlify Functions 读取环境变量后代理。",
-            destination: "首页 Hero 背景、科研视觉素材、设计灵感墙"
-        },
-        {
-            title: "OpenWeatherMap",
-            source: "Weather",
-            category: "utility",
-            reason: "需要个人 Key，不能写进静态前端。",
-            destination: "联系页天气组件、活动日程小卡"
-        },
-        {
-            title: "NewsAPI / Guardian / New York Times",
-            source: "News",
-            category: "writing",
-            reason: "多数新闻 API 限制浏览器来源并需要 Key。",
-            destination: "技术写作选题雷达、研究动态列表"
-        },
-        {
-            title: "Unsplash / Pexels",
-            source: "Photography",
-            category: "design",
-            reason: "需要 Access Key，且要遵守署名和缓存策略。",
-            destination: "项目封面图、博客题图、视觉案例库"
-        },
-        {
-            title: "Google Books / Gutendex",
-            source: "Books",
-            category: "research",
-            reason: "图书搜索接口容易受区域、限流或慢响应影响，适合做缓存后再展示。",
-            destination: "阅读清单、学习路径、博客参考书目"
-        },
-        {
-            title: "Open Library / Wikipedia / Hugging Face",
-            source: "Knowledge",
-            category: "research",
-            reason: "公开可用但在不同运行时偶发连接失败，适合后端缓存后作为稳定内容源。",
-            destination: "阅读清单、百科摘要、模型生态和博客引用卡片"
-        },
-        {
-            title: "arXiv / PatentsView / GBIF",
-            source: "Research Data",
-            category: "research",
-            reason: "和科研/专利/开放科学相关，但响应较慢或返回格式不稳定，适合服务端定时同步。",
-            destination: "论文预印本、专利趋势、开放科学数据集"
-        },
-        {
-            title: "CORE / Elsevier / Scopus",
-            source: "Academic",
-            category: "research",
-            reason: "学术数据库通常需要 Key 或机构权限。",
-            destination: "论文页引用、期刊等级、作者画像增强"
-        },
-        {
-            title: "YouTube Data API",
-            source: "Video",
-            category: "portfolio",
-            reason: "需要 Key/OAuth，公开站点不应裸露配额凭证。",
-            destination: "公开视频讲解、项目 Demo、课程材料入口"
-        },
-        {
-            title: "LinkedIn / GitHub OAuth",
-            source: "Career",
-            category: "career",
-            reason: "涉及 OAuth、用户身份和隐私数据，必须走后端授权流程。",
-            destination: "求职档案同步、公开经历验证、推荐信材料入口"
-        },
-        {
-            title: "Arbeitnow Job Board",
-            source: "Jobs",
-            category: "career",
-            reason: "公开接口对部分环境会返回 403，适合后端代理并做缓存。",
-            destination: "欧洲岗位雷达、求职关键词采样和岗位趋势"
-        },
-        {
-            title: "KONTESTS / AI Dev Jobs / GraphQL Jobs",
-            source: "Career",
-            category: "career",
-            reason: "接口响应波动或需要 GraphQL POST，适合后端代理后整理成统一岗位/竞赛雷达。",
-            destination: "算法竞赛日历、AI 岗位聚合和求职技能地图"
-        },
-        {
-            title: "World Bank / OECD / 学校排名数据",
-            source: "Open Data",
-            category: "data",
-            reason: "公开数据接口常有慢响应和分页，适合服务端缓存后再给前端展示。",
-            destination: "申博国家/学校信息、教育指标和材料准备看板"
-        },
-        {
-            title: "Frankfurter / ExchangeRate API",
-            source: "Finance",
-            category: "data",
-            reason: "汇率接口对网络和上游状态敏感，适合定时缓存，避免打开页面时遇到 5xx。",
-            destination: "会议预算、留学费用估算、国际合作材料"
-        },
-        {
-            title: "Papers with Code / Docker Hub 深度同步",
-            source: "Development",
-            category: "research",
-            reason: "Papers with Code 缺少稳定浏览器 CORS，Docker Hub 响应波动较大；都适合 Netlify Functions 缓存代理。",
-            destination: "技术栈热度、模型论文与代码仓库追踪"
-        },
-        {
-            title: "Icon Horse / Shields.io / GitHub Readme Stats",
-            source: "Open Source",
-            category: "design",
-            reason: "返回图片或 SVG，更适合作为静态资源或服务端缓存，不进入 JSON 健康检查流。",
-            destination: "项目徽章、站点 favicon、GitHub 统计卡片"
-        }
-    ];
-
+    let liveApis = [];
+    let proxyCandidates = [];
+    let categoryLabels = {};
+    let categoryDescriptions = {};
     let apiResults = loadCache();
+    let backendReady = false;
 
     function escapeHtml(value) {
         return String(value ?? "")
@@ -1064,22 +42,10 @@
             .replace(/'/g, "&#039;");
     }
 
-    function firstText(value) {
-        if (Array.isArray(value)) return value.find(Boolean) || "";
-        return value || "";
-    }
-
     function trimText(value, maxLength) {
         const text = String(value || "").replace(/\s+/g, " ").trim();
         if (text.length <= maxLength) return text;
-        return `${text.slice(0, Math.max(0, maxLength - 1))}…`;
-    }
-
-    function formatDate(value) {
-        if (!value) return "--";
-        const date = new Date(value);
-        if (Number.isNaN(date.getTime())) return value;
-        return date.toLocaleDateString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" });
+        return `${text.slice(0, Math.max(0, maxLength - 1))}...`;
     }
 
     function formatClock(value) {
@@ -1107,7 +73,33 @@
         try {
             localStorage.setItem(cacheKey, JSON.stringify(apiResults));
         } catch (error) {
-            // Cache is a convenience only; private browsing or storage limits should not break the page.
+            // 本地缓存只是体验增强；隐私模式或容量限制不应影响页面主体功能。
+        }
+    }
+
+    function isLocalStaticPreview() {
+        return window.location.protocol === "file:" ||
+            window.location.hostname === "127.0.0.1" ||
+            window.location.hostname === "localhost";
+    }
+
+    async function requestBackend(params, requestTimeoutMs = timeoutMs) {
+        const controller = new AbortController();
+        const timer = window.setTimeout(() => controller.abort(), requestTimeoutMs);
+        const url = `${functionPath}?${new URLSearchParams(params).toString()}`;
+
+        try {
+            const response = await fetch(url, {
+                signal: controller.signal,
+                headers: { Accept: "application/json" }
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok) {
+                throw new Error(payload.error || `后端 HTTP ${response.status}`);
+            }
+            return payload;
+        } finally {
+            window.clearTimeout(timer);
         }
     }
 
@@ -1127,15 +119,15 @@
 
     function resultLabel(result) {
         if (!result) return "待测试";
-        if (result.status === "loading") return "测试中";
-        if (result.status === "ok") return "可用";
+        if (result.status === "loading") return "代理中";
+        if (result.status === "ok") return "后端可用";
         if (result.status === "failed") return "失败";
         return "待测试";
     }
 
     function renderFacts(facts) {
         if (!Array.isArray(facts) || !facts.length) {
-            return '<div class="api-facts"><span>等待刷新后展示结构化结果。</span></div>';
+            return '<div class="api-facts"><span>等待后端代理返回结构化结果。</span></div>';
         }
         return `
             <div class="api-facts">
@@ -1146,6 +138,27 @@
         `;
     }
 
+    function renderSkeleton() {
+        apiGrid.innerHTML = Array.from({ length: 6 }, (_, index) => `
+            <article class="api-card api-card-skeleton premium-surface" aria-hidden="true">
+                <div class="api-card-top">
+                    <span class="api-icon"></span>
+                    <span class="api-status loading">加载中</span>
+                </div>
+                <div class="api-card-body">
+                    <div class="api-meta-line"><span>Netlify</span><span>Function</span></div>
+                    <h3>后端 API 目录加载中 ${index + 1}</h3>
+                    <p>前端正在请求本站后端代理，而不是直接暴露外部 API endpoint。</p>
+                </div>
+                <div class="api-result loading">
+                    <div class="api-result-head"><strong>Backend proxy</strong><span>--</span></div>
+                    <p>等待服务端返回白名单和缓存策略。</p>
+                    ${renderFacts([])}
+                </div>
+            </article>
+        `).join("");
+    }
+
     function renderCards() {
         const visibleApis = getVisibleApis();
         apiGrid.innerHTML = visibleApis.map((api) => {
@@ -1153,7 +166,8 @@
             const status = resultClass(result);
             const latency = result?.latency ? `${Math.round(result.latency)} ms` : "--";
             const checked = result?.checkedAt ? formatClock(result.checkedAt) : "尚未测试";
-            const summary = result?.summary || "点击刷新后，会显示这个公开 API 的实时返回摘要。";
+            const source = result?.source === "netlify-function" ? "Netlify Function" : "Backend proxy";
+            const summary = result?.summary || "点击刷新后，前端会调用本站后端函数；函数再去请求外部 API、解析数据并返回摘要。";
             return `
                 <article class="api-card premium-surface" data-api-card="${escapeHtml(api.id)}">
                     <div class="api-card-top">
@@ -1164,9 +178,10 @@
                         <div class="api-meta-line">
                             <span>${escapeHtml(categoryLabels[api.category] || api.category)}</span>
                             <span>${escapeHtml(api.publicApisCategory)}</span>
+                            <span>后端代理</span>
                         </div>
                         <h3>${escapeHtml(api.title)}</h3>
-                        <p>${escapeHtml(api.purpose)}</p>
+                        <p>${escapeHtml(trimText(api.purpose, 118))}</p>
                     </div>
                     <div class="api-result ${status}">
                         <div class="api-result-head">
@@ -1176,6 +191,7 @@
                         <p>${escapeHtml(summary)}</p>
                         ${renderFacts(result?.facts)}
                         ${result?.error ? `<div class="api-error">${escapeHtml(result.error)}</div>` : ""}
+                        <div class="api-backend-line"><i class="fas fa-server"></i> ${escapeHtml(source)} · ${escapeHtml(functionPath)}?id=${escapeHtml(api.id)}</div>
                     </div>
                     <div class="api-foot">
                         <span>上次检查：${escapeHtml(checked)}</span>
@@ -1232,13 +248,23 @@
         const results = liveApis.map((api) => apiResults[api.id]).filter(Boolean);
         const ok = results.filter((result) => result.status === "ok").length;
         const failed = results.filter((result) => result.status === "failed").length;
-        const latencies = results.filter((result) => result.status === "ok" && Number.isFinite(result.latency)).map((result) => result.latency);
+        const latencies = results
+            .filter((result) => result.status === "ok" && Number.isFinite(result.latency))
+            .map((result) => result.latency);
         const avg = latencies.length ? `${Math.round(latencies.reduce((sum, value) => sum + value, 0) / latencies.length)} ms` : "--";
 
         if (statusNodes.total) statusNodes.total.textContent = total;
         if (statusNodes.ok) statusNodes.ok.textContent = ok;
         if (statusNodes.failed) statusNodes.failed.textContent = failed;
         if (statusNodes.avg) statusNodes.avg.textContent = avg;
+    }
+
+    function updateBackendStatus(state, detail) {
+        if (backendStatus) {
+            backendStatus.className = `api-backend-status ${state}`;
+            backendStatus.innerHTML = detail;
+        }
+        if (backendEndpoint) backendEndpoint.textContent = functionPath;
     }
 
     function addLog(message, tone = "info") {
@@ -1248,59 +274,78 @@
         entry.className = tone;
         entry.innerHTML = `<span>${time}</span><strong>${escapeHtml(message)}</strong>`;
         activityLog.prepend(entry);
-        while (activityLog.children.length > 6) activityLog.lastElementChild.remove();
+        while (activityLog.children.length > 7) activityLog.lastElementChild.remove();
     }
 
-    async function fetchWithTimeout(url, requestTimeoutMs = timeoutMs) {
-        const controller = new AbortController();
-        const timer = window.setTimeout(() => controller.abort(), requestTimeoutMs);
+    async function loadBackendCatalog() {
+        updateBackendStatus("loading", '<i class="fas fa-circle-notch fa-spin"></i> 正在连接 Netlify Functions 后端代理');
+        renderSkeleton();
+
         try {
-            const response = await fetch(url, {
-                mode: "cors",
-                signal: controller.signal,
-                headers: { Accept: "application/json" }
-            });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            return response.json();
-        } finally {
-            window.clearTimeout(timer);
+            const catalog = await requestBackend({ list: "1" });
+            liveApis = Array.isArray(catalog.apis) ? catalog.apis : [];
+            proxyCandidates = Array.isArray(catalog.proxyCandidates) ? catalog.proxyCandidates : [];
+            categoryLabels = catalog.categoryLabels || {};
+            categoryDescriptions = catalog.categoryDescriptions || {};
+            backendReady = true;
+            updateBackendStatus("ok", `<i class="fas fa-server"></i> 已连接后端代理 · ${escapeHtml(catalog.backend?.endpoint || functionPath)}`);
+            addLog(`后端目录加载完成：${liveApis.length} 个 API 白名单`, "ok");
+            renderCoverage();
+            renderProxyCandidates();
+            renderCards();
+            updateSummary();
+            autoRefreshFeaturedApis();
+        } catch (error) {
+            backendReady = false;
+            const reason = error.name === "AbortError" ? "后端连接超时" : error.message || "后端不可用";
+            updateBackendStatus("failed", `<i class="fas fa-triangle-exclamation"></i> ${escapeHtml(reason)}`);
+            apiGrid.innerHTML = `
+                <div class="empty-state api-empty api-backend-empty">
+                    <h3>后端代理暂时不可用</h3>
+                    <p>这个页面现在设计为只调用本站 Netlify Functions。部署到 Netlify 后会访问 ${escapeHtml(functionPath)}；本地静态预览需要 Netlify Functions 环境。</p>
+                    ${isLocalStaticPreview() ? "<p>当前看起来是本地静态预览，所以不会直接绕过后端去请求外部 API。</p>" : ""}
+                </div>
+            `;
+            addLog(`后端目录加载失败：${reason}`, "failed");
+            updateSummary();
         }
     }
 
     async function refreshApi(apiId, silent = false) {
         const api = liveApis.find((item) => item.id === apiId);
-        if (!api) return;
+        if (!api || !backendReady) return;
 
         activeRequests += 1;
         apiResults[api.id] = {
             status: "loading",
-            checkedAt: new Date().toISOString()
+            checkedAt: new Date().toISOString(),
+            source: "netlify-function"
         };
         renderCards();
+        updateRefreshState();
 
-        const started = performance.now();
         try {
-            const data = await fetchWithTimeout(api.endpoint, api.timeoutMs || timeoutMs);
-            const parsed = api.parse(data);
-            const latency = performance.now() - started;
-            apiResults[api.id] = {
-                status: "ok",
-                latency,
-                summary: parsed.summary,
-                facts: parsed.facts,
-                checkedAt: new Date().toISOString()
-            };
-            if (!silent) addLog(`${api.title} 可用，耗时 ${Math.round(latency)} ms`, "ok");
+            const result = await requestBackend({ id: api.id }, api.timeoutMs || timeoutMs);
+            apiResults[api.id] = result;
+            if (!silent) {
+                const tone = result.status === "ok" ? "ok" : "failed";
+                const detail = result.status === "ok"
+                    ? `${api.title} 后端代理可用，耗时 ${Math.round(result.latency || 0)} ms`
+                    : `${api.title} 后端代理失败：${result.error || "上游不可用"}`;
+                addLog(detail, tone);
+            }
         } catch (error) {
-            const reason = error.name === "AbortError" ? "请求超时" : error.message || "请求失败";
+            const reason = error.name === "AbortError" ? "后端请求超时" : error.message || "请求失败";
             apiResults[api.id] = {
+                id: api.id,
                 status: "failed",
-                latency: performance.now() - started,
-                summary: "这个 API 当前没有返回可用结果，页面已保留降级说明。",
+                latency: null,
+                summary: "前端已按设计调用后端代理，但本次没有收到可用结果。",
                 error: reason,
-                checkedAt: new Date().toISOString()
+                checkedAt: new Date().toISOString(),
+                source: "netlify-function"
             };
-            if (!silent) addLog(`${api.title} 失败：${reason}`, "failed");
+            if (!silent) addLog(`${api.title} 后端代理失败：${reason}`, "failed");
         } finally {
             activeRequests = Math.max(0, activeRequests - 1);
             saveCache();
@@ -1312,13 +357,14 @@
     function updateRefreshState() {
         if (!refreshAllButton) return;
         const busy = activeRequests > 0;
-        refreshAllButton.disabled = busy;
+        refreshAllButton.disabled = busy || !backendReady;
         refreshAllButton.innerHTML = busy
-            ? '<i class="fas fa-spinner fa-spin"></i> 测试中'
+            ? '<i class="fas fa-spinner fa-spin"></i> 代理中'
             : '<i class="fas fa-rotate"></i> 刷新全部';
     }
 
     async function refreshAll() {
+        if (!backendReady) return;
         const queue = [...liveApis];
         const workers = Array.from({ length: 4 }, async () => {
             while (queue.length) {
@@ -1326,10 +372,10 @@
                 await refreshApi(api.id, true);
             }
         });
-        addLog(`开始测试 ${liveApis.length} 个 public-apis 相关接口`, "info");
+        addLog(`开始通过后端代理测试 ${liveApis.length} 个 API`, "info");
         await Promise.all(workers);
         const okCount = Object.values(apiResults).filter((result) => result.status === "ok").length;
-        addLog(`测试完成：${okCount}/${liveApis.length} 个 API 当前可用`, okCount ? "ok" : "failed");
+        addLog(`后端代理测试完成：${okCount}/${liveApis.length} 个 API 当前可用`, okCount ? "ok" : "failed");
     }
 
     function bindEvents() {
@@ -1365,7 +411,7 @@
                 apiResults = {};
                 localStorage.removeItem(cacheKey);
                 renderCards();
-                addLog("已清空本地缓存结果", "info");
+                addLog("已清空本地缓存结果；后端缓存仍由 Netlify 控制", "info");
             });
         }
     }
@@ -1376,14 +422,12 @@
         const featured = liveApis.filter((api) => api.featured).slice(0, 4);
         window.setTimeout(() => {
             featured.forEach((api) => refreshApi(api.id, true));
-            addLog("已自动抽样测试首屏关键 API", "info");
+            addLog("已自动通过后端代理抽样测试首屏关键 API", "info");
         }, 650);
     }
 
     bindEvents();
-    renderCoverage();
-    renderProxyCandidates();
-    renderCards();
-    updateSummary();
-    autoRefreshFeaturedApis();
+    renderSkeleton();
+    updateRefreshState();
+    loadBackendCatalog();
 })();
