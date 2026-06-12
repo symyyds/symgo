@@ -40,7 +40,7 @@
             <div class="container">
                 <div class="eyebrow"><i class="fas fa-plug"></i> Public API Lab</div>
                 <h1>把公开 API 变成作品集里的实时能力展示。</h1>
-                <p>这一页参考 public-apis 的免费公开接口，优先接入无需 API Key、HTTPS、适合静态站前端调用的服务。它不是简单链接库，而是可实时测试的个人站 API 控制台。</p>
+                <p>这一页参考 public-apis 的免费公开接口，优先接入无需 API Key、HTTPS、适合静态站前端调用的服务。它不是简单链接库，而是覆盖作品集、科研、求职、写作、工具、设计和开放数据的实时 API 控制台。</p>
             </div>
         </section>
 
@@ -77,14 +77,18 @@
                     </article>
                 </div>
 
+                <div class="api-coverage-strip" data-api-coverage></div>
+
                 <div class="page-tools api-tools">
                     <div class="filter-tabs" aria-label="按 API 使用场景筛选">
                         <button class="filter-tab active" type="button" data-api-filter="all">全部</button>
                         <button class="filter-tab" type="button" data-api-filter="portfolio">作品集</button>
                         <button class="filter-tab" type="button" data-api-filter="research">研究</button>
+                        <button class="filter-tab" type="button" data-api-filter="career">求职申博</button>
                         <button class="filter-tab" type="button" data-api-filter="writing">写作</button>
                         <button class="filter-tab" type="button" data-api-filter="utility">工具</button>
                         <button class="filter-tab" type="button" data-api-filter="design">设计</button>
+                        <button class="filter-tab" type="button" data-api-filter="data">开放数据</button>
                     </div>
                     <div class="search-box">
                         <input type="search" data-api-search aria-label="搜索 API" placeholder="搜索 API、用途或数据源">
@@ -101,10 +105,10 @@
                     <div class="card-icon"><i class="fas fa-route"></i></div>
                     <span class="section-kicker">INTEGRATION STRATEGY</span>
                     <h2>public-apis 接入策略</h2>
-                    <p>这个页面把 public-apis 中和个人博客最相关的能力拆成三类：可以在 Netlify 静态前端直接请求的实时 API、适合沉淀到论文/项目/博客页面的数据源、以及需要密钥时必须走后端代理的候选 API。</p>
+                    <p>这个页面把 public-apis 中和个人博客最相关的能力拆成三类：可以在 Netlify 静态前端直接请求的实时 API、适合沉淀到论文/项目/博客/求职页面的数据源、以及需要密钥时必须走后端代理的候选 API。</p>
                     <div class="api-strategy-grid">
                         <div><strong>实时直连</strong><span>免 Key、HTTPS、CORS 友好，已接入健康检查。</span></div>
-                        <div><strong>内容增强</strong><span>论文 DOI、学术图谱、图书、术语、技术讨论与设计素材。</span></div>
+                        <div><strong>内容增强</strong><span>论文 DOI、学术图谱、岗位、技术包、术语、开放数据与设计素材。</span></div>
                         <div><strong>安全边界</strong><span>任何需要 Key/OAuth 的 API 均不写进 HTML/JS。</span></div>
                     </div>
                 </article>
