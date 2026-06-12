@@ -3354,6 +3354,213 @@ body.site-shell::before {
     grid-column: 1 / -1;
 }
 
+.api-widget-shell {
+    padding: 26px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.88)),
+        linear-gradient(135deg, rgba(15, 118, 110, 0.08), rgba(196, 81, 40, 0.08));
+    box-shadow: 0 26px 76px rgba(15, 23, 42, 0.09);
+}
+
+.api-widget-shell.failed {
+    border-color: rgba(161, 50, 25, 0.18);
+    background: linear-gradient(135deg, rgba(255, 247, 245, 0.96), rgba(255, 255, 255, 0.9));
+}
+
+.api-widget-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 18px;
+}
+
+.api-widget-head h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 6px 0 8px;
+    font-size: clamp(1.45rem, 2.5vw, 2.1rem);
+}
+
+.api-widget-head p {
+    max-width: 780px;
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.api-widget-meter {
+    min-width: 124px;
+    padding: 12px;
+    display: grid;
+    gap: 4px;
+    justify-items: center;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.82);
+}
+
+.api-widget-meter strong {
+    color: var(--ink);
+    font-size: 1.45rem;
+    line-height: 1;
+}
+
+.api-widget-meter span {
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.api-widget-meter.warn {
+    background: rgba(255, 247, 245, 0.9);
+}
+
+.api-widget-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.api-widget-stats span {
+    min-height: 54px;
+    padding: 10px;
+    display: grid;
+    align-content: center;
+    gap: 2px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.68);
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 750;
+}
+
+.api-widget-stats strong {
+    color: var(--ink);
+    font-size: 1rem;
+}
+
+.api-widget-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.api-widget-card {
+    min-height: 172px;
+    padding: 14px;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 10px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.78);
+}
+
+.api-widget-card.ok {
+    border-color: rgba(8, 112, 79, 0.16);
+}
+
+.api-widget-card.failed {
+    border-color: rgba(161, 50, 25, 0.18);
+    background: rgba(255, 247, 245, 0.82);
+}
+
+.api-widget-card.loading {
+    opacity: 0.8;
+}
+
+.api-widget-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.api-widget-card-top span {
+    color: #64748b;
+    font-size: 0.72rem;
+    font-weight: 850;
+    overflow-wrap: anywhere;
+}
+
+.api-widget-card-top strong {
+    padding: 4px 7px;
+    border-radius: 999px;
+    background: rgba(16, 24, 32, 0.08);
+    color: #101820;
+    font-size: 0.7rem;
+}
+
+.api-widget-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+}
+
+.api-widget-facts {
+    display: grid;
+    gap: 6px;
+}
+
+.api-widget-facts span {
+    display: grid;
+    grid-template-columns: 68px minmax(0, 1fr);
+    gap: 8px;
+    color: var(--muted);
+    font-size: 0.76rem;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.api-widget-facts strong {
+    color: var(--ink);
+}
+
+.api-widget-foot {
+    margin-top: 16px;
+    padding-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    border-top: 1px solid rgba(15, 23, 42, 0.08);
+    color: #64748b;
+    font-size: 0.8rem;
+    font-weight: 780;
+    overflow-wrap: anywhere;
+}
+
+.blog-sidebar .api-widget-shell {
+    padding: 18px;
+    margin-bottom: 18px;
+}
+
+.blog-sidebar .api-widget-head,
+.blog-sidebar .api-widget-foot {
+    display: grid;
+}
+
+.blog-sidebar .api-widget-meter {
+    width: 100%;
+    justify-items: start;
+}
+
+.blog-sidebar .api-widget-stats,
+.blog-sidebar .api-widget-grid {
+    grid-template-columns: 1fr;
+}
+
+.blog-sidebar .api-widget-card {
+    min-height: auto;
+}
+
 .api-backend-empty {
     padding: 34px;
     text-align: left;
@@ -3519,6 +3726,8 @@ body.site-shell::before {
 
 body.site-shell.dark-mode .api-control-panel,
 body.site-shell.dark-mode .api-card,
+body.site-shell.dark-mode .api-widget-shell,
+body.site-shell.dark-mode .api-widget-card,
 body.site-shell.dark-mode .proxy-api-card,
 body.site-shell.dark-mode .api-strategy-grid div,
 body.site-shell.dark-mode .api-coverage-strip article {
@@ -3558,6 +3767,21 @@ body.site-shell.dark-mode .api-control-panel code,
 body.site-shell.dark-mode .api-backend-status {
     background: rgba(15, 23, 42, 0.68);
     color: rgba(248, 250, 252, 0.9);
+}
+
+body.site-shell.dark-mode .api-widget-meter,
+body.site-shell.dark-mode .api-widget-stats span {
+    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.055);
+}
+
+body.site-shell.dark-mode .api-widget-card-top strong {
+    background: rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
+}
+
+body.site-shell.dark-mode .api-widget-foot {
+    border-color: rgba(255, 255, 255, 0.08);
 }
 
 body.site-shell.dark-mode .api-backend-line {
@@ -3655,9 +3879,21 @@ body.site-shell.dark-mode .api-error {
 
     .api-summary-grid,
     .api-coverage-strip,
+    .api-widget-stats,
+    .api-widget-grid,
     .api-grid,
     .proxy-api-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .api-widget-head,
+    .api-widget-foot {
+        display: grid;
+    }
+
+    .api-widget-meter {
+        width: 100%;
+        justify-items: start;
     }
 
     .api-strategy-grid {
@@ -3746,6 +3982,8 @@ body.site-shell.dark-mode .api-error {
 
     .api-summary-grid,
     .api-coverage-strip,
+    .api-widget-stats,
+    .api-widget-grid,
     .api-grid,
     .proxy-api-grid {
         grid-template-columns: 1fr;
@@ -3764,6 +4002,19 @@ body.site-shell.dark-mode .api-error {
     .api-card {
         min-height: auto;
         grid-template-rows: auto;
+    }
+
+    .api-widget-shell {
+        padding: 20px;
+    }
+
+    .api-widget-card {
+        min-height: auto;
+    }
+
+    .api-widget-facts span {
+        grid-template-columns: 1fr;
+        gap: 4px;
     }
 
     .api-facts span,

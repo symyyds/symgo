@@ -166,17 +166,17 @@
             status: "实时接入",
             year: "2026",
             name: "Public API 实验室",
-            role: "API 选型 / 前端集成 / 容错设计",
-            stack: ["public-apis", "Fetch API", "CORS", "Netlify"],
-            summary: "参考 public-apis/public-apis，把适合个人博客、论文展示、项目证据、求职申博和写作辅助的免费公开 API 接入成可实时测试的控制台。",
+            role: "API 选型 / 后端代理 / 页面植入",
+            stack: ["public-apis", "Netlify Functions", "Serverless Proxy", "Static UI"],
+            summary: "参考 public-apis/public-apis，把适合个人博客、论文展示、项目证据、求职申博和写作辅助的免费公开 API 接入成可实时测试、可跨页面复用的后端代理控制台。",
             work: [
-                "筛选无需 API Key、HTTPS、适合浏览器直连的 40 个 API，覆盖 GitHub、Crossref、OpenAlex、岗位、开发生态、AI 数据集、词典、新闻、天气、开放数据、假数据和设计素材等场景。",
-                "实现并发健康检查、请求超时、结果缓存、失败降级、分类筛选和关键词搜索，避免单个 API 故障拖垮整个页面。",
-                "为需要 Key/OAuth、慢响应、图片/SVG 或 CORS 不稳定的 API 建立后端代理候选清单，明确 Netlify Functions 与环境变量的安全边界。"
+                "筛选 40 个和个人站相关的公开 API，覆盖 GitHub、Crossref、OpenAlex、岗位、开发生态、AI 数据集、词典、新闻、天气、开放数据、假数据和设计素材等场景。",
+                "把 endpoint、解析器和请求头放到 Netlify Functions 后端白名单，前端页面只传 API id 或页面 group，不暴露任意外部 URL。",
+                "实现并发健康检查、请求超时、结果缓存、失败降级、分类筛选和关键词搜索，并把页面分组结果植入首页、论文、项目、博客、研究、档案、材料和仪表盘。"
             ],
             outcomes: [
                 "把个人站从静态展示升级为可验证的 API 集成作品。",
-                "展示对第三方接口治理、密钥保护、CORS 限制和前端容错的理解。"
+                "展示对第三方接口治理、密钥保护、Serverless 后端和前端容错的理解。"
             ],
             links: [
                 { label: "API 实验室", href: "tools/api_lab.html" },

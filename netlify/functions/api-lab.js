@@ -5,6 +5,7 @@ const {
     categoryDescriptions,
     liveApis,
     proxyCandidates,
+    apiGroups,
     apiToClient
 } = require("./lib/api-lab-config");
 
@@ -27,6 +28,16 @@ function json(statusCode, body, extraHeaders = {}) {
 
 function getApi(id) {
     return liveApis.find((api) => api.id === id);
+}
+
+function getGroup(key) {
+    const group = apiGroups[key];
+    if (!group) return null;
+    return {
+        key,
+        ...group,
+        apis: group.ids.map(getApi).filter(Boolean)
+    };
 }
 
 function requestHeaders(api) {
@@ -73,12 +84,26 @@ async function fetchJson(api) {
     }
 }
 
+async function fetchJsonWithRetry(api) {
+    try {
+        return await fetchJson(api);
+    } catch (error) {
+        const retryable = error.name === "AbortError" ||
+            /fetch|network|timeout|超时/i.test(error.message || "") ||
+            /HTTP 5\d\d/.test(error.message || "") ||
+            /上游 HTTP 5\d\d/.test(error.message || "");
+        if (!retryable) throw error;
+        await new Promise((resolve) => setTimeout(resolve, 350));
+        return fetchJson(api);
+    }
+}
+
 async function resolveApi(api) {
     const checkedAt = new Date().toISOString();
     const started = Date.now();
 
     try {
-        const { data, latency, upstreamStatus } = await fetchJson(api);
+        const { data, latency, upstreamStatus } = await fetchJsonWithRetry(api);
         const parsed = api.parse(data);
         return {
             id: api.id,
@@ -117,6 +142,36 @@ async function resolveAll() {
     return results.sort((a, b) => a.id.localeCompare(b.id));
 }
 
+async function resolveGroup(groupKey) {
+    const group = getGroup(groupKey);
+    if (!group) return null;
+
+    const queue = [...group.apis];
+    const results = [];
+    const workers = Array.from({ length: Math.min(MAX_ALL_CONCURRENCY, Math.max(1, queue.length)) }, async () => {
+        while (queue.length) {
+            const api = queue.shift();
+            results.push(await resolveApi(api));
+        }
+    });
+
+    await Promise.all(workers);
+
+    return {
+        key: group.key,
+        title: group.title,
+        description: group.description,
+        page: group.page,
+        icon: group.icon,
+        total: results.length,
+        ok: results.filter((result) => result.status === "ok").length,
+        failed: results.filter((result) => result.status === "failed").length,
+        checkedAt: new Date().toISOString(),
+        apis: group.apis.map(apiToClient),
+        results: results.sort((a, b) => a.id.localeCompare(b.id))
+    };
+}
+
 exports.handler = async (event) => {
     if (event.httpMethod === "OPTIONS") {
         return json(204, {});
@@ -133,14 +188,43 @@ exports.handler = async (event) => {
             proxyCandidates,
             categoryLabels,
             categoryDescriptions,
+            groups: Object.fromEntries(Object.entries(apiGroups).map(([key, group]) => [
+                key,
+                {
+                    title: group.title,
+                    description: group.description,
+                    page: group.page,
+                    icon: group.icon,
+                    ids: group.ids,
+                    apis: group.ids.map(getApi).filter(Boolean).map(apiToClient)
+                }
+            ])),
             backend: {
                 mode: "netlify-functions",
                 endpoint: "/.netlify/functions/api-lab",
-                supports: ["list", "id", "all"],
+                supports: ["list", "id", "all", "group"],
                 secretPolicy: "API Key 只允许放在 Netlify 环境变量中，前端永不暴露。"
             }
         }, {
             "Cache-Control": "public, max-age=60, s-maxage=300"
+        });
+    }
+
+    if (query.group) {
+        const group = await resolveGroup(query.group);
+        if (!group) {
+            return json(404, {
+                status: "failed",
+                error: "未知 API group。请先调用 ?list=1 获取页面分组。",
+                availableGroups: Object.keys(apiGroups)
+            });
+        }
+
+        return json(200, {
+            status: "ok",
+            group
+        }, {
+            "Cache-Control": "public, max-age=45, s-maxage=240"
         });
     }
 

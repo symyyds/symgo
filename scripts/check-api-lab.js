@@ -1,5 +1,5 @@
 const { handler } = require("../netlify/functions/api-lab");
-const { liveApis } = require("../netlify/functions/lib/api-lab-config");
+const { apiGroups, liveApis } = require("../netlify/functions/lib/api-lab-config");
 
 function event(queryStringParameters) {
   return {
@@ -37,6 +37,37 @@ async function runWithConcurrency(items, concurrency, worker) {
   }
   if (!Array.isArray(list.body.apis) || list.body.apis.length !== liveApis.length) {
     throw new Error(`Function list returned ${list.body.apis?.length || 0}/${liveApis.length} APIs`);
+  }
+  if (!list.body.groups || Object.keys(list.body.groups).length !== Object.keys(apiGroups).length) {
+    throw new Error("Function list did not return the expected page groups");
+  }
+
+  const groupedIds = new Set(Object.values(apiGroups).flatMap((group) => group.ids));
+  const missingFromGroups = liveApis.map((api) => api.id).filter((id) => !groupedIds.has(id));
+  if (missingFromGroups.length) {
+    throw new Error(`APIs are not embedded in any page group: ${missingFromGroups.join(", ")}`);
+  }
+
+  const groupResults = await runWithConcurrency(Object.keys(apiGroups), 3, async (groupKey) => {
+    const started = Date.now();
+    const response = await callFunction({ group: groupKey });
+    return {
+      groupKey,
+      ok: response.statusCode === 200 && response.body.status === "ok" && response.body.group?.total === apiGroups[groupKey].ids.length,
+      statusCode: response.statusCode,
+      total: response.body.group?.total || 0,
+      okCount: response.body.group?.ok || 0,
+      ms: Date.now() - started
+    };
+  });
+
+  const failedGroups = groupResults.filter((result) => !result.ok);
+  for (const result of groupResults.sort((a, b) => a.groupKey.localeCompare(b.groupKey))) {
+    const state = result.ok ? "GROUP_OK" : "GROUP_FAIL";
+    console.log(`${state} ${result.ms}ms ${result.okCount}/${result.total} ${result.groupKey}`);
+  }
+  if (failedGroups.length) {
+    throw new Error(`Function page groups failed: ${failedGroups.map((result) => result.groupKey).join(", ")}`);
   }
 
   const results = await runWithConcurrency(liveApis, 6, async (api) => {

@@ -1063,10 +1063,70 @@ function apiToClient(api) {
     };
 }
 
+const apiGroups = {
+    home: {
+        title: "首页实时证据雷达",
+        description: "把 GitHub、论文、岗位和写作趋势压缩成首页可扫描的公开数据证据。",
+        page: "index.html",
+        icon: "fa-satellite-dish",
+        ids: ["github-repo", "github-user", "github-commits", "crossref-paper", "openalex-work", "remotive-jobs", "hacker-news", "npm-registry"]
+    },
+    publications: {
+        title: "论文学术元数据核验",
+        description: "用 Crossref、OpenAlex、Semantic Scholar、DBLP 等公开学术 API 补充论文出处、引用、索引和数据集线索。",
+        page: "publications.html",
+        icon: "fa-file-circle-check",
+        ids: ["crossref-paper", "openalex-work", "semantic-scholar", "dblp", "europe-pmc", "zenodo", "openml-datasets"]
+    },
+    projects: {
+        title: "工程项目外部信号",
+        description: "用 GitHub、npm、PyPI、Stack Overflow 和 CDN API 证明项目不是孤立页面，而是连接真实开发生态。",
+        page: "projects.html",
+        icon: "fa-code-branch",
+        ids: ["github-repo", "github-commits", "github-contents", "cdnjs", "npm-registry", "pypi-package", "stackexchange", "sampleapis-coding", "jsonplaceholder"]
+    },
+    blog: {
+        title: "博客写作趋势雷达",
+        description: "用 HN、DEV.to、Datamuse、词典、翻译和网页元信息 API 服务选题、术语和引用卡片。",
+        page: "blog.html",
+        icon: "fa-pen-nib",
+        ids: ["hacker-news", "devto-articles", "datamuse", "dictionary", "mymemory-translate", "microlink"]
+    },
+    research: {
+        title: "研究开放数据窗口",
+        description: "把开放科学、航天、地震、NASA 图像和机器学习数据集接入研究方向页，展示跨源数据理解能力。",
+        page: "research.html",
+        icon: "fa-microscope",
+        ids: ["launch-library", "usgs-earthquakes", "nasa-images", "openml-datasets", "zenodo", "europe-pmc", "openalex-work"]
+    },
+    profile: {
+        title: "职业与协作环境信号",
+        description: "把岗位、公司、日程、时间和地理信息 API 接到个人档案页，说明求职申博材料可以接入真实外部上下文。",
+        page: "profile.html",
+        icon: "fa-user-check",
+        ids: ["remotive-jobs", "themuse-jobs", "randomuser", "fakerapi-persons", "nager-date", "timeapi", "open-meteo-geocoding"]
+    },
+    materials: {
+        title: "材料库设计与演示数据",
+        description: "用艺术、色彩、假数据、商品数据和天气 API 给材料库提供封面、标签、原型与环境信息素材。",
+        page: "materials.html",
+        icon: "fa-box-archive",
+        ids: ["art-institute", "color-api", "xcolors", "emojihub", "dummyjson-posts", "fakestore", "open-meteo", "jsonplaceholder"]
+    },
+    dashboard: {
+        title: "作品集运行状态抽样",
+        description: "用少量代表性 API 给仪表盘提供实时健康抽样，不让仪表盘承担全量 40 个接口的请求压力。",
+        page: "dashboard.html",
+        icon: "fa-chart-line",
+        ids: ["github-repo", "crossref-paper", "npm-registry", "hacker-news", "open-meteo"]
+    }
+};
+
 module.exports = {
     categoryLabels,
     categoryDescriptions,
     liveApis,
     proxyCandidates,
+    apiGroups,
     apiToClient
 };
