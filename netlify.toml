@@ -19,6 +19,11 @@
   status = 301
 
 [[redirects]]
+  from = "/api-proxy"
+  to = "/tools/netlify_api_proxy.html"
+  status = 301
+
+[[redirects]]
   from = "/home"
   to = "/index.html"
   status = 301

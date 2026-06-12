@@ -41,11 +41,21 @@
                 <div class="eyebrow"><i class="fas fa-plug"></i> Public API Lab</div>
                 <h1>把公开 API 变成作品集里的后端能力展示。</h1>
                 <p>这一页参考 public-apis 的免费公开接口，但前端不再直接请求外部服务。页面统一调用本站 Netlify Functions 后端代理，由后端完成白名单校验、上游请求、结构化解析、缓存策略和未来密钥隔离。</p>
+                <div class="hero-actions">
+                    <a class="btn primary" href="netlify_api_proxy.html"><i class="fas fa-server"></i> 打开 Netlify Functions API 代理控制台</a>
+                    <a class="btn secondary" href="/.netlify/functions/api-lab?list=1" target="_blank" rel="noopener noreferrer"><i class="fas fa-code"></i> 查看后端 JSON</a>
+                </div>
             </div>
         </section>
 
         <section class="section-band">
             <div class="container">
+                <a class="api-proxy-callout" href="netlify_api_proxy.html">
+                    <span><i class="fas fa-server"></i></span>
+                    <strong>想看 Netlify Functions API 代理在哪？</strong>
+                    <small>点这里进入独立控制台：可测试 <code>/.netlify/functions/api-lab</code>、查看 JSON 返回、验证白名单和分组接口。</small>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
                 <div class="api-control-panel premium-surface">
                     <div>
                         <span class="section-kicker">BACKEND STATUS</span>

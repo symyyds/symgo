@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="孙远鸣个人站 Netlify Functions API 代理控制台，展示前端如何调用后端函数、后端如何代理 public-apis 白名单接口。">
+    <title>Netlify Functions API 代理 | 孙远鸣</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dropdown.css">
+    <link rel="stylesheet" href="../css/site.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="canonical" href="https://symgo.netlify.app/tools/netlify_api_proxy.html">
+</head>
+<body class="site-shell">
+    <header>
+        <div class="container">
+            <a class="site-brand" href="../index.html" aria-label="返回首页">
+                <img src="../images/sym_photo.jpg" alt="孙远鸣个人照片" class="profile-img">
+                <div class="profile-info">
+                    <h1>孙远鸣</h1>
+                    <p class="title">Computer Science / Software Engineering</p>
+                    <p class="keywords">研究 · 工程 · 写作</p>
+                </div>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">首页</a></li>
+                    <li><a href="../projects.html">项目</a></li>
+                    <li><a href="../publications.html">论文</a></li>
+                    <li><a href="api_lab.html">API 实验室</a></li>
+                    <li><a href="netlify_api_proxy.html" class="active">API 代理</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-hero api-hero">
+            <div class="container">
+                <div class="eyebrow"><i class="fas fa-server"></i> Netlify Functions Proxy</div>
+                <h1>Netlify Functions API 代理控制台</h1>
+                <p>这个页面专门展示本站后端代理怎么工作：浏览器只请求 <code>/.netlify/functions/api-lab</code>，Netlify Function 再按白名单调用 public-apis 相关上游接口，最后返回统一 JSON。</p>
+                <div class="hero-actions">
+                    <button class="btn primary" type="button" data-proxy-run="list"><i class="fas fa-play"></i> 测试白名单</button>
+                    <button class="btn secondary" type="button" data-proxy-run="group"><i class="fas fa-layer-group"></i> 测试首页分组</button>
+                    <a class="btn secondary" href="api_lab.html"><i class="fas fa-table-cells-large"></i> 返回 API 实验室</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-band">
+            <div class="container">
+                <div class="proxy-console-grid">
+                    <article class="proxy-console-panel proxy-console-main">
+                        <div class="proxy-console-head">
+                            <div>
+                                <span class="section-kicker">LIVE BACKEND ROUTE</span>
+                                <h2>实际调用地址</h2>
+                                <p>这些按钮会直接请求本站后端函数。线上部署正常时，你会在右侧看到真实 JSON 返回；如果 Netlify 站点未部署或函数未生效，会明确显示 HTTP 错误。</p>
+                            </div>
+                            <div class="api-backend-status loading" data-proxy-status>
+                                <i class="fas fa-circle-notch fa-spin"></i> 等待测试
+                            </div>
+                        </div>
+
+                        <div class="proxy-route-list">
+                            <button type="button" class="proxy-route-card active" data-proxy-run="list">
+                                <span><i class="fas fa-list"></i></span>
+                                <strong>GET ?list=1</strong>
+                                <small>返回 50 个 API 白名单、分组和候选扩展项。</small>
+                            </button>
+                            <button type="button" class="proxy-route-card" data-proxy-run="id">
+                                <span><i class="fas fa-code-branch"></i></span>
+                                <strong>GET ?id=github-repo</strong>
+                                <small>只测试一个上游 API，并返回摘要、事实和耗时。</small>
+                            </button>
+                            <button type="button" class="proxy-route-card" data-proxy-run="group">
+                                <span><i class="fas fa-object-group"></i></span>
+                                <strong>GET ?group=home</strong>
+                                <small>按页面分组测试首页需要展示的后端数据。</small>
+                            </button>
+                            <button type="button" class="proxy-route-card" data-proxy-run="all">
+                                <span><i class="fas fa-gauge-high"></i></span>
+                                <strong>GET ?all=1</strong>
+                                <small>通过后端并发测试全部 API，适合健康检查。</small>
+                            </button>
+                        </div>
+
+                        <div class="proxy-endpoint-line">
+                            <span>当前 endpoint</span>
+                            <code data-proxy-endpoint>/.netlify/functions/api-lab?list=1</code>
+                            <a data-proxy-open href="/.netlify/functions/api-lab?list=1" target="_blank" rel="noopener noreferrer"><i class="fas fa-arrow-up-right-from-square"></i> 新窗口打开</a>
+                        </div>
+                    </article>
+
+                    <aside class="proxy-console-panel">
+                        <span class="section-kicker">SERVER BOUNDARY</span>
+                        <h2>后端做了什么</h2>
+                        <ul class="proxy-check-list">
+                            <li><i class="fas fa-check"></i><span>只接受白名单 id / group / all / list，不允许前端传任意外部 URL。</span></li>
+                            <li><i class="fas fa-check"></i><span>统一设置请求头、超时、重试、缓存和 JSON/XML 文本解析。</span></li>
+                            <li><i class="fas fa-check"></i><span>未来需要 Key 的 API 只读 Netlify 环境变量，不写进前端代码。</span></li>
+                        </ul>
+                        <div class="proxy-file-map">
+                            <strong>代码位置</strong>
+                            <code>netlify/functions/api-lab.js</code>
+                            <code>netlify/functions/lib/api-lab-config.js</code>
+                            <code>js/api-lab.js</code>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-band white">
+            <div class="container proxy-response-layout">
+                <article class="proxy-console-panel">
+                    <div class="proxy-console-head">
+                        <div>
+                            <span class="section-kicker">RESPONSE PREVIEW</span>
+                            <h2>后端返回结果</h2>
+                        </div>
+                        <button class="btn secondary" type="button" data-proxy-copy><i class="fas fa-copy"></i> 复制 JSON</button>
+                    </div>
+                    <pre class="proxy-json-output" data-proxy-output>{
+  "status": "waiting",
+  "message": "点击上方按钮测试 Netlify Functions API 代理"
+}</pre>
+                </article>
+
+                <aside class="proxy-console-panel">
+                    <span class="section-kicker">FRONTEND CALL</span>
+                    <h2>页面怎么调用</h2>
+                    <pre class="proxy-code-snippet"><code>const response = await fetch(
+  "/.netlify/functions/api-lab?list=1",
+  { headers: { Accept: "application/json" } }
+);
+
+const data = await response.json();</code></pre>
+                    <p class="proxy-note">所以访问者看到的是本站后端接口，而不是把 public-apis 的外部 endpoint 和未来密钥直接暴露在浏览器里。</p>
+                </aside>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3>Netlify Functions API 代理</h3>
+                    <p>用于展示后端接口治理、公开 API 聚合和静态站 Serverless 扩展能力。</p>
+                </div>
+                <div>
+                    <h4>相关入口</h4>
+                    <ul>
+                        <li><a href="api_lab.html">API 实验室</a></li>
+                        <li><a href="../projects.html">项目展示</a></li>
+                        <li><a href="../dashboard.html">作品集仪表盘</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>后端函数</h4>
+                    <p><code>/.netlify/functions/api-lab</code></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/api-proxy-console.js"></script>
+</body>
+</html>

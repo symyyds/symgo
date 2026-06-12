@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const navigationGroups = [
         { label: "首页", href: "index.html", icon: "fa-house" },
-        { label: "实时API", href: "tools/api_lab.html", icon: "fa-plug" },
+        { label: "API代理", href: "tools/netlify_api_proxy.html", icon: "fa-server" },
         {
             label: "关于我",
             icon: "fa-user-graduate",
@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 { label: "深度学习", href: "tools/deep_learning.html", desc: "学习路径与资料入口" },
                 { label: "复试抽题", href: "test.html", desc: "专业课随机抽题练习" },
                 { label: "简历制作", href: "tools/resume_builder.html", desc: "结构化简历编辑工具" },
+                { label: "Netlify API 代理", href: "tools/netlify_api_proxy.html", desc: "函数端点、白名单和 JSON 返回" },
                 { label: "API 实验室", href: "tools/api_lab.html", desc: "public-apis 接入与健康检查" }
             ]
         },
@@ -300,6 +301,7 @@ document.addEventListener("DOMContentLoaded", function () {
             { label: "AI助手", desc: "本地历史记录和文档问答", href: "ai.html", icon: "fa-wand-magic-sparkles" },
             { label: "复试抽题", desc: "专业课随机抽题练习", href: "test.html", icon: "fa-shuffle" },
             { label: "简历制作", desc: "在线简历工具原型", href: "tools/resume_builder.html", icon: "fa-file-signature" },
+            { label: "Netlify API 代理", desc: "后端函数调用、JSON 返回和白名单控制台", href: "tools/netlify_api_proxy.html", icon: "fa-server" },
             { label: "API 实验室", desc: "public-apis 接入、健康检查和后端代理候选", href: "tools/api_lab.html", icon: "fa-plug" }
         ];
 
