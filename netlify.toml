@@ -27,3 +27,23 @@
   from = "/home"
   to = "/index.html"
   status = 301
+
+[[redirects]]
+  from = "/old/about.html"
+  to = "/profile.html"
+  status = 301
+
+[[redirects]]
+  from = "/old/contact.html"
+  to = "/leave_message.html"
+  status = 301
+
+[[redirects]]
+  from = "/old/publications.html"
+  to = "/publications.html"
+  status = 301
+
+[[redirects]]
+  from = "/old/research.html"
+  to = "/research.html"
+  status = 301

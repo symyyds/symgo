@@ -1,3 +1,7 @@
 /api    /tools/api_lab.html    301
 /api-proxy    /tools/netlify_api_proxy.html    301
 /home    /index.html    301
+/old/about.html    /profile.html    301
+/old/contact.html    /leave_message.html    301
+/old/publications.html    /publications.html    301
+/old/research.html    /research.html    301

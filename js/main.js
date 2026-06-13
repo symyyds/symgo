@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const navigationGroups = [
         { label: "首页", href: "index.html", icon: "fa-house" },
-        { label: "API代理", href: "tools/netlify_api_proxy.html", icon: "fa-server" },
         {
             label: "关于我",
             icon: "fa-user-graduate",
@@ -59,8 +58,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 { label: "深度学习", href: "tools/deep_learning.html", desc: "学习路径与资料入口" },
                 { label: "复试抽题", href: "test.html", desc: "专业课随机抽题练习" },
                 { label: "简历制作", href: "tools/resume_builder.html", desc: "结构化简历编辑工具" },
-                { label: "Netlify API 代理", href: "tools/netlify_api_proxy.html", desc: "函数端点、白名单和 JSON 返回" },
-                { label: "API 实验室", href: "tools/api_lab.html", desc: "public-apis 接入与健康检查" }
+                { label: "API 代理", href: "tools/netlify_api_proxy.html", desc: "函数端点、白名单和 JSON 返回" },
+                { label: "API 实验室", href: "tools/api_lab.html", desc: "public-apis 接入与健康检查" },
+                { label: "PyTorch 教程", href: "tools/pytorch.html", desc: "PyTorch 深度学习入门教程" }
             ]
         },
         { label: "联系", href: "leave_message.html", icon: "fa-message" }
@@ -302,7 +302,12 @@ document.addEventListener("DOMContentLoaded", function () {
             { label: "复试抽题", desc: "专业课随机抽题练习", href: "test.html", icon: "fa-shuffle" },
             { label: "简历制作", desc: "在线简历工具原型", href: "tools/resume_builder.html", icon: "fa-file-signature" },
             { label: "Netlify API 代理", desc: "后端函数调用、JSON 返回和白名单控制台", href: "tools/netlify_api_proxy.html", icon: "fa-server" },
-            { label: "API 实验室", desc: "public-apis 接入、健康检查和后端代理候选", href: "tools/api_lab.html", icon: "fa-plug" }
+            { label: "API 实验室", desc: "public-apis 接入、健康检查和后端代理候选", href: "tools/api_lab.html", icon: "fa-plug" },
+            { label: "代码高亮", desc: "代码展示与片段处理工具", href: "tools/code_runner.html", icon: "fa-code" },
+            { label: "Markdown 工具", desc: "Markdown 转 Word 排版工具", href: "tools/markdown_to_word.html", icon: "fa-file-word" },
+            { label: "Python 导航", desc: "Python 学习内容导航合集", href: "tools/python_nav.html", icon: "fa-python" },
+            { label: "深度学习", desc: "深度学习学习路径与资料入口", href: "tools/deep_learning.html", icon: "fa-brain" },
+            { label: "PyTorch 教程", desc: "PyTorch 深度学习入门教程", href: "tools/pytorch.html", icon: "fa-fire" }
         ];
 
         const openButton = document.createElement("button");
