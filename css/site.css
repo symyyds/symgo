@@ -471,6 +471,12 @@ body.site-shell {
     gap: 18px;
 }
 
+.iot-architecture-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
 .surface-card {
     padding: 24px;
 }
@@ -2374,6 +2380,7 @@ body.site-shell.dark-mode .command-item {
     }
 
     .handbook-overview,
+    .iot-architecture-grid,
     .evidence-card-grid,
     .evidence-meta-grid {
         grid-template-columns: 1fr;

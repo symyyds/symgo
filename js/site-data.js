@@ -228,6 +228,32 @@
             links: [
                 { label: "展示占位", href: "projects.html#lab-data-dashboard" }
             ]
+        },
+        {
+            id: "iot-flexible-access-trusted-control",
+            category: "horizontal",
+            categoryLabel: "横向项目",
+            status: "示范应用 / 验收材料",
+            year: "2024 - 2025",
+            name: "面向物联体系的柔性配置接入与可信认证管控关键技术研究及应用",
+            role: "项目组成员 / 方案整理 / 边缘物联接入与可信管控材料支持",
+            stack: ["电力物联网", "EdgeX Foundry", "Docker", "OpenHarmony", "openEuler", "MQTT", "Modbus", "SM2", "CNN-LSTM", "边缘计算"],
+            summary: "面向电力物联网终端多厂家、多协议、现场配置复杂和安全认证链条不完整的问题，参与整理端边协同柔性接入、自动注册、可信认证与边缘管控方案，并支撑示范应用、测试验收和成果材料沉淀。",
+            work: [
+                "梳理电力物联终端接入场景中的设备异构、协议不统一、点表配置依赖人工和安全认证不足等关键问题，将项目材料组织为背景、方案、测试、应用和成果证据链。",
+                "围绕 OpenHarmony 端侧设备、openEuler 边缘节点、Docker 容器化和 EdgeX Foundry 框架，整理端边协同运行环境、MQTT/Modbus 自动注册和 Device Profile 统一建模流程。",
+                "参与可信管控方案材料整理，覆盖设备身份表示、SM2 签名验签、加密传输、nonce 防重放、安全接入 SDK、证书链路和平台数据上报等环节。",
+                "将智能开关、烟感传感器、边缘代理设备和物联管理平台联调过程沉淀为可展示的测试与应用说明，支撑项目汇报、测试报告、应用证明和验收材料。"
+            ],
+            outcomes: [
+                "形成边缘物联设备接入管理软件 V1.0 相关展示材料，并完成第三方测试报告、应用证明、查新报告、工作报告和技术报告的证据整理。",
+                "在配电站房环境监测、供电所微电网设备接入等场景完成示范应用说明，覆盖数据采集、边缘处理、平台上报和命令交互链路。",
+                "沉淀专利受理、论文录用、软著、测试验收和项目执行材料，可用于求职/申博时说明横向项目中的需求理解、技术归纳、协作交付和验收意识。"
+            ],
+            links: [
+                { label: "项目页锚点", href: "projects.html#iot-flexible-access-trusted-control" },
+                { label: "横向项目证据", href: "evidence/horizontal-projects/iot-flexible-access-trusted-control.html" }
+            ]
         }
     ];
 
@@ -308,6 +334,15 @@
             tags: ["Collaboration", "Proposal", "Dashboard"]
         },
         {
+            type: "project",
+            typeLabel: "横向材料",
+            title: "电力物联网横向项目档案",
+            description: "把物联体系柔性配置接入、可信认证管控、示范应用和验收材料整理为可公开展示的项目证据页。",
+            href: "evidence/horizontal-projects/iot-flexible-access-trusted-control.html",
+            status: "真实项目档案",
+            tags: ["IoT", "EdgeX", "Trusted Control", "Acceptance"]
+        },
+        {
             type: "study",
             typeLabel: "升学材料",
             title: "保研信息模板",
@@ -353,7 +388,7 @@
 
     const dashboardStats = [
         { label: "核心页面", value: "11", desc: "首页、档案、研究、论文、项目、材料、仪表盘、成就、服务、路线图、博客" },
-        { label: "项目档案", value: "6", desc: "4 个工程项目 + 2 个横向项目" },
+        { label: "项目档案", value: "8", desc: "5 个工程项目 + 3 个横向项目" },
         { label: "论文/手稿", value: "4", desc: "1 篇真实 proceedings 论文 + 3 个可替换展示位" },
         { label: "发布质量", value: "A", desc: "白名单构建、SEO、404、headers、manifest、sitemap" }
     ];
@@ -367,6 +402,15 @@
             description: "把旧博客升级为覆盖论文、项目、材料、研究方向、AI 助手和 Netlify 发布工程的展示系统。",
             proof: "projects.html#symgo-portfolio",
             tags: ["Static Site", "Portfolio", "Netlify"]
+        },
+        {
+            year: "2025",
+            title: "电力物联网横向项目材料沉淀",
+            type: "横向项目",
+            level: "IoT / Edge Computing",
+            description: "围绕柔性配置接入、自动注册、可信认证管控、第三方测试和示范应用，整理公开可展示的横向项目证据页。",
+            proof: "evidence/horizontal-projects/iot-flexible-access-trusted-control.html",
+            tags: ["电力物联网", "EdgeX", "验收材料"]
         },
         {
             year: "2025",
@@ -587,6 +631,17 @@
         const searchInput = document.querySelector("[data-project-search]");
         let activeCategory = "all";
 
+        function syncCategoryToHash() {
+            if (!window.location.hash) return;
+            const targetId = window.location.hash.slice(1);
+            const targetProject = projects.find((project) => project.id === targetId);
+            if (!targetProject) return;
+            activeCategory = targetProject.category;
+            categoryTabs.forEach((tab) => {
+                tab.classList.toggle("active", tab.dataset.projectCategory === targetProject.category);
+            });
+        }
+
         function paint() {
             const keyword = normalize(searchInput ? searchInput.value : "");
             const filtered = projects.filter((project) => {
@@ -663,16 +718,10 @@
             const target = document.getElementById(window.location.hash.slice(1));
             if (!target) return;
             const headerHeight = document.querySelector("header")?.offsetHeight || 0;
-            const top = target.getBoundingClientRect().top + window.scrollY - headerHeight - 18;
-            const targetTop = Math.max(0, top);
-            if (behavior === "smooth") {
-                window.scrollTo({ top: targetTop, behavior });
-                return;
-            }
-            if (document.scrollingElement) document.scrollingElement.scrollTop = targetTop;
-            document.documentElement.scrollTop = targetTop;
-            document.body.scrollTop = targetTop;
-            window.scrollTo(0, targetTop);
+            target.style.scrollMarginTop = `${headerHeight + 18}px`;
+            target.scrollIntoView({ block: "start", behavior });
+            const targetTop = Math.max(0, target.getBoundingClientRect().top + window.scrollY - headerHeight - 18);
+            window.scrollTo({ top: targetTop, behavior: behavior === "smooth" ? "smooth" : "auto" });
         }
 
         function scheduleProjectHashScroll(behavior = "auto") {
@@ -680,6 +729,7 @@
             requestAnimationFrame(() => scrollToProjectHash(behavior));
             setTimeout(() => scrollToProjectHash(behavior), 80);
             setTimeout(() => scrollToProjectHash(behavior), 320);
+            setTimeout(() => scrollToProjectHash("auto"), 700);
         }
 
         categoryTabs.forEach((tab) => {
@@ -691,11 +741,16 @@
             });
         });
 
-        window.addEventListener("hashchange", () => scheduleProjectHashScroll("smooth"));
+        window.addEventListener("hashchange", () => {
+            syncCategoryToHash();
+            paint();
+            scheduleProjectHashScroll("smooth");
+        });
         window.addEventListener("load", () => scheduleProjectHashScroll("auto"));
         window.addEventListener("pageshow", () => scheduleProjectHashScroll("auto"));
 
         if (searchInput) searchInput.addEventListener("input", paint);
+        syncCategoryToHash();
         paint();
     }
 
