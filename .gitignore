@@ -2,3 +2,4 @@ dist/
 .netlify/
 node_modules/
 npm-debug.log*
+test1.html
