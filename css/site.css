@@ -3465,6 +3465,15 @@ body.site-shell::before {
     gap: 12px;
 }
 
+.api-card-status,
+.proxy-response-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
 .api-icon {
     width: 44px;
     height: 44px;
@@ -3516,6 +3525,27 @@ body.site-shell::before {
 
 .api-status.loading::before {
     animation: apiPulse 0.9s ease-in-out infinite alternate;
+}
+
+.api-reason-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 30px;
+    padding: 6px 9px;
+    border: 1px solid rgba(161, 50, 25, 0.18);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.86);
+    color: #8a2a16;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.76rem;
+    font-weight: 850;
+}
+
+.api-reason-button:hover {
+    background: rgba(255, 234, 229, 0.96);
+    transform: translateY(-1px);
 }
 
 .api-meta-line {
@@ -3621,6 +3651,39 @@ body.site-shell::before {
     font-size: 0.82rem;
     font-weight: 750;
     overflow-wrap: anywhere;
+}
+
+.api-reason-panel,
+.proxy-reason-panel {
+    margin-top: 12px;
+    display: grid;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid rgba(161, 50, 25, 0.16);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.82);
+}
+
+.api-reason-panel[hidden],
+.proxy-reason-panel[hidden] {
+    display: none;
+}
+
+.api-reason-panel div,
+.proxy-reason-panel div {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 10px;
+    color: var(--muted);
+    font-size: 0.82rem;
+    line-height: 1.48;
+    overflow-wrap: anywhere;
+}
+
+.api-reason-panel strong,
+.proxy-reason-panel strong {
+    color: #8a2a16;
+    font-size: 0.78rem;
 }
 
 .api-backend-line {
@@ -4364,8 +4427,17 @@ body.site-shell.dark-mode .api-error {
         gap: 4px;
     }
 
+    .api-card-top,
+    .api-card-status,
+    .proxy-response-actions {
+        align-items: flex-start;
+        justify-content: flex-start;
+    }
+
     .api-facts span,
-    .api-log li {
+    .api-log li,
+    .api-reason-panel div,
+    .proxy-reason-panel div {
         grid-template-columns: 1fr;
         gap: 4px;
     }

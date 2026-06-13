@@ -121,12 +121,22 @@
                             <span class="section-kicker">RESPONSE PREVIEW</span>
                             <h2>后端返回结果</h2>
                         </div>
-                        <button class="btn secondary" type="button" data-proxy-copy><i class="fas fa-copy"></i> 复制 JSON</button>
+                        <div class="proxy-response-actions">
+                            <button class="btn secondary" type="button" data-proxy-reason hidden><i class="fas fa-circle-question"></i> 查询原因</button>
+                            <button class="btn secondary" type="button" data-proxy-copy><i class="fas fa-copy"></i> 复制 JSON</button>
+                        </div>
                     </div>
                     <pre class="proxy-json-output" data-proxy-output>{
   "status": "waiting",
   "message": "点击上方按钮测试 Netlify Functions API 代理"
 }</pre>
+                    <div class="proxy-reason-panel" data-proxy-reason-panel hidden>
+                        <div><strong>状态</strong><span data-proxy-reason-status>--</span></div>
+                        <div><strong>调用地址</strong><span data-proxy-reason-endpoint>--</span></div>
+                        <div><strong>原始错误</strong><span data-proxy-reason-error>--</span></div>
+                        <div><strong>判断原因</strong><span data-proxy-reason-cause>--</span></div>
+                        <div><strong>处理建议</strong><span data-proxy-reason-action>--</span></div>
+                    </div>
                 </article>
 
                 <aside class="proxy-console-panel">

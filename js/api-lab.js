@@ -125,6 +125,54 @@
         return "待测试";
     }
 
+    function diagnoseFailure(api, result) {
+        const error = String(result?.error || result?.summary || "没有返回明确错误。");
+        const lower = error.toLowerCase();
+        let reason = "后端代理已收到请求，但上游接口没有返回可用结果。";
+        let action = "可以稍后重试，或在 Netlify Function 日志中查看该 API 的上游响应。";
+
+        if (/403|rate limit|forbidden|限流|权限/.test(lower)) {
+            reason = "上游接口拒绝了本次请求，常见原因是匿名额度限制、访问频率过高或需要额外请求头。";
+            action = "降低调用频率，或在 Netlify 环境变量中配置对应 Token，再由后端读取。";
+        } else if (/404|not found|未知 api|unknown/.test(lower)) {
+            reason = "请求的白名单 id、分组或上游 endpoint 没有匹配到有效资源。";
+            action = "检查 netlify/functions/lib/api-lab-config.js 中的 id、endpoint 和页面分组。";
+        } else if (/5\d\d|server|上游 http 5/.test(lower)) {
+            reason = "上游服务当前异常，本站后端代理正常返回了失败状态。";
+            action = "保留错误展示并稍后重试；如果长期失败，应替换成更稳定的数据源。";
+        } else if (/timeout|abort|超时/.test(lower)) {
+            reason = "上游接口响应超过本站后端代理的超时时间。";
+            action = "提高该 API 的 timeoutMs，或减少请求数据量，或替换更快的数据源。";
+        } else if (/failed to fetch|network|load failed|后端不可用/.test(lower)) {
+            reason = "浏览器没有成功连到本站 Netlify Function，常见原因是站点未部署 Functions、域名仍返回 404，或本地静态预览没有 Serverless 环境。";
+            action = "确认 Netlify 站点绑定当前 GitHub 仓库，publish=dist，functions=netlify/functions。";
+        }
+
+        return {
+            api: api?.title || result?.id || "未知 API",
+            endpoint: `${functionPath}?id=${api?.id || result?.id || "--"}`,
+            error,
+            reason,
+            action,
+            checkedAt: result?.checkedAt ? formatClock(result.checkedAt) : "--"
+        };
+    }
+
+    function renderFailureReason(api, result) {
+        if (result?.status !== "failed") return "";
+        const detail = diagnoseFailure(api, result);
+        return `
+            <div class="api-reason-panel" data-api-reason-panel="${escapeHtml(api.id)}" hidden>
+                <div><strong>失败账号/接口</strong><span>${escapeHtml(detail.api)}</span></div>
+                <div><strong>调用地址</strong><span>${escapeHtml(detail.endpoint)}</span></div>
+                <div><strong>原始错误</strong><span>${escapeHtml(detail.error)}</span></div>
+                <div><strong>判断原因</strong><span>${escapeHtml(detail.reason)}</span></div>
+                <div><strong>处理建议</strong><span>${escapeHtml(detail.action)}</span></div>
+                <div><strong>检查时间</strong><span>${escapeHtml(detail.checkedAt)}</span></div>
+            </div>
+        `;
+    }
+
     function renderFacts(facts) {
         if (!Array.isArray(facts) || !facts.length) {
             return '<div class="api-facts"><span>等待后端代理返回结构化结果。</span></div>';
@@ -172,7 +220,10 @@
                 <article class="api-card premium-surface" data-api-card="${escapeHtml(api.id)}">
                     <div class="api-card-top">
                         <span class="api-icon"><i class="fas ${escapeHtml(api.icon)}"></i></span>
-                        <span class="api-status ${status}">${resultLabel(result)}</span>
+                        <div class="api-card-status">
+                            <span class="api-status ${status}">${resultLabel(result)}</span>
+                            ${result?.status === "failed" ? `<button type="button" class="api-reason-button" data-api-reason="${escapeHtml(api.id)}"><i class="fas fa-circle-question"></i> 查询原因</button>` : ""}
+                        </div>
                     </div>
                     <div class="api-card-body">
                         <div class="api-meta-line">
@@ -191,6 +242,7 @@
                         <p>${escapeHtml(summary)}</p>
                         ${renderFacts(result?.facts)}
                         ${result?.error ? `<div class="api-error">${escapeHtml(result.error)}</div>` : ""}
+                        ${renderFailureReason(api, result)}
                         <div class="api-backend-line"><i class="fas fa-server"></i> ${escapeHtml(source)} · ${escapeHtml(functionPath)}?id=${escapeHtml(api.id)}</div>
                     </div>
                     <div class="api-foot">
@@ -397,9 +449,23 @@
         }
 
         apiGrid.addEventListener("click", (event) => {
-            const button = event.target.closest("[data-api-refresh]");
-            if (!button) return;
-            refreshApi(button.dataset.apiRefresh);
+            const refreshButton = event.target.closest("[data-api-refresh]");
+            if (refreshButton) {
+                refreshApi(refreshButton.dataset.apiRefresh);
+                return;
+            }
+
+            const reasonButton = event.target.closest("[data-api-reason]");
+            if (!reasonButton) return;
+            const apiId = reasonButton.dataset.apiReason;
+            const panel = apiGrid.querySelector(`[data-api-reason-panel="${CSS.escape(apiId)}"]`);
+            if (!panel) return;
+            const willOpen = panel.hasAttribute("hidden");
+            panel.toggleAttribute("hidden", !willOpen);
+            reasonButton.setAttribute("aria-expanded", String(willOpen));
+            reasonButton.innerHTML = willOpen
+                ? '<i class="fas fa-chevron-up"></i> 收起原因'
+                : '<i class="fas fa-circle-question"></i> 查询原因';
         });
 
         if (refreshAllButton) {
