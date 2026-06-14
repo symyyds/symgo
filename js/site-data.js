@@ -28,7 +28,7 @@
             abstract: "围绕学术履历、项目经历和文本材料的结构化抽取，设计可解释的表示学习流程，用于辅助简历增强与科研经历整理。",
             pdf: "files/papers/placeholder-profile-mining.pdf",
             cover: "images/publications/placeholder-profile-mining.png",
-            code: "projects.html#academic-ai",
+            code: "engineering-projects.html#academic-ai",
             tags: ["Representation Learning", "NLP", "Profile Mining"]
         },
         {
@@ -43,7 +43,7 @@
             abstract: "将保研、考研复试和求职准备中的材料清单、项目陈述、问答准备整合为可复用工具链，强调低成本维护和可迁移展示。",
             pdf: "files/papers/placeholder-toolkit.pdf",
             cover: "images/publications/placeholder-toolkit.png",
-            code: "projects.html#interview-toolkit",
+            code: "engineering-projects.html#interview-toolkit",
             tags: ["Knowledge Management", "Tooling", "Static Web"]
         },
         {
@@ -203,7 +203,7 @@
                 "后续可接入对象存储、向量数据库和 Netlify Functions/后端代理。"
             ],
             links: [
-                { label: "方案占位", href: "projects.html#industry-knowledge-base" }
+                { label: "方案占位", href: "horizontal-projects.html#industry-knowledge-base" }
             ]
         },
         {
@@ -226,7 +226,7 @@
                 "体现横向项目中对交付、验收、展示和维护成本的关注。"
             ],
             links: [
-                { label: "展示占位", href: "projects.html#lab-data-dashboard" }
+                { label: "展示占位", href: "horizontal-projects.html#lab-data-dashboard" }
             ]
         },
         {
@@ -251,8 +251,36 @@
                 "沉淀专利受理、论文录用、软著、测试验收和项目执行材料，可用于求职/申博时说明横向项目中的需求理解、技术归纳、协作交付和验收意识。"
             ],
             links: [
-                { label: "项目页锚点", href: "projects.html#iot-flexible-access-trusted-control" },
+                { label: "项目页锚点", href: "horizontal-projects.html#iot-flexible-access-trusted-control" },
                 { label: "横向项目证据", href: "evidence/horizontal-projects/iot-flexible-access-trusted-control.html" }
+            ]
+        },
+        {
+            id: "ningxia-multi-energy-architecture",
+            category: "horizontal",
+            categoryLabel: "横向项目",
+            status: "验收完成 / 科技项目",
+            year: "2022 - 2024",
+            name: "基于分布式多能互补的新型城镇综合能源系统信息与物理架构研究",
+            role: "项目材料整理 / 技术路线归纳 / 验收展示支撑",
+            stack: ["综合能源系统", "源网荷储", "CNN-Bi-LSTM", "Attention LSTM", "PSO", "多目标遗传算法", "多能流耦合", "35kV", "储能", "Spring Boot", "Shiro"],
+            summary: "围绕宁夏典型城镇分布式新能源接入、冷热电多能供需波动、能量梯级利用和源网荷储协同架构，整理可研、任务书、实施方案、技术/工作报告、查新报告、成果清单和验收材料，形成可公开展示的横向项目档案。",
+            work: [
+                "阅读并归纳 117 份最终验收材料，将可研评审、任务书、执行情况表、实施试点方案、技术报告、工作报告、查新报告、成果信息表、验收申请和会议纪要串成公开版证据链。",
+                "把项目三条研究主线整理为：典型城镇源-荷侧能量供需随机波动性与匹配度研究、多品位能量梯级利用的能量流耦合供给策略、分布式能源互联系统源网荷储多能协同物理架构设计。",
+                "梳理基于注意力机制的 LSTM/CNN-Bi-LSTM 可再生能源出力预测、需求侧负荷预测、粒子群优化 PSO 与多目标遗传算法协同调度等技术线索，提炼为求职/申博可讲述的模型与系统能力。",
+                "围绕银川镇北堡供电所等典型场景，整理 35kV 接入、30kW 新能源、100kW 以上储能、多类型能源流耦合、协议转换、边缘网关组网和能源数据互联平台等架构信息。",
+                "将论文录用、发明专利受理、试点方案评审、查新报告、自验收报告、成果及创新信息表等材料转化为不暴露合同、审计、联系方式和签章页的公网展示口径。"
+            ],
+            outcomes: [
+                "完成项目系列报告 1 套、宁夏地区新型城镇综合能源系统典型试点方案 1 份，并形成验收申请、自验收、工作报告、技术报告、查新报告和成果信息表等材料闭环。",
+                "成果指标包括 EI 检索论文 2 篇，以及 3 项发明专利受理：可再生能源发电预测、K 均值聚类与随机森林无功负荷预测、负荷聚合商源荷协调多目标优化调度。",
+                "公开材料显示太阳能短期出力预测准确率约 91%、风能短期出力预测约 92%、需求侧短期负荷预测约 90%，能源利用效率提升约 15%-18%，系统经济性提升约 10%-40%。",
+                "项目沉淀了从资料调研、模型预测、优化调度、物理架构设计到验收答辩的问题拆解方式，可展示真实横向合作中的技术理解、材料治理和交付意识。"
+            ],
+            links: [
+                { label: "项目页锚点", href: "horizontal-projects.html#ningxia-multi-energy-architecture" },
+                { label: "横向项目证据", href: "evidence/horizontal-projects/ningxia-multi-energy-architecture.html" }
             ]
         }
     ];
@@ -300,8 +328,17 @@
         {
             type: "resume",
             typeLabel: "简历材料",
+            title: "阶段成果档案",
+            description: "把本科阶段完整简历内容转成网页化展示，并预留研究生阶段科研、项目、论文、奖助和实习成果更新区。",
+            href: "resume.html",
+            status: "本科内容已接入",
+            tags: ["Resume", "Undergraduate", "Graduate Reserved"]
+        },
+        {
+            type: "resume",
+            typeLabel: "简历材料",
             title: "个人 CV",
-            description: "求职、申博和合作沟通时的主入口材料，后续可替换为最新版本。",
+            description: "求职、申博和合作沟通时的主入口材料，已替换为本科阶段个人简历 PDF。",
             href: "files/CV.pdf",
             status: "可下载",
             tags: ["CV", "Resume", "Application"]
@@ -320,7 +357,7 @@
             typeLabel: "项目证据",
             title: "工程项目 Case Study",
             description: "展示个人站、AI 助手、资料工具包和简历工具的背景、职责、技术与产出。",
-            href: "projects.html",
+            href: "engineering-projects.html",
             status: "持续维护",
             tags: ["Engineering", "Case Study", "Delivery"]
         },
@@ -329,7 +366,7 @@
             typeLabel: "横向材料",
             title: "横向项目方案模板",
             description: "用于表达需求理解、合作交付、验收汇报和可持续维护意识。",
-            href: "projects.html#industry-knowledge-base",
+            href: "horizontal-projects.html#industry-knowledge-base",
             status: "方案占位",
             tags: ["Collaboration", "Proposal", "Dashboard"]
         },
@@ -341,6 +378,15 @@
             href: "evidence/horizontal-projects/iot-flexible-access-trusted-control.html",
             status: "真实项目档案",
             tags: ["IoT", "EdgeX", "Trusted Control", "Acceptance"]
+        },
+        {
+            type: "project",
+            typeLabel: "横向材料",
+            title: "宁夏多能互补横向项目档案",
+            description: "把分布式多能互补、新型城镇综合能源系统信息与物理架构研究的 117 份验收材料整理为公开版项目展示。",
+            href: "evidence/horizontal-projects/ningxia-multi-energy-architecture.html",
+            status: "真实项目档案",
+            tags: ["综合能源", "源网荷储", "CNN-Bi-LSTM", "验收"]
         },
         {
             type: "study",
@@ -387,8 +433,8 @@
     ];
 
     const dashboardStats = [
-        { label: "核心页面", value: "11", desc: "首页、档案、研究、论文、项目、材料、仪表盘、成就、服务、路线图、博客" },
-        { label: "项目档案", value: "8", desc: "5 个工程项目 + 3 个横向项目" },
+        { label: "核心页面", value: "14", desc: "首页、档案、阶段成果、研究、论文、项目总览、工程项目、横向项目、材料、仪表盘、成就、服务、路线图、博客" },
+        { label: "项目档案", value: "9", desc: "5 个工程项目 + 4 个横向项目" },
         { label: "论文/手稿", value: "4", desc: "1 篇真实 proceedings 论文 + 3 个可替换展示位" },
         { label: "发布质量", value: "A", desc: "白名单构建、SEO、404、headers、manifest、sitemap" }
     ];
@@ -400,7 +446,7 @@
             type: "工程成果",
             level: "Portfolio System",
             description: "把旧博客升级为覆盖论文、项目、材料、研究方向、AI 助手和 Netlify 发布工程的展示系统。",
-            proof: "projects.html#symgo-portfolio",
+            proof: "engineering-projects.html#symgo-portfolio",
             tags: ["Static Site", "Portfolio", "Netlify"]
         },
         {
@@ -411,6 +457,15 @@
             description: "围绕柔性配置接入、自动注册、可信认证管控、第三方测试和示范应用，整理公开可展示的横向项目证据页。",
             proof: "evidence/horizontal-projects/iot-flexible-access-trusted-control.html",
             tags: ["电力物联网", "EdgeX", "验收材料"]
+        },
+        {
+            year: "2024",
+            title: "综合能源横向项目验收材料沉淀",
+            type: "横向项目",
+            level: "Integrated Energy / Source-Grid-Load-Storage",
+            description: "围绕宁夏地区分布式多能互补项目，整理 117 份最终验收材料，提炼预测模型、协同调度、物理架构和验收成果。",
+            proof: "evidence/horizontal-projects/ningxia-multi-energy-architecture.html",
+            tags: ["综合能源", "CNN-Bi-LSTM", "PSO"]
         },
         {
             year: "2025",
@@ -516,6 +571,13 @@
             task: "需要把流程、材料、术语、技巧和下载资源组织成可复用页面。",
             action: "整理保研入口、信息模板、复试技巧文章和视频/文档资源，放入博客和材料库。",
             result: "降低重复答疑成本，也展示内容组织和长期维护能力。"
+        },
+        {
+            project: "宁夏多能互补综合能源项目",
+            situation: "项目最终验收材料包含可研、任务书、实施方案、技术报告、工作报告、查新报告、成果清单、验收申请和会议纪要，信息密度高且不适合全文公开。",
+            task: "需要把真实横向项目转化成求职/申博可读的公开项目档案，同时保留技术含量和验收证据链。",
+            action: "我从 117 份材料中提取项目编号、周期、单位、三项研究内容、模型指标、试点方案、论文专利和验收口径，整理为综合能源系统项目页面与证据页。",
+            result: "形成了可展示的横向项目经历，能讲清楚 CNN-Bi-LSTM 预测、PSO 协同调度、源网荷储架构和材料脱敏边界。"
         }
     ];
 
@@ -629,13 +691,33 @@
 
         const categoryTabs = document.querySelectorAll("[data-project-category]");
         const searchInput = document.querySelector("[data-project-search]");
-        let activeCategory = "all";
+        const fixedCategory = root.dataset.projectPageCategory || "";
+        let activeCategory = fixedCategory || "all";
+
+        function getProjectPage(project) {
+            return project.category === "engineering" ? "engineering-projects.html" : "horizontal-projects.html";
+        }
+
+        function getProjectHref(project) {
+            return `${getProjectPage(project)}#${project.id}`;
+        }
+
+        function normalizeProjectLink(link) {
+            const projectHashMatch = link.href.match(/^projects\.html#(.+)$/);
+            if (!projectHashMatch) return link.href;
+            const targetProject = projects.find((project) => project.id === projectHashMatch[1]);
+            return targetProject ? getProjectHref(targetProject) : link.href;
+        }
 
         function syncCategoryToHash() {
             if (!window.location.hash) return;
             const targetId = window.location.hash.slice(1);
             const targetProject = projects.find((project) => project.id === targetId);
             if (!targetProject) return;
+            if (fixedCategory && targetProject.category !== fixedCategory) {
+                window.location.replace(`${getProjectHref(targetProject)}`);
+                return;
+            }
             activeCategory = targetProject.category;
             categoryTabs.forEach((tab) => {
                 tab.classList.toggle("active", tab.dataset.projectCategory === targetProject.category);
@@ -646,11 +728,13 @@
             const keyword = normalize(searchInput ? searchInput.value : "");
             const filtered = projects.filter((project) => {
                 const haystack = normalize([project.name, project.role, project.summary, project.stack.join(" "), project.work.join(" "), project.outcomes.join(" "), project.status, project.categoryLabel].join(" "));
-                return (activeCategory === "all" || project.category === activeCategory)
+                return (!fixedCategory || project.category === fixedCategory)
+                    && (activeCategory === "all" || project.category === activeCategory)
                     && (!keyword || haystack.includes(keyword));
             });
 
-            setResultSummary(root, filtered.length, projects.length, "个项目");
+            const totalForView = fixedCategory ? projects.filter((project) => project.category === fixedCategory).length : projects.length;
+            setResultSummary(root, filtered.length, totalForView, "个项目");
 
             if (!filtered.length) {
                 root.innerHTML = '<div class="empty-state">没有符合条件的项目。可以清空搜索或切换状态。</div>';
@@ -701,7 +785,11 @@
                         </div>
                     </div>
                     <div class="project-actions">
-                        ${project.links.map((link) => `<a class="text-link" href="${link.href}" ${link.href.startsWith("http") ? 'target="_blank" rel="noopener noreferrer"' : ""}><i class="fas fa-arrow-up-right-from-square"></i> ${link.label}</a>`).join("")}
+                        <a class="text-link" href="${getProjectHref(project)}"><i class="fas fa-link"></i> 固定链接</a>
+                        ${project.links.map((link) => {
+                            const href = normalizeProjectLink(link);
+                            return `<a class="text-link" href="${href}" ${href.startsWith("http") ? 'target="_blank" rel="noopener noreferrer"' : ""}><i class="fas fa-arrow-up-right-from-square"></i> ${link.label}</a>`;
+                        }).join("")}
                     </div>
                 </article>
                         `).join("")}
@@ -733,6 +821,13 @@
         }
 
         categoryTabs.forEach((tab) => {
+            if (fixedCategory && tab.dataset.projectCategory !== fixedCategory) {
+                tab.hidden = true;
+                return;
+            }
+            if (fixedCategory && tab.dataset.projectCategory === fixedCategory) {
+                tab.classList.add("active");
+            }
             tab.addEventListener("click", () => {
                 categoryTabs.forEach((item) => item.classList.remove("active"));
                 tab.classList.add("active");
@@ -752,6 +847,16 @@
         if (searchInput) searchInput.addEventListener("input", paint);
         syncCategoryToHash();
         paint();
+    }
+
+    function redirectLegacyProjectHash() {
+        const isProjectHub = window.location.pathname.endsWith("/projects.html") || window.location.pathname.endsWith("projects.html");
+        if (!isProjectHub || !window.location.hash) return;
+        const projectId = window.location.hash.slice(1);
+        const project = projects.find((item) => item.id === projectId);
+        if (!project) return;
+        const targetPage = project.category === "engineering" ? "engineering-projects.html" : "horizontal-projects.html";
+        window.location.replace(`${targetPage}#${project.id}`);
     }
 
     function renderCapabilities() {
@@ -1052,6 +1157,7 @@
     };
 
     document.addEventListener("DOMContentLoaded", () => {
+        redirectLegacyProjectHash();
         renderPublications();
         renderProjects();
         renderCapabilities();

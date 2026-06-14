@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="孙远鸣的工程项目页面，集中展示个人站、AI 助手、简历工具、API 实验室等独立开发与部署能力。">
+    <title>工程项目 | 孙远鸣</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dropdown.css">
+    <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="canonical" href="https://symgo.netlify.app/engineering-projects.html">
+    <meta property="og:title" content="工程项目 | 孙远鸣">
+    <meta property="og:description" content="集中展示个人站、AI 助手、简历工具、API 实验室等独立开发与部署能力。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://symgo.netlify.app/engineering-projects.html">
+    <meta property="og:image" content="https://symgo.netlify.app/images/sym_photo.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+</head>
+<body class="site-shell">
+    <header>
+        <div class="container">
+            <a class="site-brand" href="index.html" aria-label="返回首页">
+                <img src="images/sym_photo.jpg" alt="孙远鸣个人照片" class="profile-img">
+                <div class="profile-info">
+                    <h1>孙远鸣</h1>
+                    <p class="title">Computer Science / Software Engineering</p>
+                    <p class="keywords">研究 · 工程 · 写作</p>
+                </div>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="projects.html">项目总览</a></li>
+                    <li><a href="engineering-projects.html" class="active">工程项目</a></li>
+                    <li><a href="horizontal-projects.html">横向项目</a></li>
+                    <li><a href="materials.html">材料</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-hero">
+            <div class="container">
+                <div class="eyebrow"><i class="fas fa-code-branch"></i> Engineering Projects</div>
+                <h1>工程项目</h1>
+                <p>这一页只放工程项目：更强调独立开发、页面结构、交互实现、API 接入、静态构建、Netlify 部署、性能和长期维护。适合 HR 或技术面试官快速判断工程交付能力。</p>
+                <div class="hero-actions">
+                    <a class="btn secondary" href="horizontal-projects.html"><i class="fas fa-handshake-angle"></i> 看横向项目</a>
+                    <a class="btn secondary" href="projects.html"><i class="fas fa-diagram-project"></i> 回项目总览</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-band">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">CASE STUDIES</div>
+                        <h2>独立开发、工具构建与部署维护</h2>
+                    </div>
+                    <p>每个项目按场景、职责、技术和产出组织，不只列技术名词，而是让访问者能看到完整工作链路。</p>
+                </div>
+                <div class="page-tools">
+                    <div class="filter-tabs" aria-label="项目分类">
+                        <button class="filter-tab active" data-project-category="engineering">工程项目</button>
+                    </div>
+                    <div class="search-box">
+                        <input type="search" data-project-search aria-label="搜索工程项目" placeholder="搜索工程项目、技术、职责或交付">
+                    </div>
+                </div>
+                <div class="project-list" data-projects data-project-page-category="engineering"></div>
+            </div>
+        </section>
+
+        <section class="section-band white">
+            <div class="container">
+                <div data-api-widget="projects" data-api-title="工程项目外部信号" data-api-lab-href="tools/api_lab.html"></div>
+            </div>
+        </section>
+
+        <section class="section-band white">
+            <div class="container">
+                <div class="focus-grid">
+                    <article class="surface-card">
+                        <div class="card-icon"><i class="fas fa-layer-group"></i></div>
+                        <h3>工程判断</h3>
+                        <p>页面结构、状态管理、组件复用、路径治理和静态构建共同构成项目的工程可信度。</p>
+                    </article>
+                    <article class="surface-card">
+                        <div class="card-icon"><i class="fas fa-plug"></i></div>
+                        <h3>API 与安全</h3>
+                        <p>Public API 实验室和 Netlify Functions 代理展示了接口白名单、失败原因、缓存和密钥边界意识。</p>
+                    </article>
+                    <article class="surface-card">
+                        <div class="card-icon"><i class="fas fa-cloud-arrow-up"></i></div>
+                        <h3>部署维护</h3>
+                        <p>工程项目不止能跑，还要能公开访问、能持续更新、能被链接检查和构建脚本稳定验证。</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <h3>孙远鸣</h3>
+                    <p>工程项目用于展示独立开发和可部署交付能力。</p>
+                </div>
+                <div>
+                    <h4>项目入口</h4>
+                    <ul>
+                        <li><a href="projects.html">项目总览</a></li>
+                        <li><a href="horizontal-projects.html">横向项目</a></li>
+                        <li><a href="publications.html">论文发表</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>联系</h4>
+                    <p><i class="fas fa-envelope"></i> 19861208800@163.com</p>
+                    <p><i class="fab fa-github"></i> <a href="https://github.com/symyyds/symgo" target="_blank" rel="noopener noreferrer">github.com/symyyds/symgo</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 孙远鸣. Static site ready for Netlify.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/api-widgets.js"></script>
+    <script src="js/site-data.js"></script>
+</body>
+</html>

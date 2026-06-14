@@ -3,20 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="孙远鸣的项目展示页面，展开项目背景、技术栈、个人职责、产出和复盘。">
-    <title>项目展示 | 孙远鸣</title>
+    <meta name="description" content="孙远鸣的项目总览入口，区分工程项目和横向项目，帮助访问者快速进入对应 case study。">
+    <title>项目总览 | 孙远鸣</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/dropdown.css">
     <link rel="stylesheet" href="css/site.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="canonical" href="https://symgo.netlify.app/projects.html">
-    <meta property="og:title" content="项目展示 | 孙远鸣">
-    <meta property="og:description" content="孙远鸣的项目展示页面，展开项目背景、技术栈、个人职责、产出和复盘。">
+    <meta property="og:title" content="项目总览 | 孙远鸣">
+    <meta property="og:description" content="孙远鸣的项目总览入口，区分工程项目和横向项目，帮助访问者快速进入对应 case study。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://symgo.netlify.app/projects.html">
     <meta property="og:image" content="https://symgo.netlify.app/images/sym_photo.jpg">
     <meta name="twitter:card" content="summary_large_image">
+    <script>
+        (function () {
+            const engineering = ["symgo-portfolio", "interview-toolkit", "academic-ai", "resume-builder", "public-api-lab"];
+            const horizontal = ["industry-knowledge-base", "lab-data-dashboard", "iot-flexible-access-trusted-control", "ningxia-multi-energy-architecture"];
+            const id = window.location.hash ? window.location.hash.slice(1) : "";
+            if (engineering.includes(id)) window.location.replace(`engineering-projects.html#${id}`);
+            if (horizontal.includes(id)) window.location.replace(`horizontal-projects.html#${id}`);
+        })();
+    </script>
 </head>
 <body class="site-shell">
     <header>
@@ -61,9 +70,9 @@
     <main>
         <section class="page-hero">
             <div class="container">
-                <div class="eyebrow"><i class="fas fa-diagram-project"></i> Selected Work</div>
-                <h1>项目展示</h1>
-                <p>项目分为工程项目和横向项目两类：前者展示独立开发、工具构建和部署能力，后者展示需求理解、协作交付和方案表达能力。</p>
+                <div class="eyebrow"><i class="fas fa-diagram-project"></i> Project Map</div>
+                <h1>项目总览</h1>
+                <p>项目拆成两个独立入口：工程项目用于展示独立开发、工具构建、API 接入和部署维护；横向项目用于展示真实合作中的需求理解、材料治理、技术归纳和验收交付。</p>
             </div>
         </section>
 
@@ -71,28 +80,63 @@
             <div class="container">
                 <div class="section-heading">
                     <div>
-                        <div class="section-kicker">CASE STUDIES</div>
-                        <h2>工程项目 / 横向项目</h2>
+                        <div class="section-kicker">CHOOSE A TRACK</div>
+                        <h2>先选你想看的项目类型</h2>
                     </div>
-                    <p>每个项目都按“场景、职责、技术、产出”组织，尽量像 case study，而不是简历条目的重复。</p>
+                    <p>这样做比把所有项目塞在一个长列表里更清楚：HR 可以快速看工程交付，导师或合作方可以直接看横向项目证据链。</p>
                 </div>
-                <div class="page-tools">
-                    <div class="filter-tabs">
-                        <button class="filter-tab active" data-project-category="all">全部</button>
-                        <button class="filter-tab" data-project-category="engineering">工程项目</button>
-                        <button class="filter-tab" data-project-category="horizontal">横向项目</button>
-                    </div>
-                    <div class="search-box">
-                        <input type="search" data-project-search aria-label="搜索项目" placeholder="搜索项目、技术、职责或交付">
-                    </div>
+                <div class="project-hub-grid">
+                    <a class="project-hub-card premium-surface" href="engineering-projects.html">
+                        <span class="project-hub-icon"><i class="fas fa-code-branch"></i></span>
+                        <span class="section-kicker">ENGINEERING PROJECTS</span>
+                        <strong>工程项目</strong>
+                        <span>个人站、AI 助手、简历工具、API 实验室等工程能力展示。</span>
+                        <em>5 个项目 · 进入页面 <i class="fas fa-arrow-right"></i></em>
+                    </a>
+                    <a class="project-hub-card premium-surface" href="horizontal-projects.html">
+                        <span class="project-hub-icon"><i class="fas fa-handshake-angle"></i></span>
+                        <span class="section-kicker">HORIZONTAL PROJECTS</span>
+                        <strong>横向项目</strong>
+                        <span>电力物联网、综合能源、知识库、成果看板等合作交付经历。</span>
+                        <em>4 个项目 · 进入页面 <i class="fas fa-arrow-right"></i></em>
+                    </a>
                 </div>
-                <div class="project-list" data-projects></div>
             </div>
         </section>
 
         <section class="section-band white">
             <div class="container">
-                <div data-api-widget="projects" data-api-title="工程项目外部信号" data-api-lab-href="tools/api_lab.html"></div>
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">RECENTLY ADDED</div>
+                        <h2>最新补充的真实横向项目</h2>
+                    </div>
+                    <p>这次新增的是国网宁夏电力科技项目验收材料中的综合能源系统研究，已经按公开展示边界整理为项目卡片和证据页。</p>
+                </div>
+                <div class="evidence-card-grid">
+                    <article class="surface-card">
+                        <div class="card-icon"><i class="fas fa-bolt"></i></div>
+                        <span class="section-kicker">真实横向项目</span>
+                        <h3>基于分布式多能互补的新型城镇综合能源系统信息与物理架构研究</h3>
+                        <p>周期 2022.01-2023.12，围绕宁夏典型城镇源网荷储、多能流耦合、CNN-Bi-LSTM 预测、PSO 优化调度和验收成果整理。</p>
+                        <div class="evidence-tag-row"><span>项目编号 5229JY220002</span><span>2 篇 EI</span><span>3 项发明专利</span></div>
+                        <a class="text-link" href="horizontal-projects.html#ningxia-multi-energy-architecture">查看项目 <i class="fas fa-arrow-right"></i></a>
+                        <a class="text-link" href="evidence/horizontal-projects/ningxia-multi-energy-architecture.html">查看证据页 <i class="fas fa-arrow-right"></i></a>
+                    </article>
+                    <article class="surface-card">
+                        <div class="card-icon"><i class="fas fa-shield-halved"></i></div>
+                        <span class="section-kicker">公开边界</span>
+                        <h3>只展示可公开项目画像</h3>
+                        <p>网站展示项目名称、研究内容、技术路线、成果指标和验收材料类型；合同、审计、联系方式、签章页和内部原文不会放到公网。</p>
+                        <div class="evidence-tag-row"><span>脱敏表达</span><span>材料治理</span><span>证据链</span></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-band white">
+            <div class="container">
+                <div data-api-widget="projects" data-api-title="项目页外部信号" data-api-lab-href="tools/api_lab.html"></div>
             </div>
         </section>
 

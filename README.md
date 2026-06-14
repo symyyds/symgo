@@ -7,18 +7,21 @@
 - `index.html`: 首页，总览研究、工程、项目证据和材料入口。
 - `dashboard.html`: 作品集仪表盘，总览页面、项目、材料和发布质量。
 - `profile.html`: 个人档案，展示能力矩阵、技术栈和成长路线。
+- `resume.html`: 阶段成果档案，整合本科阶段完整简历，并预留研究生阶段成果。
 - `research.html`: 研究方向，展示问题意识、方法栈和未来课题。
 - `snapshot.html`: 一页式档案，适合快速发给导师、HR 或合作方。
 - `achievements.html`: 成就与证明，预留奖项、证书、工程成果和内容成果。
-- `publications.html`: 论文发表页，支持年份、类型、关键词筛选和 PDF 占位入口。
-- `projects.html`: 项目展示页，按工程项目和横向项目组织 case study。
+- `publications.html`: 论文发表页，支持年份、类型、关键词筛选和 PDF 入口。
+- `projects.html`: 项目总览入口，分流到工程项目和横向项目两个独立页面。
+- `engineering-projects.html`: 工程项目页，展示独立开发、工具构建、API 接入和部署维护能力。
+- `horizontal-projects.html`: 横向项目页，展示需求理解、材料治理、协作交付和验收证据。
 - `materials.html`: 材料库，可筛选搜索 CV、论文、项目证据、升学资料和工具演示。
 - `services.html`: 合作与能力服务，说明可提供的展示站、材料整理和 AI 原型能力。
 - `roadmap.html`: 路线图，说明真实材料替换、项目证据增强和动态能力升级计划。
 - `interview.html`: 面试故事库，用 STAR 结构整理项目讲法。
 - `blog.html`: 博客列表页，保留真实文章入口，并使用更短的卡片布局。
 - `ai.html`: AI 学术助手页面，API Key 仅保存在访问者浏览器本地。
-- `leave_message.html`: 本地留言板，留言保存到访问者浏览器 localStorage。
+- `leave_message.html`: 本地留言板，留言保存到访问者浏览器 `localStorage`。
 
 ## 内容维护
 
@@ -43,8 +46,8 @@ node scripts/build-static.js
 dist
 ```
 
-`dist` 使用白名单构建，只发布博客需要的页面、样式、脚本、图片、文件、博客和工具目录，不会公开 `old/`、`server/`、`test*.html` 等历史或开发文件。构建脚本会根据 Netlify 的 `URL` / `DEPLOY_PRIME_URL` 自动重写 sitemap、robots 和页面 canonical/OG URL。
+`dist` 使用白名单构建，只发布站点需要的页面、样式、脚本、图片、文件、博客和工具目录。构建脚本会根据 Netlify 的 `URL` / `DEPLOY_PRIME_URL` 自动重写 sitemap、robots 和页面 canonical/OG URL。
 
 ## 安全说明
 
-`ai.html` 不硬编码任何真实 API Key。首次使用时在页面中输入 DeepSeek API Key 并保存到本机浏览器即可。静态站点不要把真实密钥提交到仓库。
+`ai.html` 不硬编码任何真实 API Key。首次使用时在页面中输入 DeepSeek API Key，并保存到本机浏览器即可。静态站点不要把真实密钥提交到仓库。
