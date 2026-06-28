@@ -58,10 +58,60 @@
             <div class="container">
                 <div class="deep-evidence-nav" aria-label="项目证据导航">
                     <a href="#workload"><i class="fas fa-chart-column"></i> 工作量总览</a>
+                    <a href="#evidence-dashboard"><i class="fas fa-table-cells-large"></i> 证据看板</a>
                     <a href="#tech-chain"><i class="fas fa-diagram-project"></i> 技术链路</a>
                     <a href="#artifact-list"><i class="fas fa-file-signature"></i> 论文专利软著</a>
                     <a href="#document-atlas"><i class="fas fa-folder-tree"></i> 文档证据</a>
                     <a href="#talk-track"><i class="fas fa-comments"></i> 面试讲法</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-band white" id="evidence-dashboard">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">EVIDENCE DASHBOARD</div>
+                        <h2>把 124 份材料压缩成一张可追问证据图</h2>
+                    </div>
+                    <p>这一层的目的不是继续堆材料名，而是让 HR、导师或合作方在 30 秒内看到：我参与整理了哪些技术线、哪些成果、哪些验证材料，以及这些材料如何支撑“端-边-云可信接入”的项目叙事。</p>
+                </div>
+
+                <div class="evidence-dashboard-grid">
+                    <article class="evidence-dashboard-card">
+                        <h3>公开展示口径</h3>
+                        <p>源文档显示项目围绕异构终端接入困难、网络环境复杂、安全防护边界模糊等痛点展开，基于国产信创体系、EdgeX Foundry、Docker、MQTT/Modbus 和 SM2 形成端边云联调闭环。</p>
+                        <ul class="evidence-statement-list">
+                            <li><i class="fas fa-layer-group"></i><span>我把可研、任务书、技术/工作报告、测试报告、应用证明、成果信息表和汇报材料统一成“背景-路线-成果-验证-边界”的公开结构。</span></li>
+                            <li><i class="fas fa-shield-halved"></i><span>可信管控部分重点展示设备身份、射频指纹、SM2 签名验签、nonce 防重放、证书链路和平台数据上报，不暴露内部系统细节。</span></li>
+                            <li><i class="fas fa-route"></i><span>成果展示从 4 项专利、3 篇论文、1 项软著/第三方测试，回连到自动注册、统一设备模型、边缘响应、流量控制和协议解析等技术点。</span></li>
+                        </ul>
+                        <div class="evidence-jump-list" aria-label="物联项目关键跳转">
+                            <a href="#tech-chain">看端-边-云技术链 <span>EdgeX / MQTT / Modbus</span><i class="fas fa-arrow-right"></i></a>
+                            <a href="#artifact-list">看论文专利软著矩阵 <span>4 专利 · 3 论文 · 1 软著</span><i class="fas fa-arrow-right"></i></a>
+                            <a href="#document-atlas">看文档证据索引 <span>报告 / 测试 / 应用证明</span><i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </article>
+
+                    <article class="evidence-dashboard-card">
+                        <h3>技术贡献雷达</h3>
+                        <p>按公开材料可展示程度，把项目中的工程链路、算法线索、安全能力和材料治理能力拆成可面试追问的五个维度。</p>
+                        <div class="radar-list">
+                            <div class="radar-row"><span>异构终端柔性接入</span><strong>92%</strong><div class="radar-track"><b style="--score: 92%"></b></div></div>
+                            <div class="radar-row"><span>EdgeX + Docker 边缘底座</span><strong>88%</strong><div class="radar-track"><b style="--score: 88%"></b></div></div>
+                            <div class="radar-row"><span>SM2 / 证书链可信认证</span><strong>90%</strong><div class="radar-track"><b style="--score: 90%"></b></div></div>
+                            <div class="radar-row"><span>CNN-LSTM / PSO / 协议解析成果线</span><strong>84%</strong><div class="radar-track"><b style="--score: 84%"></b></div></div>
+                            <div class="radar-row"><span>验收材料抽取与脱敏表达</span><strong>95%</strong><div class="radar-track"><b style="--score: 95%"></b></div></div>
+                        </div>
+                    </article>
+                </div>
+
+                <div class="traceability-map" aria-label="物联项目文档到成果的追踪矩阵">
+                    <a class="trace-card" href="#tech-chain"><span>技术报告</span><strong>端侧可配置、边缘可接入、通信可信任、平台可验证</strong><p>对应技术链路、自动注册、统一设备模型和可信通信方案。</p></a>
+                    <a class="trace-card" href="#workload"><span>工作报告</span><strong>把阶段推进、联调测试和验收准备组织成工作量证据</strong><p>用于说明不是单点功能，而是完整项目交付过程。</p></a>
+                    <a class="trace-card" href="#software-test"><span>测试/软著</span><strong>边缘物联设备接入管理软件 V1.0</strong><p>承接设备纳管、注册、仪表盘、云端上报和可信认证配置。</p></a>
+                    <a class="trace-card" href="#patent-auth-control"><span>专利成果</span><strong>安全认证、射频指纹、协同探测和协议解析</strong><p>把安全、识别和自动配置能力沉淀为创新成果。</p></a>
+                    <a class="trace-card" href="#document-atlas"><span>应用证明</span><strong>国产端边环境和 MQTT/Modbus 数据上报验证</strong><p>证明成果可以在示范场景中部署、运行和被验收。</p></a>
                 </div>
             </div>
         </section>

@@ -2577,6 +2577,187 @@ body.site-shell.dark-mode .command-item {
     line-height: 1.58;
 }
 
+.evidence-dashboard-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+    gap: 18px;
+    align-items: stretch;
+}
+
+.evidence-dashboard-card {
+    padding: 22px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: var(--radius);
+    background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(247, 250, 252, 0.92));
+    box-shadow: 0 24px 70px rgba(18, 35, 49, 0.09);
+}
+
+.evidence-dashboard-card h3 {
+    margin: 0 0 10px;
+    color: var(--ink);
+    font-size: 1.08rem;
+}
+
+.evidence-dashboard-card p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.68;
+}
+
+.evidence-statement-list {
+    display: grid;
+    gap: 10px;
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.evidence-statement-list li {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 10px;
+    align-items: start;
+    color: var(--muted);
+    line-height: 1.62;
+}
+
+.evidence-statement-list i {
+    display: inline-grid;
+    width: 28px;
+    height: 28px;
+    place-items: center;
+    border-radius: 8px;
+    background: var(--brand-soft);
+    color: var(--brand);
+    font-size: 0.8rem;
+}
+
+.evidence-jump-list {
+    display: grid;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.evidence-jump-list a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid rgba(15, 23, 42, 0.08);
+    color: var(--ink);
+    font-weight: 850;
+}
+
+.evidence-jump-list a:first-child {
+    border-top: 0;
+    padding-top: 0;
+}
+
+.evidence-jump-list span {
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.evidence-jump-list i {
+    color: var(--brand);
+}
+
+.evidence-jump-list a:hover {
+    color: var(--brand);
+}
+
+.radar-list {
+    display: grid;
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.radar-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.radar-row span {
+    color: var(--ink);
+    font-weight: 850;
+    overflow-wrap: anywhere;
+}
+
+.radar-row strong {
+    color: var(--brand);
+    font-size: 0.86rem;
+}
+
+.radar-track {
+    grid-column: 1 / -1;
+    height: 9px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.08);
+}
+
+.radar-track b {
+    display: block;
+    width: var(--score);
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--brand), var(--accent));
+}
+
+.traceability-map {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.trace-card {
+    min-height: 168px;
+    padding: 16px;
+    display: grid;
+    align-content: space-between;
+    gap: 12px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: var(--radius);
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.9));
+    color: var(--ink);
+    box-shadow: 0 18px 48px rgba(18, 35, 49, 0.08);
+}
+
+.trace-card span {
+    color: var(--accent);
+    font-size: 0.76rem;
+    font-weight: 900;
+}
+
+.trace-card strong {
+    color: var(--ink);
+    line-height: 1.38;
+}
+
+.trace-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.84rem;
+    line-height: 1.55;
+}
+
+.trace-card:hover {
+    color: var(--brand);
+    border-color: rgba(17, 97, 73, 0.26);
+    transform: translateY(-2px);
+}
+
+.trace-card:hover strong {
+    color: var(--brand);
+}
+
 .evidence-timeline {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -5101,6 +5282,41 @@ body.site-shell.dark-mode .resume-award-grid > div {
 
     .premium-surface {
         transform: none !important;
+    }
+}
+
+@media (max-width: 980px) {
+    .evidence-dashboard-grid,
+    .traceability-map {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .evidence-dashboard-grid,
+    .traceability-map,
+    .proof-metric-grid,
+    .evidence-flow,
+    .artifact-matrix,
+    .evidence-timeline {
+        grid-template-columns: 1fr;
+    }
+
+    .evidence-dashboard-card,
+    .trace-card {
+        padding: 18px;
+    }
+
+    .proof-metric strong,
+    .flow-node h3,
+    .flow-node p,
+    .artifact-card h3,
+    .artifact-card p {
+        overflow-wrap: anywhere;
+    }
+
+    .trace-card {
+        min-height: auto;
     }
 }
 
