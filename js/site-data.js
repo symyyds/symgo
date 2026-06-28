@@ -282,6 +282,34 @@
                 { label: "项目页锚点", href: "horizontal-projects.html#ningxia-multi-energy-architecture" },
                 { label: "横向项目证据", href: "evidence/horizontal-projects/ningxia-multi-energy-architecture.html" }
             ]
+        },
+        {
+            id: "minning-green-power-ipv6-terminal-access",
+            category: "horizontal",
+            categoryLabel: "横向项目",
+            status: "验收材料 / IPv6 终端接入网 / 5229YC240009",
+            year: "2024.02 - 2025.12",
+            name: "基于闽宁绿电小镇的终端接入网 IPv6 数据通信技术研究及应用",
+            role: "项目材料整理 / 技术路线归纳 / 验收证据结构化",
+            stack: ["IPv6", "电力物联网", "边缘物联代理", "地址规划", "合规性检查", "追踪溯源", "QoS", "GRL-ATE", "SDN", "NAT64/DNS64", "AIOps", "软件著作权"],
+            summary: "围绕闽宁绿电小镇源网荷储业务和多类型终端接入场景，整理 44 份验收材料，将 IPv6 地址规划、边缘物联代理合规检查、终端接入网性能建模、地址监测与追踪溯源平台等内容转化为可公开展示的横向项目档案。",
+            work: [
+                "阅读并归纳可研、综合计划、任务书、工作报告、技术报告、系统/软硬件测试报告、查新报告、应用证明、专利、论文、软著、成果及创新信息表、自验收报告、研究方案、应用报告、技术规范书和项目汇报 PPT 等 44 份材料，形成公开版证据链。",
+                "将项目主线整理为 IPv6 地址全生命周期管理：规划、分配、使用、监测、追踪、审计、回收，并解释其面向电力终端接入网的价值。",
+                "提炼“业务-安全-地理”三维语义化 IPv6 地址编码、一体化标识、O(1) 终端身份解析、边缘物联代理准入、地址合规性动态检测、追踪溯源平台等技术点。",
+                "梳理终端接入网性能需求建模和差异化 QoS 保障：图强化学习自适应流量工程 GRL-ATE、SDN 控制面拓扑感知路由、关键业务时延和 QoS 违规率指标。",
+                "把专利、论文、软著、应用证明、测试报告和自验收材料转写成不公开合同、审计、经费、联系方式和签章页的项目展示口径。"
+            ],
+            outcomes: [
+                "形成 IPv6 数据通信装置 1 套、IPv6 地址监测与分析/追踪溯源平台 1 套，并在闽宁绿电小镇相关变电站、线路和闽宁供电所试点应用。",
+                "成果包含受理发明专利 4 项、软件著作权 2 项、论文 4 篇、项目系列报告 1 套、技术规范/研究方案/应用报告/成果转化方案等验收材料。",
+                "公开材料记录 IPv6 网络 QoS 提升 20%、毫秒级响应、关键业务端到端延迟约 7ms、合规性检测单次决策约 2.4ms、地址管理平均响应约 20ms、关键任务业务 QoS 违规率 9.6%。",
+                "项目可用于说明真实横向合作中的资料抽取、技术归纳、系统架构理解、测试验收表达和脱敏公开边界意识。"
+            ],
+            links: [
+                { label: "项目页锚点", href: "horizontal-projects.html#minning-green-power-ipv6-terminal-access" },
+                { label: "横向项目证据", href: "evidence/horizontal-projects/minning-green-power-ipv6-terminal-access.html" }
+            ]
         }
     ];
 
@@ -389,6 +417,15 @@
             tags: ["综合能源", "源网荷储", "CNN-Bi-LSTM", "验收"]
         },
         {
+            type: "project",
+            typeLabel: "横向材料",
+            title: "闽宁绿电小镇 IPv6 终端接入网项目档案",
+            description: "把终端接入网 IPv6 数据通信技术研究及应用的 44 份验收材料整理为公开版项目画像，突出地址规划、合规检查、QoS 建模和追踪溯源平台。",
+            href: "evidence/horizontal-projects/minning-green-power-ipv6-terminal-access.html",
+            status: "真实项目档案",
+            tags: ["IPv6", "电力物联网", "QoS", "追踪溯源"]
+        },
+        {
             type: "study",
             typeLabel: "升学材料",
             title: "保研信息模板",
@@ -434,7 +471,7 @@
 
     const dashboardStats = [
         { label: "核心页面", value: "14", desc: "首页、档案、阶段成果、研究、论文、项目总览、工程项目、横向项目、材料、仪表盘、成就、服务、路线图、博客" },
-        { label: "项目档案", value: "9", desc: "5 个工程项目 + 4 个横向项目" },
+        { label: "项目档案", value: "10", desc: "5 个工程项目 + 5 个横向项目" },
         { label: "论文/手稿", value: "4", desc: "1 篇真实 proceedings 论文 + 3 个可替换展示位" },
         { label: "发布质量", value: "A", desc: "白名单构建、SEO、404、headers、manifest、sitemap" }
     ];
@@ -466,6 +503,15 @@
             description: "围绕宁夏地区分布式多能互补项目，整理 117 份最终验收材料，提炼预测模型、协同调度、物理架构和验收成果。",
             proof: "evidence/horizontal-projects/ningxia-multi-energy-architecture.html",
             tags: ["综合能源", "CNN-Bi-LSTM", "PSO"]
+        },
+        {
+            year: "2026",
+            title: "闽宁绿电小镇 IPv6 终端接入网材料沉淀",
+            type: "横向项目",
+            level: "Power IoT / IPv6 Terminal Access",
+            description: "围绕终端接入网 IPv6 数据通信技术研究，整理 44 份验收材料，提炼地址全生命周期、边缘代理合规检查、QoS 建模和追踪溯源平台。",
+            proof: "evidence/horizontal-projects/minning-green-power-ipv6-terminal-access.html",
+            tags: ["IPv6", "电力物联网", "追踪溯源"]
         },
         {
             year: "2025",
@@ -578,6 +624,13 @@
             task: "需要把真实横向项目转化成求职/申博可读的公开项目档案，同时保留技术含量和验收证据链。",
             action: "我从 117 份材料中提取项目编号、周期、单位、三项研究内容、模型指标、试点方案、论文专利和验收口径，整理为综合能源系统项目页面与证据页。",
             result: "形成了可展示的横向项目经历，能讲清楚 CNN-Bi-LSTM 预测、PSO 协同调度、源网荷储架构和材料脱敏边界。"
+        },
+        {
+            project: "闽宁绿电小镇 IPv6 终端接入网项目",
+            situation: "项目验收材料覆盖 IPv6 地址规划、边缘物联代理、性能建模、平台开发、论文专利和应用证明，同时包含合同、审计、经费等不适合公开的信息。",
+            task: "需要把 44 份有效材料转化为求职/申博可读的横向项目档案，并保证公开内容不泄露内部材料边界。",
+            action: "我提取项目编号、周期、单位、四项研究主线、平台成果、QoS 指标、论文专利软著和试点应用，把它们组织成项目卡片、证据页、材料库和成就条目。",
+            result: "形成了可讲述的 IPv6 终端接入网项目经历，能说明地址全生命周期管理、合规检查、追踪溯源平台和复杂验收材料治理能力。"
         }
     ];
 
