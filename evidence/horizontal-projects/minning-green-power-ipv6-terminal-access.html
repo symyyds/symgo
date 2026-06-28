@@ -55,6 +55,36 @@
 
         <section class="section-band">
             <div class="container">
+                <div class="deep-evidence-nav" aria-label="项目证据导航">
+                    <a href="#workload"><i class="fas fa-chart-column"></i> 工作量总览</a>
+                    <a href="#ipv6-chain"><i class="fas fa-route"></i> IPv6 技术链</a>
+                    <a href="#artifact-list"><i class="fas fa-file-signature"></i> 论文专利软著</a>
+                    <a href="#document-atlas"><i class="fas fa-folder-tree"></i> 文档证据</a>
+                    <a href="#talk-track"><i class="fas fa-comments"></i> 面试讲法</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-band white" id="workload">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">WORKLOAD MAP</div>
+                        <h2>材料工作量与成果密度</h2>
+                    </div>
+                    <p>重新扫描该项目目录后，识别到 45 条文件记录，其中 38 份可抽取公开文本；合同、审计、决算、经费和外委材料只作为公开边界记录。</p>
+                </div>
+                <div class="proof-metric-grid">
+                    <article class="proof-metric"><strong>45</strong><span>文件记录</span><p>覆盖可研、任务书、工作/技术报告、测试、应用证明、专利、论文、软著、阶段报告、汇报 PPT。</p></article>
+                    <article class="proof-metric"><strong>4</strong><span>受理发明专利</span><p>可生存性增强、可生存性评估、IPv6 地址资源优化分配、组织与安全分区地址规划。</p></article>
+                    <article class="proof-metric"><strong>4</strong><span>论文成果</span><p>包含 Power IoT 可生存性、组织级识别、边缘协作拥塞控制和能源物联语义感知等方向。</p></article>
+                    <article class="proof-metric"><strong>2</strong><span>软件著作权</span><p>IPv6 地址追踪与溯源系统、IPv6 地址监测与分析系统。</p></article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-band">
+            <div class="container">
                 <div class="section-heading">
                     <div>
                         <div class="section-kicker">PROJECT SNAPSHOT</div>
@@ -77,6 +107,36 @@
                         <div class="card-icon"><i class="fas fa-gauge-high"></i></div>
                         <h3>QoS 与溯源平台</h3>
                         <p>把图强化学习自适应流量工程、SDN 拓扑感知路由、地址监测分析和追踪溯源平台串成面向关键业务的性能保障与运维闭环。</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-band white" id="ipv6-chain">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">IPV6 TECHNICAL CHAIN</div>
+                        <h2>从地址规划到追踪溯源的技术链</h2>
+                    </div>
+                    <p>技术报告、研究方案和查新材料共同指向一条完整链路：先让地址有语义，再让终端可合规接入，再让关键业务获得 QoS 保障，最后把异常定位和反向溯源平台化。</p>
+                </div>
+                <div class="evidence-flow">
+                    <article class="flow-node">
+                        <h3>语义化地址规划</h3>
+                        <p>基于组织机构分级、信息安全分区和地理/业务语义设计 IPv6 地址，使地址能表达终端身份和管理归属。</p>
+                    </article>
+                    <article class="flow-node">
+                        <h3>合规接入检查</h3>
+                        <p>通过边缘物联代理提取协议栈指纹和行为基线，对地址合规性、终端身份和异常行为做动态检测。</p>
+                    </article>
+                    <article class="flow-node">
+                        <h3>性能需求建模</h3>
+                        <p>面向巡检、视频、感知等不同业务，使用多 QoS 代理、GRL-ATE 和 SDN 拓扑感知路由做差异化保障。</p>
+                    </article>
+                    <article class="flow-node">
+                        <h3>监测与追踪溯源</h3>
+                        <p>IPv6 地址监测与分析系统、追踪与溯源系统支撑地址状态、异常定位、反向溯源和智能运维。</p>
                     </article>
                 </div>
             </div>
@@ -142,39 +202,108 @@
             </div>
         </section>
 
-        <section class="section-band">
+        <section class="section-band" id="artifact-list">
             <div class="container">
                 <div class="section-heading">
                     <div>
-                        <div class="section-kicker">OUTCOMES</div>
-                        <h2>成果与指标证据矩阵</h2>
+                        <div class="section-kicker">ARTIFACTS</div>
+                        <h2>专利、论文、软著与测试指标</h2>
                     </div>
-                    <p>这里展示的是成果类型、公开指标和可讲述价值，不展示合同、审计、经费和原始验收附件。</p>
+                    <p>把每个成果拆到名称和技术含义，页面不只写“有论文专利”，而是说明它们分别支撑哪条技术线。</p>
                 </div>
-                <div class="evidence-card-grid">
-                    <article class="surface-card">
-                        <div class="card-icon"><i class="fas fa-server"></i></div>
-                        <h3>装置与平台</h3>
-                        <p>形成终端接入网 IPv6 数据通信装置 1 套，并开发 IPv6 地址监测与分析、追踪溯源相关系统和综合平台。</p>
-                        <div class="evidence-tag-row"><span>装置 1 套</span><span>监测分析</span><span>追踪溯源</span></div>
+                <div class="artifact-matrix">
+                    <article class="artifact-card">
+                        <h3>基于检查点容错的电力物联网体系可生存性增强方法及系统</h3>
+                        <p>围绕电力物联网业务连续性，在关键节点设置检查点和恢复机制，用于提高网络/系统异常情况下的可生存性。</p>
+                        <div class="artifact-meta"><span>发明专利受理</span><span>可生存性增强</span><span>容错恢复</span></div>
                     </article>
-                    <article class="surface-card">
-                        <div class="card-icon"><i class="fas fa-file-signature"></i></div>
-                        <h3>论文专利软著</h3>
-                        <p>材料记录受理发明专利 4 项、登记软件著作权 2 项、发表/录用论文 4 篇，并形成项目系列报告 1 套。</p>
-                        <div class="evidence-tag-row"><span>专利 4 项</span><span>软著 2 项</span><span>论文 4 篇</span></div>
+                    <article class="artifact-card">
+                        <h3>基于格贴近度的电力物联体系可生存性评估方法及系统</h3>
+                        <p>从评估角度量化电力物联体系在不同扰动下的稳健程度，为可生存性增强提供评价指标和决策依据。</p>
+                        <div class="artifact-meta"><span>发明专利受理</span><span>可生存性评估</span><span>格贴近度</span></div>
                     </article>
-                    <article class="surface-card">
-                        <div class="card-icon"><i class="fas fa-chart-line"></i></div>
-                        <h3>公开性能指标</h3>
-                        <p>公开材料记录 IPv6 网络 QoS 提升 20%，关键业务端到端延迟约 7ms，合规检测单次决策约 2.4ms，地址管理平均响应约 20ms，关键任务业务 QoS 违规率 9.6%。</p>
-                        <div class="evidence-tag-row"><span>QoS +20%</span><span>7ms</span><span>2.4ms / 20ms</span></div>
+                    <article class="artifact-card">
+                        <h3>基于散列算法和 IPv6 地址规划的资源优化分配方法及系统</h3>
+                        <p>将散列映射与 IPv6 地址规划结合，用于大规模终端地址资源分配、查找和冲突控制。</p>
+                        <div class="artifact-meta"><span>发明专利受理</span><span>IPv6 地址规划</span><span>资源分配</span></div>
+                    </article>
+                    <article class="artifact-card">
+                        <h3>一种基于组织机构分级和信息安全分区的 IPv6 地址规划方法</h3>
+                        <p>把组织层级、安全分区和业务属性编码进地址规划，支撑终端接入网的可管理、可审计和可追踪。</p>
+                        <div class="artifact-meta"><span>发明专利受理</span><span>组织分级</span><span>安全分区</span></div>
+                    </article>
+                    <article class="artifact-card">
+                        <h3>Enhancing Survivability in Power IoT Systems Based on Compliance Checks</h3>
+                        <p>围绕合规检查增强 Power IoT 可生存性，与边缘代理地址合规检测和安全接入主线对应。</p>
+                        <div class="artifact-meta"><span>EI/会议论文</span><span>Compliance Checks</span><span>Survivability</span></div>
+                    </article>
+                    <article class="artifact-card">
+                        <h3>Organization-Level Identification in the Power IoT System</h3>
+                        <p>围绕 Power IoT 组织级识别，为语义化 IPv6 地址、组织机构分级和终端身份解析提供论文支撑。</p>
+                        <div class="artifact-meta"><span>EI/会议论文</span><span>Organization-Level</span><span>Power IoT</span></div>
+                    </article>
+                    <article class="artifact-card">
+                        <h3>面向电力巡检的边缘协作智能拥塞控制机制</h3>
+                        <p>构建多 QoS 代理的异步深度强化学习模型，面向巡检终端高动态移动和上行数据拥塞控制。</p>
+                        <div class="artifact-meta"><span>核心/期刊论文</span><span>边缘协作</span><span>QoS</span></div>
+                    </article>
+                    <article class="artifact-card">
+                        <h3>面向能源物联体系的语义感知与边缘协同下行智能拥塞控制研究</h3>
+                        <p>面向能源物联下行业务 QoS 差异，强调语义感知、边缘协同和智能拥塞控制。</p>
+                        <div class="artifact-meta"><span>核心/期刊论文</span><span>语义感知</span><span>拥塞控制</span></div>
+                    </article>
+                    <article class="artifact-card">
+                        <h3>IPv6 地址追踪与溯源系统</h3>
+                        <p>对应地址状态追踪、异常定位和反向溯源能力，是平台化运维展示中的核心软件成果。</p>
+                        <div class="artifact-meta"><span>软件著作权</span><span>追踪溯源</span><span>地址审计</span></div>
+                    </article>
+                    <article class="artifact-card">
+                        <h3>IPv6 地址监测与分析系统</h3>
+                        <p>对应地址监测、分类管理、资源利用效率分析和异常识别能力，与综合平台监测主线一致。</p>
+                        <div class="artifact-meta"><span>软件著作权</span><span>监测分析</span><span>AIOps</span></div>
                     </article>
                 </div>
             </div>
         </section>
 
-        <section class="section-band white">
+        <section class="section-band white" id="document-atlas">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">DOCUMENT ATLAS</div>
+                        <h2>可公开文档证据索引</h2>
+                    </div>
+                    <p>该项目的材料结构很完整，适合展示“资料抽取、指标归纳、验收表达、脱敏边界”的工作量。</p>
+                </div>
+                <div class="doc-atlas">
+                    <div class="doc-row"><strong>技术报告</strong><p>系统阐述 IPv6 地址全生命周期、合规检查、QoS 建模、监测分析与追踪溯源平台，记录论文 4 篇、专利 4 项、软著 2 项等成果。</p><span>核心技术说明</span></div>
+                    <div class="doc-row"><strong>查新报告</strong><p>围绕 GRL-ATE、QoS、IPv6 地址管理和电力业务溯源检索国内外技术，对项目创新边界做支撑。</p><span>创新性支撑</span></div>
+                    <div class="doc-row"><strong>系统/软硬件测试</strong><p>系统测试、软件测试、硬件测试共同支撑平台功能、装置运行和性能指标验证。</p><span>测试验证</span></div>
+                    <div class="doc-row"><strong>应用证明/应用报告</strong><p>证明成果在闽宁绿电小镇相关变电站、线路和闽宁供电所试点，覆盖源网荷储业务 IPv6 终端接入与地址治理。</p><span>试点应用</span></div>
+                    <div class="doc-row"><strong>阶段报告/PPT</strong><p>阶段性报告和 2026 年科技项目验收汇报 PPT 串联里程碑、成果指标、论文专利软著和平台交付。</p><span>汇报表达</span></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-band">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">PUBLIC METRICS</div>
+                        <h2>可公开性能指标</h2>
+                    </div>
+                    <p>这些指标只保留技术性能口径，不包含任何合同、经费、审计或原始附件信息。</p>
+                </div>
+                <div class="proof-metric-grid">
+                    <article class="proof-metric"><strong>+20%</strong><span>IPv6 网络 QoS</span><p>材料记录 IPv6 网络服务质量提升约 20%，用于说明性能建模与流量工程价值。</p></article>
+                    <article class="proof-metric"><strong>7ms</strong><span>关键业务端到端延迟</span><p>关键业务路径延迟约 7ms，体现 SDN/拓扑感知路由和差异化保障效果。</p></article>
+                    <article class="proof-metric"><strong>2.4ms</strong><span>合规检测决策</span><p>地址合规性动态检测单次决策约 2.4ms，用于说明边缘侧实时检查能力。</p></article>
+                    <article class="proof-metric"><strong>9.6%</strong><span>QoS 违规率</span><p>关键任务业务 QoS 违规率控制在 9.6%，与拥塞控制和多 QoS 代理研究对应。</p></article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-band white" id="talk-track">
             <div class="container">
                 <div class="two-column">
                     <article class="evidence-callout">

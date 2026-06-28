@@ -56,6 +56,36 @@
 
         <section class="section-band">
             <div class="container">
+                <div class="deep-evidence-nav" aria-label="项目证据导航">
+                    <a href="#workload"><i class="fas fa-chart-column"></i> 工作量总览</a>
+                    <a href="#tech-chain"><i class="fas fa-diagram-project"></i> 技术链路</a>
+                    <a href="#artifact-list"><i class="fas fa-file-signature"></i> 论文专利软著</a>
+                    <a href="#document-atlas"><i class="fas fa-folder-tree"></i> 文档证据</a>
+                    <a href="#talk-track"><i class="fas fa-comments"></i> 面试讲法</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-band white" id="workload">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">WORKLOAD MAP</div>
+                        <h2>材料工作量与成果密度</h2>
+                    </div>
+                    <p>重新扫描该项目目录后，识别到 124 条文件记录，其中 72 份可抽取公开文本；合同、审计、经费、签章等 15 类内部材料只作为边界记录，不公开正文。</p>
+                </div>
+                <div class="proof-metric-grid">
+                    <article class="proof-metric"><strong>124</strong><span>文件记录</span><p>覆盖可研、任务书、会议纪要、技术/工作报告、季报、测试、成果表、验收申请和汇报材料。</p></article>
+                    <article class="proof-metric"><strong>4</strong><span>受理发明专利</span><p>射频指纹识别、安全认证管控、漏洞协同探测、终端协议智能解析。</p></article>
+                    <article class="proof-metric"><strong>3</strong><span>论文成果</span><p>含 2 篇 EI/会议方向论文和 1 篇《宁夏电力》CNN-LSTM 边缘设备论文。</p></article>
+                    <article class="proof-metric"><strong>1</strong><span>软著 + 第三方测试</span><p>物联网终端柔性接入与可信认证管理系统 V1.0，并形成边缘设备软件平台测试报告。</p></article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-band">
+            <div class="container">
                 <div class="section-heading">
                     <div>
                         <div class="section-kicker">PROJECT SNAPSHOT</div>
@@ -79,6 +109,36 @@
                         <div class="card-icon"><i class="fas fa-shield-halved"></i></div>
                         <h3>可信管控</h3>
                         <p>方案覆盖 SM2 签名验签、加密传输、nonce 防重放、安全接入 SDK、证书链路和平台侧可信连接，同时扩展射频指纹、协议解析和漏洞协同探测研究。</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-band white" id="tech-chain">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">TECHNICAL CHAIN</div>
+                        <h2>端-边-云技术链路</h2>
+                    </div>
+                    <p>技术报告和应用证明显示，本项目不是单点软件，而是从国产端侧、边缘网关、设备服务、可信认证到平台上报的一套可复用工程链路。</p>
+                </div>
+                <div class="evidence-flow">
+                    <article class="flow-node">
+                        <h3>国产端侧采集</h3>
+                        <p>端侧采用 BearPi-HM Nano 与 OpenHarmony，完成传感数据采集、安全封装、协议响应和现场参数写入。</p>
+                    </article>
+                    <article class="flow-node">
+                        <h3>边缘框架接入</h3>
+                        <p>边缘侧以 OrangePi KunPeng Pro、openEuler、Docker 和 EdgeX Foundry 运行 core-data、metadata、command、device service 等微服务。</p>
+                    </article>
+                    <article class="flow-node">
+                        <h3>自动注册与识别</h3>
+                        <p>MQTT/Modbus 设备通过注册主题或寄存器字段上报信息，绑定 Device Profile；CNN-LSTM 用于增强设备识别和异常响应。</p>
+                    </article>
+                    <article class="flow-node">
+                        <h3>可信认证管控</h3>
+                        <p>SM2 签名验签、加密传输、nonce 防重放、证书加载与平台侧数据上报构成安全接入闭环。</p>
                     </article>
                 </div>
             </div>
@@ -145,39 +205,80 @@
             </div>
         </section>
 
-        <section class="section-band">
+        <section class="section-band" id="artifact-list">
             <div class="container">
                 <div class="section-heading">
                     <div>
-                        <div class="section-kicker">EVIDENCE CHAIN</div>
-                        <h2>可验证成果矩阵</h2>
+                        <div class="section-kicker">ARTIFACTS</div>
+                        <h2>专利、论文、软著与测试成果</h2>
                     </div>
-                    <p>这里展示的是证据类型和可讲述价值，不挂原始内部文件。</p>
+                    <p>这里按“成果名称 - 技术含义 - 对应材料”展开，方便面试官或导师看到具体做了什么。</p>
                 </div>
-                <div class="evidence-card-grid">
-                    <article class="surface-card">
-                        <div class="card-icon"><i class="fas fa-vial-circle-check"></i></div>
-                        <h3>第三方测试</h3>
-                        <p>边缘物联设备接入管理软件 V1.0 完成功能性、可靠性和性能效率测试，测试依据包含 GB/T 25000.51-2016。</p>
-                        <div class="evidence-tag-row"><span>软件 V1.0</span><span>确认测试</span><span>通过结论</span></div>
+                <div class="artifact-matrix">
+                    <article class="artifact-card" id="patent-rf-fingerprint">
+                        <h3>一种电力物联网射频指纹识别方法及计算设备</h3>
+                        <p>面向异构终端身份识别，把物理层射频特征作为设备指纹，用于增强仅依赖协议字段或账号证书的身份判断。</p>
+                        <div class="artifact-meta"><span>发明专利受理</span><span>射频指纹</span><span>设备身份识别</span></div>
                     </article>
-                    <article class="surface-card">
-                        <div class="card-icon"><i class="fas fa-satellite-dish"></i></div>
-                        <h3>示范应用</h3>
-                        <p>在配电站房环境监测、供电所微电网设备接入等场景中完成端边协同运行、自动注册、数据上报和命令交互验证。</p>
-                        <div class="evidence-tag-row"><span>智能开关</span><span>烟感传感器</span><span>平台联调</span></div>
+                    <article class="artifact-card" id="patent-auth-control">
+                        <h3>一种电力物联网设备安全认证及管控方法</h3>
+                        <p>围绕设备身份、证书链路、签名验签、加密传输和防重放机制，支撑端边通信的可信接入和统一管控。</p>
+                        <div class="artifact-meta"><span>发明专利受理</span><span>SM2</span><span>可信认证</span></div>
                     </article>
-                    <article class="surface-card">
-                        <div class="card-icon"><i class="fas fa-file-signature"></i></div>
-                        <h3>知识产权与论文</h3>
-                        <p>材料中沉淀软著、专利受理、论文录用和技术报告，包括设备识别、边缘流量控制、协议解析和安全认证方向。</p>
-                        <div class="evidence-tag-row"><span>软著</span><span>专利受理</span><span>论文录用</span></div>
+                    <article class="artifact-card" id="patent-marl-vulnerability">
+                        <h3>基于多智能体强化学习的漏洞智能协同探测方法及系统</h3>
+                        <p>将安全探测从孤立扫描扩展为多节点协同策略，强调知识共享、主动预知和复杂网络环境下的漏洞协同发现。</p>
+                        <div class="artifact-meta"><span>发明专利受理</span><span>多智能体</span><span>强化学习</span></div>
+                    </article>
+                    <article class="artifact-card" id="patent-protocol-parse">
+                        <h3>电力终端协议的智能解析方法</h3>
+                        <p>面向电力终端协议差异和点表配置复杂问题，沉淀协议字段解析、设备模型生成和配置自动化能力。</p>
+                        <div class="artifact-meta"><span>发明专利受理</span><span>协议解析</span><span>自动配置</span></div>
+                    </article>
+                    <article class="artifact-card" id="paper-device-id">
+                        <h3>The Research on IoT Device Identification Method Based on Deep Learning</h3>
+                        <p>围绕 IoT 设备识别，将深度学习模型用于设备类型判别和边缘侧智能识别，是自动纳管能力的算法支撑。</p>
+                        <div class="artifact-meta"><span>论文录用</span><span>Device Identification</span><span>Deep Learning</span></div>
+                    </article>
+                    <article class="artifact-card" id="paper-traffic-control">
+                        <h3>Network Traffic Control Mechanism Applied To Edge Computing Scenarios</h3>
+                        <p>面向边缘计算场景的数据上送与链路负载，使用 PSO 等优化思路调节边缘节点传输策略和业务优先级。</p>
+                        <div class="artifact-meta"><span>EI 检索</span><span>PSO</span><span>Edge Traffic</span></div>
+                    </article>
+                    <article class="artifact-card" id="paper-cnn-lstm">
+                        <h3>基于 CNN-LSTM 的电力物联网边缘设备智能响应与数据管控模型</h3>
+                        <p>材料显示该论文提出融合 CNN 与 LSTM 的混合模型，用于边缘终端负荷预测、设备响应和数据管控。</p>
+                        <div class="artifact-meta"><span>《宁夏电力》录用</span><span>CNN-LSTM</span><span>边缘设备</span></div>
+                    </article>
+                    <article class="artifact-card" id="software-test">
+                        <h3>物联网终端柔性接入与可信认证管理系统 V1.0</h3>
+                        <p>软著与第三方测试材料对应设备管理、端设备自动注册、仪表盘总览、云端上报和可信认证配置等功能。</p>
+                        <div class="artifact-meta"><span>软件著作权</span><span>第三方测试</span><span>软件 V1.0</span></div>
                     </article>
                 </div>
             </div>
         </section>
 
-        <section class="section-band white">
+        <section class="section-band white" id="document-atlas">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">DOCUMENT ATLAS</div>
+                        <h2>可公开文档证据索引</h2>
+                    </div>
+                    <p>材料很多时，真正体现工作量的是能把它们归档成“用途清楚、边界清楚、能被追问”的证据层。</p>
+                </div>
+                <div class="doc-atlas">
+                    <div class="doc-row"><strong>技术报告</strong><p>《技术报告-面向物联体系的柔性配置接入与可信认证管控关键技术研究及应用》：系统展开 OpenHarmony/openEuler、Docker、EdgeX、MQTT/Modbus、SM2、CNN-LSTM、PSO 等技术链路。</p><span>核心技术说明</span></div>
+                    <div class="doc-row"><strong>工作报告</strong><p>按季度梳理项目从 SDK 设计、自动注册、仿真环境、设备识别、数据采集、多端部署到验收准备的推进过程。</p><span>过程工作量</span></div>
+                    <div class="doc-row"><strong>应用证明</strong><p>证明成果在国产鲲鹏处理器、openEuler、OpenHarmony、Docker 与 EdgeX 环境下完成部署，MQTT/Modbus 数据可上报，测试结论为通过。</p><span>现场应用</span></div>
+                    <div class="doc-row"><strong>第三方测试</strong><p>边缘设备软件平台测试报告用于说明功能性、可靠性和性能效率等验证，不公开原始扫描附件。</p><span>质量验证</span></div>
+                    <div class="doc-row"><strong>成果表/验收</strong><p>成果及创新信息表、自验收报告、验收申请表对应论文、专利、软著、测试、报告和示范应用的完成情况。</p><span>验收闭环</span></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-band white" id="talk-track">
             <div class="container">
                 <div class="two-column">
                     <article class="evidence-callout">

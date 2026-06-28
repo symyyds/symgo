@@ -252,7 +252,9 @@
             ],
             links: [
                 { label: "项目页锚点", href: "horizontal-projects.html#iot-flexible-access-trusted-control" },
-                { label: "横向项目证据", href: "evidence/horizontal-projects/iot-flexible-access-trusted-control.html" }
+                { label: "横向项目证据", href: "evidence/horizontal-projects/iot-flexible-access-trusted-control.html" },
+                { label: "成果矩阵", href: "evidence/horizontal-projects/iot-flexible-access-trusted-control.html#artifact-list" },
+                { label: "文档索引", href: "evidence/horizontal-projects/iot-flexible-access-trusted-control.html#document-atlas" }
             ]
         },
         {
@@ -280,7 +282,9 @@
             ],
             links: [
                 { label: "项目页锚点", href: "horizontal-projects.html#ningxia-multi-energy-architecture" },
-                { label: "横向项目证据", href: "evidence/horizontal-projects/ningxia-multi-energy-architecture.html" }
+                { label: "横向项目证据", href: "evidence/horizontal-projects/ningxia-multi-energy-architecture.html" },
+                { label: "成果矩阵", href: "evidence/horizontal-projects/ningxia-multi-energy-architecture.html#artifact-list" },
+                { label: "文档索引", href: "evidence/horizontal-projects/ningxia-multi-energy-architecture.html#document-atlas" }
             ]
         },
         {
@@ -308,7 +312,9 @@
             ],
             links: [
                 { label: "项目页锚点", href: "horizontal-projects.html#minning-green-power-ipv6-terminal-access" },
-                { label: "横向项目证据", href: "evidence/horizontal-projects/minning-green-power-ipv6-terminal-access.html" }
+                { label: "横向项目证据", href: "evidence/horizontal-projects/minning-green-power-ipv6-terminal-access.html" },
+                { label: "成果矩阵", href: "evidence/horizontal-projects/minning-green-power-ipv6-terminal-access.html#artifact-list" },
+                { label: "文档索引", href: "evidence/horizontal-projects/minning-green-power-ipv6-terminal-access.html#document-atlas" }
             ]
         }
     ];
