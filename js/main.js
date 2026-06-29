@@ -577,6 +577,293 @@ document.addEventListener("DOMContentLoaded", function () {
             .slice(0, 6);
     }
 
+    function getCurrentPageKey() {
+        const parts = window.location.pathname.split("/").filter(Boolean);
+        return parts.pop() || "index.html";
+    }
+
+    function localAsset(path) {
+        if (!path || path.startsWith("http") || path.startsWith("#") || path.startsWith("/")) return path;
+        return `${prefix}${path}`;
+    }
+
+    const visualEvidencePresets = {
+        "index.html": {
+            kicker: "Portfolio Visual System",
+            title: "真实页面截图组成的作品集现场",
+            copy: "把首页、项目、论文、材料库和 API 实验室变成可见证据，让访问者先看到界面完成度，再进入具体材料。",
+            metrics: [
+                { label: "视觉证据", value: 92 },
+                { label: "项目深度", value: 88 },
+                { label: "学术信号", value: 76 },
+                { label: "部署完成", value: 96 }
+            ],
+            items: [
+                { title: "首页首屏", label: "Home", href: "index.html", src: "images/site-screenshots/home.png" },
+                { title: "工程项目", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.png" },
+                { title: "横向项目", label: "Horizontal", href: "horizontal-projects.html", src: "images/site-screenshots/horizontal-projects.png" },
+                { title: "论文发表", label: "Publication", href: "publications.html", src: "images/site-screenshots/publications.png" },
+                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.png" },
+                { title: "API 实验室", label: "API", href: "tools/api_lab.html", src: "images/site-screenshots/api-lab.png" }
+            ]
+        },
+        "projects.html": {
+            kicker: "Project Evidence",
+            title: "项目入口先给界面证据",
+            copy: "工程项目和横向项目都保留截图入口，避免项目总览变成只有文字的目录页。",
+            metrics: [
+                { label: "工程项目", value: 90 },
+                { label: "横向项目", value: 88 },
+                { label: "证据链", value: 84 },
+                { label: "可追问", value: 91 }
+            ],
+            items: [
+                { title: "工程项目页", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.png" },
+                { title: "横向项目页", label: "Horizontal", href: "horizontal-projects.html", src: "images/site-screenshots/horizontal-projects.png" },
+                { title: "物联网项目", label: "IoT", href: "horizontal-projects.html#iot-flexible-access-trusted-control", src: "images/horizontal-projects/iot-access-screenshot.png" },
+                { title: "IPv6 项目", label: "IPv6", href: "horizontal-projects.html#minning-green-power-ipv6-terminal-access", src: "images/horizontal-projects/ipv6-sdn-qos-screenshot.png" },
+                { title: "综合能源", label: "Energy", href: "horizontal-projects.html#ningxia-multi-energy-architecture", src: "images/horizontal-projects/energy-architecture-screenshot.png" }
+            ]
+        },
+        "engineering-projects.html": {
+            kicker: "Engineering Gallery",
+            title: "工程项目截图与工具界面",
+            copy: "用实际页面截图展示个人站、AI 助手、简历工具和 API 实验室的产品完成度。",
+            metrics: [
+                { label: "独立开发", value: 94 },
+                { label: "工具化", value: 86 },
+                { label: "API 接入", value: 89 },
+                { label: "维护性", value: 90 }
+            ],
+            items: [
+                { title: "工程项目总屏", label: "Page", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.png" },
+                { title: "个人展示站", label: "Portfolio", href: "index.html", src: "images/engineering-projects/symgo-portfolio-screenshot.png" },
+                { title: "学术 AI 助手", label: "AI", href: "ai.html", src: "images/engineering-projects/academic-ai-assistant-screenshot.png" },
+                { title: "API 实验室", label: "API", href: "tools/api_lab.html", src: "images/engineering-projects/public-api-lab-screenshot.png" },
+                { title: "简历制作", label: "Resume", href: "tools/resume_builder.html", src: "images/engineering-projects/resume-builder-screenshot.png" }
+            ]
+        },
+        "horizontal-projects.html": {
+            kicker: "Horizontal Project Gallery",
+            title: "横向项目图谱与脱敏界面",
+            copy: "用脱敏截图和系统结构图表达真实合作项目的复杂度、技术链路和成果证据。",
+            metrics: [
+                { label: "真实项目", value: 95 },
+                { label: "脱敏边界", value: 90 },
+                { label: "成果指标", value: 87 },
+                { label: "技术链路", value: 89 }
+            ],
+            items: [
+                { title: "横向项目总屏", label: "Page", href: "horizontal-projects.html", src: "images/site-screenshots/horizontal-projects.png" },
+                { title: "柔性接入", label: "IoT", href: "evidence/horizontal-projects/iot-flexible-access-trusted-control.html#visual-proof", src: "images/horizontal-projects/iot-access-screenshot.png" },
+                { title: "可信认证链路", label: "Trust", href: "evidence/horizontal-projects/iot-flexible-access-trusted-control.html#visual-proof", src: "images/horizontal-projects/iot-trusted-flow-visual.png" },
+                { title: "IPv6 接入网", label: "IPv6", href: "evidence/horizontal-projects/minning-green-power-ipv6-terminal-access.html#visual-proof", src: "images/horizontal-projects/ipv6-sdn-qos-screenshot.png" },
+                { title: "综合能源架构", label: "Energy", href: "evidence/horizontal-projects/ningxia-multi-energy-architecture.html#visual-proof", src: "images/horizontal-projects/energy-architecture-screenshot.png" },
+                { title: "预测调度", label: "Schedule", href: "evidence/horizontal-projects/ningxia-multi-energy-architecture.html#visual-proof", src: "images/horizontal-projects/energy-prediction-scheduling-visual.png" }
+            ]
+        },
+        "publications.html": {
+            kicker: "Publication Preview",
+            title: "论文首图与学术材料预览",
+            copy: "论文卡片保留首页截图、PDF 入口和 DOI/链接，让学术成果不只停留在标题层面。",
+            metrics: [
+                { label: "论文首图", value: 90 },
+                { label: "PDF 入口", value: 86 },
+                { label: "元数据", value: 78 },
+                { label: "可替换", value: 92 }
+            ],
+            items: [
+                { title: "论文页截图", label: "Page", href: "publications.html", src: "images/site-screenshots/publications.png" },
+                { title: "SSA-RF 论文首图", label: "ACE", href: "files/papers/sun-2024-sparrow-random-forest-weight-class.pdf", src: "images/publications/sun-2024-sparrow-random-forest-weight-class.png" },
+                { title: "Profile Mining 占位", label: "Preprint", href: "files/papers/placeholder-profile-mining.pdf", src: "images/publications/placeholder-profile-mining.png" },
+                { title: "Toolkit 占位", label: "Workshop", href: "files/papers/placeholder-toolkit.pdf", src: "images/publications/placeholder-toolkit.png" }
+            ]
+        },
+        "materials.html": {
+            kicker: "Material Gallery",
+            title: "材料库不只列文件，也展示证据外观",
+            copy: "把简历、论文、项目页、博客和 API 实验室截图集中展示，让材料入口更像申请/求职资料中台。",
+            metrics: [
+                { label: "材料入口", value: 92 },
+                { label: "筛选检索", value: 84 },
+                { label: "视觉证明", value: 88 },
+                { label: "后续扩展", value: 93 }
+            ],
+            items: [
+                { title: "材料库截图", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.png" },
+                { title: "阶段成果", label: "Resume", href: "resume.html", src: "images/site-screenshots/resume.png" },
+                { title: "论文发表", label: "Papers", href: "publications.html", src: "images/site-screenshots/publications.png" },
+                { title: "博客索引", label: "Blog", href: "blog.html", src: "images/site-screenshots/blog.png" },
+                { title: "API 实验室", label: "API", href: "tools/api_lab.html", src: "images/site-screenshots/api-lab.png" }
+            ]
+        },
+        "resume.html": {
+            kicker: "Resume Evidence",
+            title: "本科成果与后续阶段的视觉档案",
+            copy: "简历页加入页面截图和成果材料预览，方便后续继续补研究生阶段成果。",
+            metrics: [
+                { label: "本科成果", value: 86 },
+                { label: "阶段预留", value: 82 },
+                { label: "材料链接", value: 78 },
+                { label: "展示完整", value: 88 }
+            ],
+            items: [
+                { title: "阶段成果页", label: "Page", href: "resume.html", src: "images/site-screenshots/resume.png" },
+                { title: "本科简历截图", label: "CV", href: "resume.html", src: "images/resume/undergraduate-resume.png" },
+                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.png" },
+                { title: "项目总览", label: "Projects", href: "projects.html", src: "images/site-screenshots/engineering-projects.png" }
+            ]
+        },
+        "blog.html": {
+            kicker: "Writing Gallery",
+            title: "写作内容配上封面和页面截图",
+            copy: "博客页用封面、站内截图和内容分类展示长期写作沉淀，不再只有标题列表。",
+            metrics: [
+                { label: "写作资产", value: 84 },
+                { label: "封面质量", value: 82 },
+                { label: "检索体验", value: 78 },
+                { label: "长期维护", value: 88 }
+            ],
+            items: [
+                { title: "博客索引截图", label: "Blog", href: "blog.html", src: "images/site-screenshots/blog.png" },
+                { title: "保研经验", label: "Guide", href: "blog/baoyan.html", src: "images/blog/baoyan/baoyan.png" },
+                { title: "复试技巧", label: "Interview", href: "blog/25_skills.html", src: "images/blog/25_skills/fig1.png" },
+                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.png" }
+            ]
+        },
+        "api_lab.html": {
+            kicker: "API Visual Console",
+            title: "API 代理和错误诊断也要可视化",
+            copy: "把接口实验室、后端代理、健康检查和失败原因查询做成可展示的工程页面。",
+            metrics: [
+                { label: "接口覆盖", value: 88 },
+                { label: "后端代理", value: 86 },
+                { label: "错误解释", value: 82 },
+                { label: "页面嵌入", value: 84 }
+            ],
+            items: [
+                { title: "API 实验室截图", label: "API", href: "tools/api_lab.html", src: "images/site-screenshots/api-lab.png" },
+                { title: "代理控制台", label: "Proxy", href: "tools/netlify_api_proxy.html", src: "images/engineering-projects/public-api-lab-screenshot.png" },
+                { title: "工程项目", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.png" },
+                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.png" }
+            ]
+        }
+    };
+
+    const coreVisualFallbacks = {
+        "profile.html": { shot: "profile", label: "Profile", kind: "个人档案" },
+        "research.html": { shot: "research", label: "Research", kind: "研究方向" },
+        "dashboard.html": { shot: "dashboard", label: "Dashboard", kind: "作品集仪表盘" },
+        "achievements.html": { shot: "achievements", label: "Achievement", kind: "成就证明" },
+        "roadmap.html": { shot: "roadmap", label: "Roadmap", kind: "长期路线图" },
+        "snapshot.html": { shot: "snapshot", label: "Snapshot", kind: "一页式档案" },
+        "services.html": { shot: "services", label: "Service", kind: "合作服务" },
+        "interview.html": { shot: "interview", label: "Interview", kind: "面试故事" },
+        "ai.html": { shot: "ai", label: "AI", kind: "学术助手" },
+        "leave_message.html": { shot: "leave-message", label: "Contact", kind: "联系入口" },
+        "netlify_api_proxy.html": { shot: "netlify-api-proxy", label: "Proxy", kind: "API 代理控制台", href: "tools/netlify_api_proxy.html" },
+        "resume_builder.html": { shot: "resume-builder", label: "Builder", kind: "简历制作工具", href: "tools/resume_builder.html" }
+    };
+
+    function getVisualEvidencePreset() {
+        const pageKey = getCurrentPageKey();
+        if (visualEvidencePresets[pageKey]) return visualEvidencePresets[pageKey];
+
+        const fallback = coreVisualFallbacks[pageKey];
+        if (!fallback) return null;
+
+        const pageTitle = getPageTitle();
+        return {
+            kicker: `${fallback.label} Visual Proof`,
+            title: `${pageTitle}的截图证据与相关入口`,
+            copy: `${fallback.kind}页面补充真实渲染截图，并关联论文、项目、材料库和工具入口，让访问者能从当前页面继续追踪完整证据链。`,
+            metrics: [
+                { label: "页面完成", value: 88 },
+                { label: "视觉证明", value: 84 },
+                { label: "关联入口", value: 82 },
+                { label: "可维护", value: 90 }
+            ],
+            items: [
+                { title: pageTitle, label: fallback.label, href: fallback.href || pageKey, src: `images/site-screenshots/${fallback.shot}.png` },
+                { title: "项目总览", label: "Projects", href: "projects.html", src: "images/site-screenshots/projects.png" },
+                { title: "论文发表", label: "Papers", href: "publications.html", src: "images/site-screenshots/publications.png" },
+                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.png" },
+                { title: "工程项目", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.png" }
+            ]
+        };
+    }
+
+    function renderVisualEvidenceDeck() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const preset = getVisualEvidencePreset();
+        if (!preset || !preset.items?.length) return;
+
+        let deck = main.querySelector(".site-visual-showcase");
+        if (!deck) {
+            deck = document.createElement("section");
+            deck.className = "site-visual-showcase";
+            deck.setAttribute("aria-label", "视觉证据看板");
+            const intel = main.querySelector(".page-intel-strip");
+            const hero = main.querySelector(".page-hero, .hero-redesign, .resume-hero");
+            if (intel) intel.insertAdjacentElement("afterend", deck);
+            else if (hero) hero.insertAdjacentElement("afterend", deck);
+            else main.prepend(deck);
+        }
+
+        const items = preset.items.slice(0, 6);
+        const primary = items[0];
+        const rest = items.slice(1);
+        const metrics = preset.metrics || [];
+        const metricAverage = Math.round(metrics.reduce((sum, item) => sum + item.value, 0) / Math.max(metrics.length, 1));
+
+        deck.innerHTML = `
+            <div class="visual-showcase-inner">
+                <div class="visual-showcase-head">
+                    <div>
+                        <span>${escapeHtml(preset.kicker)}</span>
+                        <h2>${escapeHtml(preset.title)}</h2>
+                    </div>
+                    <p>${escapeHtml(preset.copy)}</p>
+                </div>
+                <div class="visual-showcase-layout">
+                    <div class="screenshot-stage">
+                        <a class="screenshot-card screenshot-card-main" href="${localAsset(primary.href)}">
+                            <img src="${localAsset(primary.src)}" alt="${escapeHtml(primary.title)}截图" loading="lazy" decoding="async">
+                            <span>${escapeHtml(primary.label)}</span>
+                            <strong>${escapeHtml(primary.title)}</strong>
+                        </a>
+                        <div class="screenshot-stack">
+                            ${rest.map((item, index) => `
+                                <a class="screenshot-card" href="${localAsset(item.href)}" style="--shot-index:${index}">
+                                    <img src="${localAsset(item.src)}" alt="${escapeHtml(item.title)}截图" loading="lazy" decoding="async">
+                                    <span>${escapeHtml(item.label)}</span>
+                                    <strong>${escapeHtml(item.title)}</strong>
+                                </a>
+                            `).join("")}
+                        </div>
+                    </div>
+                    <aside class="visual-radar-panel">
+                        <div class="radar-dial" style="--score:${metricAverage * 3.6}deg">
+                            <strong>${metricAverage}</strong>
+                            <span>Visual Index</span>
+                        </div>
+                        <div class="signal-bars">
+                            ${metrics.map((metric) => `
+                                <div class="signal-bar" style="--bar:${metric.value}%">
+                                    <span>${escapeHtml(metric.label)}</span>
+                                    <strong>${metric.value}</strong>
+                                    <em></em>
+                                </div>
+                            `).join("")}
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        `;
+    }
+
     function initAmbientLayer() {
         if (document.querySelector(".ambient-stage")) return;
 
@@ -692,7 +979,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const images = Array.from(main.querySelectorAll("img"))
             .filter((img) => {
                 const src = img.getAttribute("src") || "";
-                return src && !img.closest("header") && !img.closest(".page-media-filmstrip") && !img.closest(".page-constellation") && !img.classList.contains("profile-img");
+                return src && !img.closest("header") && !img.closest(".site-visual-showcase") && !img.closest(".page-media-filmstrip") && !img.closest(".page-constellation") && !img.classList.contains("profile-img");
             })
             .slice(0, 8);
 
@@ -805,7 +1092,8 @@ document.addEventListener("DOMContentLoaded", function () {
             "page-intel-strip",
             "page-motion-ticker",
             "page-media-filmstrip",
-            "page-constellation"
+            "page-constellation",
+            "site-visual-showcase"
         ];
 
         const sections = Array.from(main.querySelectorAll(":scope > section, .handbook-section, .evidence-section, .case-block"))
@@ -856,6 +1144,75 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    function renderCardMicroWidgets() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const cardSelectors = [
+            ".publication-card",
+            ".project-showcase",
+            ".surface-card",
+            ".material-card",
+            ".capability-card",
+            ".blog-card",
+            ".timeline-card",
+            ".metric-card",
+            ".roadmap-card",
+            ".achievement-card",
+            ".service-card",
+            ".story-card",
+            ".library-card",
+            ".case-block",
+            ".handbook-section",
+            ".evidence-section",
+            ".api-card",
+            ".api-widget-card",
+            ".proxy-api-card"
+        ].join(",");
+
+        function getCardKind(card) {
+            if (card.matches(".project-showcase")) return { label: "Project", icon: "fa-diagram-project" };
+            if (card.matches(".publication-card")) return { label: "Paper", icon: "fa-file-lines" };
+            if (card.matches(".material-card")) return { label: "Material", icon: "fa-box-archive" };
+            if (card.matches(".blog-card")) return { label: "Post", icon: "fa-pen-nib" };
+            if (card.matches(".handbook-section")) return { label: "Guide", icon: "fa-book-open" };
+            if (card.matches(".evidence-section")) return { label: "Proof", icon: "fa-shield-halved" };
+            if (card.matches(".api-card, .api-widget-card, .proxy-api-card")) return { label: "API", icon: "fa-plug" };
+            if (card.matches(".metric-card")) return { label: "Metric", icon: "fa-chart-simple" };
+            return { label: "Signal", icon: "fa-sparkles" };
+        }
+
+        Array.from(main.querySelectorAll(cardSelectors))
+            .filter((card) => {
+                if (card.closest(".site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .section-signal, header, footer")) return false;
+                return getReadableText(card).length >= 40;
+            })
+            .slice(0, 80)
+            .forEach((card) => {
+                const kind = getCardKind(card);
+                const text = getReadableText(card);
+                const links = Array.from(card.querySelectorAll("a[href]")).filter((link) => !link.closest(".card-micro-widget")).length;
+                const images = Array.from(card.querySelectorAll("img")).filter((img) => !img.closest(".card-micro-widget")).length;
+                const density = Math.min(99, Math.max(1, Math.ceil(text.replace(/\s/g, "").length / 90)));
+                let widget = card.querySelector(":scope > .card-micro-widget");
+
+                card.classList.add("has-card-micro-widget");
+                if (!widget) {
+                    widget = document.createElement("div");
+                    widget.className = "card-micro-widget";
+                    widget.setAttribute("aria-hidden", "true");
+                    card.appendChild(widget);
+                }
+
+                widget.innerHTML = `
+                    <span class="micro-kind"><i class="fas ${kind.icon}" aria-hidden="true"></i>${escapeHtml(kind.label)}</span>
+                    <span><i class="fas fa-link" aria-hidden="true"></i>${links}</span>
+                    <span><i class="fas fa-image" aria-hidden="true"></i>${images}</span>
+                    <span><i class="fas fa-wave-square" aria-hidden="true"></i>${density}</span>
+                `;
+            });
+    }
+
     function renderSectionCompass() {
         const main = getMainContent();
         if (!main) return;
@@ -898,10 +1255,12 @@ document.addEventListener("DOMContentLoaded", function () {
     function renderGlobalVisualWidgets() {
         initAmbientLayer();
         renderPageIntelligence();
+        renderVisualEvidenceDeck();
         renderMotionTicker();
         renderMediaFilmstrip();
         renderPageConstellation();
         renderSectionSignals();
+        renderCardMicroWidgets();
         renderSectionCompass();
     }
 
