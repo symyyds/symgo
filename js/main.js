@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+(function () {
     function getAssetPrefix() {
         const pathParts = window.location.pathname.split("/").filter(Boolean);
         if (!pathParts.length) return "";
@@ -582,6 +582,16 @@ document.addEventListener("DOMContentLoaded", function () {
         return parts.pop() || "index.html";
     }
 
+    function getCurrentPagePath() {
+        let pagePath = decodeURIComponent(window.location.pathname || "")
+            .replace(/\\/g, "/")
+            .replace(/^\/+/, "");
+        const distIndex = pagePath.lastIndexOf("dist/");
+        if (distIndex >= 0) pagePath = pagePath.slice(distIndex + 5);
+        if (!pagePath || pagePath.endsWith("/")) pagePath += "index.html";
+        return pagePath;
+    }
+
     function localAsset(path) {
         if (!path || path.startsWith("http") || path.startsWith("#") || path.startsWith("/")) return path;
         return `${prefix}${path}`;
@@ -747,6 +757,75 @@ document.addEventListener("DOMContentLoaded", function () {
                 { title: "工程项目", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.png" },
                 { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.png" }
             ]
+        },
+        "tools/markdown_to_word.html": {
+            kicker: "Tool Screenshot Lab",
+            title: "Markdown 工具页加入真实渲染截图",
+            copy: "工具页不再只是表单和说明文字，而是把编辑器、预览区和导出流程做成可展示的产品证据。",
+            metrics: [
+                { label: "工具完整度", value: 86 },
+                { label: "截图证据", value: 90 },
+                { label: "交互清晰度", value: 82 },
+                { label: "可复用性", value: 84 }
+            ],
+            items: [
+                { title: "Markdown 转 Word 工具", label: "Markdown", href: "tools/markdown_to_word.html", src: "images/site-screenshots/markdown-to-word.png" },
+                { title: "代码高亮工具", label: "Code", href: "tools/code_runner.html", src: "images/site-screenshots/code-runner.png" },
+                { title: "Python 学习导航", label: "Python", href: "tools/python_nav.html", src: "images/site-screenshots/python-nav.png" },
+                { title: "深度学习资料", label: "DL", href: "tools/deep_learning.html", src: "images/site-screenshots/deep-learning.png" },
+                { title: "API 实验室", label: "API", href: "tools/api_lab.html", src: "images/site-screenshots/api-lab.png" }
+            ]
+        },
+        "tools/code_runner.html": {
+            kicker: "Tool Screenshot Lab",
+            title: "代码工具页也要有视觉证据",
+            copy: "把工具入口、代码展示、页面结构和相关学习资料通过截图串起来，形成可被快速理解的工程展示。",
+            metrics: [
+                { label: "代码体验", value: 84 },
+                { label: "页面证据", value: 88 },
+                { label: "学习入口", value: 80 },
+                { label: "工具链路", value: 82 }
+            ],
+            items: [
+                { title: "代码高亮工具", label: "Code", href: "tools/code_runner.html", src: "images/site-screenshots/code-runner.png" },
+                { title: "Markdown 转 Word 工具", label: "Markdown", href: "tools/markdown_to_word.html", src: "images/site-screenshots/markdown-to-word.png" },
+                { title: "Python 学习导航", label: "Python", href: "tools/python_nav.html", src: "images/site-screenshots/python-nav.png" },
+                { title: "工程项目页", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.png" }
+            ]
+        },
+        "tools/python_nav.html": {
+            kicker: "Learning Visual Map",
+            title: "Python 学习页增加截图化导航",
+            copy: "学习资料页通过真实截图、章节蓝图和卡片信号条展示内容结构，减少纯文字目录感。",
+            metrics: [
+                { label: "章节组织", value: 86 },
+                { label: "导航清晰", value: 84 },
+                { label: "截图证据", value: 88 },
+                { label: "资料可达", value: 82 }
+            ],
+            items: [
+                { title: "Python 学习导航", label: "Python", href: "tools/python_nav.html", src: "images/site-screenshots/python-nav.png" },
+                { title: "深度学习资料", label: "Deep Learning", href: "tools/deep_learning.html", src: "images/site-screenshots/deep-learning.png" },
+                { title: "代码高亮工具", label: "Code", href: "tools/code_runner.html", src: "images/site-screenshots/code-runner.png" },
+                { title: "手册入口", label: "Handbook", href: "handbook/index.html", src: "images/site-screenshots/handbook.png" }
+            ]
+        },
+        "tools/deep_learning.html": {
+            kicker: "Learning Visual Map",
+            title: "深度学习资料页补齐图像化入口",
+            copy: "把视频、资料和学习路径整理成可视化的学习证据，让页面看起来更像课程作品集而不是资料列表。",
+            metrics: [
+                { label: "学习路径", value: 85 },
+                { label: "视觉素材", value: 90 },
+                { label: "内容密度", value: 82 },
+                { label: "可维护性", value: 84 }
+            ],
+            items: [
+                { title: "深度学习资料", label: "Deep Learning", href: "tools/deep_learning.html", src: "images/site-screenshots/deep-learning.png" },
+                { title: "Python 学习导航", label: "Python", href: "tools/python_nav.html", src: "images/site-screenshots/python-nav.png" },
+                { title: "Markdown 转 Word 工具", label: "Markdown", href: "tools/markdown_to_word.html", src: "images/site-screenshots/markdown-to-word.png" },
+                { title: "知识库入口", label: "Library", href: "library/index.html", src: "images/site-screenshots/library.png" }
+            ]
         }
     };
 
@@ -762,16 +841,31 @@ document.addEventListener("DOMContentLoaded", function () {
         "ai.html": { shot: "ai", label: "AI", kind: "学术助手" },
         "leave_message.html": { shot: "leave-message", label: "Contact", kind: "联系入口" },
         "netlify_api_proxy.html": { shot: "netlify-api-proxy", label: "Proxy", kind: "API 代理控制台", href: "tools/netlify_api_proxy.html" },
-        "resume_builder.html": { shot: "resume-builder", label: "Builder", kind: "简历制作工具", href: "tools/resume_builder.html" }
+        "resume_builder.html": { shot: "resume-builder", label: "Builder", kind: "简历制作工具", href: "tools/resume_builder.html" },
+        "handbook/index.html": { shot: "handbook", label: "Handbook", kind: "扩展手册", href: "handbook/index.html" },
+        "evidence/index.html": { shot: "evidence", label: "Evidence", kind: "证据档案库", href: "evidence/index.html" },
+        "library/index.html": { shot: "library", label: "Library", kind: "知识库入口", href: "library/index.html" },
+        "cases/index.html": { shot: "cases", label: "Cases", kind: "案例索引", href: "cases/index.html" },
+        "evidence/horizontal-projects/iot-flexible-access-trusted-control.html": { shot: "iot-evidence-page", label: "IoT", kind: "物联网横向项目证据页", href: "evidence/horizontal-projects/iot-flexible-access-trusted-control.html" },
+        "evidence/horizontal-projects/ningxia-multi-energy-architecture.html": { shot: "ningxia-evidence-page", label: "Energy", kind: "宁夏多能互补横向项目证据页", href: "evidence/horizontal-projects/ningxia-multi-energy-architecture.html" },
+        "evidence/horizontal-projects/minning-green-power-ipv6-terminal-access.html": { shot: "ipv6-evidence-page", label: "IPv6", kind: "IPv6 终端接入网横向项目证据页", href: "evidence/horizontal-projects/minning-green-power-ipv6-terminal-access.html" }
     };
 
     function getVisualEvidencePreset() {
+        const pagePath = getCurrentPagePath();
         const pageKey = getCurrentPageKey();
+        if (visualEvidencePresets[pagePath]) return visualEvidencePresets[pagePath];
+        if (coreVisualFallbacks[pagePath]) return buildFallbackVisualPreset(coreVisualFallbacks[pagePath], pagePath);
+        if (pagePath !== "index.html" && pageKey === "index.html") return null;
         if (visualEvidencePresets[pageKey]) return visualEvidencePresets[pageKey];
 
         const fallback = coreVisualFallbacks[pageKey];
         if (!fallback) return null;
 
+        return buildFallbackVisualPreset(fallback, pageKey);
+    }
+
+    function buildFallbackVisualPreset(fallback, fallbackHref) {
         const pageTitle = getPageTitle();
         return {
             kicker: `${fallback.label} Visual Proof`,
@@ -784,7 +878,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 { label: "可维护", value: 90 }
             ],
             items: [
-                { title: pageTitle, label: fallback.label, href: fallback.href || pageKey, src: `images/site-screenshots/${fallback.shot}.png` },
+                { title: pageTitle, label: fallback.label, href: fallback.href || fallbackHref, src: `images/site-screenshots/${fallback.shot}.png` },
                 { title: "项目总览", label: "Projects", href: "projects.html", src: "images/site-screenshots/projects.png" },
                 { title: "论文发表", label: "Papers", href: "publications.html", src: "images/site-screenshots/publications.png" },
                 { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.png" },
@@ -862,6 +956,62 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             </div>
         `;
+    }
+
+    function renderCardScreenshotThumbs() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const preset = getVisualEvidencePreset();
+        const shots = (preset?.items || [])
+            .filter((item) => item.src && item.href)
+            .slice(0, 6);
+        if (!shots.length) return;
+
+        const cardSelectors = [
+            ".surface-card",
+            ".material-card",
+            ".capability-card",
+            ".roadmap-card",
+            ".achievement-card",
+            ".service-card",
+            ".story-card",
+            ".library-card",
+            ".resource-card",
+            ".framework-card",
+            ".nav-card",
+            ".example-card",
+            ".case-block",
+            ".handbook-section",
+            ".evidence-section"
+        ].join(",");
+
+        Array.from(main.querySelectorAll(cardSelectors))
+            .filter((card) => {
+                if (card.closest(".site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .section-signal, .section-blueprint, header, footer")) return false;
+                if (card.querySelector(":scope > .card-proof-thumb")) return false;
+                if (card.querySelector("img, video, canvas, iframe")) return false;
+                return getReadableText(card).length >= 80;
+            })
+            .slice(0, 36)
+            .forEach((card, index) => {
+                const shot = shots[index % shots.length];
+                const isCardLink = card.matches("a");
+                const thumb = document.createElement(isCardLink ? "div" : "a");
+                thumb.className = "card-proof-thumb";
+                thumb.innerHTML = `
+                    <img src="${localAsset(shot.src)}" alt="${escapeHtml(shot.title)} screenshot" loading="lazy" decoding="async">
+                    <span>${escapeHtml(shot.label || "Visual")}</span>
+                `;
+                if (!isCardLink) {
+                    thumb.setAttribute("href", localAsset(shot.href));
+                    thumb.setAttribute("aria-label", `${shot.title} screenshot`);
+                } else {
+                    thumb.setAttribute("aria-hidden", "true");
+                }
+                card.classList.add("has-card-proof-thumb");
+                card.prepend(thumb);
+            });
     }
 
     function initAmbientLayer() {
@@ -1093,14 +1243,16 @@ document.addEventListener("DOMContentLoaded", function () {
             "page-motion-ticker",
             "page-media-filmstrip",
             "page-constellation",
-            "site-visual-showcase"
+            "site-visual-showcase",
+            "section-blueprint"
         ];
 
-        const sections = Array.from(main.querySelectorAll(":scope > section, .handbook-section, .evidence-section, .case-block"))
+        const sections = Array.from(main.querySelectorAll(":scope > section, :scope > .resume-builder-container, :scope > .markdown-converter-container, :scope > .resource-grid, :scope > .nav-grid, :scope > .video-section, .handbook-section, .evidence-section, .case-block"))
             .filter((section) => {
                 if (skipClasses.some((className) => section.classList.contains(className))) return false;
-                if (section.closest(".page-constellation, .page-media-filmstrip, .page-intel-strip")) return false;
+                if (section.closest(".page-constellation, .page-media-filmstrip, .page-intel-strip, .site-visual-showcase")) return false;
                 const text = getReadableText(section);
+                if (section.matches(".resume-builder-container, .markdown-converter-container, .resource-grid, .nav-grid, .video-section")) return text.length >= 50;
                 return text.length >= 90;
             })
             .slice(0, 18);
@@ -1110,15 +1262,15 @@ document.addEventListener("DOMContentLoaded", function () {
             let signal = host.querySelector(":scope > .section-signal");
             const title = section.querySelector("h2, h3, h1")?.textContent.trim().replace(/\s+/g, " ") || `Section ${index + 1}`;
             const contentText = Array.from(host.childNodes)
-                .filter((node) => !(node.nodeType === 1 && node.classList?.contains("section-signal")))
+                .filter((node) => !(node.nodeType === 1 && (node.classList?.contains("section-signal") || node.classList?.contains("section-blueprint"))))
                 .map((node) => node.textContent || "")
                 .join(" ")
                 .replace(/\s+/g, " ")
                 .trim();
             const charCount = contentText.replace(/\s/g, "").length;
             const readingMinutes = Math.max(1, Math.ceil(charCount / 520));
-            const links = Array.from(section.querySelectorAll("a[href]")).filter((link) => !link.closest(".section-signal")).length;
-            const images = Array.from(section.querySelectorAll("img")).filter((img) => !img.closest(".section-signal")).length;
+            const links = Array.from(section.querySelectorAll("a[href]")).filter((link) => !link.closest(".section-signal, .section-blueprint")).length;
+            const images = Array.from(section.querySelectorAll("img")).filter((img) => !img.closest(".section-signal, .section-blueprint")).length;
             const energy = Math.min(100, 26 + readingMinutes * 12 + links * 7 + images * 9);
 
             if (!signal) {
@@ -1144,6 +1296,119 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    function renderSectionBlueprints() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const skipClasses = [
+            "page-hero",
+            "hero-redesign",
+            "resume-hero",
+            "page-intel-strip",
+            "page-motion-ticker",
+            "page-media-filmstrip",
+            "page-constellation",
+            "site-visual-showcase"
+        ];
+
+        const sections = Array.from(main.querySelectorAll(":scope > section, :scope > .resume-builder-container, :scope > .markdown-converter-container, :scope > .resource-grid, :scope > .nav-grid, :scope > .video-section, .handbook-section, .evidence-section, .case-block"))
+            .filter((section) => {
+                if (skipClasses.some((className) => section.classList.contains(className))) return false;
+                if (section.closest(".page-constellation, .page-media-filmstrip, .page-intel-strip, .site-visual-showcase")) return false;
+                const text = getReadableText(section);
+                if (section.matches(".resume-builder-container, .markdown-converter-container, .resource-grid, .nav-grid, .video-section")) return text.length >= 50;
+                return text.length >= 150;
+            })
+            .slice(0, 14);
+
+        function getBlueprintKind(section) {
+            const text = getReadableText(section);
+            if (section.querySelector("[data-api-widget], .api-card, .proxy-api-card") || /API|Functions|接口|代理/.test(text)) {
+                return { label: "接口", icon: "fa-plug" };
+            }
+            if (section.querySelector(".publication-card") || /论文|PDF|DOI|Publication/i.test(text)) {
+                return { label: "论文", icon: "fa-file-lines" };
+            }
+            if (section.querySelector(".project-showcase, .project-actions") || /项目|交付|验收|工程/.test(text)) {
+                return { label: "项目", icon: "fa-diagram-project" };
+            }
+            if (section.querySelector("img") || /截图|视觉|证据|材料/.test(text)) {
+                return { label: "证据", icon: "fa-image" };
+            }
+            return { label: "内容", icon: "fa-layer-group" };
+        }
+
+        sections.forEach((section, index) => {
+            const host = section.querySelector(":scope > .container") || section;
+            let blueprint = host.querySelector(":scope > .section-blueprint");
+            const rawText = Array.from(host.childNodes)
+                .filter((node) => !(node.nodeType === 1 && (node.classList?.contains("section-signal") || node.classList?.contains("section-blueprint"))))
+                .map((node) => node.textContent || "")
+                .join(" ")
+                .replace(/\s+/g, " ")
+                .trim();
+            const charCount = rawText.replace(/\s/g, "").length;
+            const title = section.querySelector("h2, h3, h1")?.textContent.trim().replace(/\s+/g, " ") || `Section ${index + 1}`;
+            const links = Array.from(section.querySelectorAll("a[href]")).filter((link) => !link.closest(".section-signal, .section-blueprint")).length;
+            const images = Array.from(section.querySelectorAll("img")).filter((img) => !img.closest(".section-signal, .section-blueprint")).length;
+            const cards = Array.from(section.querySelectorAll(".surface-card, .project-showcase, .publication-card, .material-card, .blog-card, .timeline-card")).length;
+            const lists = Array.from(section.querySelectorAll("ul, ol")).filter((list) => !list.closest(".section-signal, .section-blueprint")).length;
+            const codeBlocks = section.querySelectorAll("pre, code").length;
+            const kind = getBlueprintKind(section);
+            const density = Math.min(100, Math.max(12, Math.ceil(charCount / 22)));
+            const evidence = Math.min(100, 18 + images * 18 + links * 9 + cards * 8);
+            const structure = Math.min(100, 24 + lists * 16 + cards * 12 + codeBlocks * 10);
+            const action = Math.min(100, 16 + links * 14 + Math.min(cards, 4) * 8);
+            const average = Math.round((density + evidence + structure + action) / 4);
+            const cells = [density, evidence, structure, action, average, Math.max(18, 100 - Math.abs(density - structure))];
+            const metrics = [
+                { label: "密度", value: `${Math.max(1, Math.ceil(charCount / 520))}m`, meter: density, icon: "fa-align-left" },
+                { label: "证据", value: `${images + links}`, meter: evidence, icon: "fa-shield-halved" },
+                { label: "结构", value: `${cards + lists}`, meter: structure, icon: "fa-table-cells-large" },
+                { label: "行动", value: `${links}`, meter: action, icon: "fa-arrow-up-right-from-square" }
+            ];
+
+            if (!blueprint) {
+                blueprint = document.createElement("div");
+                blueprint.className = "section-blueprint";
+                blueprint.setAttribute("aria-label", "章节视觉蓝图");
+                const signal = host.querySelector(":scope > .section-signal");
+                if (signal) signal.insertAdjacentElement("afterend", blueprint);
+                else host.prepend(blueprint);
+            }
+
+            blueprint.style.setProperty("--blueprint-score", `${average * 3.6}deg`);
+            blueprint.innerHTML = `
+                <div class="blueprint-map" aria-hidden="true">
+                    <span class="blueprint-map-label">S${String(index + 1).padStart(2, "0")}</span>
+                    <div class="blueprint-track-lines">
+                        ${metrics.map((metric, metricIndex) => `<span style="--line-meter:${metric.meter}%;--line-index:${metricIndex}"></span>`).join("")}
+                    </div>
+                    <div class="blueprint-cell-grid">
+                        ${cells.map((cell, cellIndex) => `<span style="--cell-level:${cell}%;--cell-index:${cellIndex}"></span>`).join("")}
+                    </div>
+                </div>
+                <div class="blueprint-copy">
+                    <span class="blueprint-kind"><i class="fas ${kind.icon}" aria-hidden="true"></i>${escapeHtml(kind.label)}蓝图</span>
+                    <strong>${escapeHtml(title)}</strong>
+                    <div class="blueprint-metrics">
+                        ${metrics.map((metric) => `
+                            <span style="--metric-meter:${metric.meter}%">
+                                <i class="fas ${metric.icon}" aria-hidden="true"></i>
+                                <em>${escapeHtml(metric.label)}</em>
+                                <b>${escapeHtml(metric.value)}</b>
+                            </span>
+                        `).join("")}
+                    </div>
+                </div>
+                <div class="blueprint-score" aria-hidden="true">
+                    <strong>${average}</strong>
+                    <span>Index</span>
+                </div>
+            `;
+        });
+    }
+
     function renderCardMicroWidgets() {
         const main = getMainContent();
         if (!main) return;
@@ -1162,6 +1427,11 @@ document.addEventListener("DOMContentLoaded", function () {
             ".service-card",
             ".story-card",
             ".library-card",
+            ".resource-card",
+            ".framework-card",
+            ".nav-card",
+            ".video-card",
+            ".example-card",
             ".case-block",
             ".handbook-section",
             ".evidence-section",
@@ -1213,6 +1483,64 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
+    function renderCardSignalStrips() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const cardSelectors = [
+            ".publication-card",
+            ".project-showcase",
+            ".surface-card",
+            ".material-card",
+            ".capability-card",
+            ".blog-card",
+            ".timeline-card",
+            ".roadmap-card",
+            ".achievement-card",
+            ".service-card",
+            ".story-card",
+            ".library-card",
+            ".resource-card",
+            ".framework-card",
+            ".nav-card",
+            ".video-card",
+            ".example-card",
+            ".case-block",
+            ".handbook-section",
+            ".evidence-section"
+        ].join(",");
+
+        Array.from(main.querySelectorAll(cardSelectors))
+            .filter((card) => {
+                if (card.closest(".site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .section-signal, .section-blueprint, header, footer")) return false;
+                return getReadableText(card).length >= 70;
+            })
+            .slice(0, 90)
+            .forEach((card) => {
+                const textLength = getReadableText(card).replace(/\s/g, "").length;
+                const links = card.querySelectorAll("a[href]").length;
+                const images = card.querySelectorAll("img").length;
+                const headings = card.querySelectorAll("h2, h3, h4").length;
+                const values = [
+                    Math.min(100, 18 + textLength / 18),
+                    Math.min(100, 16 + links * 24),
+                    Math.min(100, 16 + images * 30),
+                    Math.min(100, 20 + headings * 20)
+                ];
+                let strip = card.querySelector(":scope > .card-signal-strip");
+
+                card.classList.add("has-card-signal-strip");
+                if (!strip) {
+                    strip = document.createElement("div");
+                    strip.className = "card-signal-strip";
+                    strip.setAttribute("aria-hidden", "true");
+                    card.appendChild(strip);
+                }
+
+                strip.innerHTML = values.map((value, index) => `<span style="--strip-meter:${value}%;--strip-index:${index}"></span>`).join("");
+            });
+    }
+
     function renderSectionCompass() {
         const main = getMainContent();
         if (!main) return;
@@ -1256,11 +1584,14 @@ document.addEventListener("DOMContentLoaded", function () {
         initAmbientLayer();
         renderPageIntelligence();
         renderVisualEvidenceDeck();
+        renderCardScreenshotThumbs();
         renderMotionTicker();
         renderMediaFilmstrip();
         renderPageConstellation();
         renderSectionSignals();
+        renderSectionBlueprints();
         renderCardMicroWidgets();
+        renderCardSignalStrips();
         renderSectionCompass();
     }
 
@@ -1352,4 +1683,4 @@ document.addEventListener("DOMContentLoaded", function () {
     refreshEnhancements();
     window.symgoRefreshEnhancements = refreshEnhancements;
     document.addEventListener("symgo:content-updated", refreshEnhancements);
-});
+})();

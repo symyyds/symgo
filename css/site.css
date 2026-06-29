@@ -2031,6 +2031,85 @@ body.site-shell {
     box-shadow: 0 0 24px rgba(65, 197, 157, 0.35);
 }
 
+.has-card-proof-thumb {
+    overflow: hidden;
+}
+
+.card-proof-thumb {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 9;
+    min-height: 118px;
+    overflow: hidden;
+    margin: 0 0 14px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    color: #fff;
+    background:
+        linear-gradient(135deg, rgba(14, 31, 39, 0.96), rgba(17, 97, 73, 0.7)),
+        #0f172a;
+    box-shadow: 0 18px 48px rgba(15, 23, 42, 0.13);
+    isolation: isolate;
+}
+
+.card-proof-thumb::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+        linear-gradient(180deg, rgba(2, 6, 12, 0.04), rgba(2, 6, 12, 0.64)),
+        linear-gradient(135deg, rgba(65, 197, 157, 0.18), transparent 52%);
+}
+
+.card-proof-thumb img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.001);
+    transition: transform 0.28s ease, filter 0.28s ease;
+}
+
+.card-proof-thumb span {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    z-index: 2;
+    max-width: calc(100% - 20px);
+    padding: 5px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.92);
+    background: rgba(8, 19, 25, 0.34);
+    font-size: 0.68rem;
+    font-weight: 950;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+    backdrop-filter: blur(12px);
+}
+
+.card-proof-thumb:hover,
+.card-proof-thumb:focus-visible {
+    color: #fff;
+}
+
+.card-proof-thumb:hover img,
+.card-proof-thumb:focus-visible img {
+    transform: scale(1.035);
+    filter: saturate(1.08) contrast(1.04);
+}
+
+.handbook-section .card-proof-thumb,
+.evidence-section .card-proof-thumb,
+.case-block .card-proof-thumb {
+    margin: -2px 0 16px;
+}
+
 .page-constellation {
     position: relative;
     z-index: 2;
@@ -2362,6 +2441,207 @@ body.site-shell {
     font-size: 0.72rem;
 }
 
+.section-blueprint {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 190px minmax(0, 1fr) 92px;
+    gap: 16px;
+    align-items: stretch;
+    margin: -4px 0 22px;
+    padding: 14px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.88), rgba(246, 250, 249, 0.72)),
+        linear-gradient(90deg, rgba(17, 97, 73, 0.08), transparent 42%, rgba(179, 92, 30, 0.08));
+    box-shadow: 0 18px 54px rgba(15, 23, 42, 0.08);
+    backdrop-filter: blur(18px);
+}
+
+.blueprint-map {
+    position: relative;
+    min-height: 126px;
+    overflow: hidden;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background:
+        linear-gradient(rgba(15, 23, 42, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 23, 42, 0.08) 1px, transparent 1px),
+        linear-gradient(135deg, rgba(10, 31, 35, 0.96), rgba(17, 97, 73, 0.78));
+    background-size: 18px 18px, 18px 18px, auto;
+}
+
+.blueprint-map-label {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    z-index: 3;
+    display: inline-flex;
+    min-width: 42px;
+    min-height: 28px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 0.72rem;
+    font-weight: 950;
+    backdrop-filter: blur(10px);
+}
+
+.blueprint-track-lines {
+    position: absolute;
+    inset: 48px 12px 12px;
+    display: grid;
+    gap: 8px;
+}
+
+.blueprint-track-lines span {
+    position: relative;
+    height: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.blueprint-track-lines span::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--line-meter);
+    border-radius: inherit;
+    background: linear-gradient(90deg, #5ee0b1, #f2b86b);
+    opacity: calc(0.72 + var(--line-index) * 0.05);
+}
+
+.blueprint-cell-grid {
+    position: absolute;
+    right: 12px;
+    top: 10px;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(3, 16px);
+    gap: 5px;
+}
+
+.blueprint-cell-grid span {
+    height: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 4px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0 var(--cell-level), rgba(255, 255, 255, 0.14) 0);
+    opacity: calc(0.42 + var(--cell-index) * 0.07);
+}
+
+.blueprint-copy {
+    display: grid;
+    align-content: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.blueprint-kind {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    width: fit-content;
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 950;
+    text-transform: uppercase;
+}
+
+.blueprint-copy strong {
+    color: var(--ink);
+    font-size: clamp(1rem, 1.5vw, 1.22rem);
+    line-height: 1.32;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.blueprint-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.blueprint-metrics span {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 6px;
+    align-items: center;
+    min-height: 34px;
+    overflow: hidden;
+    padding: 7px 8px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.62);
+}
+
+.blueprint-metrics span::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: calc(100% - var(--metric-meter));
+    bottom: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--brand), var(--accent));
+}
+
+.blueprint-metrics i {
+    color: var(--brand);
+    font-size: 0.76rem;
+}
+
+.blueprint-metrics em {
+    min-width: 0;
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-style: normal;
+    font-weight: 850;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.blueprint-metrics b {
+    color: var(--ink);
+    font-size: 0.75rem;
+}
+
+.blueprint-score {
+    display: grid;
+    place-items: center;
+    align-self: center;
+    justify-self: end;
+    width: 78px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    color: #fff;
+    background:
+        radial-gradient(circle at center, #12252b 0 54%, transparent 55%),
+        conic-gradient(from -90deg, var(--accent) var(--blueprint-score), rgba(15, 23, 42, 0.12) 0);
+    box-shadow: 0 18px 48px rgba(15, 23, 42, 0.16);
+}
+
+.blueprint-score strong {
+    color: #fff;
+    font-size: 1.35rem;
+    line-height: 0.9;
+}
+
+.blueprint-score span {
+    margin-top: -20px;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 0.58rem;
+    font-weight: 950;
+    text-transform: uppercase;
+}
+
 .has-card-micro-widget {
     position: relative;
 }
@@ -2411,6 +2691,41 @@ body.site-shell {
 .project-cover-link + .project-head .card-micro-widget,
 .publication-preview + .publication-body .card-micro-widget {
     top: 12px;
+}
+
+.has-card-signal-strip {
+    position: relative;
+    padding-bottom: max(34px, env(safe-area-inset-bottom)) !important;
+}
+
+.card-signal-strip {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 10px;
+    z-index: 4;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    pointer-events: none;
+}
+
+.card-signal-strip span {
+    position: relative;
+    height: 6px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.08);
+}
+
+.card-signal-strip span::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--strip-meter);
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--brand), var(--accent));
+    opacity: calc(0.66 + var(--strip-index) * 0.08);
 }
 
 .section-compass {
@@ -2685,6 +3000,25 @@ body.site-shell {
         grid-template-columns: auto minmax(0, 1fr);
     }
 
+    .section-blueprint {
+        grid-template-columns: minmax(160px, 0.38fr) minmax(0, 1fr);
+    }
+
+    .blueprint-score {
+        position: absolute;
+        right: 14px;
+        top: 14px;
+        width: 64px;
+    }
+
+    .blueprint-copy {
+        padding-right: 74px;
+    }
+
+    .blueprint-metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .section-signal-metrics {
         grid-column: 1 / -1;
         justify-content: flex-start;
@@ -2848,6 +3182,35 @@ body.site-shell {
         padding: 9px;
     }
 
+    .section-blueprint {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-bottom: 18px;
+        padding: 10px;
+    }
+
+    .blueprint-map {
+        min-height: 118px;
+    }
+
+    .blueprint-copy {
+        padding-right: 0;
+    }
+
+    .blueprint-copy strong {
+        white-space: normal;
+    }
+
+    .blueprint-score {
+        position: static;
+        justify-self: start;
+        width: 64px;
+    }
+
+    .blueprint-metrics {
+        grid-template-columns: 1fr;
+    }
+
     .section-signal-index {
         min-width: 38px;
         min-height: 30px;
@@ -2880,6 +3243,26 @@ body.site-shell {
 
     .card-micro-widget span:not(.micro-kind) {
         display: none;
+    }
+
+    .card-proof-thumb {
+        min-height: 92px;
+        margin-bottom: 12px;
+    }
+
+    .card-proof-thumb span {
+        left: 8px;
+        top: 8px;
+        max-width: calc(100% - 16px);
+        padding: 4px 7px;
+        font-size: 0.62rem;
+    }
+
+    .card-signal-strip {
+        left: 10px;
+        right: 10px;
+        bottom: 8px;
+        gap: 5px;
     }
 
     .hero-redesign {
@@ -2975,6 +3358,7 @@ body.site-shell.dark-mode .page-media-filmstrip,
 body.site-shell.dark-mode .visual-showcase-inner,
 body.site-shell.dark-mode .page-constellation,
 body.site-shell.dark-mode .section-signal,
+body.site-shell.dark-mode .section-blueprint,
 body.site-shell.dark-mode .section-compass {
     border-color: rgba(255, 255, 255, 0.08);
     background: rgba(15, 27, 32, 0.78);
@@ -2984,8 +3368,10 @@ body.site-shell.dark-mode .section-compass {
 body.site-shell.dark-mode .page-intel-card,
 body.site-shell.dark-mode .filmstrip-head,
 body.site-shell.dark-mode .screenshot-card,
+body.site-shell.dark-mode .card-proof-thumb,
 body.site-shell.dark-mode .action-cluster a,
 body.site-shell.dark-mode .section-signal-metrics span,
+body.site-shell.dark-mode .blueprint-metrics span,
 body.site-shell.dark-mode .card-micro-widget,
 body.site-shell.dark-mode .section-compass a {
     border-color: rgba(255, 255, 255, 0.08);
@@ -2996,8 +3382,21 @@ body.site-shell.dark-mode .card-micro-widget span:not(.micro-kind) {
     background: rgba(255, 255, 255, 0.06);
 }
 
+body.site-shell.dark-mode .card-proof-thumb span {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.28);
+}
+
 body.site-shell.dark-mode .section-signal-main span {
     background: rgba(255, 255, 255, 0.08);
+}
+
+body.site-shell.dark-mode .blueprint-map {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+body.site-shell.dark-mode .card-signal-strip span {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 body.site-shell.dark-mode .keyword-lattice span {
@@ -4306,7 +4705,9 @@ body.site-shell.dark-mode .command-item {
     .site-visual-showcase,
     .page-constellation,
     .section-signal,
+    .section-blueprint,
     .card-micro-widget,
+    .card-signal-strip,
     .section-compass,
     .hero-actions,
     .site-footer {
