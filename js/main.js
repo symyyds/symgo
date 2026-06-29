@@ -511,11 +511,14 @@
         "footer",
         ".page-intel-strip",
         ".page-motion-ticker",
+        ".page-shot-wall",
         ".page-media-filmstrip",
         ".site-visual-showcase",
         ".page-constellation",
         ".page-flow-lab",
+        ".page-route-strip",
         ".hero-signal-console",
+        ".hero-panel-shots",
         ".section-signal",
         ".section-blueprint",
         ".list-telemetry",
@@ -928,9 +931,9 @@
             deck = document.createElement("section");
             deck.className = "site-visual-showcase";
             deck.setAttribute("aria-label", "视觉证据看板");
-            const intel = main.querySelector(".page-intel-strip");
+            const anchor = main.querySelector(".page-route-strip") || main.querySelector(".page-shot-wall") || main.querySelector(".page-intel-strip");
             const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
-            if (intel) intel.insertAdjacentElement("afterend", deck);
+            if (anchor) anchor.insertAdjacentElement("afterend", deck);
             else if (hero) hero.insertAdjacentElement("afterend", deck);
             else main.prepend(deck);
         }
@@ -987,6 +990,81 @@
         `;
     }
 
+    function renderPageScreenshotWall() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const preset = getVisualEvidencePreset();
+        const items = (preset?.items || []).filter((item) => item.src && item.href).slice(0, 5);
+        let wall = main.querySelector(".page-shot-wall");
+        if (items.length < 3) {
+            wall?.remove();
+            return;
+        }
+
+        if (!wall) {
+            wall = document.createElement("section");
+            wall.className = "page-shot-wall";
+            wall.setAttribute("aria-label", "真实页面截图墙");
+            const intel = main.querySelector(".page-intel-strip");
+            const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
+            if (intel) intel.insertAdjacentElement("afterend", wall);
+            else if (hero) hero.insertAdjacentElement("afterend", wall);
+            else main.prepend(wall);
+        }
+
+        const primary = items[0];
+        const rest = items.slice(1);
+        const metrics = (preset.metrics || []).slice(0, 4);
+        const average = Math.round(metrics.reduce((sum, item) => sum + item.value, 0) / Math.max(metrics.length, 1));
+
+        wall.innerHTML = `
+            <div class="shot-wall-inner">
+                <div class="shot-wall-copy">
+                    <div>
+                        <span>Screenshot Evidence</span>
+                        <h2>${escapeHtml(preset.title)}</h2>
+                        <p>${escapeHtml(preset.copy)}</p>
+                    </div>
+                    <div class="shot-wall-metrics">
+                        ${metrics.map((metric) => `
+                            <div class="shot-wall-metric" style="--metric-meter:${metric.value}%">
+                                <span>${escapeHtml(metric.label)}</span>
+                                <strong>${metric.value}</strong>
+                                <em></em>
+                            </div>
+                        `).join("")}
+                    </div>
+                </div>
+                <div class="shot-wall-browser">
+                    <div class="shot-browser-chrome">
+                        <span><i></i><i></i><i></i></span>
+                        <strong>${escapeHtml(primary.label || "Preview")}</strong>
+                    </div>
+                    <a class="shot-wall-main" href="${localAsset(primary.href)}">
+                        <img src="${localAsset(primary.src)}" alt="${escapeHtml(primary.title)}截图" loading="lazy" decoding="async">
+                        <span>${escapeHtml(primary.title)}</span>
+                    </a>
+                    <div class="shot-wall-status">
+                        <span>Live capture</span>
+                        <strong>${average}</strong>
+                    </div>
+                </div>
+                <div class="shot-wall-stack">
+                    ${rest.map((item, index) => `
+                        <a class="shot-stack-item" href="${localAsset(item.href)}" style="--shot-index:${index}">
+                            <img src="${localAsset(item.src)}" alt="${escapeHtml(item.title)}截图" loading="lazy" decoding="async">
+                            <span>
+                                <em>${escapeHtml(item.label || "Shot")}</em>
+                                <strong>${escapeHtml(item.title)}</strong>
+                            </span>
+                        </a>
+                    `).join("")}
+                </div>
+            </div>
+        `;
+    }
+
     function renderHeroSignalConsole() {
         const main = getMainContent();
         if (!main) return;
@@ -1004,6 +1082,9 @@
         const charCount = text.replace(/\s/g, "").length;
         const pageTitle = getPageTitle();
         const keywords = getPageKeywords(main).slice(0, 6);
+        const shots = (getVisualEvidencePreset()?.items || [])
+            .filter((item) => item.src && item.href)
+            .slice(0, 3);
         const pulse = Math.min(98, Math.max(32, Math.round(34 + headings.length * 5 + images.length * 6 + links.length * 2 + cards * 3)));
         const stats = [
             { label: "结构", value: headings.length || 1, icon: "fa-sitemap", meter: Math.min(100, 24 + headings.length * 12) },
@@ -1041,7 +1122,49 @@
             <div class="hero-console-tags">
                 ${keywords.map((keyword, index) => `<span style="--tag-index:${index}">${escapeHtml(keyword)}</span>`).join("")}
             </div>
+            ${shots.length ? `
+                <div class="hero-console-shots">
+                    ${shots.map((shot, index) => `
+                        <a href="${localAsset(shot.href)}" style="--hero-shot-index:${index}">
+                            <img src="${localAsset(shot.src)}" alt="${escapeHtml(shot.title)}截图" loading="lazy" decoding="async">
+                            <span>${escapeHtml(shot.label || "Shot")}</span>
+                        </a>
+                    `).join("")}
+                </div>
+            ` : ""}
         `;
+    }
+
+    function renderHeroPanelShots() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const panel = main.querySelector(".hero-redesign .hero-panel");
+        if (!panel) return;
+
+        const shots = (getVisualEvidencePreset()?.items || [])
+            .filter((item) => item.src && item.href)
+            .slice(0, 3);
+        let shotGrid = panel.querySelector(".hero-panel-shots");
+        if (!shots.length) {
+            shotGrid?.remove();
+            return;
+        }
+
+        if (!shotGrid) {
+            shotGrid = document.createElement("div");
+            shotGrid.className = "hero-panel-shots";
+            const heading = panel.querySelector("h2");
+            if (heading) heading.insertAdjacentElement("afterend", shotGrid);
+            else panel.prepend(shotGrid);
+        }
+
+        shotGrid.innerHTML = shots.map((shot, index) => `
+            <a href="${localAsset(shot.href)}" class="hero-panel-shot" style="--panel-shot-index:${index}">
+                <img src="${localAsset(shot.src)}" alt="${escapeHtml(shot.title)}截图" loading="lazy" decoding="async">
+                <span>${escapeHtml(shot.label || "Shot")}</span>
+            </a>
+        `).join("");
     }
 
     function renderCardScreenshotThumbs() {
@@ -1074,7 +1197,7 @@
 
         Array.from(main.querySelectorAll(cardSelectors))
             .filter((card) => {
-                if (card.closest(".site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .section-signal, .section-blueprint, header, footer")) return false;
+                if (card.closest(".page-shot-wall, .site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .section-signal, .section-blueprint, header, footer")) return false;
                 if (card.querySelector(":scope > .card-proof-thumb")) return false;
                 if (card.querySelector("img, video, canvas, iframe")) return false;
                 return getReadableText(card).length >= 80;
@@ -1124,8 +1247,8 @@
         const text = getReadableText(main);
         const charCount = text.replace(/\s/g, "").length;
         const headings = getPageHeadings(main);
-        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(".page-intel-strip") && !img.closest(".page-constellation"));
-        const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(".page-intel-strip") && !link.closest(".page-motion-ticker") && !link.closest(".page-constellation"));
+        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(".page-intel-strip") && !img.closest(".page-shot-wall") && !img.closest(".page-constellation"));
+        const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(".page-intel-strip") && !link.closest(".page-shot-wall") && !link.closest(".page-motion-ticker") && !link.closest(".page-constellation"));
         const readingMinutes = Math.max(1, Math.ceil(charCount / 650));
         const pageTitle = getPageTitle();
 
@@ -1194,8 +1317,8 @@
             ticker = document.createElement("section");
             ticker.className = "page-motion-ticker";
             ticker.setAttribute("aria-label", "页面重点速览");
-            const intel = main.querySelector(".page-intel-strip");
-            if (intel) intel.insertAdjacentElement("afterend", ticker);
+            const anchor = main.querySelector(".site-visual-showcase") || main.querySelector(".page-route-strip") || main.querySelector(".page-shot-wall") || main.querySelector(".page-intel-strip");
+            if (anchor) anchor.insertAdjacentElement("afterend", ticker);
             else main.prepend(ticker);
         }
 
@@ -1208,6 +1331,76 @@
         ticker.innerHTML = `<div class="motion-track">${track}</div>`;
     }
 
+    function renderPageRouteStrip() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const headings = getPageHeadings(main).slice(0, 7).map((item, index) => ({
+            text: item.text,
+            href: `#${ensureHeadingId(item.node, index)}`,
+            kind: "Section",
+            icon: "fa-location-dot"
+        }));
+        const actions = getPageActions(main).slice(0, 3).map((item) => ({
+            text: item.text,
+            href: item.href,
+            kind: "Action",
+            icon: "fa-arrow-up-right-from-square"
+        }));
+        const keywordItems = getPageKeywords(main).slice(0, 7).map((keyword) => ({
+            text: keyword,
+            href: "",
+            kind: "Signal",
+            icon: "fa-sparkles"
+        }));
+        const items = [...headings, ...actions];
+        while (items.length < 5 && keywordItems.length) items.push(keywordItems.shift());
+
+        let routeStrip = main.querySelector(".page-route-strip");
+        if (items.length < 3) {
+            routeStrip?.remove();
+            return;
+        }
+
+        if (!routeStrip) {
+            routeStrip = document.createElement("section");
+            routeStrip.className = "page-route-strip";
+            routeStrip.setAttribute("aria-label", "页面章节路径");
+            const anchor = main.querySelector(".page-shot-wall") || main.querySelector(".page-intel-strip");
+            const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
+            if (anchor) anchor.insertAdjacentElement("afterend", routeStrip);
+            else if (hero) hero.insertAdjacentElement("afterend", routeStrip);
+            else main.prepend(routeStrip);
+        }
+
+        const visibleItems = items.slice(0, 8);
+        const progressStops = visibleItems.map((_, index) => {
+            const position = visibleItems.length > 1 ? (index / (visibleItems.length - 1)) * 100 : 0;
+            return `<span style="--route-pos:${position}%"></span>`;
+        }).join("");
+        routeStrip.innerHTML = `
+            <div class="route-strip-head">
+                <span>Page Route</span>
+                <strong>${escapeHtml(getPageTitle())}</strong>
+            </div>
+            <div class="route-strip-line" aria-hidden="true">${progressStops}</div>
+            <div class="route-strip-track">
+                ${visibleItems.map((item, index) => {
+                    const content = `
+                        <em>${String(index + 1).padStart(2, "0")}</em>
+                        <i class="fas ${item.icon}" aria-hidden="true"></i>
+                        <span>${escapeHtml(item.text)}</span>
+                        <b>${escapeHtml(item.kind)}</b>
+                    `;
+                    if (item.href) {
+                        return `<a href="${item.href}" class="route-node" style="--route-index:${index}">${content}</a>`;
+                    }
+                    return `<span class="route-node" style="--route-index:${index}">${content}</span>`;
+                }).join("")}
+            </div>
+        `;
+    }
+
     function renderMediaFilmstrip() {
         const main = getMainContent();
         if (!main) return;
@@ -1215,7 +1408,7 @@
         const images = Array.from(main.querySelectorAll("img"))
             .filter((img) => {
                 const src = img.getAttribute("src") || "";
-                return src && !img.closest("header") && !img.closest(".site-visual-showcase") && !img.closest(".page-media-filmstrip") && !img.closest(".page-constellation") && !img.classList.contains("profile-img");
+                return src && !img.closest("header") && !img.closest(".page-shot-wall") && !img.closest(".site-visual-showcase") && !img.closest(".page-media-filmstrip") && !img.closest(".page-constellation") && !img.classList.contains("profile-img");
             })
             .slice(0, 8);
 
@@ -1273,9 +1466,15 @@
             constellation.setAttribute("aria-label", "页面内容星图");
             const filmstrip = main.querySelector(".page-media-filmstrip");
             const ticker = main.querySelector(".page-motion-ticker");
+            const showcase = main.querySelector(".site-visual-showcase");
+            const route = main.querySelector(".page-route-strip");
+            const shotWall = main.querySelector(".page-shot-wall");
             const intel = main.querySelector(".page-intel-strip");
             if (filmstrip) filmstrip.insertAdjacentElement("afterend", constellation);
             else if (ticker) ticker.insertAdjacentElement("afterend", constellation);
+            else if (showcase) showcase.insertAdjacentElement("afterend", constellation);
+            else if (route) route.insertAdjacentElement("afterend", constellation);
+            else if (shotWall) shotWall.insertAdjacentElement("afterend", constellation);
             else if (intel) intel.insertAdjacentElement("afterend", constellation);
             else main.prepend(constellation);
         }
@@ -1342,11 +1541,15 @@
             const constellation = main.querySelector(".page-constellation");
             const filmstrip = main.querySelector(".page-media-filmstrip");
             const showcase = main.querySelector(".site-visual-showcase");
+            const route = main.querySelector(".page-route-strip");
+            const shotWall = main.querySelector(".page-shot-wall");
             const ticker = main.querySelector(".page-motion-ticker");
             const intel = main.querySelector(".page-intel-strip");
             if (constellation) constellation.insertAdjacentElement("afterend", lab);
             else if (filmstrip) filmstrip.insertAdjacentElement("afterend", lab);
             else if (showcase) showcase.insertAdjacentElement("afterend", lab);
+            else if (route) route.insertAdjacentElement("afterend", lab);
+            else if (shotWall) shotWall.insertAdjacentElement("afterend", lab);
             else if (ticker) ticker.insertAdjacentElement("afterend", lab);
             else if (intel) intel.insertAdjacentElement("afterend", lab);
             else main.prepend(lab);
@@ -1650,6 +1853,7 @@
             "resume-hero",
             "page-intel-strip",
             "page-motion-ticker",
+            "page-shot-wall",
             "page-media-filmstrip",
             "page-constellation",
             "site-visual-showcase",
@@ -1659,7 +1863,7 @@
         const sections = Array.from(main.querySelectorAll(":scope > section, :scope > .resume-builder-container, :scope > .markdown-converter-container, :scope > .resource-grid, :scope > .nav-grid, :scope > .video-section, .handbook-section, .evidence-section, .case-block"))
             .filter((section) => {
                 if (skipClasses.some((className) => section.classList.contains(className))) return false;
-                if (section.closest(".page-constellation, .page-media-filmstrip, .page-intel-strip, .site-visual-showcase")) return false;
+                if (section.closest(".page-shot-wall, .page-constellation, .page-media-filmstrip, .page-intel-strip, .site-visual-showcase")) return false;
                 const text = getReadableText(section);
                 if (section.matches(".resume-builder-container, .markdown-converter-container, .resource-grid, .nav-grid, .video-section")) return text.length >= 50;
                 return text.length >= 90;
@@ -1715,6 +1919,7 @@
             "resume-hero",
             "page-intel-strip",
             "page-motion-ticker",
+            "page-shot-wall",
             "page-media-filmstrip",
             "page-constellation",
             "site-visual-showcase"
@@ -1723,7 +1928,7 @@
         const sections = Array.from(main.querySelectorAll(":scope > section, :scope > .resume-builder-container, :scope > .markdown-converter-container, :scope > .resource-grid, :scope > .nav-grid, :scope > .video-section, .handbook-section, .evidence-section, .case-block"))
             .filter((section) => {
                 if (skipClasses.some((className) => section.classList.contains(className))) return false;
-                if (section.closest(".page-constellation, .page-media-filmstrip, .page-intel-strip, .site-visual-showcase")) return false;
+                if (section.closest(".page-shot-wall, .page-constellation, .page-media-filmstrip, .page-intel-strip, .site-visual-showcase")) return false;
                 const text = getReadableText(section);
                 if (section.matches(".resume-builder-container, .markdown-converter-container, .resource-grid, .nav-grid, .video-section")) return text.length >= 50;
                 return text.length >= 150;
@@ -1863,7 +2068,7 @@
 
         Array.from(main.querySelectorAll(cardSelectors))
             .filter((card) => {
-                if (card.closest(".site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .section-signal, header, footer")) return false;
+                if (card.closest(".page-shot-wall, .site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .section-signal, header, footer")) return false;
                 return getReadableText(card).length >= 40;
             })
             .slice(0, 80)
@@ -1921,7 +2126,7 @@
 
         Array.from(main.querySelectorAll(cardSelectors))
             .filter((card) => {
-                if (card.closest(".site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .section-signal, .section-blueprint, header, footer")) return false;
+                if (card.closest(".page-shot-wall, .site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .section-signal, .section-blueprint, header, footer")) return false;
                 return getReadableText(card).length >= 70;
             })
             .slice(0, 90)
@@ -1992,7 +2197,10 @@
     function renderGlobalVisualWidgets() {
         initAmbientLayer();
         renderHeroSignalConsole();
+        renderHeroPanelShots();
         renderPageIntelligence();
+        renderPageScreenshotWall();
+        renderPageRouteStrip();
         renderVisualEvidenceDeck();
         renderCardScreenshotThumbs();
         renderMotionTicker();
