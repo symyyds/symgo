@@ -1785,6 +1785,237 @@ body.site-shell {
     filter: saturate(1.06) contrast(1.03);
 }
 
+.page-constellation {
+    position: relative;
+    z-index: 2;
+    width: min(1180px, calc(100% - 32px));
+    margin: 18px auto 0;
+    display: grid;
+    grid-template-columns: minmax(270px, 0.42fr) minmax(0, 1fr);
+    gap: 18px;
+    align-items: stretch;
+    padding: 18px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.86), rgba(248, 250, 252, 0.7)),
+        radial-gradient(circle at 18% 20%, rgba(17, 97, 73, 0.12), transparent 34%),
+        radial-gradient(circle at 92% 82%, rgba(179, 92, 30, 0.1), transparent 32%);
+    box-shadow: 0 28px 86px rgba(15, 23, 42, 0.1);
+    backdrop-filter: blur(20px);
+}
+
+.constellation-visual {
+    position: relative;
+    min-height: 278px;
+    overflow: hidden;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background:
+        radial-gradient(circle at 50% 50%, rgba(17, 97, 73, 0.14), transparent 30%),
+        linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(17, 97, 73, 0.72));
+}
+
+.constellation-visual::before,
+.constellation-visual::after {
+    content: "";
+    position: absolute;
+    inset: 42px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 50%;
+    animation: orbitTurn 28s linear infinite;
+}
+
+.constellation-visual::after {
+    inset: 78px;
+    border-style: dashed;
+    animation-duration: 20s;
+    animation-direction: reverse;
+}
+
+.constellation-core {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 2;
+    width: min(170px, 58%);
+    min-height: 112px;
+    display: grid;
+    place-items: center;
+    gap: 5px;
+    padding: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 8px;
+    color: #fff;
+    text-align: center;
+    background: rgba(7, 17, 22, 0.48);
+    box-shadow: 0 26px 70px rgba(0, 0, 0, 0.26);
+    transform: translate(-50%, -50%);
+    backdrop-filter: blur(14px);
+}
+
+.constellation-core span {
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 0.7rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.constellation-core strong {
+    max-width: 100%;
+    color: #fff;
+    font-size: 1rem;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.constellation-node {
+    position: absolute;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    max-width: 138px;
+    padding: 7px 9px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.86);
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 0.72rem;
+    font-weight: 850;
+    backdrop-filter: blur(12px);
+}
+
+.constellation-node i {
+    color: #f8d49a;
+    font-size: 0.42rem;
+}
+
+.constellation-node em {
+    max-width: 104px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-style: normal;
+}
+
+.constellation-node.node-1 {
+    left: 12%;
+    top: 16%;
+}
+
+.constellation-node.node-2 {
+    right: 10%;
+    top: 18%;
+}
+
+.constellation-node.node-3 {
+    right: 7%;
+    top: 54%;
+}
+
+.constellation-node.node-4 {
+    right: 26%;
+    bottom: 10%;
+}
+
+.constellation-node.node-5 {
+    left: 9%;
+    bottom: 18%;
+}
+
+.constellation-node.node-6 {
+    left: 5%;
+    top: 50%;
+}
+
+.constellation-panel {
+    display: grid;
+    align-content: center;
+    gap: 16px;
+    min-width: 0;
+}
+
+.constellation-heading span {
+    display: inline-flex;
+    margin-bottom: 7px;
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.constellation-heading h2 {
+    margin: 0 0 8px;
+    color: var(--ink);
+    font-size: clamp(1.35rem, 2.2vw, 2rem);
+}
+
+.constellation-heading p {
+    max-width: 680px;
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.68;
+}
+
+.keyword-lattice {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+}
+
+.keyword-lattice span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 7px 11px;
+    border: 1px solid rgba(17, 97, 73, 0.14);
+    border-radius: 999px;
+    color: var(--brand-dark);
+    background:
+        linear-gradient(135deg, rgba(223, 243, 236, 0.92), rgba(255, 241, 229, 0.72));
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    font-size: 0.82rem;
+    font-weight: 850;
+    transform: translateY(calc(var(--chip-index, 0) * 0.35px));
+}
+
+.action-cluster {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.action-cluster a {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-height: 46px;
+    padding: 10px 12px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.72);
+    font-weight: 850;
+    overflow: hidden;
+}
+
+.action-cluster a:hover {
+    color: var(--brand-dark);
+    border-color: rgba(17, 97, 73, 0.26);
+    background: var(--brand-soft);
+}
+
+.action-cluster i {
+    color: var(--accent);
+}
+
+.action-cluster span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .section-compass {
     position: fixed;
     left: 18px;
@@ -1871,6 +2102,15 @@ body.site-shell {
     }
     to {
         transform: translateX(-50%);
+    }
+}
+
+@keyframes orbitTurn {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
     }
 }
 
@@ -2021,6 +2261,14 @@ body.site-shell {
         grid-template-columns: 1fr;
     }
 
+    .page-constellation {
+        grid-template-columns: 1fr;
+    }
+
+    .constellation-visual {
+        min-height: 238px;
+    }
+
     .section-compass {
         display: none;
     }
@@ -2077,6 +2325,55 @@ body.site-shell {
 
     .filmstrip-track {
         grid-auto-columns: minmax(132px, 58vw);
+    }
+
+    .page-constellation {
+        width: min(100% - 20px, 1180px);
+        margin-top: 12px;
+        padding: 10px;
+        gap: 12px;
+    }
+
+    .constellation-visual {
+        min-height: 214px;
+    }
+
+    .constellation-visual::before {
+        inset: 28px;
+    }
+
+    .constellation-visual::after {
+        inset: 58px;
+    }
+
+    .constellation-core {
+        width: min(150px, 64%);
+        min-height: 96px;
+        padding: 14px;
+    }
+
+    .constellation-node {
+        max-width: 112px;
+        padding: 6px 8px;
+        font-size: 0.68rem;
+    }
+
+    .constellation-node em {
+        max-width: 78px;
+    }
+
+    .keyword-lattice {
+        gap: 7px;
+    }
+
+    .keyword-lattice span {
+        min-height: 30px;
+        padding: 6px 9px;
+        font-size: 0.76rem;
+    }
+
+    .action-cluster {
+        grid-template-columns: 1fr;
     }
 
     .hero-redesign {
@@ -2169,6 +2466,7 @@ body.site-shell.dark-mode .ambient-ribbon {
 body.site-shell.dark-mode .page-intel-strip,
 body.site-shell.dark-mode .page-motion-ticker,
 body.site-shell.dark-mode .page-media-filmstrip,
+body.site-shell.dark-mode .page-constellation,
 body.site-shell.dark-mode .section-compass {
     border-color: rgba(255, 255, 255, 0.08);
     background: rgba(15, 27, 32, 0.78);
@@ -2177,9 +2475,17 @@ body.site-shell.dark-mode .section-compass {
 
 body.site-shell.dark-mode .page-intel-card,
 body.site-shell.dark-mode .filmstrip-head,
+body.site-shell.dark-mode .action-cluster a,
 body.site-shell.dark-mode .section-compass a {
     border-color: rgba(255, 255, 255, 0.08);
     background: rgba(255, 255, 255, 0.055);
+}
+
+body.site-shell.dark-mode .keyword-lattice span {
+    border-color: rgba(77, 197, 157, 0.18);
+    color: var(--brand-dark);
+    background:
+        linear-gradient(135deg, rgba(20, 58, 49, 0.88), rgba(53, 40, 27, 0.78));
 }
 
 body.site-shell.dark-mode .page-motion-ticker::before {
@@ -3470,6 +3776,7 @@ body.site-shell.dark-mode .command-item {
     .page-intel-strip,
     .page-motion-ticker,
     .page-media-filmstrip,
+    .page-constellation,
     .section-compass,
     .hero-actions,
     .site-footer {

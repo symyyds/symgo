@@ -521,6 +521,62 @@ document.addEventListener("DOMContentLoaded", function () {
         return heading.id;
     }
 
+    function escapeHtml(value) {
+        return String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+    }
+
+    function getPageTitle() {
+        return document.querySelector(".page-hero h1, .hero-redesign h1, .resume-hero h1, main h1")?.textContent.trim()
+            || document.title.split("|")[0].trim();
+    }
+
+    function getPageKeywords(root) {
+        const text = getReadableText(root);
+        const seedWords = [
+            "研究", "工程", "项目", "论文", "材料", "证据", "API", "Netlify", "AI", "横向",
+            "简历", "博客", "Python", "深度学习", "物联网", "能源", "IPv6", "导师", "求职", "申博",
+            "Dashboard", "Portfolio", "Publication", "Research", "Engineering", "Serverless"
+        ];
+        const keywords = [];
+
+        seedWords.forEach((word) => {
+            if (text.includes(word) && !keywords.includes(word)) keywords.push(word);
+        });
+
+        const englishWords = text.match(/[A-Za-z][A-Za-z0-9+#.-]{2,}/g) || [];
+        englishWords.forEach((word) => {
+            const clean = word.replace(/[.,;:!?]/g, "");
+            if (clean.length < 3) return;
+            if (/^(the|and|for|with|from|this|that|html|http|https|www)$/i.test(clean)) return;
+            if (!keywords.some((item) => item.toLowerCase() === clean.toLowerCase())) keywords.push(clean);
+        });
+
+        getPageHeadings(root).forEach((item) => {
+            item.text.split(/[、，,·\s/|]+/).forEach((part) => {
+                const clean = part.trim();
+                if (clean.length >= 2 && clean.length <= 18 && !keywords.includes(clean)) keywords.push(clean);
+            });
+        });
+
+        return keywords.slice(0, 12);
+    }
+
+    function getPageActions(root) {
+        return Array.from(root?.querySelectorAll(".btn[href], .text-link[href], .project-actions a[href], .publication-actions a[href], .material-actions a[href]") || [])
+            .filter((link) => !link.closest(".page-motion-ticker") && !link.closest(".page-constellation"))
+            .map((link) => ({
+                text: link.textContent.trim().replace(/\s+/g, " "),
+                href: link.getAttribute("href")
+            }))
+            .filter((item) => item.text && item.href && item.href !== "#")
+            .slice(0, 6);
+    }
+
     function initAmbientLayer() {
         if (document.querySelector(".ambient-stage")) return;
 
@@ -545,10 +601,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const text = getReadableText(main);
         const charCount = text.replace(/\s/g, "").length;
         const headings = getPageHeadings(main);
-        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(".page-intel-strip"));
-        const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(".page-intel-strip") && !link.closest(".page-motion-ticker"));
+        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(".page-intel-strip") && !img.closest(".page-constellation"));
+        const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(".page-intel-strip") && !link.closest(".page-motion-ticker") && !link.closest(".page-constellation"));
         const readingMinutes = Math.max(1, Math.ceil(charCount / 650));
-        const pageTitle = document.querySelector(".page-hero h1, .hero-redesign h1, .resume-hero h1, main h1")?.textContent.trim() || document.title.split("|")[0].trim();
+        const pageTitle = getPageTitle();
 
         const cards = [
             { icon: "fa-hourglass-half", label: "阅读时间", value: `${readingMinutes} min` },
@@ -570,14 +626,14 @@ document.addEventListener("DOMContentLoaded", function () {
         strip.innerHTML = `
             <div class="page-intel-copy">
                 <span>Page Signal</span>
-                <strong>${pageTitle}</strong>
+                <strong>${escapeHtml(pageTitle)}</strong>
             </div>
             <div class="page-intel-grid">
                 ${cards.map((card) => `
                     <div class="page-intel-card">
                         <i class="fas ${card.icon}" aria-hidden="true"></i>
-                        <span>${card.label}</span>
-                        <strong>${card.value}</strong>
+                        <span>${escapeHtml(card.label)}</span>
+                        <strong>${escapeHtml(card.value)}</strong>
                     </div>
                 `).join("")}
             </div>
@@ -590,6 +646,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const headings = getPageHeadings(main).slice(0, 7);
         const actions = Array.from(main.querySelectorAll(".text-link[href], .btn[href]"))
+            .filter((link) => !link.closest(".page-constellation"))
             .map((link) => ({
                 text: link.textContent.trim().replace(/\s+/g, " "),
                 href: link.getAttribute("href")
@@ -622,7 +679,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const track = [...items, ...items].map((item) => `
             <a href="${item.href}">
                 <i class="fas fa-sparkles" aria-hidden="true"></i>
-                <span>${item.text}</span>
+                <span>${escapeHtml(item.text)}</span>
             </a>
         `).join("");
         ticker.innerHTML = `<div class="motion-track">${track}</div>`;
@@ -635,7 +692,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const images = Array.from(main.querySelectorAll("img"))
             .filter((img) => {
                 const src = img.getAttribute("src") || "";
-                return src && !img.closest("header") && !img.closest(".page-media-filmstrip") && !img.classList.contains("profile-img");
+                return src && !img.closest("header") && !img.closest(".page-media-filmstrip") && !img.closest(".page-constellation") && !img.classList.contains("profile-img");
             })
             .slice(0, 8);
 
@@ -665,8 +722,74 @@ document.addEventListener("DOMContentLoaded", function () {
                 ${images.map((img, index) => {
                     const src = img.currentSrc || img.src || img.getAttribute("src");
                     const alt = img.getAttribute("alt") || `页面视觉素材 ${index + 1}`;
-                    return `<a href="${src}" target="_blank" rel="noopener noreferrer"><img src="${src}" alt="${alt}" loading="lazy"></a>`;
+                    return `<a href="${src}" target="_blank" rel="noopener noreferrer"><img src="${src}" alt="${escapeHtml(alt)}" loading="lazy"></a>`;
                 }).join("")}
+            </div>
+        `;
+    }
+
+    function renderPageConstellation() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const headings = getPageHeadings(main).slice(0, 6);
+        const keywords = getPageKeywords(main);
+        const actions = getPageActions(main);
+        const pageTitle = getPageTitle();
+        const signals = headings.length + keywords.length + actions.length;
+        let constellation = main.querySelector(".page-constellation");
+
+        if (signals < 4) {
+            constellation?.remove();
+            return;
+        }
+
+        if (!constellation) {
+            constellation = document.createElement("section");
+            constellation.className = "page-constellation";
+            constellation.setAttribute("aria-label", "页面内容星图");
+            const filmstrip = main.querySelector(".page-media-filmstrip");
+            const ticker = main.querySelector(".page-motion-ticker");
+            const intel = main.querySelector(".page-intel-strip");
+            if (filmstrip) filmstrip.insertAdjacentElement("afterend", constellation);
+            else if (ticker) ticker.insertAdjacentElement("afterend", constellation);
+            else if (intel) intel.insertAdjacentElement("afterend", constellation);
+            else main.prepend(constellation);
+        }
+
+        const orbitNodes = headings.length ? headings : keywords.slice(0, 6).map((keyword) => ({ text: keyword }));
+        constellation.innerHTML = `
+            <div class="constellation-visual" aria-hidden="true">
+                <div class="constellation-core">
+                    <span>Focus</span>
+                    <strong>${escapeHtml(pageTitle)}</strong>
+                </div>
+                ${orbitNodes.slice(0, 6).map((item, index) => `
+                    <span class="constellation-node node-${index + 1}">
+                        <i class="fas fa-circle"></i>
+                        <em>${escapeHtml(item.text)}</em>
+                    </span>
+                `).join("")}
+            </div>
+            <div class="constellation-panel">
+                <div class="constellation-heading">
+                    <span>Content Map</span>
+                    <h2>页面内容星图</h2>
+                    <p>自动从本页章节、关键词和操作入口生成，用来把长页面变成可扫读的视觉导航。</p>
+                </div>
+                <div class="keyword-lattice">
+                    ${keywords.slice(0, 10).map((keyword, index) => `<span style="--chip-index:${index}">${escapeHtml(keyword)}</span>`).join("")}
+                </div>
+                ${actions.length ? `
+                    <div class="action-cluster">
+                        ${actions.map((action, index) => `
+                            <a href="${action.href}" style="--action-index:${index}">
+                                <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                                <span>${escapeHtml(action.text)}</span>
+                            </a>
+                        `).join("")}
+                    </div>
+                ` : ""}
             </div>
         `;
     }
@@ -715,6 +838,7 @@ document.addEventListener("DOMContentLoaded", function () {
         renderPageIntelligence();
         renderMotionTicker();
         renderMediaFilmstrip();
+        renderPageConstellation();
         renderSectionCompass();
     }
 
