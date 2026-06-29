@@ -2341,6 +2341,325 @@ body.site-shell {
     white-space: nowrap;
 }
 
+.page-flow-lab {
+    position: relative;
+    z-index: 2;
+    width: min(1180px, calc(100% - 32px));
+    margin: 18px auto 0;
+    overflow: hidden;
+    padding: 18px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(247, 251, 249, 0.72)),
+        linear-gradient(90deg, rgba(17, 97, 73, 0.08), transparent 44%, rgba(179, 92, 30, 0.08));
+    box-shadow: 0 28px 86px rgba(15, 23, 42, 0.1);
+    backdrop-filter: blur(20px);
+}
+
+.page-flow-lab::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(rgba(15, 23, 42, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 23, 42, 0.045) 1px, transparent 1px);
+    background-size: 26px 26px;
+    mask-image: linear-gradient(90deg, #000, transparent 82%);
+}
+
+.flow-lab-head {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.flow-lab-head span {
+    display: inline-flex;
+    margin-bottom: 6px;
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 950;
+    text-transform: uppercase;
+}
+
+.flow-lab-head h2 {
+    margin: 0;
+    color: var(--ink);
+    font-size: clamp(1.24rem, 2.2vw, 1.95rem);
+    line-height: 1.18;
+}
+
+.flow-lab-score {
+    position: relative;
+    width: 78px;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #fff;
+    background:
+        radial-gradient(circle at center, #102229 0 55%, transparent 56%),
+        conic-gradient(from -90deg, var(--accent) var(--flow-score), rgba(15, 23, 42, 0.12) 0);
+    box-shadow: 0 20px 56px rgba(15, 23, 42, 0.16);
+}
+
+.flow-lab-score strong {
+    color: #fff;
+    font-size: 1.34rem;
+    line-height: 0.9;
+}
+
+.flow-lab-score span {
+    margin-top: -20px;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 0.58rem;
+    font-weight: 950;
+}
+
+.flow-lab-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(280px, 0.9fr) minmax(220px, 0.45fr) minmax(260px, 0.65fr);
+    gap: 14px;
+    align-items: stretch;
+}
+
+.flow-route-board {
+    position: relative;
+    min-height: 248px;
+    overflow: hidden;
+    padding: 18px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(135deg, #10222a, rgba(17, 97, 73, 0.88));
+    background-size: 22px 22px, 22px 22px, auto;
+}
+
+.flow-route-line {
+    position: absolute;
+    left: 34px;
+    right: 34px;
+    top: 50%;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(94, 224, 177, 0.18), rgba(242, 184, 107, 0.72), rgba(94, 224, 177, 0.2));
+}
+
+.flow-route-line span {
+    position: absolute;
+    top: 50%;
+    left: calc(var(--dot-index) * 18%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #f7c77b;
+    box-shadow: 0 0 0 8px rgba(247, 199, 123, 0.12);
+    transform: translate(-50%, -50%);
+}
+
+.flow-node-stack {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    gap: 9px;
+}
+
+.flow-node {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    width: var(--node-meter);
+    min-width: min(100%, 230px);
+    min-height: 40px;
+    padding: 8px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 8px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(12px);
+}
+
+.flow-node:nth-child(even) {
+    justify-self: end;
+}
+
+.flow-node span {
+    display: inline-grid;
+    place-items: center;
+    min-width: 32px;
+    min-height: 26px;
+    border-radius: 999px;
+    color: #12252b;
+    background: #f7c77b;
+    font-size: 0.7rem;
+    font-weight: 950;
+}
+
+.flow-node strong {
+    min-width: 0;
+    color: #fff;
+    font-size: 0.82rem;
+    line-height: 1.34;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.flow-meter-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.flow-meter-card {
+    display: grid;
+    place-items: center;
+    gap: 5px;
+    min-height: 118px;
+    padding: 12px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background:
+        radial-gradient(circle at center, rgba(255, 255, 255, 0.94) 0 48%, transparent 49%),
+        conic-gradient(from -90deg, var(--brand) var(--meter), rgba(15, 23, 42, 0.08) 0);
+    box-shadow: 0 16px 42px rgba(15, 23, 42, 0.08);
+}
+
+.flow-meter-card i {
+    color: var(--brand);
+}
+
+.flow-meter-card strong {
+    color: var(--ink);
+    font-size: 1.22rem;
+    line-height: 1;
+}
+
+.flow-meter-card span {
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-weight: 950;
+}
+
+.flow-chip-panel {
+    display: grid;
+    align-content: stretch;
+    gap: 12px;
+    min-width: 0;
+}
+
+.flow-chip-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: start;
+    gap: 8px;
+    min-height: 116px;
+    padding: 12px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.66);
+}
+
+.flow-chip-cloud span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 30px;
+    padding: 6px 10px;
+    border: 1px solid rgba(17, 97, 73, 0.14);
+    border-radius: 999px;
+    color: var(--brand-dark);
+    background:
+        linear-gradient(135deg, rgba(223, 243, 236, 0.9), rgba(255, 241, 229, 0.72));
+    font-size: 0.78rem;
+    font-weight: 880;
+    transform: translateY(calc(var(--chip-index) * 0.25px));
+}
+
+.flow-action-list {
+    display: grid;
+    gap: 8px;
+}
+
+.flow-action-list a {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 9px;
+    align-items: center;
+    min-height: 40px;
+    padding: 9px 11px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.74);
+    font-size: 0.82rem;
+    font-weight: 850;
+}
+
+.flow-action-list a:hover,
+.flow-action-list a:focus-visible {
+    color: var(--brand-dark);
+    border-color: rgba(17, 97, 73, 0.24);
+    background: var(--brand-soft);
+}
+
+.flow-action-list span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.heading-signal-badge {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: min(190px, 100%);
+    min-height: 28px;
+    margin-left: 10px;
+    padding: 5px 8px;
+    overflow: hidden;
+    border: 1px solid rgba(17, 97, 73, 0.14);
+    border-radius: 999px;
+    color: var(--brand-dark);
+    background:
+        linear-gradient(90deg, rgba(17, 97, 73, 0.14) 0 var(--heading-score), transparent 0),
+        rgba(255, 255, 255, 0.78);
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    font-size: 0.68rem;
+    font-weight: 950;
+    line-height: 1;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.heading-signal-badge i {
+    color: var(--accent);
+    font-size: 0.72rem;
+}
+
+.heading-signal-badge span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.heading-signal-badge b {
+    color: var(--ink);
+    font-size: 0.66rem;
+    font-variant-numeric: tabular-nums;
+}
+
 .section-signal {
     position: relative;
     z-index: 2;
@@ -2992,6 +3311,14 @@ body.site-shell {
         grid-template-columns: 1fr;
     }
 
+    .flow-lab-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flow-route-board {
+        min-height: 220px;
+    }
+
     .constellation-visual {
         min-height: 238px;
     }
@@ -3133,6 +3460,72 @@ body.site-shell {
         margin-top: 12px;
         padding: 10px;
         gap: 12px;
+    }
+
+    .page-flow-lab {
+        width: min(100% - 20px, 1180px);
+        margin-top: 12px;
+        padding: 10px;
+    }
+
+    .flow-lab-head {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .flow-lab-score {
+        width: 64px;
+    }
+
+    .flow-route-board {
+        min-height: 0;
+        padding: 12px;
+    }
+
+    .flow-route-line {
+        left: 28px;
+        right: auto;
+        top: 18px;
+        bottom: 18px;
+        width: 2px;
+        height: auto;
+        background: linear-gradient(180deg, rgba(94, 224, 177, 0.18), rgba(242, 184, 107, 0.72), rgba(94, 224, 177, 0.2));
+    }
+
+    .flow-route-line span {
+        top: calc(var(--dot-index) * 18%);
+        left: 50%;
+    }
+
+    .flow-node {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .flow-node:nth-child(even) {
+        justify-self: stretch;
+    }
+
+    .flow-meter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .flow-meter-card {
+        min-height: 102px;
+        padding: 10px;
+    }
+
+    .flow-chip-cloud {
+        min-height: 0;
+        padding: 10px;
+    }
+
+    .heading-signal-badge {
+        display: flex;
+        width: fit-content;
+        max-width: 100%;
+        margin: 8px 0 0;
     }
 
     .constellation-visual {
@@ -3357,6 +3750,7 @@ body.site-shell.dark-mode .page-motion-ticker,
 body.site-shell.dark-mode .page-media-filmstrip,
 body.site-shell.dark-mode .visual-showcase-inner,
 body.site-shell.dark-mode .page-constellation,
+body.site-shell.dark-mode .page-flow-lab,
 body.site-shell.dark-mode .section-signal,
 body.site-shell.dark-mode .section-blueprint,
 body.site-shell.dark-mode .section-compass {
@@ -3370,6 +3764,10 @@ body.site-shell.dark-mode .filmstrip-head,
 body.site-shell.dark-mode .screenshot-card,
 body.site-shell.dark-mode .card-proof-thumb,
 body.site-shell.dark-mode .action-cluster a,
+body.site-shell.dark-mode .flow-chip-cloud,
+body.site-shell.dark-mode .flow-action-list a,
+body.site-shell.dark-mode .flow-meter-card,
+body.site-shell.dark-mode .heading-signal-badge,
 body.site-shell.dark-mode .section-signal-metrics span,
 body.site-shell.dark-mode .blueprint-metrics span,
 body.site-shell.dark-mode .card-micro-widget,
@@ -3385,6 +3783,17 @@ body.site-shell.dark-mode .card-micro-widget span:not(.micro-kind) {
 body.site-shell.dark-mode .card-proof-thumb span {
     border-color: rgba(255, 255, 255, 0.2);
     background: rgba(0, 0, 0, 0.28);
+}
+
+body.site-shell.dark-mode .flow-meter-card {
+    background:
+        radial-gradient(circle at center, rgba(15, 27, 32, 0.96) 0 48%, transparent 49%),
+        conic-gradient(from -90deg, var(--brand) var(--meter), rgba(255, 255, 255, 0.1) 0);
+}
+
+body.site-shell.dark-mode .flow-chip-cloud span {
+    border-color: rgba(77, 197, 157, 0.2);
+    background: rgba(77, 197, 157, 0.1);
 }
 
 body.site-shell.dark-mode .section-signal-main span {
@@ -4704,10 +5113,13 @@ body.site-shell.dark-mode .command-item {
     .page-media-filmstrip,
     .site-visual-showcase,
     .page-constellation,
+    .page-flow-lab,
     .section-signal,
     .section-blueprint,
     .card-micro-widget,
     .card-signal-strip,
+    .card-proof-thumb,
+    .heading-signal-badge,
     .section-compass,
     .hero-actions,
     .site-footer {

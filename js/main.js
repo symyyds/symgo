@@ -506,11 +506,37 @@
             .trim();
     }
 
+    const visualWidgetSelector = [
+        "header",
+        "footer",
+        ".page-intel-strip",
+        ".page-motion-ticker",
+        ".page-media-filmstrip",
+        ".site-visual-showcase",
+        ".page-constellation",
+        ".page-flow-lab",
+        ".section-signal",
+        ".section-blueprint",
+        ".card-micro-widget",
+        ".card-signal-strip",
+        ".card-proof-thumb",
+        ".section-compass",
+        ".page-side-rail"
+    ].join(",");
+
+    function getCleanNodeText(node) {
+        if (!node) return "";
+        const clone = node.cloneNode(true);
+        clone.querySelectorAll(".heading-signal-badge, .card-micro-widget, .card-signal-strip").forEach((item) => item.remove());
+        return clone.textContent.trim().replace(/\s+/g, " ");
+    }
+
     function getPageHeadings(root) {
         return Array.from(root?.querySelectorAll("h2, h3") || [])
+            .filter((heading) => !heading.closest(visualWidgetSelector))
             .map((heading) => ({
                 node: heading,
-                text: heading.textContent.trim().replace(/\s+/g, " ")
+                text: getCleanNodeText(heading)
             }))
             .filter((item) => item.text.length > 1)
             .slice(0, 10);
@@ -1231,6 +1257,160 @@
         `;
     }
 
+    function renderPageFlowLab() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const headings = getPageHeadings(main).slice(0, 6);
+        const keywords = getPageKeywords(main).filter((keyword) => keyword.length <= 18).slice(0, 10);
+        const actions = getPageActions(main).slice(0, 5);
+        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector));
+        const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector));
+        const textLength = getReadableText(main).replace(/\s/g, "").length;
+        const signalCount = headings.length + keywords.length + actions.length + images.length;
+        let lab = main.querySelector(".page-flow-lab");
+
+        if (signalCount < 5) {
+            lab?.remove();
+            return;
+        }
+
+        if (!lab) {
+            lab = document.createElement("section");
+            lab.className = "page-flow-lab";
+            lab.setAttribute("aria-label", "页面证据流工作台");
+            const constellation = main.querySelector(".page-constellation");
+            const filmstrip = main.querySelector(".page-media-filmstrip");
+            const showcase = main.querySelector(".site-visual-showcase");
+            const ticker = main.querySelector(".page-motion-ticker");
+            const intel = main.querySelector(".page-intel-strip");
+            if (constellation) constellation.insertAdjacentElement("afterend", lab);
+            else if (filmstrip) filmstrip.insertAdjacentElement("afterend", lab);
+            else if (showcase) showcase.insertAdjacentElement("afterend", lab);
+            else if (ticker) ticker.insertAdjacentElement("afterend", lab);
+            else if (intel) intel.insertAdjacentElement("afterend", lab);
+            else main.prepend(lab);
+        }
+
+        const routeItems = headings.length ? headings : keywords.slice(0, 6).map((keyword) => ({ text: keyword }));
+        const meters = [
+            { label: "结构", value: Math.min(100, 28 + headings.length * 11), count: headings.length, icon: "fa-sitemap" },
+            { label: "视觉", value: Math.min(100, 24 + images.length * 12), count: images.length, icon: "fa-image" },
+            { label: "入口", value: Math.min(100, 24 + links.length * 5), count: links.length, icon: "fa-link" },
+            { label: "密度", value: Math.min(100, 28 + textLength / 95), count: Math.max(1, Math.ceil(textLength / 650)), icon: "fa-wave-square" }
+        ];
+        const average = Math.round(meters.reduce((sum, item) => sum + item.value, 0) / meters.length);
+        const routeMarkup = routeItems.slice(0, 6).map((item, index) => {
+            const id = item.node ? ensureHeadingId(item.node, index) : "";
+            const href = id ? `#${id}` : "#";
+            const width = Math.min(96, 32 + (index + 1) * 10 + item.text.length * 1.4);
+            return `
+                <a href="${href}" class="flow-node node-${index + 1}" style="--node-meter:${width}%;--node-index:${index}">
+                    <span>${String(index + 1).padStart(2, "0")}</span>
+                    <strong>${escapeHtml(item.text)}</strong>
+                </a>
+            `;
+        }).join("");
+
+        lab.style.setProperty("--flow-score", `${average * 3.6}deg`);
+        lab.innerHTML = `
+            <div class="flow-lab-head">
+                <div>
+                    <span>Layout Pulse</span>
+                    <h2>${escapeHtml(getPageTitle())} 证据流</h2>
+                </div>
+                <div class="flow-lab-score">
+                    <strong>${average}</strong>
+                    <span>Flow</span>
+                </div>
+            </div>
+            <div class="flow-lab-grid">
+                <div class="flow-route-board">
+                    <div class="flow-route-line" aria-hidden="true">
+                        ${routeItems.slice(0, 6).map((_, index) => `<span style="--dot-index:${index}"></span>`).join("")}
+                    </div>
+                    <div class="flow-node-stack">
+                        ${routeMarkup}
+                    </div>
+                </div>
+                <div class="flow-meter-grid">
+                    ${meters.map((meter) => `
+                        <div class="flow-meter-card" style="--meter:${meter.value * 3.6}deg">
+                            <i class="fas ${meter.icon}" aria-hidden="true"></i>
+                            <strong>${escapeHtml(String(meter.count))}</strong>
+                            <span>${escapeHtml(meter.label)}</span>
+                        </div>
+                    `).join("")}
+                </div>
+                <div class="flow-chip-panel">
+                    <div class="flow-chip-cloud">
+                        ${keywords.map((keyword, index) => `<span style="--chip-index:${index}">${escapeHtml(keyword)}</span>`).join("")}
+                    </div>
+                    ${actions.length ? `
+                        <div class="flow-action-list">
+                            ${actions.map((action) => `
+                                <a href="${action.href}">
+                                    <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                                    <span>${escapeHtml(action.text)}</span>
+                                </a>
+                            `).join("")}
+                        </div>
+                    ` : ""}
+                </div>
+            </div>
+        `;
+    }
+
+    function renderHeadingSignalBadges() {
+        const main = getMainContent();
+        if (!main) return;
+
+        getPageHeadings(main).slice(0, 18).forEach((item, index) => {
+            const heading = item.node;
+            let badge = heading.querySelector(":scope > .heading-signal-badge");
+            const host = heading.closest("section, article, .container, .handbook-section, .evidence-section, .case-block") || heading.parentElement;
+            const text = getReadableText(host).replace(/\s/g, "");
+            const links = Array.from(host.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector)).length;
+            const images = Array.from(host.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector)).length;
+            const lower = item.text.toLowerCase();
+            let label = "Signal";
+            let icon = "fa-sparkles";
+
+            if (/论文|publication|paper|doi|pdf/i.test(lower)) {
+                label = "Paper";
+                icon = "fa-file-lines";
+            } else if (/项目|project|工程|横向|case/i.test(lower)) {
+                label = "Project";
+                icon = "fa-diagram-project";
+            } else if (/api|接口|function|proxy/i.test(lower)) {
+                label = "API";
+                icon = "fa-plug";
+            } else if (/材料|证据|resume|cv|档案|证明/i.test(lower)) {
+                label = "Proof";
+                icon = "fa-box-archive";
+            } else if (/研究|路线|方法|模型|算法/i.test(lower)) {
+                label = "Research";
+                icon = "fa-flask";
+            }
+
+            const score = Math.min(99, Math.max(18, Math.round(18 + text.length / 80 + links * 5 + images * 9)));
+            if (!badge) {
+                badge = document.createElement("span");
+                badge.className = "heading-signal-badge";
+                badge.setAttribute("aria-hidden", "true");
+                heading.appendChild(badge);
+            }
+
+            heading.classList.add("has-heading-signal");
+            badge.style.setProperty("--heading-score", `${score}%`);
+            badge.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <span>${escapeHtml(label)}</span>
+                <b>${String(index + 1).padStart(2, "0")}</b>
+            `;
+        });
+    }
+
     function renderSectionSignals() {
         const main = getMainContent();
         if (!main) return;
@@ -1588,6 +1768,8 @@
         renderMotionTicker();
         renderMediaFilmstrip();
         renderPageConstellation();
+        renderPageFlowLab();
+        renderHeadingSignalBadges();
         renderSectionSignals();
         renderSectionBlueprints();
         renderCardMicroWidgets();
