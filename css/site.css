@@ -2016,6 +2016,106 @@ body.site-shell {
     white-space: nowrap;
 }
 
+.section-signal {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    margin: 0 0 18px;
+    padding: 10px 12px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.84), rgba(248, 250, 252, 0.68));
+    box-shadow: 0 14px 42px rgba(15, 23, 42, 0.07);
+    backdrop-filter: blur(16px);
+}
+
+.section-signal::before {
+    content: "";
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: -1px;
+    height: 2px;
+    border-radius: 999px;
+    background:
+        linear-gradient(90deg, var(--brand), var(--accent)) left center / var(--section-meter, 50%) 100% no-repeat,
+        rgba(15, 23, 42, 0.08);
+}
+
+.section-signal-index {
+    display: inline-grid;
+    place-items: center;
+    min-width: 42px;
+    min-height: 34px;
+    border-radius: 8px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--brand), var(--accent));
+    font-size: 0.78rem;
+    font-weight: 950;
+    font-variant-numeric: tabular-nums;
+}
+
+.section-signal-main {
+    display: grid;
+    gap: 7px;
+    min-width: 0;
+}
+
+.section-signal-main strong {
+    color: var(--ink);
+    font-size: 0.92rem;
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.section-signal-main span {
+    display: block;
+    height: 5px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.06);
+}
+
+.section-signal-main em {
+    display: block;
+    width: var(--section-meter, 50%);
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--brand), var(--accent));
+}
+
+.section-signal-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 7px;
+}
+
+.section-signal-metrics span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 30px;
+    padding: 5px 8px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 999px;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.68);
+    font-size: 0.76rem;
+    font-weight: 850;
+}
+
+.section-signal-metrics i {
+    color: var(--accent);
+    font-size: 0.72rem;
+}
+
 .section-compass {
     position: fixed;
     left: 18px;
@@ -2269,6 +2369,15 @@ body.site-shell {
         min-height: 238px;
     }
 
+    .section-signal {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .section-signal-metrics {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+    }
+
     .section-compass {
         display: none;
     }
@@ -2376,6 +2485,27 @@ body.site-shell {
         grid-template-columns: 1fr;
     }
 
+    .section-signal {
+        gap: 9px;
+        padding: 9px;
+    }
+
+    .section-signal-index {
+        min-width: 38px;
+        min-height: 30px;
+        font-size: 0.72rem;
+    }
+
+    .section-signal-main strong {
+        white-space: normal;
+    }
+
+    .section-signal-metrics span {
+        min-height: 28px;
+        padding: 5px 7px;
+        font-size: 0.72rem;
+    }
+
     .hero-redesign {
         padding: 58px 0 38px;
     }
@@ -2467,6 +2597,7 @@ body.site-shell.dark-mode .page-intel-strip,
 body.site-shell.dark-mode .page-motion-ticker,
 body.site-shell.dark-mode .page-media-filmstrip,
 body.site-shell.dark-mode .page-constellation,
+body.site-shell.dark-mode .section-signal,
 body.site-shell.dark-mode .section-compass {
     border-color: rgba(255, 255, 255, 0.08);
     background: rgba(15, 27, 32, 0.78);
@@ -2476,9 +2607,14 @@ body.site-shell.dark-mode .section-compass {
 body.site-shell.dark-mode .page-intel-card,
 body.site-shell.dark-mode .filmstrip-head,
 body.site-shell.dark-mode .action-cluster a,
+body.site-shell.dark-mode .section-signal-metrics span,
 body.site-shell.dark-mode .section-compass a {
     border-color: rgba(255, 255, 255, 0.08);
     background: rgba(255, 255, 255, 0.055);
+}
+
+body.site-shell.dark-mode .section-signal-main span {
+    background: rgba(255, 255, 255, 0.08);
 }
 
 body.site-shell.dark-mode .keyword-lattice span {
@@ -3777,6 +3913,7 @@ body.site-shell.dark-mode .command-item {
     .page-motion-ticker,
     .page-media-filmstrip,
     .page-constellation,
+    .section-signal,
     .section-compass,
     .hero-actions,
     .site-footer {

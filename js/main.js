@@ -794,6 +794,68 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
     }
 
+    function renderSectionSignals() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const skipClasses = [
+            "page-hero",
+            "hero-redesign",
+            "resume-hero",
+            "page-intel-strip",
+            "page-motion-ticker",
+            "page-media-filmstrip",
+            "page-constellation"
+        ];
+
+        const sections = Array.from(main.querySelectorAll(":scope > section, .handbook-section, .evidence-section, .case-block"))
+            .filter((section) => {
+                if (skipClasses.some((className) => section.classList.contains(className))) return false;
+                if (section.closest(".page-constellation, .page-media-filmstrip, .page-intel-strip")) return false;
+                const text = getReadableText(section);
+                return text.length >= 90;
+            })
+            .slice(0, 18);
+
+        sections.forEach((section, index) => {
+            const host = section.querySelector(":scope > .container") || section;
+            let signal = host.querySelector(":scope > .section-signal");
+            const title = section.querySelector("h2, h3, h1")?.textContent.trim().replace(/\s+/g, " ") || `Section ${index + 1}`;
+            const contentText = Array.from(host.childNodes)
+                .filter((node) => !(node.nodeType === 1 && node.classList?.contains("section-signal")))
+                .map((node) => node.textContent || "")
+                .join(" ")
+                .replace(/\s+/g, " ")
+                .trim();
+            const charCount = contentText.replace(/\s/g, "").length;
+            const readingMinutes = Math.max(1, Math.ceil(charCount / 520));
+            const links = Array.from(section.querySelectorAll("a[href]")).filter((link) => !link.closest(".section-signal")).length;
+            const images = Array.from(section.querySelectorAll("img")).filter((img) => !img.closest(".section-signal")).length;
+            const energy = Math.min(100, 26 + readingMinutes * 12 + links * 7 + images * 9);
+
+            if (!signal) {
+                signal = document.createElement("div");
+                signal.className = "section-signal";
+                signal.setAttribute("aria-label", "内容区块信号");
+                host.prepend(signal);
+            }
+
+            signal.style.setProperty("--section-meter", `${energy}%`);
+            signal.innerHTML = `
+                <span class="section-signal-index">S${String(index + 1).padStart(2, "0")}</span>
+                <div class="section-signal-main">
+                    <strong>${escapeHtml(title)}</strong>
+                    <span><em></em></span>
+                </div>
+                <div class="section-signal-metrics">
+                    <span><i class="fas fa-clock" aria-hidden="true"></i>${readingMinutes}m</span>
+                    <span><i class="fas fa-link" aria-hidden="true"></i>${links}</span>
+                    <span><i class="fas fa-image" aria-hidden="true"></i>${images}</span>
+                </div>
+            `;
+        });
+    }
+
     function renderSectionCompass() {
         const main = getMainContent();
         if (!main) return;
@@ -839,6 +901,7 @@ document.addEventListener("DOMContentLoaded", function () {
         renderMotionTicker();
         renderMediaFilmstrip();
         renderPageConstellation();
+        renderSectionSignals();
         renderSectionCompass();
     }
 
