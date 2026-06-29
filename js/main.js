@@ -515,6 +515,7 @@
         ".site-visual-showcase",
         ".page-constellation",
         ".page-flow-lab",
+        ".hero-signal-console",
         ".section-signal",
         ".section-blueprint",
         ".list-telemetry",
@@ -559,7 +560,7 @@
     }
 
     function getPageTitle() {
-        return document.querySelector(".page-hero h1, .hero-redesign h1, .resume-hero h1, main h1")?.textContent.trim()
+        return document.querySelector(".page-hero h1, .page-header h1, .hero-redesign h1, .resume-hero h1, main h1")?.textContent.trim()
             || document.title.split("|")[0].trim();
     }
 
@@ -928,7 +929,7 @@
             deck.className = "site-visual-showcase";
             deck.setAttribute("aria-label", "视觉证据看板");
             const intel = main.querySelector(".page-intel-strip");
-            const hero = main.querySelector(".page-hero, .hero-redesign, .resume-hero");
+            const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
             if (intel) intel.insertAdjacentElement("afterend", deck);
             else if (hero) hero.insertAdjacentElement("afterend", deck);
             else main.prepend(deck);
@@ -982,6 +983,63 @@
                         </div>
                     </aside>
                 </div>
+            </div>
+        `;
+    }
+
+    function renderHeroSignalConsole() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const hero = main.querySelector(".hero-redesign, .page-hero, .page-header, .resume-hero, .markdown-converter-container, .code-runner-container");
+        if (!hero || hero.closest(visualWidgetSelector)) return;
+
+        const container = hero.querySelector(":scope > .container") || hero;
+        let consolePanel = container.querySelector(":scope > .hero-signal-console");
+        const text = getReadableText(main);
+        const headings = getPageHeadings(main);
+        const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector));
+        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector) && !img.closest("header"));
+        const cards = main.querySelectorAll(".surface-card, .project-showcase, .publication-card, .material-card, .blog-card, .capability-card, .timeline-card, .evidence-section, .handbook-section").length;
+        const charCount = text.replace(/\s/g, "").length;
+        const pageTitle = getPageTitle();
+        const keywords = getPageKeywords(main).slice(0, 6);
+        const pulse = Math.min(98, Math.max(32, Math.round(34 + headings.length * 5 + images.length * 6 + links.length * 2 + cards * 3)));
+        const stats = [
+            { label: "结构", value: headings.length || 1, icon: "fa-sitemap", meter: Math.min(100, 24 + headings.length * 12) },
+            { label: "证据", value: images.length, icon: "fa-image", meter: Math.min(100, 20 + images.length * 14) },
+            { label: "入口", value: links.length, icon: "fa-link", meter: Math.min(100, 22 + links.length * 4) },
+            { label: "密度", value: Math.max(1, Math.ceil(charCount / 700)), icon: "fa-wave-square", meter: Math.min(100, 28 + charCount / 130) }
+        ];
+
+        if (!consolePanel) {
+            consolePanel = document.createElement("aside");
+            consolePanel.className = "hero-signal-console";
+            consolePanel.setAttribute("aria-label", "首屏页面信号控制台");
+            container.appendChild(consolePanel);
+        }
+
+        consolePanel.style.setProperty("--hero-pulse", `${pulse * 3.6}deg`);
+        consolePanel.innerHTML = `
+            <div class="hero-console-core">
+                <span>Live Signal</span>
+                <strong>${pulse}</strong>
+                <em>${escapeHtml(pageTitle)}</em>
+            </div>
+            <div class="hero-console-grid">
+                ${stats.map((stat, index) => `
+                    <div class="hero-console-stat" style="--stat-meter:${stat.meter}%;--stat-index:${index}">
+                        <i class="fas ${stat.icon}" aria-hidden="true"></i>
+                        <span>${escapeHtml(stat.label)}</span>
+                        <strong>${escapeHtml(String(stat.value))}</strong>
+                    </div>
+                `).join("")}
+            </div>
+            <div class="hero-console-wave" aria-hidden="true">
+                ${stats.map((stat, index) => `<span style="--wave-meter:${stat.meter}%;--wave-index:${index}"></span>`).join("")}
+            </div>
+            <div class="hero-console-tags">
+                ${keywords.map((keyword, index) => `<span style="--tag-index:${index}">${escapeHtml(keyword)}</span>`).join("")}
             </div>
         `;
     }
@@ -1083,7 +1141,7 @@
             strip = document.createElement("section");
             strip.className = "page-intel-strip";
             strip.setAttribute("aria-label", "页面情报概览");
-            const hero = main.querySelector(".page-hero, .hero-redesign, .resume-hero");
+            const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
             if (hero) hero.insertAdjacentElement("afterend", strip);
             else main.prepend(strip);
         }
@@ -1933,6 +1991,7 @@
 
     function renderGlobalVisualWidgets() {
         initAmbientLayer();
+        renderHeroSignalConsole();
         renderPageIntelligence();
         renderVisualEvidenceDeck();
         renderCardScreenshotThumbs();

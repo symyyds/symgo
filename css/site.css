@@ -2031,6 +2031,191 @@ body.site-shell {
     box-shadow: 0 0 24px rgba(65, 197, 157, 0.35);
 }
 
+.hero-signal-console {
+    position: relative;
+    z-index: 4;
+    display: grid;
+    grid-template-columns: minmax(118px, 0.42fr) minmax(0, 0.9fr);
+    gap: 12px;
+    align-items: stretch;
+    min-width: 0;
+    padding: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    color: #fff;
+    background:
+        linear-gradient(135deg, rgba(9, 21, 28, 0.72), rgba(14, 48, 45, 0.54)),
+        radial-gradient(circle at 10% 12%, rgba(94, 224, 177, 0.18), transparent 36%),
+        radial-gradient(circle at 92% 86%, rgba(242, 184, 107, 0.18), transparent 34%);
+    box-shadow: 0 26px 80px rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(20px) saturate(1.12);
+}
+
+.hero-redesign .hero-signal-console,
+.resume-hero .hero-signal-console {
+    grid-column: 1 / -1;
+    margin-top: 18px;
+}
+
+.page-hero .hero-signal-console,
+.page-header .hero-signal-console,
+.markdown-converter-container .hero-signal-console,
+.code-runner-container .hero-signal-console {
+    margin-top: 22px;
+    max-width: 760px;
+}
+
+.hero-signal-console::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+    background-size: 18px 18px;
+    mask-image: linear-gradient(90deg, #000, transparent 86%);
+}
+
+.hero-console-core {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 6px;
+    min-height: 138px;
+    padding: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 8px;
+    text-align: center;
+    background:
+        radial-gradient(circle at center, rgba(10, 23, 28, 0.96) 0 48%, transparent 49%),
+        conic-gradient(from -90deg, #f2b86b var(--hero-pulse), rgba(255, 255, 255, 0.1) 0);
+}
+
+.hero-console-core span {
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 0.64rem;
+    font-weight: 950;
+    text-transform: uppercase;
+}
+
+.hero-console-core strong {
+    color: #fff;
+    font-size: clamp(2rem, 4vw, 3.1rem);
+    line-height: 0.9;
+}
+
+.hero-console-core em {
+    max-width: 100%;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.72rem;
+    font-style: normal;
+    font-weight: 850;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.hero-console-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.hero-console-stat {
+    position: relative;
+    display: grid;
+    align-content: space-between;
+    min-height: 86px;
+    padding: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 8px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+}
+
+.hero-console-stat::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: calc(100% - var(--stat-meter));
+    bottom: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #5ee0b1, #f2b86b);
+}
+
+.hero-console-stat i {
+    color: #f2b86b;
+}
+
+.hero-console-stat span {
+    color: rgba(255, 255, 255, 0.64);
+    font-size: 0.68rem;
+    font-weight: 900;
+}
+
+.hero-console-stat strong {
+    color: #fff;
+    font-size: 1.12rem;
+    line-height: 1;
+}
+
+.hero-console-wave {
+    position: relative;
+    z-index: 1;
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 7px;
+}
+
+.hero-console-wave span {
+    position: relative;
+    height: 7px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.11);
+}
+
+.hero-console-wave span::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--wave-meter);
+    border-radius: inherit;
+    background: linear-gradient(90deg, #5ee0b1, #f2b86b);
+    opacity: calc(0.68 + var(--wave-index) * 0.07);
+}
+
+.hero-console-tags {
+    position: relative;
+    z-index: 1;
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.hero-console-tags span {
+    display: inline-flex;
+    min-height: 28px;
+    align-items: center;
+    padding: 5px 9px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.86);
+    background: rgba(255, 255, 255, 0.08);
+    font-size: 0.7rem;
+    font-weight: 850;
+    transform: translateY(calc(var(--tag-index) * 0.2px));
+}
+
 .has-card-proof-thumb {
     overflow: hidden;
 }
@@ -3660,6 +3845,34 @@ body.site-shell {
         margin-top: 12px;
     }
 
+    .hero-signal-console {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .hero-redesign .hero-signal-console,
+    .resume-hero .hero-signal-console,
+    .page-hero .hero-signal-console,
+    .page-header .hero-signal-console,
+    .markdown-converter-container .hero-signal-console,
+    .code-runner-container .hero-signal-console {
+        margin-top: 14px;
+        max-width: none;
+    }
+
+    .hero-console-core {
+        min-height: 118px;
+    }
+
+    .hero-console-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .hero-console-stat {
+        min-height: 76px;
+    }
+
     .page-motion-ticker::before,
     .page-motion-ticker::after {
         width: 54px;
@@ -4063,6 +4276,7 @@ body.site-shell.dark-mode .page-media-filmstrip,
 body.site-shell.dark-mode .visual-showcase-inner,
 body.site-shell.dark-mode .page-constellation,
 body.site-shell.dark-mode .page-flow-lab,
+body.site-shell.dark-mode .hero-signal-console,
 body.site-shell.dark-mode .section-signal,
 body.site-shell.dark-mode .section-blueprint,
 body.site-shell.dark-mode .section-compass {
@@ -5437,6 +5651,7 @@ body.site-shell.dark-mode .command-item {
     .site-visual-showcase,
     .page-constellation,
     .page-flow-lab,
+    .hero-signal-console,
     .list-telemetry,
     .collection-telemetry,
     .section-signal,
