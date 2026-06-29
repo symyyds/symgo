@@ -517,6 +517,8 @@
         ".page-flow-lab",
         ".section-signal",
         ".section-blueprint",
+        ".list-telemetry",
+        ".collection-telemetry",
         ".card-micro-widget",
         ".card-signal-strip",
         ".card-proof-thumb",
@@ -1411,6 +1413,175 @@
         });
     }
 
+    function renderListTelemetry() {
+        const main = getMainContent();
+        if (!main) return;
+        if (main.querySelector(".jp-Notebook, .jp-Cell, .jp-RenderedHTMLCommon")) return;
+
+        const skipSelector = [
+            visualWidgetSelector,
+            "header",
+            "footer",
+            "nav",
+            ".dropdown-content",
+            ".hero-actions",
+            ".project-actions",
+            ".publication-actions",
+            ".material-actions",
+            ".page-action-bar",
+            ".command-palette",
+            ".floating-tool",
+            ".api-direct-entry",
+            ".section-compass",
+            ".tag-list",
+            ".project-tags",
+            ".publication-tags",
+            ".social-links",
+            ".breadcrumb",
+            ".tabs",
+            ".tab-list"
+        ].join(",");
+
+        Array.from(main.querySelectorAll("ul, ol"))
+            .filter((list) => {
+                if (list.closest(skipSelector)) return false;
+                if (list.closest(".visual-list")) return false;
+                const className = String(list.className || "");
+                if (/nav|menu|tag|action|tabs|pagination|breadcrumb/i.test(className)) return false;
+                const items = Array.from(list.children).filter((item) => item.tagName === "LI");
+                if (items.length < 3 || items.length > 14) return false;
+                const textLength = items.map((item) => getCleanNodeText(item)).join(" ").replace(/\s/g, "").length;
+                return textLength >= 70;
+            })
+            .slice(0, 56)
+            .forEach((list, index) => {
+                const items = Array.from(list.children).filter((item) => item.tagName === "LI");
+                const links = Array.from(list.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector)).length;
+                const section = list.closest("section, article, .container, .handbook-section, .evidence-section, .case-block") || main;
+                const heading = Array.from(section.querySelectorAll("h2, h3"))
+                    .filter((node) => !node.closest(visualWidgetSelector))[0];
+                const title = getCleanNodeText(heading) || (list.tagName === "OL" ? "步骤清单" : "结构要点");
+                const itemTexts = items.map((item) => getCleanNodeText(item));
+                const longest = Math.max(...itemTexts.map((text) => text.replace(/\s/g, "").length), 1);
+                const average = Math.round(itemTexts.reduce((sum, text) => sum + text.replace(/\s/g, "").length, 0) / Math.max(items.length, 1));
+                const completion = Math.min(98, Math.max(24, Math.round(26 + items.length * 5 + links * 8 + average / 3)));
+                let telemetry = list.previousElementSibling?.classList?.contains("list-telemetry")
+                    ? list.previousElementSibling
+                    : null;
+
+                list.classList.add("visual-list");
+                list.style.setProperty("--list-accent-index", String(index % 6));
+                items.forEach((item, itemIndex) => {
+                    const density = Math.min(100, Math.max(14, Math.round((itemTexts[itemIndex].replace(/\s/g, "").length / longest) * 100)));
+                    item.style.setProperty("--item-meter", `${density}%`);
+                    item.style.setProperty("--item-index", String(itemIndex + 1));
+                });
+
+                if (!telemetry) {
+                    telemetry = document.createElement("div");
+                    telemetry.className = "list-telemetry";
+                    telemetry.setAttribute("aria-label", "列表可视化概览");
+                    list.insertAdjacentElement("beforebegin", telemetry);
+                }
+
+                telemetry.style.setProperty("--list-score", `${completion}%`);
+                telemetry.innerHTML = `
+                    <div class="list-telemetry-copy">
+                        <span>${list.tagName === "OL" ? "Step Signal" : "List Signal"}</span>
+                        <strong>${escapeHtml(title)}</strong>
+                    </div>
+                    <div class="list-telemetry-bars" aria-hidden="true">
+                        ${itemTexts.map((text, barIndex) => {
+                            const density = Math.min(100, Math.max(14, Math.round((text.replace(/\s/g, "").length / longest) * 100)));
+                            return `<span style="--bar-meter:${density}%;--bar-index:${barIndex}"></span>`;
+                        }).join("")}
+                    </div>
+                    <div class="list-telemetry-stats">
+                        <span><i class="fas fa-list-check" aria-hidden="true"></i><b>${items.length}</b><em>项</em></span>
+                        <span><i class="fas fa-link" aria-hidden="true"></i><b>${links}</b><em>入口</em></span>
+                        <span><i class="fas fa-wave-square" aria-hidden="true"></i><b>${average}</b><em>密度</em></span>
+                    </div>
+                `;
+            });
+    }
+
+    function renderCollectionTelemetry() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const collectionSelectors = [
+            ".metrics-grid",
+            ".focus-grid",
+            ".capability-grid",
+            ".project-hub-grid",
+            ".project-list-group",
+            ".blog-grid",
+            ".material-grid",
+            ".resource-grid",
+            ".nav-grid",
+            ".video-grid",
+            ".visual-proof-grid",
+            ".two-column",
+            ".evidence-card-grid",
+            ".markdown-panel",
+            ".markdown-examples",
+            ".control-panel",
+            ".code-panel",
+            ".evidence-grid",
+            ".handbook-grid",
+            ".timeline-grid"
+        ].join(",");
+
+        Array.from(main.querySelectorAll(collectionSelectors))
+            .filter((collection) => {
+                if (collection.closest(visualWidgetSelector)) return false;
+                if (collection.previousElementSibling?.classList?.contains("collection-telemetry")) return false;
+                const children = Array.from(collection.children).filter((child) => {
+                    if (!(child instanceof HTMLElement)) return false;
+                    if (child.matches(visualWidgetSelector)) return false;
+                    return getReadableText(child).length >= 20 || child.querySelector("img, a[href]");
+                });
+                return children.length >= 2;
+            })
+            .slice(0, 42)
+            .forEach((collection, index) => {
+                const children = Array.from(collection.children).filter((child) => child instanceof HTMLElement && !child.matches(visualWidgetSelector));
+                const cards = children.length;
+                const links = Array.from(collection.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector)).length;
+                const images = Array.from(collection.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector)).length;
+                const headings = Array.from(collection.querySelectorAll("h2, h3, h4")).filter((heading) => !heading.closest(visualWidgetSelector)).length;
+                const host = collection.closest("section, article, .container, .case-block, .handbook-section, .evidence-section") || main;
+                const heading = Array.from(host.querySelectorAll("h2, h3"))
+                    .filter((node) => !node.closest(visualWidgetSelector))[0];
+                const title = getCleanNodeText(heading) || "内容集合";
+                const score = Math.min(98, Math.max(28, 20 + cards * 8 + links * 4 + images * 6 + headings * 3));
+                const telemetry = document.createElement("div");
+                telemetry.className = "collection-telemetry";
+                telemetry.setAttribute("aria-label", "内容集合可视化概览");
+                telemetry.style.setProperty("--collection-score", `${score}%`);
+                telemetry.innerHTML = `
+                    <div class="collection-telemetry-map" aria-hidden="true">
+                        ${children.slice(0, 12).map((child, childIndex) => {
+                            const weight = Math.min(100, Math.max(18, getReadableText(child).replace(/\s/g, "").length / 3));
+                            return `<span style="--tile-meter:${weight}%;--tile-index:${childIndex}"></span>`;
+                        }).join("")}
+                    </div>
+                    <div class="collection-telemetry-copy">
+                        <span>Collection Signal</span>
+                        <strong>${escapeHtml(title)}</strong>
+                    </div>
+                    <div class="collection-telemetry-stats">
+                        <span><i class="fas fa-layer-group" aria-hidden="true"></i><b>${cards}</b><em>卡片</em></span>
+                        <span><i class="fas fa-link" aria-hidden="true"></i><b>${links}</b><em>入口</em></span>
+                        <span><i class="fas fa-image" aria-hidden="true"></i><b>${images}</b><em>图像</em></span>
+                    </div>
+                `;
+                collection.insertAdjacentElement("beforebegin", telemetry);
+                collection.classList.add("visual-collection");
+                collection.style.setProperty("--collection-index", String(index % 6));
+            });
+    }
+
     function renderSectionSignals() {
         const main = getMainContent();
         if (!main) return;
@@ -1442,7 +1613,7 @@
             let signal = host.querySelector(":scope > .section-signal");
             const title = section.querySelector("h2, h3, h1")?.textContent.trim().replace(/\s+/g, " ") || `Section ${index + 1}`;
             const contentText = Array.from(host.childNodes)
-                .filter((node) => !(node.nodeType === 1 && (node.classList?.contains("section-signal") || node.classList?.contains("section-blueprint"))))
+                .filter((node) => !(node.nodeType === 1 && node.matches?.(visualWidgetSelector)))
                 .map((node) => node.textContent || "")
                 .join(" ")
                 .replace(/\s+/g, " ")
@@ -1522,7 +1693,7 @@
             const host = section.querySelector(":scope > .container") || section;
             let blueprint = host.querySelector(":scope > .section-blueprint");
             const rawText = Array.from(host.childNodes)
-                .filter((node) => !(node.nodeType === 1 && (node.classList?.contains("section-signal") || node.classList?.contains("section-blueprint"))))
+                .filter((node) => !(node.nodeType === 1 && node.matches?.(visualWidgetSelector)))
                 .map((node) => node.textContent || "")
                 .join(" ")
                 .replace(/\s+/g, " ")
@@ -1770,6 +1941,8 @@
         renderPageConstellation();
         renderPageFlowLab();
         renderHeadingSignalBadges();
+        renderListTelemetry();
+        renderCollectionTelemetry();
         renderSectionSignals();
         renderSectionBlueprints();
         renderCardMicroWidgets();
@@ -1864,5 +2037,10 @@
     initContactValidation();
     refreshEnhancements();
     window.symgoRefreshEnhancements = refreshEnhancements;
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", refreshEnhancements, { once: true });
+    }
+    window.addEventListener("load", refreshEnhancements, { once: true });
+    [900, 2400].forEach((delay) => window.setTimeout(refreshEnhancements, delay));
     document.addEventListener("symgo:content-updated", refreshEnhancements);
 })();

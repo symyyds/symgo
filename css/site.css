@@ -2660,6 +2660,278 @@ body.site-shell {
     font-variant-numeric: tabular-nums;
 }
 
+.list-telemetry {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 0.92fr) minmax(160px, 0.66fr) auto;
+    gap: 12px;
+    align-items: center;
+    margin: 16px 0 10px;
+    padding: 10px 12px;
+    overflow: hidden;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background:
+        linear-gradient(90deg, rgba(17, 97, 73, 0.12) 0 var(--list-score), transparent 0),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.88), rgba(248, 250, 252, 0.72));
+    box-shadow: 0 14px 42px rgba(15, 23, 42, 0.07);
+    backdrop-filter: blur(16px);
+}
+
+.list-telemetry::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--brand), var(--accent));
+}
+
+.list-telemetry-copy {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+}
+
+.list-telemetry-copy span {
+    color: var(--accent);
+    font-size: 0.68rem;
+    font-weight: 950;
+    text-transform: uppercase;
+}
+
+.list-telemetry-copy strong {
+    color: var(--ink);
+    font-size: 0.9rem;
+    line-height: 1.32;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.list-telemetry-bars {
+    display: grid;
+    gap: 5px;
+}
+
+.list-telemetry-bars span {
+    position: relative;
+    height: 6px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.08);
+}
+
+.list-telemetry-bars span::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--bar-meter);
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--brand), var(--accent));
+    opacity: calc(0.64 + var(--bar-index) * 0.025);
+}
+
+.list-telemetry-stats {
+    display: flex;
+    gap: 7px;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.list-telemetry-stats span {
+    display: inline-grid;
+    grid-template-columns: auto auto auto;
+    gap: 4px;
+    align-items: baseline;
+    min-height: 30px;
+    padding: 6px 8px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.66);
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 850;
+}
+
+.list-telemetry-stats i {
+    color: var(--brand);
+    font-size: 0.7rem;
+}
+
+.list-telemetry-stats b {
+    color: var(--ink);
+    font-size: 0.78rem;
+}
+
+.list-telemetry-stats em {
+    font-style: normal;
+}
+
+.visual-list {
+    counter-reset: visual-list;
+    display: grid;
+    gap: 8px;
+    margin-top: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.visual-list > li {
+    counter-increment: visual-list;
+    position: relative;
+    min-height: 42px;
+    padding: 10px 12px 10px 44px;
+    overflow: hidden;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background:
+        linear-gradient(90deg, rgba(17, 97, 73, 0.1) 0 var(--item-meter), transparent 0),
+        rgba(255, 255, 255, 0.66);
+    color: var(--ink);
+    line-height: 1.58;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.055);
+}
+
+.visual-list > li::before {
+    content: counter(visual-list, decimal-leading-zero);
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    display: inline-grid;
+    place-items: center;
+    min-width: 24px;
+    height: 24px;
+    border-radius: 999px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--brand), var(--accent));
+    font-size: 0.62rem;
+    font-weight: 950;
+    font-variant-numeric: tabular-nums;
+}
+
+.visual-list > li::after {
+    content: "";
+    position: absolute;
+    left: 22px;
+    top: 38px;
+    bottom: -8px;
+    width: 1px;
+    background: rgba(17, 97, 73, 0.18);
+}
+
+.visual-list > li:last-child::after {
+    display: none;
+}
+
+.visual-list a {
+    color: var(--brand-dark);
+    font-weight: 850;
+}
+
+.collection-telemetry {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 128px minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    margin: 16px 0 12px;
+    padding: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background:
+        linear-gradient(90deg, rgba(179, 92, 30, 0.12) 0 var(--collection-score), transparent 0),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(247, 251, 249, 0.74));
+    box-shadow: 0 16px 44px rgba(15, 23, 42, 0.075);
+    backdrop-filter: blur(16px);
+}
+
+.collection-telemetry-map {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 5px;
+    padding: 8px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+        linear-gradient(135deg, #10222a, rgba(17, 97, 73, 0.82));
+    background-size: 14px 14px, 14px 14px, auto;
+}
+
+.collection-telemetry-map span {
+    min-height: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 4px;
+    background:
+        linear-gradient(180deg, rgba(94, 224, 177, 0.95) 0 var(--tile-meter), rgba(255, 255, 255, 0.12) 0);
+    opacity: calc(0.46 + var(--tile-index) * 0.035);
+}
+
+.collection-telemetry-copy {
+    display: grid;
+    gap: 5px;
+    min-width: 0;
+}
+
+.collection-telemetry-copy span {
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 950;
+    text-transform: uppercase;
+}
+
+.collection-telemetry-copy strong {
+    color: var(--ink);
+    font-size: 0.95rem;
+    line-height: 1.32;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.collection-telemetry-stats {
+    display: flex;
+    gap: 7px;
+    justify-content: flex-end;
+}
+
+.collection-telemetry-stats span {
+    display: inline-grid;
+    grid-template-columns: auto auto auto;
+    gap: 4px;
+    align-items: baseline;
+    min-height: 32px;
+    padding: 7px 9px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.66);
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-weight: 850;
+}
+
+.collection-telemetry-stats i {
+    color: var(--brand);
+    font-size: 0.72rem;
+}
+
+.collection-telemetry-stats b {
+    color: var(--ink);
+    font-size: 0.78rem;
+}
+
+.collection-telemetry-stats em {
+    font-style: normal;
+}
+
+.visual-collection {
+    position: relative;
+}
+
 .section-signal {
     position: relative;
     z-index: 2;
@@ -3528,6 +3800,46 @@ body.site-shell {
         margin: 8px 0 0;
     }
 
+    .list-telemetry {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin: 12px 0 8px;
+        padding: 10px;
+    }
+
+    .list-telemetry-copy strong {
+        white-space: normal;
+    }
+
+    .list-telemetry-stats {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .visual-list > li {
+        padding: 9px 10px 9px 40px;
+    }
+
+    .collection-telemetry {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin: 12px 0 10px;
+        padding: 10px;
+    }
+
+    .collection-telemetry-map {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .collection-telemetry-copy strong {
+        white-space: normal;
+    }
+
+    .collection-telemetry-stats {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
     .constellation-visual {
         min-height: 214px;
     }
@@ -3768,6 +4080,12 @@ body.site-shell.dark-mode .flow-chip-cloud,
 body.site-shell.dark-mode .flow-action-list a,
 body.site-shell.dark-mode .flow-meter-card,
 body.site-shell.dark-mode .heading-signal-badge,
+body.site-shell.dark-mode .list-telemetry,
+body.site-shell.dark-mode .list-telemetry-stats span,
+body.site-shell.dark-mode .visual-list > li,
+body.site-shell.dark-mode .collection-telemetry,
+body.site-shell.dark-mode .collection-telemetry-map,
+body.site-shell.dark-mode .collection-telemetry-stats span,
 body.site-shell.dark-mode .section-signal-metrics span,
 body.site-shell.dark-mode .blueprint-metrics span,
 body.site-shell.dark-mode .card-micro-widget,
@@ -3794,6 +4112,11 @@ body.site-shell.dark-mode .flow-meter-card {
 body.site-shell.dark-mode .flow-chip-cloud span {
     border-color: rgba(77, 197, 157, 0.2);
     background: rgba(77, 197, 157, 0.1);
+}
+
+body.site-shell.dark-mode .list-telemetry-bars span,
+body.site-shell.dark-mode .visual-list > li::after {
+    background: rgba(255, 255, 255, 0.1);
 }
 
 body.site-shell.dark-mode .section-signal-main span {
@@ -5114,6 +5437,8 @@ body.site-shell.dark-mode .command-item {
     .site-visual-showcase,
     .page-constellation,
     .page-flow-lab,
+    .list-telemetry,
+    .collection-telemetry,
     .section-signal,
     .section-blueprint,
     .card-micro-widget,
@@ -5138,6 +5463,26 @@ body.site-shell.dark-mode .command-item {
     .page-hero p,
     .hero-redesign p {
         color: #111 !important;
+    }
+
+    .visual-list {
+        display: block !important;
+        padding-left: 1.2rem !important;
+        list-style: disc !important;
+    }
+
+    .visual-list > li {
+        min-height: 0 !important;
+        margin: 0 0 0.35rem !important;
+        padding: 0 !important;
+        border: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    .visual-list > li::before,
+    .visual-list > li::after {
+        display: none !important;
     }
 
     .section-band,
