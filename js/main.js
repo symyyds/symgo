@@ -494,6 +494,230 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    let sectionCompassObserver;
+
+    function getMainContent() {
+        return document.querySelector("main");
+    }
+
+    function getReadableText(root) {
+        return (root?.innerText || "")
+            .replace(/\s+/g, " ")
+            .trim();
+    }
+
+    function getPageHeadings(root) {
+        return Array.from(root?.querySelectorAll("h2, h3") || [])
+            .map((heading) => ({
+                node: heading,
+                text: heading.textContent.trim().replace(/\s+/g, " ")
+            }))
+            .filter((item) => item.text.length > 1)
+            .slice(0, 10);
+    }
+
+    function ensureHeadingId(heading, index) {
+        if (!heading.id) heading.id = `section-${index + 1}`;
+        return heading.id;
+    }
+
+    function initAmbientLayer() {
+        if (document.querySelector(".ambient-stage")) return;
+
+        const stage = document.createElement("div");
+        stage.className = "ambient-stage";
+        stage.setAttribute("aria-hidden", "true");
+        stage.innerHTML = '<span class="ambient-grid"></span><span class="ambient-ribbon one"></span><span class="ambient-ribbon two"></span>';
+        document.body.prepend(stage);
+
+        if (window.matchMedia("(pointer: fine)").matches) {
+            window.addEventListener("pointermove", (event) => {
+                document.documentElement.style.setProperty("--cursor-x", `${event.clientX}px`);
+                document.documentElement.style.setProperty("--cursor-y", `${event.clientY}px`);
+            }, { passive: true });
+        }
+    }
+
+    function renderPageIntelligence() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const text = getReadableText(main);
+        const charCount = text.replace(/\s/g, "").length;
+        const headings = getPageHeadings(main);
+        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(".page-intel-strip"));
+        const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(".page-intel-strip") && !link.closest(".page-motion-ticker"));
+        const readingMinutes = Math.max(1, Math.ceil(charCount / 650));
+        const pageTitle = document.querySelector(".page-hero h1, .hero-redesign h1, .resume-hero h1, main h1")?.textContent.trim() || document.title.split("|")[0].trim();
+
+        const cards = [
+            { icon: "fa-hourglass-half", label: "阅读时间", value: `${readingMinutes} min` },
+            { icon: "fa-diagram-project", label: "内容区块", value: `${Math.max(1, headings.length)}` },
+            { icon: "fa-image", label: "视觉素材", value: `${images.length}` },
+            { icon: "fa-link", label: "可点入口", value: `${links.length}` }
+        ];
+
+        let strip = main.querySelector(".page-intel-strip");
+        if (!strip) {
+            strip = document.createElement("section");
+            strip.className = "page-intel-strip";
+            strip.setAttribute("aria-label", "页面情报概览");
+            const hero = main.querySelector(".page-hero, .hero-redesign, .resume-hero");
+            if (hero) hero.insertAdjacentElement("afterend", strip);
+            else main.prepend(strip);
+        }
+
+        strip.innerHTML = `
+            <div class="page-intel-copy">
+                <span>Page Signal</span>
+                <strong>${pageTitle}</strong>
+            </div>
+            <div class="page-intel-grid">
+                ${cards.map((card) => `
+                    <div class="page-intel-card">
+                        <i class="fas ${card.icon}" aria-hidden="true"></i>
+                        <span>${card.label}</span>
+                        <strong>${card.value}</strong>
+                    </div>
+                `).join("")}
+            </div>
+        `;
+    }
+
+    function renderMotionTicker() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const headings = getPageHeadings(main).slice(0, 7);
+        const actions = Array.from(main.querySelectorAll(".text-link[href], .btn[href]"))
+            .map((link) => ({
+                text: link.textContent.trim().replace(/\s+/g, " "),
+                href: link.getAttribute("href")
+            }))
+            .filter((item) => item.text && item.href)
+            .slice(0, 5);
+        const items = [
+            ...headings.map((item, index) => ({
+                text: item.text,
+                href: `#${ensureHeadingId(item.node, index)}`
+            })),
+            ...actions
+        ].slice(0, 8);
+
+        let ticker = main.querySelector(".page-motion-ticker");
+        if (items.length < 3) {
+            ticker?.remove();
+            return;
+        }
+
+        if (!ticker) {
+            ticker = document.createElement("section");
+            ticker.className = "page-motion-ticker";
+            ticker.setAttribute("aria-label", "页面重点速览");
+            const intel = main.querySelector(".page-intel-strip");
+            if (intel) intel.insertAdjacentElement("afterend", ticker);
+            else main.prepend(ticker);
+        }
+
+        const track = [...items, ...items].map((item) => `
+            <a href="${item.href}">
+                <i class="fas fa-sparkles" aria-hidden="true"></i>
+                <span>${item.text}</span>
+            </a>
+        `).join("");
+        ticker.innerHTML = `<div class="motion-track">${track}</div>`;
+    }
+
+    function renderMediaFilmstrip() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const images = Array.from(main.querySelectorAll("img"))
+            .filter((img) => {
+                const src = img.getAttribute("src") || "";
+                return src && !img.closest("header") && !img.closest(".page-media-filmstrip") && !img.classList.contains("profile-img");
+            })
+            .slice(0, 8);
+
+        let strip = main.querySelector(".page-media-filmstrip");
+        if (images.length < 2) {
+            strip?.remove();
+            return;
+        }
+
+        if (!strip) {
+            strip = document.createElement("section");
+            strip.className = "page-media-filmstrip";
+            strip.setAttribute("aria-label", "页面视觉素材速览");
+            const ticker = main.querySelector(".page-motion-ticker");
+            const intel = main.querySelector(".page-intel-strip");
+            if (ticker) ticker.insertAdjacentElement("afterend", strip);
+            else if (intel) intel.insertAdjacentElement("afterend", strip);
+            else main.prepend(strip);
+        }
+
+        strip.innerHTML = `
+            <div class="filmstrip-head">
+                <span>Visual Deck</span>
+                <strong>${images.length} 张页面素材</strong>
+            </div>
+            <div class="filmstrip-track">
+                ${images.map((img, index) => {
+                    const src = img.currentSrc || img.src || img.getAttribute("src");
+                    const alt = img.getAttribute("alt") || `页面视觉素材 ${index + 1}`;
+                    return `<a href="${src}" target="_blank" rel="noopener noreferrer"><img src="${src}" alt="${alt}" loading="lazy"></a>`;
+                }).join("")}
+            </div>
+        `;
+    }
+
+    function renderSectionCompass() {
+        const main = getMainContent();
+        if (!main) return;
+
+        document.querySelector(".section-compass")?.remove();
+        if (sectionCompassObserver) sectionCompassObserver.disconnect();
+
+        const headings = getPageHeadings(main).slice(0, 8);
+        if (headings.length < 3) return;
+
+        const compass = document.createElement("nav");
+        compass.className = "section-compass";
+        compass.setAttribute("aria-label", "章节雷达");
+        compass.innerHTML = `
+            <span class="section-compass-title">Sections</span>
+            ${headings.map((item, index) => {
+                const id = ensureHeadingId(item.node, index);
+                return `<a href="#${id}" data-compass-target="${id}"><span>${index + 1}</span><em>${item.text}</em></a>`;
+            }).join("")}
+        `;
+        document.body.appendChild(compass);
+
+        const links = Array.from(compass.querySelectorAll("a"));
+        function activate(id) {
+            links.forEach((link) => link.classList.toggle("active", link.dataset.compassTarget === id));
+        }
+
+        if ("IntersectionObserver" in window) {
+            sectionCompassObserver = new IntersectionObserver((entries) => {
+                const visible = entries
+                    .filter((entry) => entry.isIntersecting)
+                    .sort((a, b) => Math.abs(a.boundingClientRect.top) - Math.abs(b.boundingClientRect.top))[0];
+                if (visible) activate(visible.target.id);
+            }, { rootMargin: "-18% 0px -68% 0px", threshold: 0.01 });
+            headings.forEach((item) => sectionCompassObserver.observe(item.node));
+        }
+        activate(headings[0].node.id);
+    }
+
+    function renderGlobalVisualWidgets() {
+        initAmbientLayer();
+        renderPageIntelligence();
+        renderMotionTicker();
+        renderMediaFilmstrip();
+        renderSectionCompass();
+    }
+
     function initPageEnhancements() {
         const main = document.querySelector("main");
         if (main && !main.querySelector(".page-side-rail")) {
@@ -565,6 +789,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function refreshEnhancements() {
         sanitizeLinks();
         initPageEnhancements();
+        renderGlobalVisualWidgets();
     }
 
     enhanceNavigation();
@@ -575,6 +800,7 @@ document.addEventListener("DOMContentLoaded", function () {
     initReadingProgress();
     initCommandPalette();
     initPageActionBar();
+    renderGlobalVisualWidgets();
     initScrollTopButton();
     initContactValidation();
     refreshEnhancements();
