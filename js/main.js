@@ -516,6 +516,7 @@
         ".site-visual-showcase",
         ".page-constellation",
         ".page-flow-lab",
+        ".page-evidence-bento",
         ".page-route-strip",
         ".hero-signal-console",
         ".hero-panel-shots",
@@ -525,6 +526,7 @@
         ".collection-telemetry",
         ".card-micro-widget",
         ".card-signal-strip",
+        ".card-pixel-grid",
         ".card-proof-thumb",
         ".section-compass",
         ".page-side-rail"
@@ -1624,6 +1626,118 @@
         `;
     }
 
+    function renderPageEvidenceBento() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const headings = getPageHeadings(main).slice(0, 6);
+        const keywords = getPageKeywords(main).filter((keyword) => keyword.length <= 18).slice(0, 9);
+        const actions = getPageActions(main).slice(0, 4);
+        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector) && !img.closest("header"));
+        const cards = Array.from(main.querySelectorAll(".surface-card, .project-showcase, .publication-card, .material-card, .blog-card, .capability-card, .timeline-card, .handbook-section, .evidence-section, .case-block"))
+            .filter((card) => !card.closest(visualWidgetSelector));
+        const textLength = getReadableText(main).replace(/\s/g, "").length;
+        const signalCount = headings.length + keywords.length + actions.length + images.length + cards.length;
+        let bento = main.querySelector(".page-evidence-bento");
+
+        if (signalCount < 6) {
+            bento?.remove();
+            return;
+        }
+
+        if (!bento) {
+            bento = document.createElement("section");
+            bento.className = "page-evidence-bento";
+            bento.setAttribute("aria-label", "页面证据 Bento 可视化");
+            const flow = main.querySelector(".page-flow-lab");
+            const constellation = main.querySelector(".page-constellation");
+            const filmstrip = main.querySelector(".page-media-filmstrip");
+            const showcase = main.querySelector(".site-visual-showcase");
+            const route = main.querySelector(".page-route-strip");
+            const shotWall = main.querySelector(".page-shot-wall");
+            if (flow) flow.insertAdjacentElement("afterend", bento);
+            else if (constellation) constellation.insertAdjacentElement("afterend", bento);
+            else if (filmstrip) filmstrip.insertAdjacentElement("afterend", bento);
+            else if (showcase) showcase.insertAdjacentElement("afterend", bento);
+            else if (route) route.insertAdjacentElement("afterend", bento);
+            else if (shotWall) shotWall.insertAdjacentElement("afterend", bento);
+            else main.prepend(bento);
+        }
+
+        const metrics = [
+            { label: "章节", value: Math.max(1, headings.length), icon: "fa-sitemap", meter: Math.min(100, 28 + headings.length * 11) },
+            { label: "图像", value: images.length, icon: "fa-image", meter: Math.min(100, 20 + images.length * 12) },
+            { label: "卡片", value: cards.length, icon: "fa-table-cells-large", meter: Math.min(100, 18 + cards.length * 6) },
+            { label: "行动", value: actions.length, icon: "fa-arrow-up-right-from-square", meter: Math.min(100, 26 + actions.length * 14) }
+        ];
+        const density = Math.min(100, Math.max(18, Math.round(textLength / 90)));
+        const heatCells = Array.from({ length: 24 }, (_, index) => {
+            const seed = [textLength, headings.length, images.length, cards.length, actions.length, keywords.length][index % 6] || 1;
+            return Math.min(100, Math.max(16, Math.round((seed * (index + 3)) % 92) + 8));
+        });
+        const timeline = headings.length ? headings : keywords.slice(0, 6).map((keyword) => ({ text: keyword }));
+        const presetImage = (getVisualEvidencePreset()?.items || []).find((item) => item.src);
+        const firstImage = images[0];
+        const imgSrc = presetImage?.src ? localAsset(presetImage.src) : (firstImage ? (firstImage.currentSrc || firstImage.src || firstImage.getAttribute("src")) : "");
+        const imgAlt = presetImage?.title || (firstImage ? (firstImage.getAttribute("alt") || getPageTitle()) : "");
+
+        bento.style.setProperty("--bento-density", `${density * 3.6}deg`);
+        bento.innerHTML = `
+            <div class="bento-head">
+                <div>
+                    <span>Evidence Bento</span>
+                    <h2>${escapeHtml(getPageTitle())} 可视证据面板</h2>
+                </div>
+                <p>自动读取本页章节、图像、卡片和操作入口，生成一组更像作品集产品页的小组件。</p>
+            </div>
+            <div class="bento-grid">
+                <div class="bento-tile bento-tile-score">
+                    <span>Density</span>
+                    <strong>${density}</strong>
+                    <em>Content Pulse</em>
+                </div>
+                <div class="bento-tile bento-tile-heat" aria-hidden="true">
+                    ${heatCells.map((value, index) => `<span style="--heat:${value}%;--heat-index:${index}"></span>`).join("")}
+                </div>
+                <div class="bento-tile bento-tile-metrics">
+                    ${metrics.map((metric) => `
+                        <div style="--metric:${metric.meter}%">
+                            <i class="fas ${metric.icon}" aria-hidden="true"></i>
+                            <span>${escapeHtml(metric.label)}</span>
+                            <strong>${escapeHtml(String(metric.value))}</strong>
+                            <em></em>
+                        </div>
+                    `).join("")}
+                </div>
+                <div class="bento-tile bento-tile-timeline">
+                    ${timeline.slice(0, 6).map((item, index) => {
+                        const id = item.node ? ensureHeadingId(item.node, index) : "";
+                        const href = id ? `#${id}` : "";
+                        const content = `<b>${String(index + 1).padStart(2, "0")}</b><span>${escapeHtml(item.text)}</span>`;
+                        return href ? `<a href="${href}">${content}</a>` : `<span>${content}</span>`;
+                    }).join("")}
+                </div>
+                <div class="bento-tile bento-tile-image">
+                    ${imgSrc ? `<img src="${imgSrc}" alt="${escapeHtml(imgAlt)}" loading="lazy" decoding="async">` : `<span class="bento-image-placeholder"><i class="fas fa-image" aria-hidden="true"></i>No image</span>`}
+                    <strong>${escapeHtml(imgAlt || "页面视觉入口")}</strong>
+                </div>
+                <div class="bento-tile bento-tile-keywords">
+                    ${keywords.map((keyword, index) => `<span style="--keyword-index:${index}">${escapeHtml(keyword)}</span>`).join("")}
+                </div>
+                ${actions.length ? `
+                    <div class="bento-tile bento-tile-actions">
+                        ${actions.map((action) => `
+                            <a href="${action.href}">
+                                <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                                <span>${escapeHtml(action.text)}</span>
+                            </a>
+                        `).join("")}
+                    </div>
+                ` : ""}
+            </div>
+        `;
+    }
+
     function renderHeadingSignalBadges() {
         const main = getMainContent();
         if (!main) return;
@@ -2155,6 +2269,62 @@
             });
     }
 
+    function renderCardPixelGrids() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const cardSelectors = [
+            ".publication-card",
+            ".project-showcase",
+            ".surface-card",
+            ".material-card",
+            ".capability-card",
+            ".blog-card",
+            ".timeline-card",
+            ".roadmap-card",
+            ".achievement-card",
+            ".service-card",
+            ".story-card",
+            ".library-card",
+            ".resource-card",
+            ".framework-card",
+            ".nav-card",
+            ".video-card",
+            ".example-card",
+            ".case-block",
+            ".handbook-section",
+            ".evidence-section",
+            ".api-card",
+            ".api-widget-card",
+            ".proxy-api-card"
+        ].join(",");
+
+        Array.from(main.querySelectorAll(cardSelectors))
+            .filter((card) => {
+                if (card.closest(".page-shot-wall, .site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .page-evidence-bento, .section-signal, .section-blueprint, header, footer")) return false;
+                if (card.querySelector(":scope > .card-pixel-grid")) return false;
+                return getReadableText(card).length >= 55;
+            })
+            .slice(0, 90)
+            .forEach((card, index) => {
+                const text = getReadableText(card).replace(/\s/g, "");
+                const links = card.querySelectorAll("a[href]").length;
+                const images = card.querySelectorAll("img").length;
+                const headings = card.querySelectorAll("h2, h3, h4").length;
+                const code = card.querySelectorAll("pre, code").length;
+                const values = Array.from({ length: 12 }, (_, cellIndex) => {
+                    const seed = [text.length, links * 17, images * 23, headings * 19, code * 29, index * 11][cellIndex % 6] || 7;
+                    return Math.min(100, Math.max(12, (seed + cellIndex * 13) % 100));
+                });
+                const pixel = document.createElement("div");
+                pixel.className = "card-pixel-grid";
+                pixel.setAttribute("aria-hidden", "true");
+                pixel.innerHTML = values.map((value, cellIndex) => `<span style="--pixel:${value}%;--pixel-index:${cellIndex}"></span>`).join("");
+                card.classList.add("has-card-pixel-grid");
+                card.appendChild(pixel);
+            });
+    }
+
     function renderSectionCompass() {
         const main = getMainContent();
         if (!main) return;
@@ -2207,6 +2377,7 @@
         renderMediaFilmstrip();
         renderPageConstellation();
         renderPageFlowLab();
+        renderPageEvidenceBento();
         renderHeadingSignalBadges();
         renderListTelemetry();
         renderCollectionTelemetry();
@@ -2214,6 +2385,7 @@
         renderSectionBlueprints();
         renderCardMicroWidgets();
         renderCardSignalStrips();
+        renderCardPixelGrids();
         renderSectionCompass();
     }
 

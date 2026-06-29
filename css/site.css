@@ -3312,6 +3312,313 @@ body.site-shell {
     white-space: nowrap;
 }
 
+.page-evidence-bento {
+    position: relative;
+    z-index: 2;
+    width: min(1180px, calc(100% - 32px));
+    margin: 18px auto 0;
+    overflow: hidden;
+    padding: 18px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(246, 250, 249, 0.74)),
+        linear-gradient(90deg, rgba(17, 97, 73, 0.08), transparent 48%, rgba(179, 92, 30, 0.08));
+    box-shadow: 0 28px 82px rgba(15, 23, 42, 0.1);
+    backdrop-filter: blur(20px);
+}
+
+.page-evidence-bento::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(circle at 16% 16%, rgba(17, 97, 73, 0.13), transparent 28%),
+        linear-gradient(rgba(15, 23, 42, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15, 23, 42, 0.045) 1px, transparent 1px);
+    background-size: auto, 28px 28px, 28px 28px;
+    mask-image: linear-gradient(90deg, #000, transparent 86%);
+}
+
+.bento-head {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 0.68fr) minmax(240px, 0.32fr);
+    gap: 18px;
+    align-items: end;
+    margin-bottom: 16px;
+}
+
+.bento-head span {
+    display: inline-flex;
+    margin-bottom: 6px;
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 950;
+    text-transform: uppercase;
+}
+
+.bento-head h2 {
+    margin: 0;
+    color: var(--ink);
+    font-size: clamp(1.28rem, 2.4vw, 2rem);
+    line-height: 1.16;
+}
+
+.bento-head p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.65;
+}
+
+.bento-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 0.72fr 1fr 0.78fr;
+    grid-auto-rows: minmax(118px, auto);
+    gap: 12px;
+}
+
+.bento-tile {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 16px 42px rgba(15, 23, 42, 0.07);
+}
+
+.bento-tile-score {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 6px;
+    color: #fff;
+    background:
+        radial-gradient(circle at center, #102229 0 54%, transparent 55%),
+        conic-gradient(from -90deg, var(--accent) var(--bento-density), rgba(255, 255, 255, 0.1) 0),
+        linear-gradient(135deg, #102229, rgba(17, 97, 73, 0.86));
+}
+
+.bento-tile-score span,
+.bento-tile-score em {
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 0.68rem;
+    font-style: normal;
+    font-weight: 950;
+    text-transform: uppercase;
+}
+
+.bento-tile-score strong {
+    color: #fff;
+    font-size: 2.4rem;
+    line-height: 0.92;
+}
+
+.bento-tile-heat {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 6px;
+    padding: 12px;
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(135deg, #10222a, rgba(17, 97, 73, 0.84));
+    background-size: 18px 18px, 18px 18px, auto;
+}
+
+.bento-tile-heat span {
+    min-height: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 5px;
+    background:
+        linear-gradient(180deg, rgba(94, 224, 177, 0.95) 0 var(--heat), rgba(255, 255, 255, 0.12) 0);
+    opacity: calc(0.42 + var(--heat-index) * 0.018);
+}
+
+.bento-tile-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 10px;
+}
+
+.bento-tile-metrics div {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 6px;
+    align-items: center;
+    min-height: 46px;
+    overflow: hidden;
+    padding: 9px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background: rgba(248, 250, 252, 0.74);
+}
+
+.bento-tile-metrics div::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: calc(100% - var(--metric));
+    bottom: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--brand), var(--accent));
+}
+
+.bento-tile-metrics i {
+    color: var(--brand);
+}
+
+.bento-tile-metrics span {
+    min-width: 0;
+    color: var(--muted);
+    font-size: 0.74rem;
+    font-weight: 880;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.bento-tile-metrics strong {
+    color: var(--ink);
+    font-size: 0.95rem;
+}
+
+.bento-tile-timeline {
+    display: grid;
+    gap: 8px;
+    padding: 10px;
+}
+
+.bento-tile-timeline a,
+.bento-tile-timeline > span {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 8px;
+    align-items: center;
+    min-height: 36px;
+    color: var(--ink);
+}
+
+.bento-tile-timeline b {
+    display: inline-grid;
+    place-items: center;
+    min-width: 30px;
+    height: 26px;
+    border-radius: 999px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--brand), var(--accent));
+    font-size: 0.66rem;
+}
+
+.bento-tile-timeline span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.8rem;
+    font-weight: 880;
+}
+
+.bento-tile-image {
+    grid-row: span 2;
+    color: #fff;
+    background: #102229;
+}
+
+.bento-tile-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 250px;
+    object-fit: cover;
+    opacity: 0.9;
+}
+
+.bento-tile-image::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(180deg, transparent 38%, rgba(2, 6, 12, 0.82));
+}
+
+.bento-tile-image strong {
+    position: absolute;
+    z-index: 1;
+    left: 14px;
+    right: 14px;
+    bottom: 13px;
+    color: #fff;
+    font-size: 0.95rem;
+    line-height: 1.25;
+    text-shadow: 0 10px 24px rgba(0, 0, 0, 0.36);
+}
+
+.bento-image-placeholder {
+    display: grid;
+    min-height: 250px;
+    place-items: center;
+    color: rgba(255, 255, 255, 0.72);
+    font-weight: 900;
+}
+
+.bento-tile-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    gap: 8px;
+    padding: 12px;
+}
+
+.bento-tile-keywords span {
+    display: inline-flex;
+    min-height: 30px;
+    align-items: center;
+    padding: 6px 10px;
+    border: 1px solid rgba(17, 97, 73, 0.14);
+    border-radius: 999px;
+    color: var(--brand-dark);
+    background: linear-gradient(135deg, rgba(223, 243, 236, 0.86), rgba(255, 241, 229, 0.66));
+    font-size: 0.76rem;
+    font-weight: 880;
+    transform: translateY(calc(var(--keyword-index) * 0.24px));
+}
+
+.bento-tile-actions {
+    display: grid;
+    gap: 8px;
+    padding: 10px;
+}
+
+.bento-tile-actions a {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 8px;
+    align-items: center;
+    min-height: 38px;
+    color: var(--ink);
+    font-size: 0.8rem;
+    font-weight: 880;
+}
+
+.bento-tile-actions i {
+    color: var(--accent);
+}
+
+.bento-tile-actions span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .heading-signal-badge {
     position: relative;
     display: inline-flex;
@@ -4011,6 +4318,36 @@ body.site-shell {
     opacity: calc(0.66 + var(--strip-index) * 0.08);
 }
 
+.has-card-pixel-grid {
+    position: relative;
+}
+
+.card-pixel-grid {
+    position: absolute;
+    right: 12px;
+    bottom: 22px;
+    z-index: 4;
+    display: grid;
+    grid-template-columns: repeat(6, 8px);
+    gap: 3px;
+    padding: 5px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+    backdrop-filter: blur(14px);
+    pointer-events: none;
+}
+
+.card-pixel-grid span {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    background:
+        linear-gradient(180deg, var(--brand) 0 var(--pixel), rgba(15, 23, 42, 0.12) 0);
+    opacity: calc(0.42 + var(--pixel-index) * 0.035);
+}
+
 .section-compass {
     position: fixed;
     left: 18px;
@@ -4293,6 +4630,15 @@ body.site-shell {
         grid-template-columns: 1fr;
     }
 
+    .bento-head,
+    .bento-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .bento-tile-image {
+        grid-row: auto;
+    }
+
     .flow-route-board {
         min-height: 220px;
     }
@@ -4481,6 +4827,38 @@ body.site-shell {
     .site-visual-showcase {
         width: min(100% - 20px, 1180px);
         margin-top: 12px;
+    }
+
+    .page-evidence-bento {
+        width: min(100% - 20px, 1180px);
+        margin-top: 12px;
+        padding: 12px;
+    }
+
+    .bento-head {
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+
+    .bento-head h2 {
+        font-size: 1.34rem;
+    }
+
+    .bento-grid {
+        gap: 10px;
+    }
+
+    .bento-tile-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    .bento-tile-heat {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .bento-tile-image img,
+    .bento-image-placeholder {
+        min-height: 190px;
     }
 
     .visual-showcase-inner {
@@ -4751,6 +5129,19 @@ body.site-shell {
         display: none;
     }
 
+    .card-pixel-grid {
+        right: 10px;
+        bottom: 20px;
+        grid-template-columns: repeat(6, 7px);
+        gap: 2px;
+        padding: 4px;
+    }
+
+    .card-pixel-grid span {
+        width: 7px;
+        height: 7px;
+    }
+
     .card-proof-thumb {
         min-height: 92px;
         margin-bottom: 12px;
@@ -4866,6 +5257,7 @@ body.site-shell.dark-mode .page-media-filmstrip,
 body.site-shell.dark-mode .visual-showcase-inner,
 body.site-shell.dark-mode .page-constellation,
 body.site-shell.dark-mode .page-flow-lab,
+body.site-shell.dark-mode .page-evidence-bento,
 body.site-shell.dark-mode .hero-signal-console,
 body.site-shell.dark-mode .section-signal,
 body.site-shell.dark-mode .section-blueprint,
@@ -4898,6 +5290,9 @@ body.site-shell.dark-mode .visual-list > li,
 body.site-shell.dark-mode .collection-telemetry,
 body.site-shell.dark-mode .collection-telemetry-map,
 body.site-shell.dark-mode .collection-telemetry-stats span,
+body.site-shell.dark-mode .bento-tile,
+body.site-shell.dark-mode .bento-tile-metrics div,
+body.site-shell.dark-mode .card-pixel-grid,
 body.site-shell.dark-mode .section-signal-metrics span,
 body.site-shell.dark-mode .blueprint-metrics span,
 body.site-shell.dark-mode .card-micro-widget,
@@ -4924,6 +5319,19 @@ body.site-shell.dark-mode .flow-meter-card {
 body.site-shell.dark-mode .flow-chip-cloud span {
     border-color: rgba(77, 197, 157, 0.2);
     background: rgba(77, 197, 157, 0.1);
+}
+
+body.site-shell.dark-mode .bento-tile-keywords span {
+    border-color: rgba(77, 197, 157, 0.2);
+    color: var(--brand-dark);
+    background: rgba(77, 197, 157, 0.1);
+}
+
+body.site-shell.dark-mode .bento-tile-score,
+body.site-shell.dark-mode .bento-tile-heat,
+body.site-shell.dark-mode .bento-tile-image {
+    border-color: rgba(255, 255, 255, 0.08);
+    background-color: rgba(10, 24, 29, 0.92);
 }
 
 body.site-shell.dark-mode .list-telemetry-bars span,
@@ -6251,6 +6659,7 @@ body.site-shell.dark-mode .command-item {
     .site-visual-showcase,
     .page-constellation,
     .page-flow-lab,
+    .page-evidence-bento,
     .hero-signal-console,
     .list-telemetry,
     .collection-telemetry,
@@ -6258,6 +6667,7 @@ body.site-shell.dark-mode .command-item {
     .section-blueprint,
     .card-micro-widget,
     .card-signal-strip,
+    .card-pixel-grid,
     .card-proof-thumb,
     .heading-signal-badge,
     .section-compass,
