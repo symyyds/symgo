@@ -12,7 +12,7 @@
     const navigationGroups = [
         { label: "首页", href: "index.html", icon: "fa-house" },
         {
-            label: "关于",
+            label: "关于我",
             icon: "fa-user-graduate",
             children: [
                 { label: "个人档案", href: "profile.html", desc: "能力矩阵与经历概览" },
@@ -25,7 +25,7 @@
             ]
         },
         {
-            label: "成果",
+            label: "成果与证据",
             icon: "fa-layer-group",
             children: [
                 { label: "论文发表", href: "publications.html", desc: "论文、级别、PDF 与关联项目" },
@@ -232,8 +232,7 @@
 
     function initThemeToggle() {
         const storageKey = "symgo-theme";
-        const savedTheme = localStorage.getItem(storageKey);
-        if (savedTheme === "dark" || savedTheme === null) document.body.classList.add("dark-mode");
+        if (localStorage.getItem(storageKey) === "dark") document.body.classList.add("dark-mode");
 
         const button = document.createElement("button");
         button.className = "floating-tool theme-toggle";
@@ -519,14 +518,6 @@
         ".page-flow-lab",
         ".page-evidence-bento",
         ".page-orbit-dashboard",
-        ".page-command-deck",
-        ".craft-top-sale",
-        ".craft-search-pill",
-        ".craft-resource-market",
-        ".craft-focus-board",
-        ".craft-pack-marquee",
-        ".craft-lifetime-panel",
-        ".craft-market-strip",
         ".page-route-strip",
         ".hero-signal-console",
         ".hero-panel-shots",
@@ -609,572 +600,6 @@
         });
 
         return keywords.slice(0, 12);
-    }
-
-    function getCraftResourceItems() {
-        return [
-            {
-                label: "论文发表",
-                desc: "论文首图、PDF、DOI 与学术贡献",
-                href: "publications.html",
-                icon: "fa-file-lines",
-                tone: "lime",
-                image: "images/site-screenshots/publications.png",
-                metric: "4 papers"
-            },
-            {
-                label: "工程项目",
-                desc: "独立开发、工具化、部署与 API 接入",
-                href: "engineering-projects.html",
-                icon: "fa-code-branch",
-                tone: "white",
-                image: "images/site-screenshots/engineering-projects.png",
-                metric: "5 builds"
-            },
-            {
-                label: "横向项目",
-                desc: "国网项目、验收材料、技术路线和成果证据",
-                href: "horizontal-projects.html",
-                icon: "fa-handshake-angle",
-                tone: "green",
-                image: "images/site-screenshots/horizontal-projects.png",
-                metric: "3 real cases"
-            },
-            {
-                label: "材料库",
-                desc: "CV、项目证据、论文材料和申请入口",
-                href: "materials.html",
-                icon: "fa-box-archive",
-                tone: "paper",
-                image: "images/site-screenshots/materials.png",
-                metric: "12 assets"
-            },
-            {
-                label: "博客文章",
-                desc: "升学经验、工具教程和长期写作证明",
-                href: "blog.html",
-                icon: "fa-pen-nib",
-                tone: "orange",
-                image: "images/site-screenshots/blog.png",
-                metric: "3 posts"
-            },
-            {
-                label: "API 实验室",
-                desc: "Netlify Functions、公开 API 与失败原因诊断",
-                href: "tools/api_lab.html",
-                icon: "fa-plug",
-                tone: "blue",
-                image: "images/site-screenshots/api-lab.png",
-                metric: "50 APIs"
-            },
-            {
-                label: "证据档案",
-                desc: "项目、论文、合作和技术栈证据链",
-                href: "evidence/index.html",
-                icon: "fa-boxes-stacked",
-                tone: "violet",
-                image: "images/site-screenshots/evidence.png",
-                metric: "proof base"
-            },
-            {
-                label: "作品仪表盘",
-                desc: "页面质量、成果结构和长期迭代路线",
-                href: "dashboard.html",
-                icon: "fa-chart-line",
-                tone: "dark",
-                image: "images/site-screenshots/dashboard.png",
-                metric: "live board"
-            }
-        ];
-    }
-
-    function getCraftPackItems() {
-        return [
-            {
-                title: "SSA-RF Weight Class Paper",
-                type: "Publication",
-                stat: "PDF / DOI",
-                href: "publications.html",
-                image: "images/publications/sun-2024-sparrow-random-forest-weight-class.png",
-                desc: "真实论文首页截图、发表信息、PDF 与 DOI 入口"
-            },
-            {
-                title: "IoT Trusted Access Evidence",
-                type: "Horizontal",
-                stat: "124 files",
-                href: "evidence/horizontal-projects/iot-flexible-access-trusted-control.html",
-                image: "images/horizontal-projects/iot-access-screenshot.png",
-                desc: "电力物联网柔性接入、可信认证和验收证据链"
-            },
-            {
-                title: "Ningxia Multi-energy System",
-                type: "Horizontal",
-                stat: "117 files",
-                href: "evidence/horizontal-projects/ningxia-multi-energy-architecture.html",
-                image: "images/horizontal-projects/energy-architecture-screenshot.png",
-                desc: "源网荷储、多能流耦合、预测调度和验收材料"
-            },
-            {
-                title: "IPv6 Terminal Access Network",
-                type: "Horizontal",
-                stat: "44 files",
-                href: "evidence/horizontal-projects/minning-green-power-ipv6-terminal-access.html",
-                image: "images/horizontal-projects/ipv6-sdn-qos-screenshot.png",
-                desc: "IPv6 地址规划、QoS、追踪溯源与平台成果"
-            },
-            {
-                title: "Engineering Project Gallery",
-                type: "Engineering",
-                stat: "5 builds",
-                href: "engineering-projects.html",
-                image: "images/site-screenshots/engineering-projects.png",
-                desc: "个人站、AI 助手、API 实验室和简历工具"
-            },
-            {
-                title: "CV & Material Library",
-                type: "Material",
-                stat: "Resume",
-                href: "materials.html",
-                image: "images/site-screenshots/materials.png",
-                desc: "本科简历、论文材料、项目证据和申请入口"
-            },
-            {
-                title: "Public API Lab",
-                type: "Serverless",
-                stat: "50 APIs",
-                href: "tools/api_lab.html",
-                image: "images/site-screenshots/api-lab.png",
-                desc: "Netlify Functions 代理、公开 API 和错误原因查询"
-            }
-        ];
-    }
-
-    function initCraftMarketShell() {
-        document.body.classList.add("craft-market-mode");
-        document.documentElement.classList.add("craft-market-root");
-        const header = document.querySelector("header");
-        if (!header) return;
-
-        if (!document.querySelector(".craft-top-sale")) {
-            const sale = document.createElement("a");
-            sale.className = "craft-top-sale";
-            sale.href = localAsset("dashboard.html");
-            sale.innerHTML = `
-                <span>Portfolio Market Live</span>
-                <strong>论文 / 工程 / 横向项目 / 材料库 已统一成高级作品集资源系统</strong>
-                <em>Open dashboard</em>
-            `;
-            header.insertAdjacentElement("beforebegin", sale);
-        }
-
-        const container = header.querySelector(".container");
-        if (!container) return;
-
-        if (!container.querySelector(".craft-search-pill")) {
-            const search = document.createElement("button");
-            search.className = "craft-search-pill";
-            search.type = "button";
-            search.innerHTML = `
-                <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
-                <span>Search portfolio</span>
-                <kbd>Ctrl K</kbd>
-            `;
-            search.addEventListener("click", () => {
-                const openButton = document.querySelector(".command-open");
-                if (openButton) openButton.click();
-            });
-            const nav = container.querySelector("nav");
-            if (nav) nav.insertAdjacentElement("afterend", search);
-            else container.appendChild(search);
-        }
-
-        if (!container.querySelector(".craft-nav-actions")) {
-            const actions = document.createElement("div");
-            actions.className = "craft-nav-actions";
-            actions.innerHTML = `
-                <a class="craft-nav-icon" href="${localAsset("tools/api_lab.html")}" aria-label="打开 API 实验室"><i class="fas fa-plug"></i></a>
-                <a class="craft-nav-cta" href="${localAsset("materials.html")}"><i class="fas fa-bolt"></i><span>Material Access</span></a>
-                <a class="craft-nav-icon" href="${localAsset("leave_message.html")}" aria-label="联系孙远鸣"><i class="fas fa-paper-plane"></i></a>
-            `;
-            container.appendChild(actions);
-        }
-    }
-
-    function renderCraftMarketHero() {
-        const main = getMainContent();
-        if (!main) return;
-        const hero = main.querySelector(".hero-redesign, .page-hero, .resume-hero, .page-header");
-        if (!hero) return;
-
-        hero.classList.add("craft-hero-shell");
-        const container = hero.querySelector(".container") || hero;
-        if (container.querySelector(".craft-hero-card")) return;
-
-        const preset = getVisualEvidencePreset();
-        const shots = preset?.items?.filter((item) => item.src)?.slice(0, 4) || getCraftResourceItems().slice(0, 4);
-        const title = getPageTitle();
-        const card = document.createElement("aside");
-        card.className = "craft-hero-card";
-        card.innerHTML = `
-            <div class="craft-card-mark">
-                <span><i class="fas fa-infinity"></i></span>
-                <div>
-                    <strong>Evidence Access</strong>
-                    <em>Portfolio system</em>
-                </div>
-            </div>
-            <div class="craft-hero-meter" aria-hidden="true">
-                <span style="--meter:94%"></span>
-                <span style="--meter:86%"></span>
-                <span style="--meter:91%"></span>
-            </div>
-            <h2>${escapeHtml(title)}</h2>
-            <p>把每个页面当成一个可打开的作品资源包：有截图、有证据、有路径、有可追问材料。</p>
-            <div class="craft-hero-stack">
-                ${shots.map((item, index) => `
-                    <a href="${localAsset(item.href || item.href === "" ? item.href : item.href || "index.html")}" style="--stack-index:${index}">
-                        <img src="${localAsset(item.src || item.image)}" alt="${escapeHtml(item.title || item.label)} preview" loading="eager" decoding="async">
-                        <span>${escapeHtml(item.label || item.metric || "View")}</span>
-                    </a>
-                `).join("")}
-            </div>
-            <a class="craft-hero-cta" href="${localAsset("projects.html")}"><i class="fas fa-bolt"></i><span>Explore Portfolio</span></a>
-        `;
-        container.appendChild(card);
-    }
-
-    function renderCraftResourceMarket() {
-        const main = getMainContent();
-        if (!main) return;
-        const resources = getCraftResourceItems();
-        const preset = getVisualEvidencePreset();
-        const shots = (preset?.items || []).filter((item) => item.src && item.href).slice(0, 6);
-        const cards = shots.length
-            ? shots.map((item, index) => ({
-                label: item.title,
-                desc: preset.copy || "页面视觉证据",
-                href: item.href,
-                image: item.src,
-                icon: index % 2 ? "fa-layer-group" : "fa-image",
-                metric: item.label || "Preview"
-            }))
-            : resources.slice(0, 6);
-
-        let market = main.querySelector(".craft-resource-market");
-        if (!market) {
-            market = document.createElement("section");
-            market.className = "craft-resource-market";
-            market.setAttribute("aria-label", "Craftwork 风格作品资源市场");
-        }
-
-        const anchor = main.querySelector(".page-command-deck")
-            || main.querySelector(".page-intel-strip")
-            || main.querySelector(".hero-redesign, .page-hero, .resume-hero, .page-header");
-        if (anchor && market.previousElementSibling !== anchor) anchor.insertAdjacentElement("afterend", market);
-        else if (!anchor && market.parentElement !== main) main.prepend(market);
-
-        market.innerHTML = `
-            <div class="craft-market-head">
-                <div>
-                    <span>Browse Portfolio</span>
-                    <h2>像设计资源市场一样浏览我的成果</h2>
-                </div>
-                <a href="${localAsset("materials.html")}">See all materials <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="craft-category-rail">
-                ${resources.map((item) => `
-                    <a href="${localAsset(item.href)}" data-tone="${item.tone}">
-                        <i class="fas ${item.icon}" aria-hidden="true"></i>
-                        <span>${escapeHtml(item.label)}</span>
-                        <em>${escapeHtml(item.desc)}</em>
-                    </a>
-                `).join("")}
-            </div>
-            <div class="craft-product-grid">
-                ${cards.map((item, index) => `
-                    <article class="craft-product-tile" style="--tile-index:${index}">
-                        <a class="craft-product-media" href="${localAsset(item.href)}">
-                            <img src="${localAsset(item.image)}" alt="${escapeHtml(item.label)} screenshot" loading="lazy" decoding="async">
-                            <span>${escapeHtml(item.metric || "Preview")}</span>
-                        </a>
-                        <div class="craft-product-copy">
-                            <span><i class="fas ${item.icon || "fa-cube"}"></i> ${escapeHtml(item.metric || "Resource")}</span>
-                            <h3>${escapeHtml(item.label)}</h3>
-                            <p>${escapeHtml(item.desc)}</p>
-                            <div class="craft-product-actions">
-                                <button type="button"
-                                    data-craft-preview
-                                    data-title="${escapeHtml(item.label)}"
-                                    data-type="${escapeHtml(item.metric || "Resource")}"
-                                    data-desc="${escapeHtml(item.desc)}"
-                                    data-image="${localAsset(item.image)}"
-                                    data-href="${localAsset(item.href)}">
-                                    Quick view
-                                </button>
-                                <a href="${localAsset(item.href)}">Open resource <i class="fas fa-arrow-right"></i></a>
-                            </div>
-                        </div>
-                    </article>
-                `).join("")}
-            </div>
-        `;
-    }
-
-    function renderCraftFocusBoard() {
-        const main = getMainContent();
-        if (!main) return;
-        const preset = getVisualEvidencePreset();
-        const headings = getPageHeadings(main).slice(0, 5);
-        const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector)).length;
-        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector)).length;
-        const cards = Array.from(main.querySelectorAll(".surface-card, .project-showcase, .publication-card, .material-card, .blog-card, .capability-card, .timeline-card, .handbook-section, .evidence-section, .case-block"))
-            .filter((card) => !card.closest(visualWidgetSelector)).length;
-        const metrics = [
-            { label: "Sections", value: headings.length, meter: Math.min(100, 35 + headings.length * 10) },
-            { label: "Links", value: links, meter: Math.min(100, 25 + links * 5) },
-            { label: "Visuals", value: images, meter: Math.min(100, 25 + images * 14) },
-            { label: "Cards", value: cards, meter: Math.min(100, 25 + cards * 7) }
-        ];
-
-        let board = main.querySelector(".craft-focus-board");
-        if (!board) {
-            board = document.createElement("section");
-            board.className = "craft-focus-board";
-            board.setAttribute("aria-label", "页面可视化质量面板");
-        }
-
-        const anchor = main.querySelector(".craft-resource-market")
-            || main.querySelector(".page-shot-wall")
-            || main.querySelector(".page-command-deck")
-            || main.querySelector(".hero-redesign, .page-hero, .resume-hero, .page-header");
-        if (anchor && board.previousElementSibling !== anchor) anchor.insertAdjacentElement("afterend", board);
-        else if (!anchor && board.parentElement !== main) main.prepend(board);
-
-        const title = preset?.title || `${getPageTitle()} visual system`;
-        board.innerHTML = `
-            <div class="craft-focus-panel">
-                <span>Quality Signal</span>
-                <h2>${escapeHtml(title)}</h2>
-                <p>${escapeHtml(preset?.copy || "这个页面会自动分析章节、链接、图片和卡片密度，并生成可视化质量面板。")}</p>
-                <div class="craft-focus-bars">
-                    ${metrics.map((metric) => `
-                        <div style="--meter:${metric.meter}%">
-                            <span>${metric.label}</span>
-                            <strong>${metric.value}</strong>
-                        </div>
-                    `).join("")}
-                </div>
-            </div>
-            <div class="craft-focus-map" aria-hidden="true">
-                ${Array.from({ length: 36 }, (_, index) => {
-                    const metric = metrics[index % metrics.length];
-                    const value = Math.max(16, (metric.meter + index * 11) % 100);
-                    return `<span style="--heat:${value}%;--cell:${index}"></span>`;
-                }).join("")}
-            </div>
-            <div class="craft-focus-routes">
-                ${headings.map((item, index) => {
-                    const id = ensureHeadingId(item.node, index);
-                    return `<a href="#${id}"><em>${String(index + 1).padStart(2, "0")}</em><span>${escapeHtml(item.text)}</span></a>`;
-                }).join("")}
-            </div>
-        `;
-    }
-
-    function renderCraftPackMarquee() {
-        const main = getMainContent();
-        if (!main) return;
-        const packs = getCraftPackItems();
-
-        let strip = main.querySelector(".craft-pack-marquee");
-        if (!strip) {
-            strip = document.createElement("section");
-            strip.className = "craft-pack-marquee";
-            strip.setAttribute("aria-label", "精选作品资源包横向预览");
-        }
-
-        const anchor = main.querySelector(".craft-focus-board")
-            || main.querySelector(".craft-resource-market")
-            || main.querySelector(".page-command-deck")
-            || main.querySelector(".hero-redesign, .page-hero, .resume-hero, .page-header");
-        if (anchor && strip.previousElementSibling !== anchor) anchor.insertAdjacentElement("afterend", strip);
-        else if (!anchor && strip.parentElement !== main) main.prepend(strip);
-
-        const track = [...packs, ...packs.slice(0, 4)];
-        strip.innerHTML = `
-            <div class="craft-pack-head">
-                <div>
-                    <span>Featured Packs</span>
-                    <h2>精选证据资源包</h2>
-                </div>
-                <a href="${localAsset("evidence/index.html")}">Open evidence base <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="craft-pack-track">
-                ${track.map((item, index) => `
-                    <article class="craft-pack-card" style="--pack-index:${index}">
-                        <a href="${localAsset(item.href)}">
-                            <img src="${localAsset(item.image)}" alt="${escapeHtml(item.title)} preview" loading="lazy" decoding="async">
-                        </a>
-                        <span>${escapeHtml(item.type)}</span>
-                        <strong>${escapeHtml(item.title)}</strong>
-                        <em>${escapeHtml(item.stat)}</em>
-                        <p>${escapeHtml(item.desc)}</p>
-                        <div class="craft-pack-actions">
-                            <button type="button"
-                                data-craft-preview
-                                data-title="${escapeHtml(item.title)}"
-                                data-type="${escapeHtml(item.type)} / ${escapeHtml(item.stat)}"
-                                data-desc="${escapeHtml(item.desc)}"
-                                data-image="${localAsset(item.image)}"
-                                data-href="${localAsset(item.href)}">
-                                Quick view
-                            </button>
-                            <a href="${localAsset(item.href)}">Open <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </article>
-                `).join("")}
-            </div>
-        `;
-    }
-
-    function renderCraftLifetimePanel() {
-        const main = getMainContent();
-        if (!main) return;
-        const packs = getCraftPackItems().slice(0, 5);
-
-        let panel = main.querySelector(".craft-lifetime-panel");
-        if (!panel) {
-            panel = document.createElement("section");
-            panel.className = "craft-lifetime-panel";
-            panel.setAttribute("aria-label", "完整作品集证据包");
-        }
-
-        const anchor = main.querySelector(".craft-pack-marquee")
-            || main.querySelector(".craft-focus-board")
-            || main.querySelector(".craft-resource-market")
-            || main.querySelector(".page-command-deck")
-            || main.querySelector(".hero-redesign, .page-hero, .resume-hero, .page-header");
-        if (anchor && panel.previousElementSibling !== anchor) anchor.insertAdjacentElement("afterend", panel);
-        else if (!anchor && panel.parentElement !== main) main.prepend(panel);
-
-        panel.innerHTML = `
-            <div class="craft-lifetime-copy">
-                <span>Unlock All Evidence</span>
-                <h2>一条链接打开完整个人能力资源包</h2>
-                <p>参考 Craftwork 的资源订阅逻辑，把我的论文、工程项目、横向项目、材料库、API 实验室和证据档案组织成可浏览、可检索、可追问的作品资源系统。</p>
-                <div class="craft-lifetime-actions">
-                    <a href="${localAsset("materials.html")}"><i class="fas fa-bolt"></i> 打开材料库</a>
-                    <a href="${localAsset("projects.html")}">浏览项目 <i class="fas fa-arrow-right"></i></a>
-                </div>
-                <div class="craft-lifetime-metrics">
-                    <strong><b>306</b><span>HTML pages checked</span></strong>
-                    <strong><b>50</b><span>API candidates</span></strong>
-                    <strong><b>3</b><span>real horizontal projects</span></strong>
-                </div>
-            </div>
-            <div class="craft-lifetime-visual" aria-hidden="true">
-                ${packs.map((item, index) => `
-                    <figure style="--life-index:${index}">
-                        <img src="${localAsset(item.image)}" alt="">
-                        <figcaption>
-                            <span>${escapeHtml(item.type)}</span>
-                            <strong>${escapeHtml(item.stat)}</strong>
-                        </figcaption>
-                    </figure>
-                `).join("")}
-            </div>
-        `;
-    }
-
-    function upgradeCraftCards() {
-        const main = getMainContent();
-        if (!main) return;
-        const cards = Array.from(main.querySelectorAll(".publication-card, .project-showcase, .surface-card, .material-card, .capability-card, .blog-card, .timeline-card, .achievement-card, .service-card, .story-card, .library-card, .resource-card, .framework-card, .nav-card, .video-card, .example-card, .case-block, .handbook-section, .evidence-section, .api-card, .api-widget-card, .proxy-api-card"))
-            .filter((card) => !card.closest(visualWidgetSelector));
-
-        cards.slice(0, 140).forEach((card, index) => {
-            card.classList.add("craft-product-card");
-            card.style.setProperty("--craft-card-index", index);
-            if (card.querySelector(":scope > .craft-card-badge")) return;
-
-            const badge = document.createElement("div");
-            badge.className = "craft-card-badge";
-            const hasImage = Boolean(card.querySelector("img"));
-            const hasPdf = /PDF|论文|paper|Publication/i.test(getReadableText(card));
-            const kind = card.matches(".publication-card") || hasPdf ? "Paper"
-                : card.matches(".project-showcase") ? "Project"
-                    : card.matches(".blog-card") ? "Post"
-                        : card.matches(".material-card") ? "Material"
-                            : card.matches(".api-card, .api-widget-card, .proxy-api-card") ? "API"
-                                : "Resource";
-            badge.innerHTML = `<span>${kind}</span><em>${hasImage ? "visual" : "text"}</em>`;
-            card.prepend(badge);
-        });
-    }
-
-    function initCraftPreviewDrawer() {
-        if (document.querySelector(".craft-preview-drawer")) return;
-
-        const drawer = document.createElement("div");
-        drawer.className = "craft-preview-drawer";
-        drawer.setAttribute("aria-hidden", "true");
-        drawer.innerHTML = `
-            <div class="craft-preview-backdrop" data-craft-preview-close></div>
-            <aside class="craft-preview-panel" role="dialog" aria-modal="true" aria-label="资源快速预览">
-                <button class="craft-preview-close" type="button" data-craft-preview-close aria-label="关闭预览"><i class="fas fa-xmark"></i></button>
-                <div class="craft-preview-browser">
-                    <span><i></i><i></i><i></i></span>
-                    <strong>Quick Preview</strong>
-                </div>
-                <img class="craft-preview-image" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" alt="">
-                <div class="craft-preview-copy">
-                    <span></span>
-                    <h2></h2>
-                    <p></p>
-                    <a href="#"><i class="fas fa-arrow-right"></i> Open full resource</a>
-                </div>
-            </aside>
-        `;
-        document.body.appendChild(drawer);
-
-        const image = drawer.querySelector(".craft-preview-image");
-        const type = drawer.querySelector(".craft-preview-copy span");
-        const title = drawer.querySelector(".craft-preview-copy h2");
-        const desc = drawer.querySelector(".craft-preview-copy p");
-        const link = drawer.querySelector(".craft-preview-copy a");
-
-        function open(button) {
-            image.src = button.dataset.image || "";
-            image.alt = `${button.dataset.title || "Resource"} preview`;
-            type.textContent = button.dataset.type || "Resource";
-            title.textContent = button.dataset.title || "Portfolio resource";
-            desc.textContent = button.dataset.desc || "查看这个资源的页面截图、说明和关联材料。";
-            link.href = button.dataset.href || "#";
-            drawer.classList.add("open");
-            drawer.setAttribute("aria-hidden", "false");
-            document.body.classList.add("craft-preview-open");
-            drawer.querySelector(".craft-preview-close")?.focus();
-        }
-
-        function close() {
-            drawer.classList.remove("open");
-            drawer.setAttribute("aria-hidden", "true");
-            document.body.classList.remove("craft-preview-open");
-        }
-
-        document.addEventListener("click", (event) => {
-            const button = event.target.closest("[data-craft-preview]");
-            if (button) {
-                event.preventDefault();
-                open(button);
-                return;
-            }
-            if (event.target.closest("[data-craft-preview-close]")) close();
-        });
-
-        document.addEventListener("keydown", (event) => {
-            if (event.key === "Escape" && drawer.classList.contains("open")) close();
-        });
     }
 
     function getPageActions(root) {
@@ -1585,17 +1010,12 @@
             wall = document.createElement("section");
             wall.className = "page-shot-wall";
             wall.setAttribute("aria-label", "真实页面截图墙");
+            const intel = main.querySelector(".page-intel-strip");
+            const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
+            if (intel) intel.insertAdjacentElement("afterend", wall);
+            else if (hero) hero.insertAdjacentElement("afterend", wall);
+            else main.prepend(wall);
         }
-        const craftLifetime = main.querySelector(".craft-lifetime-panel");
-        const craftMarquee = main.querySelector(".craft-pack-marquee");
-        const craftFocus = main.querySelector(".craft-focus-board");
-        const craftMarket = main.querySelector(".craft-resource-market");
-        const command = main.querySelector(".page-command-deck");
-        const intel = main.querySelector(".page-intel-strip");
-        const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
-        const anchor = craftLifetime || craftMarquee || craftFocus || craftMarket || command || intel || hero;
-        if (anchor && wall.previousElementSibling !== anchor) anchor.insertAdjacentElement("afterend", wall);
-        else if (!anchor && wall.parentElement !== main) main.prepend(wall);
 
         const primary = items[0];
         const rest = items.slice(1);
@@ -2020,18 +1440,14 @@
             orbit = document.createElement("section");
             orbit.className = "page-orbit-dashboard";
             orbit.setAttribute("aria-label", "页面轨道仪表盘");
+            const intel = main.querySelector(".page-intel-strip");
+            const shotWall = main.querySelector(".page-shot-wall");
+            const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
+            if (intel) intel.insertAdjacentElement("afterend", orbit);
+            else if (shotWall) shotWall.insertAdjacentElement("beforebegin", orbit);
+            else if (hero) hero.insertAdjacentElement("afterend", orbit);
+            else main.prepend(orbit);
         }
-        const orbitAnchor = main.querySelector(".page-evidence-bento")
-            || main.querySelector(".page-flow-lab")
-            || main.querySelector(".page-constellation")
-            || main.querySelector(".site-visual-showcase")
-            || main.querySelector(".page-route-strip")
-            || main.querySelector(".page-shot-wall")
-            || main.querySelector(".page-command-deck")
-            || main.querySelector(".page-intel-strip")
-            || main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
-        if (orbitAnchor && orbit.previousElementSibling !== orbitAnchor) orbitAnchor.insertAdjacentElement("afterend", orbit);
-        else if (!orbitAnchor && orbit.parentElement !== main) main.prepend(orbit);
 
         const metrics = [
             { label: "章节", value: headings.length, meter: Math.min(100, 20 + headings.length * 10), icon: "fa-sitemap" },
@@ -2075,105 +1491,6 @@
             </div>
             <div class="orbit-keywords">
                 ${keywords.map((keyword, index) => `<span style="--keyword-index:${index}">${escapeHtml(keyword)}</span>`).join("")}
-            </div>
-        `;
-    }
-
-    function renderPageCommandDeck() {
-        const main = getMainContent();
-        if (!main) return;
-
-        const headings = getPageHeadings(main).slice(0, 5);
-        const actions = getPageActions(main).slice(0, 4);
-        const preset = getVisualEvidencePreset();
-        const shots = (preset?.items || [])
-            .filter((item) => item.src && item.href)
-            .slice(0, 4);
-        const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector));
-        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector) && !img.closest("header"));
-        const cards = Array.from(main.querySelectorAll(".surface-card, .project-showcase, .publication-card, .material-card, .blog-card, .capability-card, .timeline-card, .handbook-section, .evidence-section, .case-block"))
-            .filter((card) => !card.closest(visualWidgetSelector));
-        const keywords = getPageKeywords(main).slice(0, 6);
-        const readableLength = getReadableText(main).replace(/\s/g, "").length;
-
-        let deck = main.querySelector(".page-command-deck");
-        if (headings.length + actions.length + shots.length < 4) {
-            deck?.remove();
-            return;
-        }
-
-        if (!deck) {
-            deck = document.createElement("section");
-            deck.className = "page-command-deck";
-            deck.setAttribute("aria-label", "page visual command deck");
-        }
-        const deckAnchor = main.querySelector(".page-intel-strip")
-            || main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
-        if (deckAnchor && deck.previousElementSibling !== deckAnchor) deckAnchor.insertAdjacentElement("afterend", deck);
-        else if (!deckAnchor && deck.parentElement !== main) main.prepend(deck);
-
-        const score = Math.min(99, Math.max(35, Math.round(36 + shots.length * 8 + headings.length * 5 + images.length * 3 + actions.length * 5)));
-        const metrics = [
-            { label: "Shots", value: shots.length || images.length, meter: Math.min(100, 22 + (shots.length || images.length) * 18), icon: "fa-images" },
-            { label: "Sections", value: headings.length, meter: Math.min(100, 24 + headings.length * 12), icon: "fa-sitemap" },
-            { label: "Actions", value: actions.length || links.length, meter: Math.min(100, 18 + (actions.length || links.length) * 10), icon: "fa-arrow-up-right-from-square" },
-            { label: "Cards", value: cards.length, meter: Math.min(100, 20 + cards.length * 6), icon: "fa-table-cells-large" }
-        ];
-        const routeItems = actions.length ? actions : headings.map((item, index) => ({
-            text: item.text,
-            href: `#${ensureHeadingId(item.node, index)}`
-        }));
-        const primaryShot = shots[0];
-        const secondaryShots = shots.slice(1, 4);
-
-        deck.style.setProperty("--command-score", `${score * 3.6}deg`);
-        deck.innerHTML = `
-            <div class="command-score" aria-hidden="true">
-                <strong>${score}</strong>
-                <span>Signal</span>
-            </div>
-            <div class="command-copy">
-                <span>Visual Command</span>
-                <strong>${escapeHtml(getPageTitle())}</strong>
-                <em>${Math.max(1, Math.ceil(readableLength / 720))} min read / ${links.length} links / ${images.length} visuals</em>
-                <div class="command-keywords">
-                    ${keywords.map((keyword, index) => `<b style="--keyword-index:${index}">${escapeHtml(keyword)}</b>`).join("")}
-                </div>
-            </div>
-            <div class="command-shot-stage">
-                ${primaryShot ? `
-                    <a class="command-shot-main" href="${localAsset(primaryShot.href)}">
-                        <img src="${localAsset(primaryShot.src)}" alt="${escapeHtml(primaryShot.title)} screenshot" loading="lazy" decoding="async">
-                        <span>${escapeHtml(primaryShot.label || "Shot")}</span>
-                    </a>
-                ` : `<div class="command-shot-placeholder"><i class="fas fa-chart-simple" aria-hidden="true"></i></div>`}
-                <div class="command-shot-stack">
-                    ${secondaryShots.map((shot, index) => `
-                        <a href="${localAsset(shot.href)}" style="--shot-index:${index}">
-                            <img src="${localAsset(shot.src)}" alt="${escapeHtml(shot.title)} screenshot" loading="lazy" decoding="async">
-                            <span>${escapeHtml(shot.label || "View")}</span>
-                        </a>
-                    `).join("")}
-                </div>
-            </div>
-            <div class="command-panel">
-                <div class="command-metrics">
-                    ${metrics.map((metric) => `
-                        <span style="--metric:${metric.meter}%">
-                            <i class="fas ${metric.icon}" aria-hidden="true"></i>
-                            <em>${escapeHtml(metric.label)}</em>
-                            <strong>${escapeHtml(String(metric.value))}</strong>
-                        </span>
-                    `).join("")}
-                </div>
-                <div class="command-routes">
-                    ${routeItems.slice(0, 4).map((item, index) => `
-                        <a href="${localAsset(item.href)}" style="--route-index:${index}">
-                            <i class="fas fa-arrow-right" aria-hidden="true"></i>
-                            <span>${escapeHtml(item.text || `Route ${index + 1}`)}</span>
-                        </a>
-                    `).join("")}
-                </div>
             </div>
         `;
     }
@@ -2749,12 +2066,6 @@
             "page-flow-lab",
             "page-evidence-bento",
             "page-orbit-dashboard",
-            "page-command-deck",
-            "craft-resource-market",
-            "craft-focus-board",
-            "craft-pack-marquee",
-            "craft-lifetime-panel",
-            "craft-market-strip",
             "site-visual-showcase",
             "section-blueprint"
         ];
@@ -2825,12 +2136,6 @@
             "page-flow-lab",
             "page-evidence-bento",
             "page-orbit-dashboard",
-            "page-command-deck",
-            "craft-resource-market",
-            "craft-focus-board",
-            "craft-pack-marquee",
-            "craft-lifetime-panel",
-            "craft-market-strip",
             "site-visual-showcase"
         ];
 
@@ -2939,7 +2244,7 @@
         const sections = Array.from(main.querySelectorAll(":scope > section, :scope > .resume-builder-container, :scope > .markdown-converter-container, .handbook-section, .evidence-section, .case-block"))
             .filter((section) => {
                 if (section.closest(visualWidgetSelector)) return false;
-                if (section.matches(".page-hero, .hero-redesign, .resume-hero, .page-intel-strip, .page-shot-wall, .page-route-strip, .page-media-filmstrip, .site-visual-showcase, .page-constellation, .page-flow-lab, .page-evidence-bento, .page-orbit-dashboard, .page-command-deck, .craft-resource-market, .craft-focus-board, .craft-pack-marquee, .craft-lifetime-panel, .craft-market-strip")) return false;
+                if (section.matches(".page-hero, .hero-redesign, .resume-hero, .page-intel-strip, .page-shot-wall, .page-route-strip, .page-media-filmstrip, .site-visual-showcase, .page-constellation, .page-flow-lab, .page-evidence-bento, .page-orbit-dashboard")) return false;
                 return getReadableText(section).length >= 120;
             })
             .slice(0, 18);
@@ -3213,17 +2518,10 @@
 
     function renderGlobalVisualWidgets() {
         initAmbientLayer();
-        initCraftMarketShell();
-        initCraftPreviewDrawer();
-        renderCraftMarketHero();
         renderHeroSignalConsole();
         renderHeroPanelShots();
         renderPageIntelligence();
-        renderPageCommandDeck();
-        renderCraftResourceMarket();
-        renderCraftFocusBoard();
-        renderCraftPackMarquee();
-        renderCraftLifetimePanel();
+        renderPageOrbitDashboard();
         renderPageScreenshotWall();
         renderPageRouteStrip();
         renderVisualEvidenceDeck();
@@ -3233,7 +2531,6 @@
         renderPageConstellation();
         renderPageFlowLab();
         renderPageEvidenceBento();
-        renderPageOrbitDashboard();
         renderHeadingSignalBadges();
         renderListTelemetry();
         renderCollectionTelemetry();
@@ -3243,7 +2540,6 @@
         renderCardMicroWidgets();
         renderCardSignalStrips();
         renderCardPixelGrids();
-        upgradeCraftCards();
         renderSectionCompass();
     }
 
@@ -3328,7 +2624,6 @@
     initThemeToggle();
     initReadingProgress();
     initCommandPalette();
-    initCraftMarketShell();
     initPageActionBar();
     renderGlobalVisualWidgets();
     initScrollTopButton();
