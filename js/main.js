@@ -517,13 +517,11 @@
         ".page-constellation",
         ".page-flow-lab",
         ".page-evidence-bento",
-        ".page-orbit-dashboard",
         ".page-route-strip",
         ".hero-signal-console",
         ".hero-panel-shots",
         ".section-signal",
         ".section-blueprint",
-        ".section-mini-map",
         ".list-telemetry",
         ".collection-telemetry",
         ".card-micro-widget",
@@ -1077,14 +1075,7 @@
         if (!hero || hero.closest(visualWidgetSelector)) return;
 
         const container = hero.querySelector(":scope > .container") || hero;
-        const heroTextSlot = container.matches(".hero-layout") ? container.querySelector(":scope > div") : null;
-        const consoleHost = heroTextSlot || container;
-        let consolePanel = consoleHost.querySelector(":scope > .hero-signal-console");
-        const strayConsole = container.querySelector(":scope > .hero-signal-console");
-        if (!consolePanel && strayConsole && consoleHost !== container) {
-            consoleHost.appendChild(strayConsole);
-            consolePanel = strayConsole;
-        }
+        let consolePanel = container.querySelector(":scope > .hero-signal-console");
         const text = getReadableText(main);
         const headings = getPageHeadings(main);
         const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector));
@@ -1108,7 +1099,7 @@
             consolePanel = document.createElement("aside");
             consolePanel.className = "hero-signal-console";
             consolePanel.setAttribute("aria-label", "首屏页面信号控制台");
-            consoleHost.appendChild(consolePanel);
+            container.appendChild(consolePanel);
         }
 
         consolePanel.style.setProperty("--hero-pulse", `${pulse * 3.6}deg`);
@@ -1152,11 +1143,6 @@
 
         const panel = main.querySelector(".hero-redesign .hero-panel");
         if (!panel) return;
-
-        if (panel.querySelector(".hero-visual-stage")) {
-            panel.querySelector(".hero-panel-shots")?.remove();
-            return;
-        }
 
         const shots = (getVisualEvidencePreset()?.items || [])
             .filter((item) => item.src && item.href)
@@ -1413,84 +1399,6 @@
                     }
                     return `<span class="route-node" style="--route-index:${index}">${content}</span>`;
                 }).join("")}
-            </div>
-        `;
-    }
-
-    function renderPageOrbitDashboard() {
-        const main = getMainContent();
-        if (!main) return;
-
-        const headings = getPageHeadings(main);
-        const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector));
-        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector) && !img.closest("header"));
-        const cards = Array.from(main.querySelectorAll(".surface-card, .project-showcase, .publication-card, .material-card, .blog-card, .capability-card, .timeline-card, .handbook-section, .evidence-section, .case-block"))
-            .filter((card) => !card.closest(visualWidgetSelector));
-        const keywords = getPageKeywords(main).slice(0, 8);
-        const textLength = getReadableText(main).replace(/\s/g, "").length;
-        const score = Math.min(99, Math.max(28, Math.round(30 + headings.length * 5 + images.length * 5 + cards.length * 2 + links.length * 0.8)));
-
-        let orbit = main.querySelector(".page-orbit-dashboard");
-        if (headings.length + cards.length + links.length < 6) {
-            orbit?.remove();
-            return;
-        }
-
-        if (!orbit) {
-            orbit = document.createElement("section");
-            orbit.className = "page-orbit-dashboard";
-            orbit.setAttribute("aria-label", "页面轨道仪表盘");
-            const intel = main.querySelector(".page-intel-strip");
-            const shotWall = main.querySelector(".page-shot-wall");
-            const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
-            if (intel) intel.insertAdjacentElement("afterend", orbit);
-            else if (shotWall) shotWall.insertAdjacentElement("beforebegin", orbit);
-            else if (hero) hero.insertAdjacentElement("afterend", orbit);
-            else main.prepend(orbit);
-        }
-
-        const metrics = [
-            { label: "章节", value: headings.length, meter: Math.min(100, 20 + headings.length * 10), icon: "fa-sitemap" },
-            { label: "图像", value: images.length, meter: Math.min(100, 20 + images.length * 12), icon: "fa-image" },
-            { label: "入口", value: links.length, meter: Math.min(100, 12 + links.length * 4), icon: "fa-link" },
-            { label: "卡片", value: cards.length, meter: Math.min(100, 18 + cards.length * 5), icon: "fa-table-cells-large" }
-        ];
-        const orbitNodes = metrics.concat(keywords.slice(0, 4).map((keyword, index) => ({
-            label: keyword,
-            value: index + 1,
-            meter: 46 + index * 10,
-            icon: "fa-sparkles"
-        }))).slice(0, 8);
-
-        orbit.style.setProperty("--orbit-score", `${score * 3.6}deg`);
-        orbit.innerHTML = `
-            <div class="orbit-core">
-                <strong>${score}</strong>
-                <span>Orbit</span>
-            </div>
-            <div class="orbit-rings" aria-hidden="true">
-                ${orbitNodes.map((node, index) => `
-                    <span class="orbit-node orbit-node-${index + 1}" style="--orbit-meter:${node.meter}%">
-                        <i class="fas ${node.icon}" aria-hidden="true"></i>
-                    </span>
-                `).join("")}
-            </div>
-            <div class="orbit-copy">
-                <span>Page Orbit</span>
-                <strong>${escapeHtml(getPageTitle())}</strong>
-                <em>${Math.max(1, Math.ceil(textLength / 650))} min read · ${cards.length} cards · ${links.length} links</em>
-            </div>
-            <div class="orbit-metrics">
-                ${metrics.map((metric) => `
-                    <div style="--metric:${metric.meter}%">
-                        <i class="fas ${metric.icon}" aria-hidden="true"></i>
-                        <span>${escapeHtml(metric.label)}</span>
-                        <strong>${escapeHtml(String(metric.value))}</strong>
-                    </div>
-                `).join("")}
-            </div>
-            <div class="orbit-keywords">
-                ${keywords.map((keyword, index) => `<span style="--keyword-index:${index}">${escapeHtml(keyword)}</span>`).join("")}
             </div>
         `;
     }
@@ -2060,12 +1968,8 @@
             "page-intel-strip",
             "page-motion-ticker",
             "page-shot-wall",
-            "page-route-strip",
             "page-media-filmstrip",
             "page-constellation",
-            "page-flow-lab",
-            "page-evidence-bento",
-            "page-orbit-dashboard",
             "site-visual-showcase",
             "section-blueprint"
         ];
@@ -2073,7 +1977,7 @@
         const sections = Array.from(main.querySelectorAll(":scope > section, :scope > .resume-builder-container, :scope > .markdown-converter-container, :scope > .resource-grid, :scope > .nav-grid, :scope > .video-section, .handbook-section, .evidence-section, .case-block"))
             .filter((section) => {
                 if (skipClasses.some((className) => section.classList.contains(className))) return false;
-                if (section.closest(visualWidgetSelector)) return false;
+                if (section.closest(".page-shot-wall, .page-constellation, .page-media-filmstrip, .page-intel-strip, .site-visual-showcase")) return false;
                 const text = getReadableText(section);
                 if (section.matches(".resume-builder-container, .markdown-converter-container, .resource-grid, .nav-grid, .video-section")) return text.length >= 50;
                 return text.length >= 90;
@@ -2130,19 +2034,15 @@
             "page-intel-strip",
             "page-motion-ticker",
             "page-shot-wall",
-            "page-route-strip",
             "page-media-filmstrip",
             "page-constellation",
-            "page-flow-lab",
-            "page-evidence-bento",
-            "page-orbit-dashboard",
             "site-visual-showcase"
         ];
 
         const sections = Array.from(main.querySelectorAll(":scope > section, :scope > .resume-builder-container, :scope > .markdown-converter-container, :scope > .resource-grid, :scope > .nav-grid, :scope > .video-section, .handbook-section, .evidence-section, .case-block"))
             .filter((section) => {
                 if (skipClasses.some((className) => section.classList.contains(className))) return false;
-                if (section.closest(visualWidgetSelector)) return false;
+                if (section.closest(".page-shot-wall, .page-constellation, .page-media-filmstrip, .page-intel-strip, .site-visual-showcase")) return false;
                 const text = getReadableText(section);
                 if (section.matches(".resume-builder-container, .markdown-converter-container, .resource-grid, .nav-grid, .video-section")) return text.length >= 50;
                 return text.length >= 150;
@@ -2234,58 +2134,6 @@
                     <span>Index</span>
                 </div>
             `;
-        });
-    }
-
-    function renderSectionMiniMaps() {
-        const main = getMainContent();
-        if (!main) return;
-
-        const sections = Array.from(main.querySelectorAll(":scope > section, :scope > .resume-builder-container, :scope > .markdown-converter-container, .handbook-section, .evidence-section, .case-block"))
-            .filter((section) => {
-                if (section.closest(visualWidgetSelector)) return false;
-                if (section.matches(".page-hero, .hero-redesign, .resume-hero, .page-intel-strip, .page-shot-wall, .page-route-strip, .page-media-filmstrip, .site-visual-showcase, .page-constellation, .page-flow-lab, .page-evidence-bento, .page-orbit-dashboard")) return false;
-                return getReadableText(section).length >= 120;
-            })
-            .slice(0, 18);
-
-        sections.forEach((section, index) => {
-            const host = section.querySelector(":scope > .container") || section;
-            if (host.querySelector(":scope > .section-mini-map")) return;
-
-            const title = section.querySelector("h2, h3, h1")?.textContent.trim().replace(/\s+/g, " ") || `Section ${index + 1}`;
-            const textLength = getReadableText(section).replace(/\s/g, "").length;
-            const links = Array.from(section.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector)).length;
-            const images = Array.from(section.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector)).length;
-            const lists = Array.from(section.querySelectorAll("ul, ol")).filter((list) => !list.closest(visualWidgetSelector)).length;
-            const cells = Array.from({ length: 18 }, (_, cellIndex) => {
-                const seed = [textLength, links * 19, images * 31, lists * 23, index * 17][cellIndex % 5] || 9;
-                return Math.min(100, Math.max(14, (seed + cellIndex * 11) % 100));
-            });
-            const map = document.createElement("div");
-            map.className = "section-mini-map";
-            map.setAttribute("aria-label", "章节微型地图");
-            map.innerHTML = `
-                <div class="mini-map-grid" aria-hidden="true">
-                    ${cells.map((value, cellIndex) => `<span style="--cell:${value}%;--cell-index:${cellIndex}"></span>`).join("")}
-                </div>
-                <div class="mini-map-copy">
-                    <span>M${String(index + 1).padStart(2, "0")}</span>
-                    <strong>${escapeHtml(title)}</strong>
-                </div>
-                <div class="mini-map-stats">
-                    <span><i class="fas fa-align-left" aria-hidden="true"></i>${Math.max(1, Math.ceil(textLength / 520))}m</span>
-                    <span><i class="fas fa-link" aria-hidden="true"></i>${links}</span>
-                    <span><i class="fas fa-image" aria-hidden="true"></i>${images}</span>
-                    <span><i class="fas fa-list" aria-hidden="true"></i>${lists}</span>
-                </div>
-            `;
-
-            const blueprint = host.querySelector(":scope > .section-blueprint");
-            const signal = host.querySelector(":scope > .section-signal");
-            if (blueprint) blueprint.insertAdjacentElement("afterend", map);
-            else if (signal) signal.insertAdjacentElement("afterend", map);
-            else host.prepend(map);
         });
     }
 
@@ -2521,7 +2369,6 @@
         renderHeroSignalConsole();
         renderHeroPanelShots();
         renderPageIntelligence();
-        renderPageOrbitDashboard();
         renderPageScreenshotWall();
         renderPageRouteStrip();
         renderVisualEvidenceDeck();
@@ -2536,7 +2383,6 @@
         renderCollectionTelemetry();
         renderSectionSignals();
         renderSectionBlueprints();
-        renderSectionMiniMaps();
         renderCardMicroWidgets();
         renderCardSignalStrips();
         renderCardPixelGrids();
