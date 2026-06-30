@@ -2375,6 +2375,301 @@ body.site-shell {
     transform: translateY(calc(var(--keyword-index) * 0.22px));
 }
 
+.page-command-deck {
+    position: relative;
+    z-index: 3;
+    width: min(1180px, calc(100% - 32px));
+    margin: 14px auto 0;
+    display: grid;
+    grid-template-columns: 120px minmax(220px, 0.46fr) minmax(320px, 0.72fr) minmax(240px, 0.44fr);
+    gap: 12px;
+    align-items: stretch;
+    overflow: hidden;
+    padding: 12px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(246, 250, 248, 0.78)),
+        linear-gradient(90deg, rgba(17, 97, 73, 0.08), transparent 52%, rgba(179, 92, 30, 0.08));
+    box-shadow: 0 22px 68px rgba(15, 23, 42, 0.09);
+    backdrop-filter: blur(18px);
+}
+
+.page-command-deck::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--brand), var(--accent));
+}
+
+.command-score {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 5px;
+    min-height: 156px;
+    border-radius: 8px;
+    color: #fff;
+    background:
+        radial-gradient(circle at center, #102229 0 50%, transparent 51%),
+        conic-gradient(from -90deg, var(--accent) var(--command-score), rgba(15, 23, 42, 0.1) 0),
+        linear-gradient(135deg, #102229, rgba(17, 97, 73, 0.86));
+}
+
+.command-score strong {
+    color: #fff;
+    font-size: 2.25rem;
+    line-height: 0.9;
+}
+
+.command-score span {
+    color: rgba(255, 255, 255, 0.66);
+    font-size: 0.62rem;
+    font-weight: 950;
+    text-transform: uppercase;
+}
+
+.command-copy {
+    display: grid;
+    align-content: center;
+    gap: 7px;
+    min-width: 0;
+}
+
+.command-copy > span {
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 950;
+    text-transform: uppercase;
+}
+
+.command-copy strong {
+    color: var(--ink);
+    font-size: clamp(1.04rem, 1.7vw, 1.38rem);
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.command-copy em {
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-style: normal;
+    font-weight: 820;
+}
+
+.command-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+.command-keywords b {
+    display: inline-flex;
+    min-height: 28px;
+    align-items: center;
+    padding: 5px 9px;
+    border: 1px solid rgba(17, 97, 73, 0.14);
+    border-radius: 999px;
+    color: var(--brand-dark);
+    background: linear-gradient(135deg, rgba(223, 243, 236, 0.82), rgba(255, 241, 229, 0.62));
+    font-size: 0.7rem;
+    font-weight: 880;
+    transform: translateY(calc(var(--keyword-index) * 0.18px));
+}
+
+.command-shot-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(88px, 0.48fr);
+    gap: 8px;
+    min-width: 0;
+}
+
+.command-shot-main,
+.command-shot-stack a,
+.command-shot-placeholder {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    color: #fff;
+    background: #0f172a;
+}
+
+.command-shot-main {
+    height: 164px;
+    min-height: 0;
+}
+
+.command-shot-main::after,
+.command-shot-stack a::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(180deg, transparent 40%, rgba(2, 6, 12, 0.78)),
+        linear-gradient(135deg, rgba(17, 97, 73, 0.18), transparent 46%);
+}
+
+.command-shot-main img,
+.command-shot-stack img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transform: scale(1.001);
+    transition: transform 0.28s ease, filter 0.28s ease;
+}
+
+.command-shot-main:hover img,
+.command-shot-main:focus-visible img,
+.command-shot-stack a:hover img,
+.command-shot-stack a:focus-visible img {
+    transform: scale(1.045);
+    filter: saturate(1.08) contrast(1.04);
+}
+
+.command-shot-main span,
+.command-shot-stack span {
+    position: absolute;
+    z-index: 1;
+    left: 10px;
+    right: 10px;
+    bottom: 9px;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 950;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-shadow: 0 10px 24px rgba(0, 0, 0, 0.42);
+}
+
+.command-shot-stack {
+    display: grid;
+    gap: 8px;
+}
+
+.command-shot-stack a {
+    height: 50px;
+    min-height: 0;
+}
+
+.command-shot-placeholder {
+    display: grid;
+    place-items: center;
+    height: 164px;
+    min-height: 0;
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(135deg, #102229, rgba(17, 97, 73, 0.82));
+    background-size: 18px 18px, 18px 18px, auto;
+}
+
+.command-panel {
+    display: grid;
+    gap: 10px;
+    min-width: 0;
+}
+
+.command-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.command-metrics span {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 6px;
+    align-items: center;
+    min-height: 36px;
+    overflow: hidden;
+    padding: 8px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.68);
+}
+
+.command-metrics span::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: calc(100% - var(--metric));
+    bottom: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--brand), var(--accent));
+}
+
+.command-metrics i {
+    color: var(--brand);
+    font-size: 0.78rem;
+}
+
+.command-metrics em {
+    min-width: 0;
+    color: var(--muted);
+    font-size: 0.68rem;
+    font-style: normal;
+    font-weight: 880;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.command-metrics strong {
+    color: var(--ink);
+    font-size: 0.84rem;
+}
+
+.command-routes {
+    display: grid;
+    gap: 7px;
+}
+
+.command-routes a {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 8px;
+    align-items: center;
+    min-height: 32px;
+    padding: 7px 9px;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: 8px;
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.64);
+    font-size: 0.76rem;
+    font-weight: 880;
+    transform: translateX(calc(var(--route-index) * 1px));
+}
+
+.command-routes a:hover,
+.command-routes a:focus-visible {
+    color: var(--brand-dark);
+    border-color: rgba(17, 97, 73, 0.24);
+    background: var(--brand-soft);
+}
+
+.command-routes i {
+    color: var(--accent);
+    font-size: 0.68rem;
+}
+
+.command-routes span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .section-mini-map {
     position: relative;
     z-index: 2;
@@ -4929,6 +5224,15 @@ body.site-shell {
         grid-column: 1 / -1;
     }
 
+    .page-command-deck {
+        grid-template-columns: 110px minmax(0, 1fr);
+    }
+
+    .command-shot-stage,
+    .command-panel {
+        grid-column: 1 / -1;
+    }
+
     .shot-wall-inner {
         grid-template-columns: 1fr;
     }
@@ -5149,6 +5453,57 @@ body.site-shell {
 
     .orbit-metrics {
         grid-template-columns: 1fr;
+    }
+
+    .page-command-deck {
+        width: min(100% - 20px, 1180px);
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 12px;
+        padding: 10px;
+    }
+
+    .command-score {
+        min-height: 102px;
+    }
+
+    .command-shot-stage {
+        grid-template-columns: 1fr;
+    }
+
+    .command-shot-main,
+    .command-shot-placeholder {
+        height: 190px;
+        min-height: 0;
+    }
+
+    .command-shot-stack {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(118px, 38vw);
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 2px;
+    }
+
+    .command-shot-stack a {
+        height: 76px;
+        min-height: 0;
+        scroll-snap-align: start;
+    }
+
+    .command-metrics,
+    .command-routes {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .command-routes a {
+        min-height: 40px;
+        align-content: center;
+    }
+
+    .command-routes span {
+        white-space: normal;
     }
 
     .hero-signal-console {
@@ -5655,6 +6010,7 @@ body.site-shell.dark-mode .page-constellation,
 body.site-shell.dark-mode .page-flow-lab,
 body.site-shell.dark-mode .page-evidence-bento,
 body.site-shell.dark-mode .page-orbit-dashboard,
+body.site-shell.dark-mode .page-command-deck,
 body.site-shell.dark-mode .hero-signal-console,
 body.site-shell.dark-mode .section-signal,
 body.site-shell.dark-mode .section-blueprint,
@@ -5691,6 +6047,8 @@ body.site-shell.dark-mode .collection-telemetry-stats span,
 body.site-shell.dark-mode .bento-tile,
 body.site-shell.dark-mode .bento-tile-metrics div,
 body.site-shell.dark-mode .orbit-metrics div,
+body.site-shell.dark-mode .command-metrics span,
+body.site-shell.dark-mode .command-routes a,
 body.site-shell.dark-mode .card-pixel-grid,
 body.site-shell.dark-mode .section-signal-metrics span,
 body.site-shell.dark-mode .blueprint-metrics span,
@@ -5748,8 +6106,18 @@ body.site-shell.dark-mode .blueprint-map {
 }
 
 body.site-shell.dark-mode .orbit-rings,
+body.site-shell.dark-mode .command-shot-main,
+body.site-shell.dark-mode .command-shot-stack a,
+body.site-shell.dark-mode .command-shot-placeholder,
 body.site-shell.dark-mode .mini-map-grid {
     border-color: rgba(255, 255, 255, 0.08);
+}
+
+body.site-shell.dark-mode .command-keywords b {
+    border-color: rgba(77, 197, 157, 0.18);
+    color: var(--brand-dark);
+    background:
+        linear-gradient(135deg, rgba(20, 58, 49, 0.88), rgba(53, 40, 27, 0.78));
 }
 
 body.site-shell.dark-mode .card-signal-strip span {
@@ -7066,6 +7434,7 @@ body.site-shell.dark-mode .command-item {
     .page-flow-lab,
     .page-evidence-bento,
     .page-orbit-dashboard,
+    .page-command-deck,
     .hero-signal-console,
     .list-telemetry,
     .collection-telemetry,
@@ -9807,5 +10176,2208 @@ body.site-shell.dark-mode .resume-award-grid > div {
 
     .premium-surface {
         transform: none !important;
+    }
+}
+
+/* Craftwork-inspired portfolio market redesign */
+.craft-market-root {
+    color-scheme: dark;
+}
+
+body.site-shell.craft-market-mode {
+    --ink: #f7f7f4;
+    --muted: #a7a7a0;
+    --soft: #242424;
+    --paper: #1e1e1e;
+    --line: rgba(255, 255, 255, 0.09);
+    --brand: #caff00;
+    --brand-dark: #e5ff57;
+    --brand-soft: rgba(202, 255, 0, 0.12);
+    --accent: #ffffff;
+    --accent-soft: rgba(255, 255, 255, 0.1);
+    --blue: #8fc5ff;
+    --shadow: 0 28px 90px rgba(0, 0, 0, 0.36);
+    --radius: 8px;
+    min-height: 100vh;
+    color: var(--ink);
+    background:
+        radial-gradient(circle at 12% 8%, rgba(202, 255, 0, 0.1), transparent 24rem),
+        radial-gradient(circle at 82% 22%, rgba(255, 255, 255, 0.06), transparent 22rem),
+        linear-gradient(180deg, #161616 0%, #1e1e1e 34%, #151515 100%);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+body.site-shell.craft-market-mode::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.35;
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: linear-gradient(180deg, black, transparent 88%);
+}
+
+body.site-shell.craft-market-mode * {
+    letter-spacing: 0;
+}
+
+body.site-shell.craft-market-mode a {
+    color: inherit;
+}
+
+body.site-shell.craft-market-mode .craft-top-sale {
+    position: sticky;
+    top: 0;
+    z-index: 1100;
+    display: flex;
+    min-height: 34px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 7px 18px;
+    color: #050505;
+    background: #ffffff;
+    font-size: 0.83rem;
+    font-weight: 860;
+    text-decoration: none;
+}
+
+body.site-shell.craft-market-mode .craft-top-sale span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 20px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    color: #050505;
+    background: var(--brand);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+}
+
+body.site-shell.craft-market-mode .craft-top-sale em {
+    color: #6b6b63;
+    font-style: normal;
+}
+
+body.site-shell.craft-market-mode header {
+    position: sticky;
+    top: 34px;
+    z-index: 1000;
+    padding: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(30, 30, 30, 0.84);
+    backdrop-filter: blur(22px);
+}
+
+body.site-shell.craft-market-mode header.scrolled {
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+}
+
+body.site-shell.craft-market-mode header .container {
+    display: grid;
+    grid-template-columns: auto minmax(360px, 1fr) minmax(250px, 330px) auto;
+    gap: 14px;
+    min-height: 60px;
+    align-items: center;
+}
+
+body.site-shell.craft-market-mode .site-brand {
+    gap: 10px;
+    min-width: 0;
+}
+
+body.site-shell.craft-market-mode .profile-img {
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08), 0 0 0 8px rgba(202, 255, 0, 0.08);
+}
+
+body.site-shell.craft-market-mode .profile-info h1,
+body.site-shell.craft-market-mode .brand-title {
+    color: #fff;
+    font-size: 0.96rem;
+    font-weight: 900;
+}
+
+body.site-shell.craft-market-mode .profile-info .title,
+body.site-shell.craft-market-mode .profile-info .keywords,
+body.site-shell.craft-market-mode .brand-subtitle,
+body.site-shell.craft-market-mode .brand-tags {
+    display: none;
+}
+
+body.site-shell.craft-market-mode nav {
+    justify-self: start;
+    min-width: 0;
+}
+
+body.site-shell.craft-market-mode .nav-menu {
+    display: flex;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+}
+
+body.site-shell.craft-market-mode .nav-single > a,
+body.site-shell.craft-market-mode .nav-group-toggle {
+    min-height: 60px;
+    padding: 0 8px;
+    border: 0;
+    color: #bcbcb6;
+    background: transparent;
+    font-size: 0.84rem;
+    font-weight: 760;
+}
+
+body.site-shell.craft-market-mode .nav-single > a i,
+body.site-shell.craft-market-mode .nav-group-toggle i:first-child {
+    display: none;
+}
+
+body.site-shell.craft-market-mode .nav-single > a:hover,
+body.site-shell.craft-market-mode .nav-group-toggle:hover,
+body.site-shell.craft-market-mode .nav-single > a.active,
+body.site-shell.craft-market-mode .nav-group-toggle.active {
+    color: #fff;
+    background: transparent;
+}
+
+body.site-shell.craft-market-mode .nav-group {
+    position: relative;
+}
+
+body.site-shell.craft-market-mode .nav-dropdown {
+    top: calc(100% + 10px);
+    left: 50%;
+    min-width: 320px;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 8px;
+    background: rgba(27, 27, 27, 0.98);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.42);
+    transform: translateX(-50%) translateY(8px);
+}
+
+body.site-shell.craft-market-mode .nav-group.open .nav-dropdown {
+    transform: translateX(-50%) translateY(0);
+}
+
+body.site-shell.craft-market-mode .nav-dropdown-link {
+    padding: 11px;
+    border-radius: 8px;
+    color: #f5f5f0;
+}
+
+body.site-shell.craft-market-mode .nav-dropdown-link:hover,
+body.site-shell.craft-market-mode .nav-dropdown-link.active {
+    color: #050505;
+    background: var(--brand);
+}
+
+body.site-shell.craft-market-mode .nav-dropdown-link small {
+    color: inherit;
+    opacity: 0.68;
+}
+
+body.site-shell.craft-market-mode .craft-search-pill {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 10px;
+    align-items: center;
+    min-width: 0;
+    width: 100%;
+    height: 38px;
+    padding: 0 8px 0 12px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 999px;
+    color: #bfbfb8;
+    background: #2b2b2b;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+body.site-shell.craft-market-mode .craft-search-pill:hover {
+    color: #fff;
+    border-color: rgba(202, 255, 0, 0.35);
+    background: #333333;
+}
+
+body.site-shell.craft-market-mode .craft-search-pill span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body.site-shell.craft-market-mode .craft-search-pill kbd {
+    display: inline-flex;
+    min-height: 24px;
+    align-items: center;
+    padding: 2px 8px;
+    border: 0;
+    border-radius: 999px;
+    color: #d4d4d0;
+    background: rgba(255, 255, 255, 0.08);
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: 860;
+}
+
+body.site-shell.craft-market-mode .craft-nav-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 9px;
+}
+
+body.site-shell.craft-market-mode .craft-nav-icon,
+body.site-shell.craft-market-mode .craft-nav-cta {
+    display: inline-flex;
+    height: 38px;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border-radius: 8px;
+    font-weight: 880;
+    text-decoration: none;
+}
+
+body.site-shell.craft-market-mode .craft-nav-icon {
+    width: 38px;
+    color: #d8d8d2;
+    background: transparent;
+}
+
+body.site-shell.craft-market-mode .craft-nav-icon:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+body.site-shell.craft-market-mode .craft-nav-cta {
+    padding: 0 13px;
+    color: #050505;
+    background: var(--brand);
+}
+
+body.site-shell.craft-market-mode .craft-nav-cta:hover {
+    color: #050505;
+    transform: translateY(-1px);
+}
+
+body.site-shell.craft-market-mode main {
+    background: transparent;
+}
+
+body.site-shell.craft-market-mode .hero-redesign,
+body.site-shell.craft-market-mode .page-hero,
+body.site-shell.craft-market-mode .resume-hero,
+body.site-shell.craft-market-mode .page-header {
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+    padding: 92px 0 66px;
+    color: #fff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    background:
+        radial-gradient(circle at 78% 22%, rgba(202, 255, 0, 0.08), transparent 18rem),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent);
+}
+
+body.site-shell.craft-market-mode .hero-redesign::before,
+body.site-shell.craft-market-mode .page-hero::before,
+body.site-shell.craft-market-mode .resume-hero::before,
+body.site-shell.craft-market-mode .page-header::before {
+    content: "";
+    position: absolute;
+    inset: auto 7% -190px auto;
+    width: 420px;
+    height: 420px;
+    border-radius: 50%;
+    opacity: 0.22;
+    background: var(--brand);
+    filter: blur(90px);
+}
+
+body.site-shell.craft-market-mode .hero-redesign .container,
+body.site-shell.craft-market-mode .hero-layout,
+body.site-shell.craft-market-mode .page-hero .container,
+body.site-shell.craft-market-mode .resume-hero .container,
+body.site-shell.craft-market-mode .page-header .container {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 350px);
+    gap: 54px;
+    align-items: center;
+}
+
+body.site-shell.craft-market-mode .hero-redesign h1,
+body.site-shell.craft-market-mode .page-hero h1,
+body.site-shell.craft-market-mode .resume-hero h1,
+body.site-shell.craft-market-mode .page-header h1 {
+    max-width: 820px;
+    color: #fff;
+    font-size: 4rem;
+    line-height: 1.06;
+    font-weight: 950;
+    letter-spacing: 0;
+}
+
+body.site-shell.craft-market-mode .hero-redesign p,
+body.site-shell.craft-market-mode .page-hero p,
+body.site-shell.craft-market-mode .resume-hero p,
+body.site-shell.craft-market-mode .page-header p {
+    max-width: 670px;
+    color: #aaa9a1;
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+
+body.site-shell.craft-market-mode .eyebrow,
+body.site-shell.craft-market-mode .section-kicker {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+    color: var(--brand);
+    font-size: 0.76rem;
+    font-weight: 920;
+    text-transform: uppercase;
+}
+
+body.site-shell.craft-market-mode .hero-actions {
+    gap: 10px;
+    margin-top: 28px;
+}
+
+body.site-shell.craft-market-mode .btn,
+body.site-shell.craft-market-mode .text-link,
+body.site-shell.craft-market-mode .filter-tab,
+body.site-shell.craft-market-mode .filter-select {
+    border-radius: 8px;
+}
+
+body.site-shell.craft-market-mode .btn.primary,
+body.site-shell.craft-market-mode .btn.secondary:hover,
+body.site-shell.craft-market-mode .filter-tab.active {
+    color: #050505;
+    border-color: transparent;
+    background: var(--brand);
+    box-shadow: none;
+}
+
+body.site-shell.craft-market-mode .btn.secondary,
+body.site-shell.craft-market-mode .filter-tab,
+body.site-shell.craft-market-mode .filter-select,
+body.site-shell.craft-market-mode .search-box input,
+body.site-shell.craft-market-mode input,
+body.site-shell.craft-market-mode textarea,
+body.site-shell.craft-market-mode select {
+    color: #f2f2ed;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    background: #2b2b2b;
+}
+
+body.site-shell.craft-market-mode .btn.secondary:hover {
+    transform: translateY(-1px);
+}
+
+body.site-shell.craft-market-mode .craft-hero-card {
+    position: relative;
+    display: grid;
+    gap: 18px;
+    padding: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.03)),
+        #262626;
+    box-shadow: 0 28px 90px rgba(0, 0, 0, 0.35);
+}
+
+body.site-shell.craft-market-mode .craft-card-mark {
+    display: grid;
+    grid-template-columns: 60px minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+}
+
+body.site-shell.craft-market-mode .craft-card-mark > span {
+    display: grid;
+    width: 60px;
+    height: 60px;
+    place-items: center;
+    border-radius: 8px;
+    color: #fff;
+    background: #111;
+    font-size: 1.45rem;
+}
+
+body.site-shell.craft-market-mode .craft-card-mark strong {
+    display: block;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 920;
+}
+
+body.site-shell.craft-market-mode .craft-card-mark em {
+    color: #aaa9a1;
+    font-style: normal;
+}
+
+body.site-shell.craft-market-mode .craft-hero-meter {
+    display: grid;
+    gap: 8px;
+}
+
+body.site-shell.craft-market-mode .craft-hero-meter span {
+    position: relative;
+    display: block;
+    height: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.09);
+}
+
+body.site-shell.craft-market-mode .craft-hero-meter span::after {
+    content: "";
+    position: absolute;
+    inset: 0 calc(100% - var(--meter)) 0 0;
+    background: linear-gradient(90deg, var(--brand), #fff);
+}
+
+body.site-shell.craft-market-mode .craft-hero-card h2 {
+    color: #fff;
+    font-size: 1.45rem;
+    line-height: 1.2;
+}
+
+body.site-shell.craft-market-mode .craft-hero-card p {
+    color: #b5b5ae;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+body.site-shell.craft-market-mode .craft-hero-stack {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+}
+
+body.site-shell.craft-market-mode .craft-hero-stack a {
+    position: relative;
+    display: block;
+    aspect-ratio: 1 / 0.78;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #111;
+    transform: translateY(calc(var(--stack-index) * 3px));
+}
+
+body.site-shell.craft-market-mode .craft-hero-stack img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    opacity: 0.92;
+}
+
+body.site-shell.craft-market-mode .craft-hero-stack span {
+    position: absolute;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 900;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body.site-shell.craft-market-mode .craft-hero-cta {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    border-radius: 8px;
+    color: #050505;
+    background: var(--brand);
+    font-weight: 920;
+    text-decoration: none;
+}
+
+body.site-shell.craft-market-mode .craft-resource-market,
+body.site-shell.craft-market-mode .craft-focus-board,
+body.site-shell.craft-market-mode .craft-pack-marquee,
+body.site-shell.craft-market-mode .craft-lifetime-panel,
+body.site-shell.craft-market-mode .page-command-deck,
+body.site-shell.craft-market-mode .page-shot-wall,
+body.site-shell.craft-market-mode .page-route-strip,
+body.site-shell.craft-market-mode .page-intel-strip,
+body.site-shell.craft-market-mode .site-visual-showcase,
+body.site-shell.craft-market-mode .page-evidence-bento,
+body.site-shell.craft-market-mode .page-orbit-dashboard,
+body.site-shell.craft-market-mode .page-flow-lab,
+body.site-shell.craft-market-mode .page-constellation {
+    width: min(1180px, calc(100% - 32px));
+    margin: 18px auto 0;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: rgba(35, 35, 35, 0.9);
+    box-shadow: 0 28px 90px rgba(0, 0, 0, 0.3);
+}
+
+body.site-shell.craft-market-mode .craft-resource-market {
+    display: grid;
+    gap: 18px;
+    padding: 18px;
+}
+
+body.site-shell.craft-market-mode .craft-market-head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+body.site-shell.craft-market-mode .craft-market-head span,
+body.site-shell.craft-market-mode .craft-focus-panel > span {
+    color: var(--brand);
+    font-size: 0.72rem;
+    font-weight: 950;
+    text-transform: uppercase;
+}
+
+body.site-shell.craft-market-mode .craft-market-head h2,
+body.site-shell.craft-market-mode .craft-focus-panel h2 {
+    margin: 4px 0 0;
+    color: #fff;
+    font-size: 2.4rem;
+    line-height: 1.1;
+    font-weight: 950;
+}
+
+body.site-shell.craft-market-mode .craft-market-head a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #bdbdb6;
+    font-weight: 820;
+    text-decoration: none;
+}
+
+body.site-shell.craft-market-mode .craft-market-head a:hover {
+    color: var(--brand);
+}
+
+body.site-shell.craft-market-mode .craft-category-rail {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(224px, 1fr);
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+}
+
+body.site-shell.craft-market-mode .craft-category-rail::-webkit-scrollbar,
+body.site-shell.craft-market-mode nav::-webkit-scrollbar,
+body.site-shell.craft-market-mode .command-shot-stack::-webkit-scrollbar {
+    display: none;
+}
+
+body.site-shell.craft-market-mode .craft-category-rail a {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    gap: 2px 11px;
+    min-height: 66px;
+    align-items: center;
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: #fff;
+    background: #1f1f1f;
+    text-decoration: none;
+    transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+}
+
+body.site-shell.craft-market-mode .craft-category-rail a:hover {
+    border-color: rgba(202, 255, 0, 0.34);
+    background: #292929;
+    transform: translateY(-2px);
+}
+
+body.site-shell.craft-market-mode .craft-category-rail i {
+    grid-row: 1 / 3;
+    display: grid;
+    width: 42px;
+    height: 42px;
+    place-items: center;
+    border-radius: 8px;
+    color: #050505;
+    background: var(--brand);
+}
+
+body.site-shell.craft-market-mode .craft-category-rail span {
+    color: #fff;
+    font-weight: 900;
+}
+
+body.site-shell.craft-market-mode .craft-category-rail em {
+    color: #a5a59f;
+    font-size: 0.78rem;
+    font-style: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+body.site-shell.craft-market-mode .craft-product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+}
+
+body.site-shell.craft-market-mode .craft-product-tile {
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: #1b1b1b;
+}
+
+body.site-shell.craft-market-mode .craft-product-media {
+    position: relative;
+    display: block;
+    aspect-ratio: 1.46 / 1;
+    overflow: hidden;
+    background: #0a0a0a;
+}
+
+body.site-shell.craft-market-mode .craft-product-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transform: scale(1.001);
+    transition: transform 0.28s ease, filter 0.28s ease;
+}
+
+body.site-shell.craft-market-mode .craft-product-tile:hover img {
+    transform: scale(1.045);
+    filter: saturate(1.08) contrast(1.04);
+}
+
+body.site-shell.craft-market-mode .craft-product-media span {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    display: inline-flex;
+    min-height: 26px;
+    align-items: center;
+    padding: 4px 9px;
+    border-radius: 999px;
+    color: #050505;
+    background: var(--brand);
+    font-size: 0.72rem;
+    font-weight: 920;
+}
+
+body.site-shell.craft-market-mode .craft-product-copy {
+    display: grid;
+    gap: 8px;
+    padding: 14px;
+}
+
+body.site-shell.craft-market-mode .craft-product-copy > span {
+    color: #aaa9a1;
+    font-size: 0.78rem;
+    font-weight: 820;
+}
+
+body.site-shell.craft-market-mode .craft-product-copy h3 {
+    color: #fff;
+    font-size: 1.04rem;
+    line-height: 1.25;
+}
+
+body.site-shell.craft-market-mode .craft-product-copy p {
+    min-height: 42px;
+    color: #aaa9a1;
+    font-size: 0.88rem;
+    line-height: 1.55;
+}
+
+body.site-shell.craft-market-mode .craft-product-copy a {
+    color: var(--brand);
+    font-size: 0.84rem;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+body.site-shell.craft-market-mode .craft-product-actions,
+body.site-shell.craft-market-mode .craft-pack-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+body.site-shell.craft-market-mode .craft-product-actions button,
+body.site-shell.craft-market-mode .craft-pack-actions button {
+    min-height: 32px;
+    padding: 0 10px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 8px;
+    color: #f5f5f0;
+    background: rgba(255, 255, 255, 0.07);
+    font: inherit;
+    font-size: 0.78rem;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+body.site-shell.craft-market-mode .craft-product-actions button:hover,
+body.site-shell.craft-market-mode .craft-pack-actions button:hover {
+    color: #050505;
+    border-color: transparent;
+    background: var(--brand);
+}
+
+body.site-shell.craft-market-mode .craft-focus-board {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) 300px minmax(220px, 0.5fr);
+    gap: 14px;
+    padding: 16px;
+}
+
+body.site-shell.craft-market-mode .craft-pack-marquee {
+    display: grid;
+    gap: 18px;
+    overflow: hidden;
+    padding: 18px;
+}
+
+body.site-shell.craft-market-mode .craft-pack-head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+body.site-shell.craft-market-mode .craft-pack-head span,
+body.site-shell.craft-market-mode .craft-lifetime-copy > span {
+    color: var(--brand);
+    font-size: 0.72rem;
+    font-weight: 950;
+    text-transform: uppercase;
+}
+
+body.site-shell.craft-market-mode .craft-pack-head h2,
+body.site-shell.craft-market-mode .craft-lifetime-copy h2 {
+    margin: 4px 0 0;
+    color: #fff;
+    font-size: 2.4rem;
+    line-height: 1.08;
+    font-weight: 950;
+}
+
+body.site-shell.craft-market-mode .craft-pack-head a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #bdbdb6;
+    font-weight: 860;
+    text-decoration: none;
+}
+
+body.site-shell.craft-market-mode .craft-pack-head a:hover {
+    color: var(--brand);
+}
+
+body.site-shell.craft-market-mode .craft-pack-track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(250px, 300px);
+    gap: 14px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+}
+
+body.site-shell.craft-market-mode .craft-pack-track::-webkit-scrollbar {
+    display: none;
+}
+
+body.site-shell.craft-market-mode .craft-pack-card {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto auto auto auto 1fr auto;
+    gap: 8px;
+    overflow: hidden;
+    min-height: 354px;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: #fff;
+    background: #1b1b1b;
+    scroll-snap-align: start;
+    transform: translateY(calc((var(--pack-index) % 3) * 3px));
+    transition: transform 0.24s ease, border-color 0.24s ease, background 0.24s ease;
+}
+
+body.site-shell.craft-market-mode .craft-pack-card:hover {
+    border-color: rgba(202, 255, 0, 0.32);
+    background: #262626;
+    transform: translateY(-3px);
+}
+
+body.site-shell.craft-market-mode .craft-pack-card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1.35 / 1;
+    object-fit: cover;
+    object-position: top center;
+    border-radius: 8px;
+    background: #0b0b0b;
+}
+
+body.site-shell.craft-market-mode .craft-pack-card > a {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+body.site-shell.craft-market-mode .craft-pack-card > span {
+    width: fit-content;
+    min-height: 25px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    color: #050505;
+    background: var(--brand);
+    font-size: 0.68rem;
+    font-weight: 950;
+    text-transform: uppercase;
+}
+
+body.site-shell.craft-market-mode .craft-pack-card strong {
+    color: #fff;
+    font-size: 1.04rem;
+    line-height: 1.25;
+}
+
+body.site-shell.craft-market-mode .craft-pack-card em {
+    color: #fff;
+    font-size: 1.45rem;
+    font-style: normal;
+    font-weight: 950;
+}
+
+body.site-shell.craft-market-mode .craft-pack-card p {
+    color: #aaa9a1;
+    font-size: 0.86rem;
+    line-height: 1.55;
+}
+
+body.site-shell.craft-market-mode .craft-pack-actions a {
+    display: inline-flex;
+    min-height: 32px;
+    align-items: center;
+    gap: 6px;
+    padding: 0 10px;
+    border-radius: 8px;
+    color: #050505;
+    background: var(--brand);
+    font-size: 0.78rem;
+    font-weight: 920;
+    text-decoration: none;
+}
+
+.craft-preview-drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 1800;
+    display: grid;
+    pointer-events: none;
+    visibility: hidden;
+}
+
+.craft-preview-drawer.open {
+    pointer-events: auto;
+    visibility: visible;
+}
+
+.craft-preview-backdrop {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    background: rgba(0, 0, 0, 0.68);
+    backdrop-filter: blur(10px);
+    transition: opacity 0.22s ease;
+}
+
+.craft-preview-drawer.open .craft-preview-backdrop {
+    opacity: 1;
+}
+
+.craft-preview-panel {
+    position: relative;
+    justify-self: end;
+    width: min(520px, calc(100vw - 28px));
+    height: calc(100vh - 28px);
+    margin: 14px;
+    overflow: auto;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    background:
+        radial-gradient(circle at 80% 8%, rgba(202, 255, 0, 0.16), transparent 15rem),
+        #1d1d1d;
+    box-shadow: 0 34px 120px rgba(0, 0, 0, 0.48);
+    transform: translateX(110%);
+    transition: transform 0.28s ease;
+}
+
+.craft-preview-drawer.open .craft-preview-panel {
+    transform: translateX(0);
+}
+
+.craft-preview-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
+    display: grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.48);
+    cursor: pointer;
+}
+
+.craft-preview-close:hover {
+    color: #050505;
+    background: var(--brand);
+}
+
+.craft-preview-browser {
+    display: flex;
+    min-height: 42px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 0 52px 0 12px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 8px 8px 0 0;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.craft-preview-browser span {
+    display: inline-flex;
+    gap: 6px;
+}
+
+.craft-preview-browser i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff6b6b;
+}
+
+.craft-preview-browser i:nth-child(2) {
+    background: #ffd166;
+}
+
+.craft-preview-browser i:nth-child(3) {
+    background: #06d6a0;
+}
+
+.craft-preview-browser strong {
+    color: #d7d7d0;
+    font-size: 0.82rem;
+}
+
+.craft-preview-image {
+    display: block;
+    width: 100%;
+    max-height: 48vh;
+    object-fit: cover;
+    object-position: top center;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-top: 0;
+    border-radius: 0 0 8px 8px;
+    background: #0a0a0a;
+}
+
+.craft-preview-copy {
+    display: grid;
+    gap: 12px;
+    padding: 18px 4px 4px;
+}
+
+.craft-preview-copy span {
+    width: fit-content;
+    min-height: 28px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    color: #050505;
+    background: var(--brand);
+    font-size: 0.72rem;
+    font-weight: 950;
+    text-transform: uppercase;
+}
+
+.craft-preview-copy h2 {
+    color: #fff;
+    font-size: 2rem;
+    line-height: 1.12;
+}
+
+.craft-preview-copy p {
+    color: #aaa9a1;
+    line-height: 1.65;
+}
+
+.craft-preview-copy a {
+    display: inline-flex;
+    min-height: 46px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 8px;
+    color: #050505 !important;
+    background: var(--brand);
+    font-weight: 920;
+    text-decoration: none;
+    opacity: 1;
+}
+
+.craft-preview-copy a:hover {
+    color: #050505 !important;
+    background: #ffffff;
+}
+
+body.craft-preview-open {
+    overflow: hidden;
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-panel {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 0.56fr) minmax(360px, 0.44fr);
+    gap: 28px;
+    min-height: 480px;
+    overflow: hidden;
+    padding: 42px;
+    background:
+        radial-gradient(circle at 83% 28%, rgba(202, 255, 0, 0.18), transparent 18rem),
+        linear-gradient(135deg, #080808, #1d1d1d 48%, #0e0e0e);
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.22;
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+    background-size: 30px 30px;
+    mask-image: radial-gradient(circle at 70% 30%, black, transparent 72%);
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-copy,
+body.site-shell.craft-market-mode .craft-lifetime-visual {
+    position: relative;
+    z-index: 1;
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-copy {
+    display: grid;
+    align-content: center;
+    gap: 18px;
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-copy h2 {
+    max-width: 620px;
+    font-size: 3.35rem;
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-copy p {
+    max-width: 620px;
+    color: #aaa9a1;
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-actions a {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 17px;
+    border-radius: 8px;
+    font-weight: 920;
+    text-decoration: none;
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-actions a:first-child {
+    color: #050505;
+    background: var(--brand);
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-actions a:last-child {
+    color: #f5f5f0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    max-width: 640px;
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-metrics strong {
+    display: grid;
+    gap: 4px;
+    padding: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-metrics b {
+    color: var(--brand);
+    font-size: 1.6rem;
+    line-height: 1;
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-metrics span {
+    color: #aaa9a1;
+    font-size: 0.78rem;
+    font-weight: 780;
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-visual {
+    min-height: 420px;
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-visual figure {
+    position: absolute;
+    overflow: hidden;
+    width: min(330px, 72%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: #111;
+    box-shadow: 0 26px 68px rgba(0, 0, 0, 0.38);
+    transform:
+        translate(
+            calc((var(--life-index) % 2) * 74px),
+            calc(var(--life-index) * 52px)
+        )
+        rotate(calc((var(--life-index) - 2) * 2.8deg));
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-visual figure:nth-child(1) {
+    top: 0;
+    left: 14px;
+    z-index: 5;
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-visual figure:nth-child(2) {
+    top: 18px;
+    left: 94px;
+    z-index: 4;
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-visual figure:nth-child(3) {
+    top: 80px;
+    left: 4px;
+    z-index: 3;
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-visual figure:nth-child(4) {
+    top: 120px;
+    left: 104px;
+    z-index: 2;
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-visual figure:nth-child(5) {
+    top: 190px;
+    left: 40px;
+    z-index: 1;
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-visual img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1.55 / 1;
+    object-fit: cover;
+    object-position: top center;
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-visual figcaption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.88);
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-visual span {
+    color: #aaa9a1;
+    font-size: 0.72rem;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+body.site-shell.craft-market-mode .craft-lifetime-visual strong {
+    color: var(--brand);
+    font-size: 0.88rem;
+}
+
+body.site-shell.craft-market-mode .craft-focus-panel,
+body.site-shell.craft-market-mode .craft-focus-map,
+body.site-shell.craft-market-mode .craft-focus-routes {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: #1b1b1b;
+}
+
+body.site-shell.craft-market-mode .craft-focus-panel {
+    display: grid;
+    align-content: center;
+    gap: 12px;
+    padding: 24px;
+}
+
+body.site-shell.craft-market-mode .craft-focus-panel p {
+    color: #aaa9a1;
+    line-height: 1.65;
+}
+
+body.site-shell.craft-market-mode .craft-focus-bars {
+    display: grid;
+    gap: 9px;
+}
+
+body.site-shell.craft-market-mode .craft-focus-bars div {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 10px;
+    min-height: 34px;
+    align-items: center;
+    overflow: hidden;
+    padding: 7px 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+body.site-shell.craft-market-mode .craft-focus-bars div::before {
+    content: "";
+    position: absolute;
+    inset: 0 calc(100% - var(--meter)) 0 0;
+    opacity: 0.16;
+    background: var(--brand);
+}
+
+body.site-shell.craft-market-mode .craft-focus-bars span,
+body.site-shell.craft-market-mode .craft-focus-bars strong {
+    position: relative;
+    z-index: 1;
+}
+
+body.site-shell.craft-market-mode .craft-focus-map {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 7px;
+    padding: 16px;
+}
+
+body.site-shell.craft-market-mode .craft-focus-map span {
+    min-height: 34px;
+    border-radius: 8px;
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent),
+        color-mix(in srgb, var(--brand) var(--heat), #303030);
+    transform: translateY(calc((var(--cell) % 5) * 0.45px));
+}
+
+body.site-shell.craft-market-mode .craft-focus-routes {
+    display: grid;
+    gap: 8px;
+    align-content: start;
+    padding: 12px;
+}
+
+body.site-shell.craft-market-mode .craft-focus-routes a {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 10px;
+    align-items: center;
+    min-height: 44px;
+    padding: 8px;
+    border-radius: 8px;
+    color: #efefe9;
+    background: rgba(255, 255, 255, 0.05);
+    text-decoration: none;
+}
+
+body.site-shell.craft-market-mode .craft-focus-routes a:hover {
+    color: #050505;
+    background: var(--brand);
+}
+
+body.site-shell.craft-market-mode .craft-focus-routes em {
+    display: grid;
+    width: 36px;
+    height: 28px;
+    place-items: center;
+    border-radius: 8px;
+    color: #050505;
+    background: var(--brand);
+    font-style: normal;
+    font-weight: 950;
+}
+
+body.site-shell.craft-market-mode .craft-focus-routes a:hover em {
+    background: #050505;
+    color: var(--brand);
+}
+
+body.site-shell.craft-market-mode .craft-focus-routes span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 840;
+}
+
+body.site-shell.craft-market-mode .section-band {
+    padding: 64px 0;
+    color: #f6f6f2;
+    background: transparent;
+}
+
+body.site-shell.craft-market-mode .section-band.white {
+    background: rgba(255, 255, 255, 0.025);
+}
+
+body.site-shell.craft-market-mode .section-heading {
+    align-items: end;
+    margin-bottom: 28px;
+}
+
+body.site-shell.craft-market-mode .section-heading h2 {
+    color: #fff;
+    font-size: 3rem;
+    line-height: 1.08;
+    font-weight: 950;
+}
+
+body.site-shell.craft-market-mode .section-heading p {
+    color: #aaa9a1;
+}
+
+body.site-shell.craft-market-mode .surface-card,
+body.site-shell.craft-market-mode .publication-card,
+body.site-shell.craft-market-mode .project-showcase,
+body.site-shell.craft-market-mode .material-card,
+body.site-shell.craft-market-mode .capability-card,
+body.site-shell.craft-market-mode .blog-card,
+body.site-shell.craft-market-mode .timeline-card,
+body.site-shell.craft-market-mode .achievement-card,
+body.site-shell.craft-market-mode .service-card,
+body.site-shell.craft-market-mode .story-card,
+body.site-shell.craft-market-mode .library-card,
+body.site-shell.craft-market-mode .resource-card,
+body.site-shell.craft-market-mode .framework-card,
+body.site-shell.craft-market-mode .nav-card,
+body.site-shell.craft-market-mode .video-card,
+body.site-shell.craft-market-mode .example-card,
+body.site-shell.craft-market-mode .case-block,
+body.site-shell.craft-market-mode .handbook-section,
+body.site-shell.craft-market-mode .evidence-section,
+body.site-shell.craft-market-mode .api-card,
+body.site-shell.craft-market-mode .api-widget-card,
+body.site-shell.craft-market-mode .proxy-api-card,
+body.site-shell.craft-market-mode .resume-identity-card,
+body.site-shell.craft-market-mode .resume-mini-panel,
+body.site-shell.craft-market-mode .resume-section-card,
+body.site-shell.craft-market-mode .graduate-placeholder-grid article,
+body.site-shell.craft-market-mode .resume-signal {
+    position: relative;
+    overflow: hidden;
+    color: #f3f3ee;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.02)),
+        #202020;
+    box-shadow: none;
+}
+
+body.site-shell.craft-market-mode .craft-product-card {
+    transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+}
+
+body.site-shell.craft-market-mode .craft-product-card:hover {
+    border-color: rgba(202, 255, 0, 0.28);
+    background:
+        linear-gradient(135deg, rgba(202, 255, 0, 0.09), rgba(255, 255, 255, 0.03)),
+        #242424;
+    transform: translateY(-3px);
+}
+
+body.site-shell.craft-market-mode .craft-card-badge {
+    position: absolute;
+    z-index: 3;
+    top: 12px;
+    right: 12px;
+    display: inline-flex;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    background: rgba(5, 5, 5, 0.68);
+    backdrop-filter: blur(12px);
+}
+
+body.site-shell.craft-market-mode .craft-card-badge span,
+body.site-shell.craft-market-mode .craft-card-badge em {
+    min-height: 26px;
+    padding: 5px 9px;
+    font-size: 0.68rem;
+    font-weight: 930;
+    font-style: normal;
+    text-transform: uppercase;
+}
+
+body.site-shell.craft-market-mode .craft-card-badge span {
+    color: #050505;
+    background: var(--brand);
+}
+
+body.site-shell.craft-market-mode .craft-card-badge em {
+    color: #d6d6d0;
+}
+
+body.site-shell.craft-market-mode .card-icon,
+body.site-shell.craft-market-mode .api-icon,
+body.site-shell.craft-market-mode .project-hub-icon {
+    color: #050505;
+    background: var(--brand);
+}
+
+body.site-shell.craft-market-mode h2,
+body.site-shell.craft-market-mode h3,
+body.site-shell.craft-market-mode h4,
+body.site-shell.craft-market-mode .publication-title,
+body.site-shell.craft-market-mode .blog-title,
+body.site-shell.craft-market-mode .work-box h4 {
+    color: #fff;
+}
+
+body.site-shell.craft-market-mode p,
+body.site-shell.craft-market-mode li,
+body.site-shell.craft-market-mode .project-meta,
+body.site-shell.craft-market-mode .resume-desc,
+body.site-shell.craft-market-mode .blog-excerpt,
+body.site-shell.craft-market-mode .work-box ul,
+body.site-shell.craft-market-mode .evidence-section p {
+    color: #aaa9a1;
+}
+
+body.site-shell.craft-market-mode .pill,
+body.site-shell.craft-market-mode .tag,
+body.site-shell.craft-market-mode .tag-row span,
+body.site-shell.craft-market-mode .evidence-tag-row span,
+body.site-shell.craft-market-mode .api-tag,
+body.site-shell.craft-market-mode .proxy-tag {
+    border-color: rgba(255, 255, 255, 0.09);
+    color: #e8e8e1;
+    background: rgba(255, 255, 255, 0.065);
+}
+
+body.site-shell.craft-market-mode .pill.status,
+body.site-shell.craft-market-mode .pill.level,
+body.site-shell.craft-market-mode .pill.category {
+    color: #050505;
+    background: var(--brand);
+}
+
+body.site-shell.craft-market-mode .publication-card {
+    display: grid;
+    grid-template-columns: minmax(240px, 0.42fr) minmax(0, 0.58fr);
+    gap: 0;
+    padding: 0;
+}
+
+body.site-shell.craft-market-mode .publication-preview {
+    min-height: 100%;
+    border-radius: 0;
+    background: #0a0a0a;
+}
+
+body.site-shell.craft-market-mode .publication-preview img {
+    height: 100%;
+    min-height: 360px;
+    object-fit: cover;
+    object-position: top center;
+}
+
+body.site-shell.craft-market-mode .publication-preview span {
+    color: #050505;
+    background: var(--brand);
+}
+
+body.site-shell.craft-market-mode .publication-body {
+    padding: 26px;
+}
+
+body.site-shell.craft-market-mode .project-list-group {
+    gap: 18px;
+}
+
+body.site-shell.craft-market-mode .project-showcase {
+    padding: 0;
+}
+
+body.site-shell.craft-market-mode .project-cover-link {
+    position: relative;
+    display: block;
+    aspect-ratio: 2.15 / 1;
+    overflow: hidden;
+    border-radius: 8px 8px 0 0;
+    background: #090909;
+}
+
+body.site-shell.craft-market-mode .project-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+}
+
+body.site-shell.craft-market-mode .project-head,
+body.site-shell.craft-market-mode .project-showcase > .tag-row,
+body.site-shell.craft-market-mode .work-grid,
+body.site-shell.craft-market-mode .project-actions {
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+body.site-shell.craft-market-mode .project-head {
+    padding-top: 24px;
+}
+
+body.site-shell.craft-market-mode .project-actions {
+    padding-bottom: 24px;
+}
+
+body.site-shell.craft-market-mode .project-index {
+    color: rgba(202, 255, 0, 0.42);
+}
+
+body.site-shell.craft-market-mode .work-box,
+body.site-shell.craft-market-mode .sidebar-widget,
+body.site-shell.craft-market-mode .result-summary,
+body.site-shell.craft-market-mode .empty-state,
+body.site-shell.craft-market-mode .evidence-meta,
+body.site-shell.craft-market-mode .evidence-dashboard-card,
+body.site-shell.craft-market-mode .trace-card,
+body.site-shell.craft-market-mode .artifact-card,
+body.site-shell.craft-market-mode .flow-node,
+body.site-shell.craft-market-mode .proof-metric,
+body.site-shell.craft-market-mode .api-control-panel,
+body.site-shell.craft-market-mode .api-widget-shell,
+body.site-shell.craft-market-mode .proxy-console-panel {
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #f2f2ed;
+    background: rgba(255, 255, 255, 0.055);
+}
+
+body.site-shell.craft-market-mode .blog-grid.clean,
+body.site-shell.craft-market-mode .focus-grid,
+body.site-shell.craft-market-mode .capability-grid,
+body.site-shell.craft-market-mode .material-grid,
+body.site-shell.craft-market-mode .evidence-card-grid,
+body.site-shell.craft-market-mode .project-hub-grid,
+body.site-shell.craft-market-mode .metrics-grid {
+    gap: 16px;
+}
+
+body.site-shell.craft-market-mode .blog-card {
+    display: grid;
+    grid-template-rows: auto 1fr;
+}
+
+body.site-shell.craft-market-mode .blog-img {
+    aspect-ratio: 1.55 / 1;
+    overflow: hidden;
+    background: #0b0b0b;
+}
+
+body.site-shell.craft-market-mode .blog-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+body.site-shell.craft-market-mode .blog-content,
+body.site-shell.craft-market-mode .material-card,
+body.site-shell.craft-market-mode .capability-card,
+body.site-shell.craft-market-mode .surface-card {
+    padding: 24px;
+}
+
+body.site-shell.craft-market-mode .text-link {
+    color: var(--brand);
+    font-weight: 900;
+}
+
+body.site-shell.craft-market-mode .text-link:hover {
+    color: #fff;
+}
+
+body.site-shell.craft-market-mode .page-tools {
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+body.site-shell.craft-market-mode .filter-tabs {
+    gap: 8px;
+}
+
+body.site-shell.craft-market-mode .filter-tab {
+    min-height: 38px;
+    color: #deded8;
+}
+
+body.site-shell.craft-market-mode .search-box input {
+    min-height: 42px;
+    border-radius: 8px;
+}
+
+body.site-shell.craft-market-mode .page-side-rail,
+body.site-shell.craft-market-mode .section-compass {
+    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(24, 24, 24, 0.88);
+    backdrop-filter: blur(20px);
+}
+
+body.site-shell.craft-market-mode .section-compass a.active,
+body.site-shell.craft-market-mode .section-compass a:hover {
+    color: #050505;
+    background: var(--brand);
+}
+
+body.site-shell.craft-market-mode .page-action-bar,
+body.site-shell.craft-market-mode .floating-tool {
+    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(24, 24, 24, 0.88);
+    backdrop-filter: blur(20px);
+}
+
+body.site-shell.craft-market-mode .page-action-bar button,
+body.site-shell.craft-market-mode .floating-tool {
+    color: #f5f5f0;
+}
+
+body.site-shell.craft-market-mode .page-action-bar button:hover,
+body.site-shell.craft-market-mode .floating-tool:hover {
+    color: #050505;
+    background: var(--brand);
+}
+
+body.site-shell.craft-market-mode .command-palette {
+    background: rgba(0, 0, 0, 0.58);
+}
+
+body.site-shell.craft-market-mode .command-dialog {
+    border-color: rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    background: #1f1f1f;
+}
+
+body.site-shell.craft-market-mode .command-head {
+    border-color: rgba(255, 255, 255, 0.08);
+    background: #2b2b2b;
+}
+
+body.site-shell.craft-market-mode .command-head input {
+    color: #fff;
+    background: transparent;
+}
+
+body.site-shell.craft-market-mode .command-item {
+    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+body.site-shell.craft-market-mode .command-item:hover {
+    color: #050505;
+    background: var(--brand);
+}
+
+body.site-shell.craft-market-mode .page-command-deck {
+    grid-template-columns: 126px minmax(220px, 0.42fr) minmax(340px, 0.76fr) minmax(240px, 0.42fr);
+    background: #202020;
+}
+
+body.site-shell.craft-market-mode .command-score,
+body.site-shell.craft-market-mode .bento-tile-score {
+    background:
+        radial-gradient(circle at center, #111 0 50%, transparent 51%),
+        conic-gradient(from -90deg, var(--brand) var(--command-score), rgba(255, 255, 255, 0.1) 0),
+        #111;
+}
+
+body.site-shell.craft-market-mode .command-keywords b,
+body.site-shell.craft-market-mode .flow-chip-cloud span,
+body.site-shell.craft-market-mode .bento-tile-keywords span {
+    color: #050505;
+    border-color: transparent;
+    background: var(--brand);
+}
+
+body.site-shell.craft-market-mode .visual-showcase-inner,
+body.site-shell.craft-market-mode .page-evidence-bento,
+body.site-shell.craft-market-mode .page-flow-lab,
+body.site-shell.craft-market-mode .page-constellation {
+    background: #202020;
+}
+
+body.site-shell.craft-market-mode .screenshot-card,
+body.site-shell.craft-market-mode .route-node,
+body.site-shell.craft-market-mode .page-intel-card,
+body.site-shell.craft-market-mode .bento-tile,
+body.site-shell.craft-market-mode .flow-meter-card,
+body.site-shell.craft-market-mode .flow-action-list a,
+body.site-shell.craft-market-mode .card-proof-thumb,
+body.site-shell.craft-market-mode .list-telemetry,
+body.site-shell.craft-market-mode .collection-telemetry {
+    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.055);
+}
+
+body.site-shell.craft-market-mode .site-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    background: #101010;
+}
+
+body.site-shell.craft-market-mode .footer-bottom {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+@keyframes craftFloatIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+body.site-shell.craft-market-mode .craft-resource-market,
+body.site-shell.craft-market-mode .craft-focus-board,
+body.site-shell.craft-market-mode .craft-pack-marquee,
+body.site-shell.craft-market-mode .craft-lifetime-panel,
+body.site-shell.craft-market-mode .craft-hero-card,
+body.site-shell.craft-market-mode .craft-product-card {
+    animation: craftFloatIn 0.62s ease both;
+}
+
+body.site-shell.craft-market-mode .craft-product-tile {
+    animation: craftFloatIn 0.52s ease both;
+    animation-delay: calc(var(--tile-index) * 45ms);
+}
+
+@media (max-width: 1180px) {
+    body.site-shell.craft-market-mode header .container {
+        grid-template-columns: auto minmax(0, 1fr) auto;
+    }
+
+    body.site-shell.craft-market-mode .craft-search-pill {
+        grid-column: 1 / -1;
+        order: 5;
+        margin-bottom: 10px;
+    }
+
+    body.site-shell.craft-market-mode nav {
+        justify-self: center;
+    }
+
+    body.site-shell.craft-market-mode .craft-focus-board {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    body.site-shell.craft-market-mode .craft-lifetime-panel {
+        grid-template-columns: 1fr;
+    }
+
+    body.site-shell.craft-market-mode .craft-lifetime-visual {
+        min-height: 520px;
+    }
+
+    body.site-shell.craft-market-mode .craft-focus-routes {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 980px) {
+    body.site-shell.craft-market-mode .craft-top-sale {
+        position: relative;
+        top: auto;
+        flex-wrap: wrap;
+        text-align: center;
+    }
+
+    body.site-shell.craft-market-mode header {
+        top: 0;
+    }
+
+    body.site-shell.craft-market-mode header .container {
+        grid-template-columns: 1fr auto;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    body.site-shell.craft-market-mode nav {
+        grid-column: 1 / -1;
+        justify-self: stretch;
+        overflow-x: auto;
+    }
+
+    body.site-shell.craft-market-mode .nav-menu {
+        width: max-content;
+        min-width: 100%;
+    }
+
+    body.site-shell.craft-market-mode .nav-dropdown {
+        left: 0;
+        transform: translateY(8px);
+    }
+
+    body.site-shell.craft-market-mode .nav-group.open .nav-dropdown {
+        transform: translateY(0);
+    }
+
+    body.site-shell.craft-market-mode .hero-redesign .container,
+    body.site-shell.craft-market-mode .hero-layout,
+    body.site-shell.craft-market-mode .page-hero .container,
+    body.site-shell.craft-market-mode .resume-hero .container,
+    body.site-shell.craft-market-mode .page-header .container {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    body.site-shell.craft-market-mode .hero-redesign h1,
+    body.site-shell.craft-market-mode .page-hero h1,
+    body.site-shell.craft-market-mode .resume-hero h1,
+    body.site-shell.craft-market-mode .page-header h1 {
+        font-size: 3.15rem;
+    }
+
+    body.site-shell.craft-market-mode .craft-product-grid,
+    body.site-shell.craft-market-mode .blog-grid.clean,
+    body.site-shell.craft-market-mode .focus-grid,
+    body.site-shell.craft-market-mode .capability-grid,
+    body.site-shell.craft-market-mode .evidence-card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body.site-shell.craft-market-mode .publication-card {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    body.site-shell.craft-market-mode .craft-top-sale {
+        gap: 6px;
+        padding: 9px 12px;
+        font-size: 0.76rem;
+    }
+
+    body.site-shell.craft-market-mode .craft-top-sale em {
+        display: none;
+    }
+
+    body.site-shell.craft-market-mode header .container {
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+        min-height: 0;
+    }
+
+    body.site-shell.craft-market-mode .site-brand {
+        grid-column: 1 / 2;
+        grid-row: 1;
+    }
+
+    body.site-shell.craft-market-mode .craft-nav-actions {
+        grid-column: 2 / 3;
+        grid-row: 1;
+        gap: 6px;
+    }
+
+    body.site-shell.craft-market-mode .craft-nav-cta span {
+        display: none;
+    }
+
+    body.site-shell.craft-market-mode .craft-nav-cta {
+        width: 38px;
+        padding: 0;
+    }
+
+    body.site-shell.craft-market-mode .craft-search-pill {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        order: initial;
+        height: 38px;
+        margin: 0;
+    }
+
+    body.site-shell.craft-market-mode nav {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        overflow-x: auto;
+        padding-bottom: 3px;
+        scrollbar-width: none;
+    }
+
+    body.site-shell.craft-market-mode .nav-menu {
+        width: max-content;
+        min-width: 100%;
+        gap: 8px;
+    }
+
+    body.site-shell.craft-market-mode .nav-single > a,
+    body.site-shell.craft-market-mode .nav-group-toggle {
+        min-height: 34px;
+        height: 34px;
+        padding: 0 11px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.055);
+    }
+
+    body.site-shell.craft-market-mode .nav-dropdown {
+        position: fixed;
+        top: 132px;
+        left: 10px;
+        right: 10px;
+        min-width: 0;
+        transform: translateY(8px);
+    }
+
+    body.site-shell.craft-market-mode .nav-group.open .nav-dropdown {
+        transform: translateY(0);
+    }
+
+    body.site-shell.craft-market-mode .hero-redesign,
+    body.site-shell.craft-market-mode .page-hero,
+    body.site-shell.craft-market-mode .resume-hero,
+    body.site-shell.craft-market-mode .page-header {
+        padding: 54px 0 42px;
+    }
+
+    body.site-shell.craft-market-mode .hero-redesign h1,
+    body.site-shell.craft-market-mode .page-hero h1,
+    body.site-shell.craft-market-mode .resume-hero h1,
+    body.site-shell.craft-market-mode .page-header h1 {
+        font-size: 2.45rem;
+        line-height: 1.08;
+    }
+
+    body.site-shell.craft-market-mode .hero-redesign p,
+    body.site-shell.craft-market-mode .page-hero p,
+    body.site-shell.craft-market-mode .resume-hero p,
+    body.site-shell.craft-market-mode .page-header p {
+        font-size: 0.96rem;
+    }
+
+    body.site-shell.craft-market-mode .craft-hero-card,
+    body.site-shell.craft-market-mode .craft-resource-market,
+    body.site-shell.craft-market-mode .craft-focus-board,
+    body.site-shell.craft-market-mode .craft-pack-marquee,
+    body.site-shell.craft-market-mode .craft-lifetime-panel {
+        width: min(100% - 20px, 1180px);
+        padding: 12px;
+    }
+
+    body.site-shell.craft-market-mode .craft-market-head,
+    body.site-shell.craft-market-mode .craft-pack-head {
+        display: grid;
+    }
+
+    body.site-shell.craft-market-mode .craft-market-head h2,
+    body.site-shell.craft-market-mode .craft-focus-panel h2,
+    body.site-shell.craft-market-mode .craft-pack-head h2,
+    body.site-shell.craft-market-mode .craft-lifetime-copy h2,
+    body.site-shell.craft-market-mode .section-heading h2 {
+        font-size: 2rem;
+    }
+
+    body.site-shell.craft-market-mode .craft-product-grid,
+    body.site-shell.craft-market-mode .page-command-deck,
+    body.site-shell.craft-market-mode .craft-focus-board,
+    body.site-shell.craft-market-mode .craft-focus-routes,
+    body.site-shell.craft-market-mode .blog-grid.clean,
+    body.site-shell.craft-market-mode .focus-grid,
+    body.site-shell.craft-market-mode .capability-grid,
+    body.site-shell.craft-market-mode .material-grid,
+    body.site-shell.craft-market-mode .evidence-card-grid,
+    body.site-shell.craft-market-mode .project-hub-grid,
+    body.site-shell.craft-market-mode .metrics-grid,
+    body.site-shell.craft-market-mode .work-grid {
+        grid-template-columns: 1fr;
+    }
+
+    body.site-shell.craft-market-mode .page-command-deck {
+        width: min(100% - 20px, 1180px);
+    }
+
+    body.site-shell.craft-market-mode .command-score,
+    body.site-shell.craft-market-mode .command-copy,
+    body.site-shell.craft-market-mode .command-shot-stage,
+    body.site-shell.craft-market-mode .command-panel {
+        grid-column: auto;
+    }
+
+    body.site-shell.craft-market-mode .command-shot-stage {
+        grid-template-columns: 1fr;
+    }
+
+    body.site-shell.craft-market-mode .command-shot-main,
+    body.site-shell.craft-market-mode .command-shot-placeholder {
+        height: 190px;
+    }
+
+    body.site-shell.craft-market-mode .craft-focus-map {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    body.site-shell.craft-market-mode .craft-lifetime-panel {
+        min-height: 0;
+        gap: 20px;
+    }
+
+    body.site-shell.craft-market-mode .craft-lifetime-copy {
+        gap: 14px;
+    }
+
+    body.site-shell.craft-market-mode .craft-lifetime-copy p {
+        font-size: 0.95rem;
+    }
+
+    body.site-shell.craft-market-mode .craft-lifetime-metrics {
+        grid-template-columns: 1fr;
+    }
+
+    body.site-shell.craft-market-mode .craft-lifetime-visual {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        min-height: 0;
+    }
+
+    body.site-shell.craft-market-mode .craft-lifetime-visual figure {
+        position: relative;
+        top: auto !important;
+        left: auto !important;
+        width: 100%;
+        transform: none;
+    }
+
+    .craft-preview-panel {
+        justify-self: center;
+        width: min(100% - 20px, 520px);
+        height: min(86vh, 760px);
+        margin: 10px;
+    }
+
+    .craft-preview-copy h2 {
+        font-size: 1.55rem;
+    }
+
+    body.site-shell.craft-market-mode .craft-product-copy p {
+        min-height: 0;
+    }
+
+    body.site-shell.craft-market-mode .project-head,
+    body.site-shell.craft-market-mode .project-showcase > .tag-row,
+    body.site-shell.craft-market-mode .work-grid,
+    body.site-shell.craft-market-mode .project-actions {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    body.site-shell.craft-market-mode .project-head {
+        display: grid;
+        padding-top: 18px;
+    }
+
+    body.site-shell.craft-market-mode .project-badges {
+        justify-content: flex-start;
+    }
+
+    body.site-shell.craft-market-mode .publication-body,
+    body.site-shell.craft-market-mode .blog-content,
+    body.site-shell.craft-market-mode .material-card,
+    body.site-shell.craft-market-mode .capability-card,
+    body.site-shell.craft-market-mode .surface-card {
+        padding: 18px;
+    }
+
+    body.site-shell.craft-market-mode .publication-preview img {
+        min-height: 260px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.site-shell.craft-market-mode .craft-resource-market,
+    body.site-shell.craft-market-mode .craft-focus-board,
+    body.site-shell.craft-market-mode .craft-pack-marquee,
+    body.site-shell.craft-market-mode .craft-lifetime-panel,
+    body.site-shell.craft-market-mode .craft-hero-card,
+    body.site-shell.craft-market-mode .craft-product-card,
+    body.site-shell.craft-market-mode .craft-product-tile {
+        animation: none !important;
+        transition: none !important;
     }
 }
