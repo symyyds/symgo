@@ -862,71 +862,6 @@
             font-size: 12px;
             text-align: center;
         }
-
-        @media (max-width: 980px) {
-            .resume-builder-container {
-                max-width: 100%;
-                padding: 1rem;
-                overflow-x: hidden;
-            }
-
-            .resume-panel {
-                grid-template-columns: 1fr;
-                height: auto;
-                min-height: 0;
-            }
-
-            .resume-sidebar,
-            .resume-content,
-            .templates-section {
-                min-width: 0;
-                height: auto;
-                max-height: none;
-            }
-
-            .templates-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
-
-        @media (max-width: 768px) {
-            .resume-builder-container {
-                padding: 0.75rem;
-            }
-
-            .page-title {
-                font-size: 1.42rem;
-            }
-
-            .control-panel {
-                gap: 7px;
-                padding: 10px;
-            }
-
-            .control-group {
-                width: 100%;
-                flex-wrap: wrap;
-            }
-
-            .control-group:not(:last-child)::after {
-                display: none;
-            }
-
-            .control-btn,
-            .resolution-select {
-                min-height: 38px;
-                font-size: 0.78rem;
-            }
-
-            .resume-preview {
-                min-height: 620px;
-                padding: 18px;
-            }
-
-            .templates-grid {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
     <link rel="manifest" href="../manifest.webmanifest">
     <link rel="canonical" href="https://symgo.netlify.app/tools/resume_builder.html">
@@ -972,7 +907,6 @@
         </div>
     </header>
 
-    <main>
     <div class="resume-builder-container">
         <h1 class="page-title">简历制作工具</h1>
         <p class="page-description">创建一份专业的简历，支持Markdown语法，可以导出为PDF或Word格式。</p>
@@ -1056,7 +990,6 @@
             </div>
         </div>
     </div>
-    </main>
 
     <!-- 编辑弹窗 -->
     <div class="overlay" id="overlay"></div>
@@ -1200,7 +1133,7 @@
 
         // 从本地存储中加载数据或使用默认数据
         let resumeData = JSON.parse(localStorage.getItem('resumeData')) || {
-            'personal-info': `# 个人信息\n\n姓名：张三\n电话：13800138000\n邮箱：zhangsan@example.com\n地址：北京市海淀区XX街道\n\n![个人照片](../images/sym_photo.jpg)`,
+            'personal-info': `# 个人信息\n\n姓名：张三\n电话：13800138000\n邮箱：zhangsan@example.com\n地址：北京市海淀区XX街道\n\n![个人照片](https://via.placeholder.com/150)`,
             'self-evaluation': `# 自我评价\n\n我是一名充满激情的软件开发者，拥有5年的开发经验。我热爱学习新技术，善于解决复杂问题，能够快速适应新环境。`,
             'work-history': `# 工作经历\n\n## ABC科技有限公司 | 高级开发工程师\n**2020年6月 - 至今**\n\n- 负责公司核心产品的后端开发和维护\n- 优化数据库查询，提升系统性能30%\n- 带领5人小组完成新功能的开发和部署\n\n## XYZ信息技术有限公司 | 开发工程师\n**2018年7月 - 2020年5月**\n\n- 参与电商平台的开发和维护\n- 实现RESTful API接口，对接移动端应用\n- 解决生产环境中的技术问题和性能瓶颈`,
             'education': `# 教育经历\n\n## 北京大学 | 计算机科学与技术 | 硕士\n**2015年9月 - 2018年6月**\n\n- GPA: 3.8/4.0\n- 研究方向：机器学习与数据挖掘\n- 获得优秀毕业生称号\n\n## 华中科技大学 | 软件工程 | 学士\n**2011年9月 - 2015年6月**\n\n- GPA: 3.7/4.0\n- 获得校级奖学金3次`,
