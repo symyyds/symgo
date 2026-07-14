@@ -5,8 +5,8 @@
     if (!apiGrid) return;
 
     const functionPath = "/.netlify/functions/api-lab";
-    const cacheKey = "symgo-api-lab-cache-v2";
-    const timeoutMs = 14000;
+    const cacheKey = "symgo-api-lab-cache-v3";
+    const timeoutMs = 32000;
 
     const statusNodes = {
         total: document.querySelector("[data-api-total]"),
@@ -83,6 +83,50 @@
             window.location.hostname === "localhost";
     }
 
+    function normalizeFailure(payload = {}, fallback = {}) {
+        const statusCode = Number(payload.statusCode ?? fallback.statusCode);
+        const latencyMs = Number(payload.latencyMs ?? fallback.latencyMs);
+        return {
+            id: payload.id || fallback.id,
+            status: "failed",
+            statusCode: Number.isFinite(statusCode) && statusCode > 0 ? statusCode : null,
+            errorType: payload.errorType || fallback.errorType || "CLIENT_REQUEST_ERROR",
+            message: payload.message || payload.error || fallback.message || "请求失败。",
+            possibleCauses: Array.isArray(payload.possibleCauses)
+                ? payload.possibleCauses
+                : (Array.isArray(fallback.possibleCauses) ? fallback.possibleCauses : []),
+            suggestions: Array.isArray(payload.suggestions)
+                ? payload.suggestions
+                : (Array.isArray(fallback.suggestions) ? fallback.suggestions : []),
+            latencyMs: Number.isFinite(latencyMs) && latencyMs >= 0 ? latencyMs : null,
+            summary: payload.summary || fallback.summary || "本次请求没有返回可用结果。",
+            checkedAt: payload.checkedAt || fallback.checkedAt || new Date().toISOString(),
+            source: payload.source || fallback.source || "netlify-function"
+        };
+    }
+
+    function browserFailure(error, fallback = {}) {
+        if (error?.details) return normalizeFailure(error.details, fallback);
+        if (error?.name === "AbortError") {
+            return normalizeFailure({}, {
+                ...fallback,
+                statusCode: 504,
+                errorType: "CLIENT_TIMEOUT",
+                message: "浏览器等待 Netlify Function 响应超时。",
+                possibleCauses: ["Function 或上游服务响应时间过长。", "当前网络连接不稳定。"],
+                suggestions: ["稍后重试。", "在线上检查 Netlify Function 日志与执行时长。"]
+            });
+        }
+        return normalizeFailure({}, {
+            ...fallback,
+            statusCode: 0,
+            errorType: "FUNCTION_UNREACHABLE",
+            message: error?.message || "浏览器无法连接 Netlify Function。",
+            possibleCauses: ["当前是没有 Serverless 环境的本地静态预览。", "线上 Function 路由尚未部署或网络连接失败。"],
+            suggestions: ["本地使用 Netlify Dev 验证。", "线上确认 /.netlify/functions/api-lab?list=1 能返回 JSON。"]
+        });
+    }
+
     async function requestBackend(params, requestTimeoutMs = timeoutMs) {
         const controller = new AbortController();
         const timer = window.setTimeout(() => controller.abort(), requestTimeoutMs);
@@ -95,7 +139,14 @@
             });
             const payload = await response.json().catch(() => ({}));
             if (!response.ok) {
-                throw new Error(payload.error || `后端 HTTP ${response.status}`);
+                const details = normalizeFailure(payload, {
+                    statusCode: response.status,
+                    errorType: "FUNCTION_HTTP_ERROR",
+                    message: `后端返回 HTTP ${response.status}`
+                });
+                const error = new Error(details.message);
+                error.details = details;
+                throw error;
             }
             return payload;
         } finally {
@@ -126,35 +177,23 @@
     }
 
     function diagnoseFailure(api, result) {
-        const error = String(result?.error || result?.summary || "没有返回明确错误。");
-        const lower = error.toLowerCase();
-        let reason = "后端代理已收到请求，但上游接口没有返回可用结果。";
-        let action = "可以稍后重试，或在 Netlify Function 日志中查看该 API 的上游响应。";
-
-        if (/403|rate limit|forbidden|限流|权限/.test(lower)) {
-            reason = "上游接口拒绝了本次请求，常见原因是匿名额度限制、访问频率过高或需要额外请求头。";
-            action = "降低调用频率，或在 Netlify 环境变量中配置对应 Token，再由后端读取。";
-        } else if (/404|not found|未知 api|unknown/.test(lower)) {
-            reason = "请求的白名单 id、分组或上游 endpoint 没有匹配到有效资源。";
-            action = "检查 netlify/functions/lib/api-lab-config.js 中的 id、endpoint 和页面分组。";
-        } else if (/5\d\d|server|上游 http 5/.test(lower)) {
-            reason = "上游服务当前异常，本站后端代理正常返回了失败状态。";
-            action = "保留错误展示并稍后重试；如果长期失败，应替换成更稳定的数据源。";
-        } else if (/timeout|abort|超时/.test(lower)) {
-            reason = "上游接口响应超过本站后端代理的超时时间。";
-            action = "提高该 API 的 timeoutMs，或减少请求数据量，或替换更快的数据源。";
-        } else if (/failed to fetch|network|load failed|后端不可用/.test(lower)) {
-            reason = "浏览器没有成功连到本站 Netlify Function，常见原因是站点未部署 Functions、域名仍返回 404，或本地静态预览没有 Serverless 环境。";
-            action = "确认 Netlify 站点绑定当前 GitHub 仓库，publish=dist，functions=netlify/functions。";
-        }
+        const detail = normalizeFailure(result, {
+            id: api?.id,
+            message: "没有返回明确错误。",
+            possibleCauses: ["后端没有提供结构化诊断字段。"],
+            suggestions: ["检查 Netlify Function 日志与响应 JSON。"]
+        });
 
         return {
             api: api?.title || result?.id || "未知 API",
             endpoint: `${functionPath}?id=${api?.id || result?.id || "--"}`,
-            error,
-            reason,
-            action,
-            checkedAt: result?.checkedAt ? formatClock(result.checkedAt) : "--"
+            statusCode: detail.statusCode ?? "--",
+            errorType: detail.errorType,
+            message: detail.message,
+            possibleCauses: detail.possibleCauses.length ? detail.possibleCauses : ["后端未返回可能原因。"],
+            suggestions: detail.suggestions.length ? detail.suggestions : ["检查 Function 日志后重试。"],
+            latency: Number.isFinite(detail.latencyMs) ? `${Math.round(detail.latencyMs)} ms` : "--",
+            checkedAt: detail.checkedAt ? formatClock(detail.checkedAt) : "--"
         };
     }
 
@@ -165,9 +204,12 @@
             <div class="api-reason-panel" data-api-reason-panel="${escapeHtml(api.id)}" hidden>
                 <div><strong>失败账号/接口</strong><span>${escapeHtml(detail.api)}</span></div>
                 <div><strong>调用地址</strong><span>${escapeHtml(detail.endpoint)}</span></div>
-                <div><strong>原始错误</strong><span>${escapeHtml(detail.error)}</span></div>
-                <div><strong>判断原因</strong><span>${escapeHtml(detail.reason)}</span></div>
-                <div><strong>处理建议</strong><span>${escapeHtml(detail.action)}</span></div>
+                <div><strong>状态码</strong><span>${escapeHtml(detail.statusCode)}</span></div>
+                <div><strong>错误类型</strong><span>${escapeHtml(detail.errorType)}</span></div>
+                <div><strong>错误信息</strong><span>${escapeHtml(detail.message)}</span></div>
+                <div><strong>可能原因</strong><span>${detail.possibleCauses.map(escapeHtml).join("；")}</span></div>
+                <div><strong>处理建议</strong><span>${detail.suggestions.map(escapeHtml).join("；")}</span></div>
+                <div><strong>响应耗时</strong><span>${escapeHtml(detail.latency)}</span></div>
                 <div><strong>检查时间</strong><span>${escapeHtml(detail.checkedAt)}</span></div>
             </div>
         `;
@@ -212,7 +254,7 @@
         apiGrid.innerHTML = visibleApis.map((api) => {
             const result = apiResults[api.id];
             const status = resultClass(result);
-            const latency = result?.latency ? `${Math.round(result.latency)} ms` : "--";
+            const latency = Number.isFinite(result?.latencyMs) ? `${Math.round(result.latencyMs)} ms` : "--";
             const checked = result?.checkedAt ? formatClock(result.checkedAt) : "尚未测试";
             const source = result?.source === "netlify-function" ? "Netlify Function" : "Backend proxy";
             const summary = result?.summary || "点击刷新后，前端会调用本站后端函数；函数再去请求外部 API、解析数据并返回摘要。";
@@ -241,7 +283,7 @@
                         </div>
                         <p>${escapeHtml(summary)}</p>
                         ${renderFacts(result?.facts)}
-                        ${result?.error ? `<div class="api-error">${escapeHtml(result.error)}</div>` : ""}
+                        ${result?.message ? `<div class="api-error">${escapeHtml(result.message)}</div>` : ""}
                         ${renderFailureReason(api, result)}
                         <div class="api-backend-line"><i class="fas fa-server"></i> ${escapeHtml(source)} · ${escapeHtml(functionPath)}?id=${escapeHtml(api.id)}</div>
                     </div>
@@ -301,8 +343,8 @@
         const ok = results.filter((result) => result.status === "ok").length;
         const failed = results.filter((result) => result.status === "failed").length;
         const latencies = results
-            .filter((result) => result.status === "ok" && Number.isFinite(result.latency))
-            .map((result) => result.latency);
+            .filter((result) => result.status === "ok" && Number.isFinite(result.latencyMs))
+            .map((result) => result.latencyMs);
         const avg = latencies.length ? `${Math.round(latencies.reduce((sum, value) => sum + value, 0) / latencies.length)} ms` : "--";
 
         if (statusNodes.total) statusNodes.total.textContent = total;
@@ -349,7 +391,8 @@
             autoRefreshFeaturedApis();
         } catch (error) {
             backendReady = false;
-            const reason = error.name === "AbortError" ? "后端连接超时" : error.message || "后端不可用";
+            const failure = browserFailure(error);
+            const reason = failure.message;
             updateBackendStatus("failed", `<i class="fas fa-triangle-exclamation"></i> ${escapeHtml(reason)}`);
             apiGrid.innerHTML = `
                 <div class="empty-state api-empty api-backend-empty">
@@ -382,22 +425,17 @@
             if (!silent) {
                 const tone = result.status === "ok" ? "ok" : "failed";
                 const detail = result.status === "ok"
-                    ? `${api.title} 后端代理可用，耗时 ${Math.round(result.latency || 0)} ms`
-                    : `${api.title} 后端代理失败：${result.error || "上游不可用"}`;
+                    ? `${api.title} 后端代理可用，耗时 ${Math.round(result.latencyMs || 0)} ms`
+                    : `${api.title} 后端代理失败：${result.message || "上游不可用"}`;
                 addLog(detail, tone);
             }
         } catch (error) {
-            const reason = error.name === "AbortError" ? "后端请求超时" : error.message || "请求失败";
-            apiResults[api.id] = {
+            const failure = browserFailure(error, {
                 id: api.id,
-                status: "failed",
-                latency: null,
-                summary: "前端已按设计调用后端代理，但本次没有收到可用结果。",
-                error: reason,
-                checkedAt: new Date().toISOString(),
-                source: "netlify-function"
-            };
-            if (!silent) addLog(`${api.title} 后端代理失败：${reason}`, "failed");
+                summary: "前端已按设计调用后端代理，但本次没有收到可用结果。"
+            });
+            apiResults[api.id] = failure;
+            if (!silent) addLog(`${api.title} 后端代理失败：${failure.message}`, "failed");
         } finally {
             activeRequests = Math.max(0, activeRequests - 1);
             saveCache();

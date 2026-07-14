@@ -74,24 +74,37 @@
                         <div class="page-tools">
                             <div class="filter-tabs">
                                 <button class="filter-tab active" data-blog-category="all">全部</button>
-                                <button class="filter-tab" data-blog-category="tutorial">教程</button>
-                                <button class="filter-tab" data-blog-category="tools">工具</button>
-                                <button class="filter-tab" data-blog-category="notes">笔记</button>
+                                <button class="filter-tab" data-blog-category="technical">技术文章</button>
+                                <button class="filter-tab" data-blog-category="reading">论文阅读</button>
+                                <button class="filter-tab" data-blog-category="project">项目复盘</button>
+                                <button class="filter-tab" data-blog-category="application">升学记录</button>
                             </div>
+                            <select class="filter-select" data-blog-year aria-label="按年份筛选文章">
+                                <option value="all">全部年份</option>
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                            </select>
+                            <select class="filter-select" data-blog-tag aria-label="按标签筛选文章">
+                                <option value="all">全部标签</option>
+                                <option value="保研">保研</option>
+                                <option value="复试">复试</option>
+                                <option value="Git">Git</option>
+                            </select>
                             <div class="search-box">
                                 <input type="search" data-blog-search aria-label="搜索博客文章" placeholder="搜索文章标题或摘要">
                             </div>
                         </div>
 
                         <div class="blog-grid clean">
-                            <article class="blog-card" data-blog-card data-category="tutorial">
+                            <article class="blog-card" data-blog-card data-category="application" data-year="2025" data-tags="保研 推免 材料" data-reading-time="4">
                                 <div class="blog-img">
-                                    <img src="images/blog/baoyan/baoyan.png" alt="保研经验贴封面">
+                                    <img src="images/blog/baoyan/baoyan-card.webp" alt="保研经验贴封面" width="960" height="633" loading="lazy" decoding="async">
                                 </div>
                                 <div class="blog-content">
                                     <div class="blog-meta">
                                         <span><i class="far fa-calendar-alt"></i> 2025-03-05</span>
-                                        <span class="pill">教程</span>
+                                        <span class="pill">升学记录</span>
+                                        <span>约 4 分钟</span>
                                     </div>
                                     <h2 class="blog-title">保研/推免经验贴</h2>
                                     <p class="blog-excerpt">整理保研官方入口、信息平台、常见术语、材料准备和时间轴，适合低年级同学快速建立准备框架。</p>
@@ -99,14 +112,15 @@
                                 </div>
                             </article>
 
-                            <article class="blog-card" data-blog-card data-category="tutorial">
+                            <article class="blog-card" data-blog-card data-category="application" data-year="2025" data-tags="复试 保研 面试" data-reading-time="2">
                                 <div class="blog-img">
-                                    <img src="images/blog/25_skills/fig1.png" alt="复试技巧封面">
+                                    <img src="images/blog/25_skills/fig1-card.webp" alt="复试技巧封面" width="960" height="540" loading="lazy" decoding="async">
                                 </div>
                                 <div class="blog-content">
                                     <div class="blog-meta">
                                         <span><i class="far fa-calendar-alt"></i> 2025-03-02</span>
-                                        <span class="pill">教程</span>
+                                        <span class="pill">升学记录</span>
+                                        <span>约 2 分钟</span>
                                     </div>
                                     <h2 class="blog-title">考研/保研复试技巧与经验分享</h2>
                                     <p class="blog-excerpt">围绕复试材料、简历展示、导师联系和面试表达，附带视频讲解和可下载资料。</p>
@@ -114,14 +128,15 @@
                                 </div>
                             </article>
 
-                            <article class="blog-card" data-blog-card data-category="tools">
+                            <article class="blog-card" data-blog-card data-category="technical" data-year="2024" data-tags="Git 开发工具 版本控制" data-reading-time="1">
                                 <div class="blog-img">
                                     <img src="images/blog/default.svg" alt="Git教程封面">
                                 </div>
                                 <div class="blog-content">
                                     <div class="blog-meta">
                                         <span><i class="far fa-calendar-alt"></i> 2024-02-20</span>
-                                        <span class="pill">工具</span>
+                                        <span class="pill">技术文章</span>
+                                        <span>约 1 分钟</span>
                                     </div>
                                     <h2 class="blog-title">Git教程</h2>
                                     <p class="blog-excerpt">记录 Git 初始化、提交、分支管理、合并和常用工作流，适合作为开发工具速查笔记。</p>

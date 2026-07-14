@@ -3,6 +3,8 @@
         {
             year: "2024",
             type: "proceedings",
+            status: "verified",
+            levelGroup: "published",
             level: "Proceedings / Applied and Computational Engineering",
             title: "Weight class prediction based on sparrow search algorithm optimised random forest model",
             authors: "Yuanming Sun",
@@ -17,49 +19,55 @@
             tags: ["Random Forest", "Sparrow Search Algorithm", "BMI", "Classification"]
         },
         {
-            year: "2026",
-            type: "preprint",
-            level: "预印本 / 投稿准备",
-            title: "Learning Robust Representations for Academic Profile Mining",
-            authors: "Sun Yuanming, Collaborator A, Collaborator B",
-            venue: "Manuscript in preparation",
-            role: "第一作者",
-            topic: "AI",
-            abstract: "围绕学术履历、项目经历和文本材料的结构化抽取，设计可解释的表示学习流程，用于辅助简历增强与科研经历整理。",
+            year: "待补充",
+            type: "placeholder",
+            status: "placeholder",
+            levelGroup: "pending",
+            level: "待补充 / 非正式成果",
+            title: "研究生阶段论文槽位 A（待补充）",
+            authors: "待补充",
+            venue: "尚无可核验发表信息",
+            role: "待补充",
+            topic: "研究方向待补充",
+            abstract: "此位置仅保留未来论文的页面结构。获得真实题目、作者、投稿状态、平台和 PDF 后再更新，不作为当前论文成果统计。",
             pdf: "files/papers/placeholder-profile-mining.pdf",
             cover: "images/publications/placeholder-profile-mining.png",
             code: "engineering-projects.html#academic-ai",
-            tags: ["Representation Learning", "NLP", "Profile Mining"]
+            tags: ["题目待补充", "作者待补充", "平台待补充"]
         },
         {
-            year: "2025",
-            type: "conference",
-            level: "会议论文 / CCF待替换",
-            title: "A Lightweight Toolkit for Interview-Oriented Knowledge Organization",
-            authors: "Sun Yuanming, Collaborator C",
-            venue: "Student Research Workshop, 2025",
-            role: "项目负责人",
-            topic: "Software Engineering",
-            abstract: "将保研、考研复试和求职准备中的材料清单、项目陈述、问答准备整合为可复用工具链，强调低成本维护和可迁移展示。",
+            year: "待补充",
+            type: "placeholder",
+            status: "placeholder",
+            levelGroup: "pending",
+            level: "待补充 / 非正式成果",
+            title: "研究生阶段论文槽位 B（待补充）",
+            authors: "待补充",
+            venue: "尚无可核验发表信息",
+            role: "待补充",
+            topic: "研究方向待补充",
+            abstract: "此位置用于未来会议论文或研究手稿。当前没有真实题目、合作者、会议和等级信息，因此明确标记为待补充。",
             pdf: "files/papers/placeholder-toolkit.pdf",
             cover: "images/publications/placeholder-toolkit.png",
             code: "engineering-projects.html#interview-toolkit",
-            tags: ["Knowledge Management", "Tooling", "Static Web"]
+            tags: ["题目待补充", "作者待补充", "平台待补充"]
         },
         {
-            year: "2024",
-            type: "journal",
-            level: "期刊论文 / 等级待替换",
-            title: "Static Personal Websites as Extended Academic Portfolios",
-            authors: "Sun Yuanming",
-            venue: "Undergraduate Research Notes, 2024",
-            role: "独立作者",
-            topic: "Human-Computer Interaction",
-            abstract: "讨论个人网站在求职、申博、科研合作中的补充作用，并给出论文、项目、博客、资料下载等模块的内容组织建议。",
+            year: "待补充",
+            type: "placeholder",
+            status: "placeholder",
+            levelGroup: "pending",
+            level: "待补充 / 非正式成果",
+            title: "研究生阶段论文槽位 C（待补充）",
+            authors: "待补充",
+            venue: "尚无可核验发表信息",
+            role: "待补充",
+            topic: "研究方向待补充",
+            abstract: "此位置用于未来期刊论文、预印本或研究说明。页面会保留 DOI、外部文章和 PDF 字段，但不会伪装成已发表论文。",
             pdf: "files/papers/placeholder-portfolio.pdf",
             cover: "images/publications/placeholder-portfolio.png",
             code: "index.html",
-            tags: ["Portfolio", "HCI", "Personal Website"]
+            tags: ["题目待补充", "作者待补充", "平台待补充"]
         }
     ];
 
@@ -119,21 +127,21 @@
             id: "academic-ai",
             category: "engineering",
             categoryLabel: "工程项目",
-            status: "实验功能",
-            year: "2025",
-            name: "本地历史记录学术助手",
-            role: "前端功能开发",
+            status: "安全代理原型",
+            year: "2025 - 2026",
+            name: "Netlify 安全代理学术助手",
+            role: "前端功能 / Function 安全边界",
             cover: "images/engineering-projects/academic-ai-assistant-screenshot.png",
-            stack: ["JavaScript", "LocalStorage", "DeepSeek API"],
-            summary: "实现支持多轮聊天、会话列表、文件预览、记录导入导出的学术助手页面，用于阅读材料、整理问题和生成初稿。",
+            stack: ["JavaScript", "Netlify Functions", "LocalStorage", "PDF.js", "Mammoth.js"],
+            summary: "实现支持多轮上下文、本地会话与 TXT/Markdown/PDF/DOCX 文本提取的学术助手；模型密钥只从 Netlify 环境变量读取。",
             work: [
-                "用 localStorage 保存多会话聊天记录，支持重命名、删除、导入和导出。",
-                "接入 Markdown 渲染、代码高亮、PDF/Word 文本读取能力，增强学术文档问答体验。",
-                "调整 API Key 策略，避免在静态站源码中暴露真实密钥。"
+                "用 localStorage 仅保存多会话消息与标题，不保存 API Key、Token 或服务端配置。",
+                "在浏览器侧提取 TXT、Markdown、PDF 和 DOCX 的可读文本，并限制文件大小、页数与上下文长度。",
+                "通过 Netlify Function 调用上游模型，加入请求大小限制、每 IP 限流、超时和结构化错误。"
             ],
             outcomes: [
-                "可作为个人工作流展示，说明对前端状态管理和静态部署限制的理解。",
-                "后续可迁移为 Netlify Functions 或其他后端代理，进一步保护密钥。"
+                "前端不再出现密钥输入框，也不会把模型密钥写入 HTML、JavaScript 或 localStorage。",
+                "未配置 DEEPSEEK_API_KEY 时会如实显示服务端配置错误，不伪装成功或回退到浏览器直连。"
             ],
             links: [
                 { label: "打开助手", href: "ai.html" }
@@ -192,20 +200,20 @@
             id: "industry-knowledge-base",
             category: "horizontal",
             categoryLabel: "横向项目",
-            status: "方案设计",
-            year: "2026",
-            name: "企业知识库与材料自动整理平台",
-            role: "需求梳理 / 原型设计 / 前端方案",
+            status: "待补充 / 非正式项目",
+            year: "待补充",
+            name: "横向合作方案槽位 A（待补充）",
+            role: "待补充",
             stack: ["Requirement Analysis", "RAG", "Prototype", "Static Demo"],
-            summary: "面向企业内部文档、项目材料和制度文件的知识库原型，目标是把零散资料整理为可检索、可追踪、可复用的信息资产。",
+            summary: "此卡仅保留未来横向合作项目所需的展示结构；当前没有可核验的合作单位、项目周期或交付材料，不计入真实项目统计。",
             work: [
-                "拆解企业资料流转场景，设计上传、分类、检索、问答和引用追踪的核心流程。",
-                "规划 RAG 问答、文档标签、权限分层和材料归档的模块边界。",
-                "制作可演示的静态原型，用于沟通需求、评估开发成本和沉淀项目汇报材料。"
+                "待补充项目背景、需要解决的问题与公开边界。",
+                "待补充本人职责、技术路线、关键工作与阶段时间线。",
+                "待补充真实截图、架构图、交付文档与验收依据。"
             ],
             outcomes: [
-                "适合展示横向合作中的需求理解、方案表达和工程落地意识。",
-                "后续可接入对象存储、向量数据库和 Netlify Functions/后端代理。"
+                "当前无可核验成果，不展示虚构指标。",
+                "获得真实材料后再替换本槽位。"
             ],
             links: [
                 { label: "方案占位", href: "horizontal-projects.html#industry-knowledge-base" }
@@ -215,20 +223,20 @@
             id: "lab-data-dashboard",
             category: "horizontal",
             categoryLabel: "横向项目",
-            status: "交付原型",
-            year: "2025",
-            name: "实验室数据看板与成果展示系统",
-            role: "信息架构 / 可视化页面 / 部署支持",
+            status: "待补充 / 非正式项目",
+            year: "待补充",
+            name: "横向项目展示槽位 B（待补充）",
+            role: "待补充",
             stack: ["Dashboard", "Data Visualization", "HTML", "JavaScript"],
-            summary: "围绕实验室项目、论文、成员、数据统计和成果材料建立展示型看板，服务横向项目汇报、阶段验收和对外展示。",
+            summary: "此卡用于预留未来实验室或合作项目的展示位置；当前没有公开可核验的系统、单位或验收信息，不计入真实项目统计。",
             work: [
-                "将论文、项目、成员、数据统计等内容抽象为统一展示模型，减少重复维护。",
-                "设计成果概览、项目进度、资料下载和关键指标模块，方便汇报时快速定位。",
-                "优化静态部署与资源路径，保证在公开链接、内网镜像或本地演示环境中都能访问。"
+                "待补充业务背景、数据来源与本人承担的具体工作。",
+                "待补充系统架构、流程图、真实界面与验证方法。",
+                "涉及合作单位时须先完成脱敏和公开授权核验。"
             ],
             outcomes: [
-                "把科研团队的材料从文档堆转成可浏览、可检索、可演示的页面。",
-                "体现横向项目中对交付、验收、展示和维护成本的关注。"
+                "当前无可核验成果，不展示虚构用户数、指标或验收结论。",
+                "获得真实项目材料后再替换本槽位。"
             ],
             links: [
                 { label: "展示占位", href: "horizontal-projects.html#lab-data-dashboard" }
@@ -333,8 +341,7 @@
     const capabilities = [
         {
             area: "前端工程",
-            level: "高级展示能力",
-            score: 92,
+            level: "可核验页面交付",
             icon: "fa-layer-group",
             summary: "能从信息架构、视觉系统、响应式布局到静态部署完整交付个人作品集和工具页面。",
             evidence: ["Symgo 展示站重构", "博客短卡片与筛选", "工具箱多页面维护"],
@@ -342,17 +349,15 @@
         },
         {
             area: "AI 工具集成",
-            level: "可演示原型",
-            score: 86,
+            level: "安全代理原型",
             icon: "fa-wand-magic-sparkles",
             summary: "能把大模型问答、文件解析、本地会话记录和密钥安全策略组织成可用工作流。",
             evidence: ["学术助手", "PDF/Word 文档解析", "本地历史记录"],
-            stack: ["DeepSeek API", "Marked", "Highlight.js", "PDF.js", "Mammoth.js"]
+            stack: ["Netlify Functions", "DeepSeek API", "PDF.js", "Mammoth.js"]
         },
         {
             area: "内容与材料组织",
-            level: "求职/申博导向",
-            score: 90,
+            level: "求职/申博证据结构",
             icon: "fa-folder-tree",
             summary: "能把论文、项目、博客、CV、复试资料拆成可检索、可追问、可替换的证据模块。",
             evidence: ["论文发表页", "工程/横向项目页", "材料库"],
@@ -360,8 +365,7 @@
         },
         {
             area: "工程发布",
-            level: "静态站生产化",
-            score: 84,
+            level: "静态站构建与部署",
             icon: "fa-cloud-arrow-up",
             summary: "能处理 Netlify 白名单构建、资源路径、headers、安全占位和公开部署流程。",
             evidence: ["netlify.toml", "dist 白名单构建", "无真实 API Key 暴露"],
@@ -488,9 +492,9 @@
 
     const dashboardStats = [
         { label: "核心页面", value: "14", desc: "首页、档案、阶段成果、研究、论文、项目总览、工程项目、横向项目、材料、仪表盘、成就、服务、路线图、博客" },
-        { label: "项目档案", value: "10", desc: "5 个工程项目 + 5 个横向项目" },
-        { label: "论文/手稿", value: "4", desc: "1 篇真实 proceedings 论文 + 3 个可替换展示位" },
-        { label: "发布质量", value: "A", desc: "白名单构建、SEO、404、headers、manifest、sitemap" }
+        { label: "已录入项目", value: "8", desc: "5 个现有工程/工具原型 + 3 个真实横向项目档案；2 个待补充槽位不计入" },
+        { label: "已核验论文", value: "1", desc: "另保留 3 个明确标注的研究生阶段待补充槽位" },
+        { label: "发布检查", value: "4 项", desc: "受控构建、静态链接、格式检查与浏览器多断点核验" }
     ];
 
     const achievements = [
@@ -541,12 +545,12 @@
         },
         {
             year: "2025",
-            title: "学术 AI 助手原型",
+            title: "安全代理学术 AI 助手原型",
             type: "工具成果",
-            level: "Prototype",
-            description: "实现本地会话、文档解析、Markdown 渲染和 API Key 本地保存策略。",
+            level: "Netlify Function Prototype",
+            description: "实现本地会话、文档文本提取和 Netlify Function 模型代理；密钥只存于服务端环境变量。",
             proof: "ai.html",
-            tags: ["AI", "LocalStorage", "PDF.js"]
+            tags: ["AI", "Netlify Functions", "PDF.js"]
         },
         {
             year: "2024",
@@ -575,7 +579,7 @@
         {
             title: "AI 文档助手原型",
             audience: "个人学习、实验室资料问答、企业文档整理",
-            deliverables: ["聊天界面", "文件解析", "本地会话", "API Key 策略", "后端迁移建议"],
+            deliverables: ["聊天界面", "文件文本提取", "本地会话", "Netlify 安全代理", "错误与限流状态"],
             value: "把大模型能力接到真实学习/科研/项目资料工作流里。"
         },
         {
@@ -589,21 +593,21 @@
     const roadmap = [
         {
             phase: "Phase 1",
-            title: "真实材料替换",
-            status: "Next",
-            items: ["替换真实 CV", "补充真实论文 PDF/DOI", "上传项目截图", "补齐 GitHub 仓库链接"]
+            title: "研究生阶段真实材料补充",
+            status: "待真实内容",
+            items: ["论文与课题", "专利与竞赛", "实习与合作", "阶段总结"]
         },
         {
             phase: "Phase 2",
-            title: "项目证据增强",
-            status: "Planned",
-            items: ["每个项目补截图/流程图", "增加 STAR 面试讲法", "增加技术难点复盘", "增加指标或用户反馈"]
+            title: "现有项目证据增强",
+            status: "持续维护",
+            items: ["补充获准公开的截图", "更新技术难点复盘", "补充可核验指标", "同步公开文档"]
         },
         {
             phase: "Phase 3",
-            title: "动态能力升级",
-            status: "Planned",
-            items: ["Netlify Forms 留言", "Serverless API 代理", "文档搜索索引", "项目更新日志"]
+            title: "动态能力维护",
+            status: "进行中",
+            items: ["API 上游健康治理", "AI Function 环境配置", "文档搜索索引", "项目更新日志"]
         },
         {
             phase: "Phase 4",
@@ -624,9 +628,9 @@
         {
             project: "学术 AI 助手",
             situation: "学习和科研资料分散在 PDF、Word、Markdown 和聊天记录里。",
-            task: "需要一个能辅助阅读、问答和记录历史的前端原型。",
-            action: "接入 Markdown 渲染、代码高亮、PDF/Word 文本提取、本地会话记录和 API Key 本地保存。",
-            result: "展示了对 AI 工具工作流、静态站限制和用户隐私策略的理解。"
+            task: "需要一个能辅助阅读、问答和记录历史，同时不在浏览器保存模型密钥的原型。",
+            action: "实现 PDF/Word/TXT/Markdown 文本提取、本地会话记录和 Netlify Function 模型代理，并加入大小限制、限流、超时与结构化错误。",
+            result: "前端不再接触模型密钥；服务端未配置环境变量时会如实报告配置状态。"
         },
         {
             project: "保研/复试资料体系",
@@ -671,12 +675,13 @@
     }
 
     function renderPublicationPreview(item) {
-        const label = `${item.title} 论文第一页截图`;
+        const isPlaceholder = item.status === "placeholder";
+        const label = isPlaceholder ? `${item.title} 占位说明页` : `${item.title} 论文第一页截图`;
         if (item.cover) {
             return `
-                <a class="publication-preview" href="${item.pdf}" target="_blank" rel="noopener noreferrer" aria-label="打开 ${item.title} PDF">
-                    <img src="${item.cover}" alt="${label}" loading="eager" decoding="async">
-                    <span><i class="fas fa-file-pdf"></i> 查看全文</span>
+                <a class="publication-preview${isPlaceholder ? " placeholder-preview" : ""}" href="${item.pdf}" target="_blank" rel="noopener noreferrer" aria-label="打开 ${isPlaceholder ? "占位说明" : item.title + " PDF"}">
+                    <img src="${item.cover}" alt="${label}" loading="lazy" decoding="async">
+                    <span><i class="fas fa-file-pdf"></i> ${isPlaceholder ? "占位说明 · 非论文全文" : "查看 PDF 全文"}</span>
                 </a>
             `;
         }
@@ -695,21 +700,29 @@
 
         const yearFilter = document.querySelector("[data-pub-year]");
         const typeFilter = document.querySelector("[data-pub-type]");
+        const topicFilter = document.querySelector("[data-pub-topic]");
+        const levelFilter = document.querySelector("[data-pub-level]");
         const searchInput = document.querySelector("[data-pub-search]");
 
         function paint() {
             const year = yearFilter ? yearFilter.value : "all";
             const type = typeFilter ? typeFilter.value : "all";
+            const topic = topicFilter ? topicFilter.value : "all";
+            const level = levelFilter ? levelFilter.value : "all";
             const keyword = normalize(searchInput ? searchInput.value : "");
 
             const filtered = publications.filter((item) => {
                 const haystack = normalize([item.title, item.authors, item.venue, item.abstract, item.topic, item.level, item.tags.join(" ")].join(" "));
                 return (year === "all" || item.year === year)
                     && (type === "all" || item.type === type)
+                    && (topic === "all" || item.topic.includes(topic))
+                    && (level === "all" || item.levelGroup === level)
                     && (!keyword || haystack.includes(keyword));
             });
 
-            setResultSummary(root, filtered.length, publications.length, "篇论文/手稿");
+            const verifiedTotal = publications.filter((item) => item.status === "verified").length;
+            const pendingTotal = publications.filter((item) => item.status === "placeholder").length;
+            setResultSummary(root, filtered.length, publications.length, `条记录（${verifiedTotal} 篇已核验论文 + ${pendingTotal} 个待补充槽位）`);
 
             if (!filtered.length) {
                 root.innerHTML = '<div class="empty-state">没有符合条件的论文。换个年份、类型或关键词试试。</div>';
@@ -718,7 +731,7 @@
             }
 
             root.innerHTML = filtered.map((item) => `
-                <article class="publication-card" data-year="${item.year}" data-type="${item.type}">
+                <article class="publication-card${item.status === "placeholder" ? " is-placeholder-publication" : " is-verified-publication"}" data-year="${item.year}" data-type="${item.type}" data-topic="${item.topic}" data-level="${item.levelGroup}">
                     ${renderPublicationPreview(item)}
                     <div class="publication-body">
                         <div class="publication-top">
@@ -731,14 +744,20 @@
                             <span class="pill level">${item.level}</span>
                         </div>
                         <div class="tag-row">
-                            <span class="pill status">${item.type}</span>
+                            <span class="pill status">${item.status === "placeholder" ? "待补充槽位" : "已核验"}</span>
                             <span class="pill">${item.topic}</span>
                             ${item.tags.map((tag) => `<span class="pill">${tag}</span>`).join("")}
                         </div>
+                        <dl class="publication-facts" aria-label="论文元数据">
+                            <div><dt>年份</dt><dd>${item.year}</dd></div>
+                            <div><dt>发表平台</dt><dd>${item.venue}</dd></div>
+                            <div><dt>本人贡献</dt><dd>${item.role}</dd></div>
+                            <div><dt>DOI</dt><dd>${item.doi || "待补充"}</dd></div>
+                        </dl>
                         <p>${item.abstract}</p>
                         <div class="publication-actions">
-                            <a class="text-link" href="${item.pdf}" target="_blank" rel="noopener noreferrer"><i class="fas fa-file-pdf"></i> PDF 全文</a>
-                            <a class="text-link" href="${item.code}" ${item.code.startsWith("http") ? 'target="_blank" rel="noopener noreferrer"' : ""}><i class="fas ${item.code.startsWith("http") ? "fa-arrow-up-right-from-square" : "fa-diagram-project"}"></i> ${item.code.startsWith("http") ? "论文官网" : "相关项目"}</a>
+                            <a class="text-link" href="${item.pdf}" target="_blank" rel="noopener noreferrer"><i class="fas fa-file-pdf"></i> ${item.status === "placeholder" ? "占位说明" : "PDF 全文"}</a>
+                            ${item.code ? `<a class="text-link" href="${item.code}" ${item.code.startsWith("http") ? 'target="_blank" rel="noopener noreferrer"' : ""}><i class="fas ${item.code.startsWith("http") ? "fa-arrow-up-right-from-square" : "fa-diagram-project"}"></i> ${item.status === "placeholder" ? "相关工程材料" : (item.code.startsWith("http") ? "论文官网" : "相关项目")}</a>` : ""}
                             ${item.doi ? `<a class="text-link" href="https://doi.org/${item.doi}" target="_blank" rel="noopener noreferrer"><i class="fas fa-fingerprint"></i> DOI</a>` : ""}
                         </div>
                     </div>
@@ -747,7 +766,7 @@
             contentUpdated();
         }
 
-        [yearFilter, typeFilter, searchInput].forEach((el) => {
+        [yearFilter, typeFilter, topicFilter, levelFilter, searchInput].forEach((el) => {
             if (!el) return;
             el.addEventListener(el.tagName === "INPUT" ? "input" : "change", paint);
         });
@@ -829,7 +848,9 @@
                     <div class="project-list-group">
                         ${filtered.filter((project) => project.category === group.key).map((project, index) => `
                 <article class="project-showcase" id="${project.id}">
-                    ${project.cover ? `<a class="project-cover-link" href="${getProjectHref(project)}"><img class="project-cover" src="${project.cover}" alt="${project.name} 视觉证据图" loading="lazy"></a>` : ""}
+                    ${project.cover
+                        ? `<a class="project-cover-link" href="${getProjectHref(project)}"><img class="project-cover" src="${project.cover}" alt="${project.name} 视觉证据图" loading="lazy" decoding="async"></a>`
+                        : `<div class="project-cover-placeholder" role="img" aria-label="${project.name} 公开截图待补充"><span>VISUAL EVIDENCE</span><strong>公开截图待补充</strong><small>未使用无关图片或虚构界面代替</small></div>`}
                     <div class="project-head">
                         <div>
                             <div class="project-index">${String(index + 1).padStart(2, "0")}</div>
@@ -845,13 +866,22 @@
                     <div class="tag-row">
                         ${project.stack.map((tag) => `<span class="pill">${tag}</span>`).join("")}
                     </div>
+                    <dl class="project-fact-grid">
+                        <div><dt>背景与问题</dt><dd>${project.summary}</dd></div>
+                        <div><dt>我的职责</dt><dd>${project.role}</dd></div>
+                        <div><dt>技术路线</dt><dd>${project.stack.join(" / ")}</dd></div>
+                        <div><dt>验证依据</dt><dd>${project.outcomes[0] || "公开验证材料待补充"}</dd></div>
+                    </dl>
+                    <div class="project-timeline" aria-label="项目阶段信息">
+                        <span>时间范围</span><strong>${project.year}</strong><span>当前状态</span><strong>${project.status}</strong>
+                    </div>
                     <div class="work-grid">
                         <div class="work-box">
-                            <h4>我具体做了什么</h4>
+                            <h4>关键工作</h4>
                             <ul>${project.work.map((item) => `<li>${item}</li>`).join("")}</ul>
                         </div>
                         <div class="work-box">
-                            <h4>产出与可展示价值</h4>
+                            <h4>成果与验证方式</h4>
                             <ul>${project.outcomes.map((item) => `<li>${item}</li>`).join("")}</ul>
                         </div>
                     </div>
@@ -942,12 +972,9 @@
                         <span class="section-kicker">${item.level}</span>
                         <h2>${item.area}</h2>
                     </div>
-                    <div class="capability-score">${item.score}</div>
+                    <div class="capability-score">${item.evidence.length} 组证据</div>
                 </div>
                 <p>${item.summary}</p>
-                <div class="meter" aria-label="${item.area} ${item.score}分">
-                    <span style="width: ${item.score}%"></span>
-                </div>
                 <div class="evidence-grid">
                     ${item.evidence.map((evidence) => `<span><i class="fas fa-check"></i>${evidence}</span>`).join("")}
                 </div>
@@ -1139,19 +1166,25 @@
 
         const tabs = document.querySelectorAll("[data-blog-category]");
         const searchInput = document.querySelector("[data-blog-search]");
+        const yearFilter = document.querySelector("[data-blog-year]");
+        const tagFilter = document.querySelector("[data-blog-tag]");
         const empty = document.querySelector("[data-blog-empty]");
         const anchor = document.querySelector(".blog-grid.clean");
         let active = "all";
 
         function apply() {
             const keyword = normalize(searchInput ? searchInput.value : "");
+            const year = yearFilter ? yearFilter.value : "all";
+            const tag = tagFilter ? tagFilter.value : "all";
             let visible = 0;
 
             cards.forEach((card) => {
                 const categoryMatch = active === "all" || card.dataset.category === active;
+                const yearMatch = year === "all" || card.dataset.year === year;
+                const tagMatch = tag === "all" || normalize(card.dataset.tags).includes(normalize(tag));
                 const haystack = normalize(card.textContent);
                 const searchMatch = !keyword || haystack.includes(keyword);
-                const show = categoryMatch && searchMatch;
+                const show = categoryMatch && yearMatch && tagMatch && searchMatch;
                 card.style.display = show ? "" : "none";
                 if (show) visible += 1;
             });
@@ -1171,44 +1204,9 @@
         });
 
         if (searchInput) searchInput.addEventListener("input", apply);
+        if (yearFilter) yearFilter.addEventListener("change", apply);
+        if (tagFilter) tagFilter.addEventListener("change", apply);
         apply();
-    }
-
-    function initApiKeyPanel() {
-        const input = document.querySelector("[data-api-key-input]");
-        const saveBtn = document.querySelector("[data-api-key-save]");
-        const clearBtn = document.querySelector("[data-api-key-clear]");
-        const status = document.querySelector("[data-api-key-status]");
-        if (!input || !saveBtn) return;
-
-        const storageKey = "deepseek_api_key";
-
-        function refresh() {
-            const saved = localStorage.getItem(storageKey);
-            input.value = saved || "";
-            if (status) {
-                status.textContent = saved ? "已保存到本机浏览器，不会写入仓库。" : "未配置 API Key，聊天请求会失败。";
-            }
-        }
-
-        saveBtn.addEventListener("click", () => {
-            const value = input.value.trim();
-            if (!value) {
-                alert("请输入 API Key");
-                return;
-            }
-            localStorage.setItem(storageKey, value);
-            refresh();
-        });
-
-        if (clearBtn) {
-            clearBtn.addEventListener("click", () => {
-                localStorage.removeItem(storageKey);
-                refresh();
-            });
-        }
-
-        refresh();
     }
 
     window.symgoSite = {
@@ -1221,10 +1219,7 @@
         achievements,
         services,
         roadmap,
-        interviewStories,
-        getApiKey: function () {
-            return localStorage.getItem("deepseek_api_key") || "";
-        }
+        interviewStories
     };
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -1240,6 +1235,5 @@
         renderRoadmap();
         renderInterviewStories();
         initBlogFilters();
-        initApiKeyPanel();
     });
 })();

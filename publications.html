@@ -74,21 +74,30 @@
                         <div class="section-kicker">FILTER</div>
                         <h2>论文列表</h2>
                     </div>
-                    <p>可以按年份、类型和关键词快速定位。PDF 入口目前使用占位文件，适合先部署站点再逐步替换真实材料。</p>
+                    <p>真实论文与待补充槽位严格分开；支持按年份、方向、状态和关键词定位，只有可核验论文计入成果数量。</p>
                 </div>
                 <div class="page-tools">
                     <select class="filter-select" data-pub-year aria-label="按年份筛选论文">
                         <option value="all">全部年份</option>
-                        <option value="2026">2026</option>
-                        <option value="2025">2025</option>
                         <option value="2024">2024</option>
+                        <option value="待补充">待补充</option>
                     </select>
                     <select class="filter-select" data-pub-type aria-label="按类型筛选论文">
                         <option value="all">全部类型</option>
-                        <option value="journal">期刊论文</option>
-                        <option value="conference">会议论文</option>
                         <option value="proceedings">论文集/Proceedings</option>
-                        <option value="preprint">预印本/手稿</option>
+                        <option value="placeholder">待补充槽位</option>
+                    </select>
+                    <select class="filter-select" data-pub-topic aria-label="按研究方向筛选论文">
+                        <option value="all">全部方向</option>
+                        <option value="Machine Learning">Machine Learning</option>
+                        <option value="AI">AI / 待补充</option>
+                        <option value="Software Engineering">Software Engineering / 待补充</option>
+                        <option value="HCI">HCI / 待补充</option>
+                    </select>
+                    <select class="filter-select" data-pub-level aria-label="按成果状态筛选论文">
+                        <option value="all">全部状态</option>
+                        <option value="published">已发表 / 可核验</option>
+                        <option value="pending">待补充 / 非正式成果</option>
                     </select>
                     <div class="search-box">
                         <input type="search" data-pub-search aria-label="搜索论文" placeholder="搜索题目、方向、期刊或关键词">

@@ -11,7 +11,12 @@
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Cache-Control = "no-cache"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Cache-Control = "no-store"
 
 [[redirects]]
   from = "/api"
@@ -46,4 +51,14 @@
 [[redirects]]
   from = "/old/research.html"
   to = "/research.html"
+  status = 301
+
+[[redirects]]
+  from = "/test.html"
+  to = "/interview.html"
+  status = 301
+
+[[redirects]]
+  from = "/test1.html"
+  to = "/interview.html"
   status = 301

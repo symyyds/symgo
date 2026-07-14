@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
     <!-- MathJax支持 -->
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         .markdown-converter-container {
@@ -403,7 +402,7 @@
             margin-bottom: 1.5rem;
             line-height: 1.6;
         }
-        .markdown-converter-container h2 {
+        .markdown-converter-container > h1 {
             margin-bottom: 0.8rem;
             color: #333;
             border-bottom: 1px solid #eee;
@@ -456,7 +455,7 @@
             <div class="profile">
                 <img src="../images/sym_photo.jpg" alt="个人照片" class="profile-img">
                 <div class="profile-info">
-                    <h1>孙远鸣</h1>
+                    <p class="legacy-profile-name">孙远鸣</p>
                     <p class="title">Computer Science / Software Engineering</p>
                     <p class="keywords">研究 · 工程 · 写作</p>
                 </div>
@@ -487,7 +486,7 @@
 
     <main>
         <div class="markdown-converter-container">
-            <h2>Markdown转Word工具</h2>
+            <h1>Markdown 转 Word 工具</h1>
             <p class="tool-description">
                 在编辑器中输入Markdown格式的文本，左侧编辑、右侧预览，并可一键导出为Word文档或高质量图片。
                 支持数学公式、表格和各种格式化选项。
@@ -700,16 +699,19 @@
     </footer>
 
     <!-- 必要的JavaScript库 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/markdown/markdown.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/markdown/markdown.min.js"></script>
     <!-- Showdown - Markdown转HTML -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
+    <!-- DOMPurify + 本地白名单策略：所有 Markdown 预览在进入 DOM 前必须消毒 -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.6/purify.min.js"></script>
+    <script defer src="../js/safe-markdown.js"></script>
     <!-- docx.js - 用于创建Word文档 -->
-    <script src="https://unpkg.com/docx@8.0.0/build/index.js"></script>
+    <script defer src="https://unpkg.com/docx@8.0.0/build/index.js"></script>
     <!-- FileSaver.js - 用于保存文件 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <!-- html-to-image 用于将数学公式转为图片 -->
-    <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
 
     <!-- 图片导出预览区域 -->
     <div id="export-preview" class="export-preview">
@@ -731,7 +733,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // 定义示例Markdown内容，确保在初始化编辑器前声明
-            const sampleMarkdown = `# Markdown示例文档
+            const sampleMarkdown = `## Markdown 示例文档
 
 ## 简介
 这是一个简单的Markdown文档示例，展示了常用的Markdown语法和数学公式支持。
@@ -794,29 +796,93 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
                 strikethrough: true
             });
 
-            // 初始渲染预览内容
-            const initialHtml = converter.makeHtml(sampleMarkdown);
-            document.getElementById('preview-content').innerHTML = initialHtml;
+            const previewContent = document.getElementById('preview-content');
 
-            // 渲染数学公式
-            if (typeof MathJax !== 'undefined') {
-                MathJax.typesetPromise([document.getElementById('preview-content')]).catch(function (err) {
-                    console.log('MathJax初始化出错:', err);
+            function applyExportLayout(target, settings) {
+                const presetMap = {
+                    default: { maxWidth: '980px', padding: '48px' },
+                    exam: { maxWidth: '980px', padding: '56px', fontFamily: 'SimSun, serif' },
+                    paper: { maxWidth: '860px', padding: '64px', fontFamily: 'Times New Roman, SimSun, serif' },
+                    presentation: { maxWidth: '1200px', padding: '56px' },
+                    dark: { maxWidth: '980px', padding: '48px', backgroundColor: '#171716', color: '#faf9f5' }
+                };
+                const spacingMap = { compact: '1.4', normal: '1.6', loose: '1.8', exam: '2' };
+                const preset = presetMap[settings.preset] || presetMap.default;
+
+                target.style.position = 'relative';
+                target.style.width = 'min(100%, ' + preset.maxWidth + ')';
+                target.style.margin = '0 auto';
+                target.style.padding = preset.padding;
+                target.style.backgroundColor = preset.backgroundColor || settings.backgroundColor;
+                target.style.color = preset.color || settings.textColor;
+                target.style.fontFamily = preset.fontFamily || settings.fontFamily;
+                target.style.fontSize = settings.fontSize + 'px';
+                target.style.lineHeight = spacingMap[settings.spacing] || settings.lineHeight;
+
+                // Broken or still-loading images would make html-to-image reject the
+                // entire export. Preserve their alt text so the document remains readable.
+                target.querySelectorAll('img').forEach(function(image) {
+                    if (image.complete && image.naturalWidth > 0) return;
+                    const fallback = document.createElement('span');
+                    fallback.textContent = image.alt ? '[图片：' + image.alt + ']' : '[图片暂不可用]';
+                    fallback.style.color = '#65635c';
+                    fallback.style.fontSize = '0.85em';
+                    image.replaceWith(fallback);
                 });
+
+                target.querySelector('[data-export-watermark]')?.remove();
+                if (!settings.watermarkEnabled) return;
+
+                const watermark = document.createElement('div');
+                watermark.dataset.exportWatermark = 'true';
+                watermark.textContent = settings.watermarkText || 'CONFIDENTIAL';
+                Object.assign(watermark.style, {
+                    position: 'absolute',
+                    inset: '0',
+                    display: 'grid',
+                    placeItems: 'center',
+                    overflow: 'hidden',
+                    color: settings.watermarkColor,
+                    opacity: settings.watermarkOpacity,
+                    fontSize: 'clamp(40px, 8vw, 96px)',
+                    fontWeight: '700',
+                    letterSpacing: '0.12em',
+                    transform: 'rotate(-24deg)',
+                    pointerEvents: 'none',
+                    userSelect: 'none'
+                });
+                target.appendChild(watermark);
             }
+
+            // Markdown 解析器会保留用户输入的 HTML，因此解析结果必须先通过严格白名单消毒。
+            function renderMarkdownPreview(markdownText) {
+                const untrustedHtml = converter.makeHtml(markdownText);
+                const rendered = window.SymgoSafeMarkdown.render(previewContent, untrustedHtml, markdownText);
+
+                // 工具页面本身已有唯一主标题。将预览文档的一级标题安全降级，
+                // 避免用户输入任意数量的 `# 标题` 后破坏页面语义层级。
+                if (rendered) {
+                    previewContent.querySelectorAll('h1').forEach(function(heading) {
+                        const replacement = document.createElement('h2');
+                        while (heading.firstChild) replacement.appendChild(heading.firstChild);
+                        heading.replaceWith(replacement);
+                    });
+                }
+
+                if (rendered && typeof MathJax !== 'undefined') {
+                    MathJax.typesetPromise([previewContent]).catch(function (err) {
+                        console.log('MathJax渲染出错:', err);
+                    });
+                }
+            }
+
+            // 初始渲染预览内容
+            renderMarkdownPreview(sampleMarkdown);
 
             // 添加编辑器变更监听
             editor.on('change', function() {
                 const markdownText = editor.getValue();
-                const html = converter.makeHtml(markdownText);
-                document.getElementById('preview-content').innerHTML = html;
-
-                // 渲染新内容中的数学公式
-                if (typeof MathJax !== 'undefined') {
-                    MathJax.typesetPromise([document.getElementById('preview-content')]).catch(function (err) {
-                        console.log('MathJax渲染出错:', err);
-                    });
-                }
+                renderMarkdownPreview(markdownText);
 
                 // 为新渲染的内容添加点击事件处理
                 addClickHandlersToPreviewElements();
@@ -839,7 +905,6 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
                 setTimeout(function() {
                     try {
                         const markdownText = editor.getValue();
-                        const html = converter.makeHtml(markdownText);
 
                         // 创建Word文档
                         const doc = new docx.Document({
@@ -931,14 +996,22 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
 
                         // 准备导出预览
                         const exportContent = document.getElementById('export-content');
-                        exportContent.innerHTML = document.getElementById('preview-content').innerHTML;
+                        window.SymgoSafeMarkdown.cloneRenderedContent(previewContent, exportContent);
 
-                        // 应用样式
-                        exportContent.style.backgroundColor = bgColor;
-                        exportContent.style.color = textColor;
-                        exportContent.style.fontFamily = `${zhFont}, ${enFont}`;
-                        exportContent.style.fontSize = `${fontSize}px`;
-                        exportContent.style.lineHeight = lineHeight;
+                        // 应用预设、间距和水印；所有可见选项都会真实影响预览与导出结果。
+                        applyExportLayout(exportContent, {
+                            preset: document.getElementById('img-preset').value,
+                            spacing: document.getElementById('img-spacing-mode').value,
+                            backgroundColor: bgColor,
+                            textColor,
+                            fontFamily: `${zhFont}, ${enFont}`,
+                            fontSize,
+                            lineHeight,
+                            watermarkEnabled: document.getElementById('img-watermark-enable').checked,
+                            watermarkText: document.getElementById('img-watermark-text').value.trim(),
+                            watermarkColor: document.getElementById('img-watermark-color').value,
+                            watermarkOpacity: document.getElementById('img-watermark-opacity').value
+                        });
 
                         // 显示预览
                         document.getElementById('export-preview').classList.add('show');
@@ -979,11 +1052,22 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
 
                 setTimeout(function() {
                     try {
-                        // 使用html-to-image库导出图片
-                        htmlToImage.toBlob(exportContent, {
+                        // 先生成 Canvas，再按用户选择的真实 MIME 类型编码，避免扩展名与内容不一致。
+                        htmlToImage.toCanvas(exportContent, {
                             quality: 0.95,
                             pixelRatio: scale,
-                            backgroundColor: document.getElementById('img-bg-color').value
+                            backgroundColor: getComputedStyle(exportContent).backgroundColor,
+                            skipFonts: true,
+                            fontEmbedCSS: ''
+                        })
+                        .then(function(canvas) {
+                            return new Promise(function(resolve, reject) {
+                                const mimeType = format === 'jpeg' ? 'image/jpeg' : 'image/png';
+                                canvas.toBlob(function(blob) {
+                                    if (blob) resolve(blob);
+                                    else reject(new Error('浏览器未能编码所选图片格式'));
+                                }, mimeType, 0.92);
+                            });
                         })
                         .then(function(blob) {
                             saveAs(blob, `markdown_export.${format}`);
@@ -1021,6 +1105,6 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
             addClickHandlersToPreviewElements();
         });
     </script>
-    <script src="../js/main.js"></script>
+    <script defer src="../js/main.js"></script>
 </body>
 </html>

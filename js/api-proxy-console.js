@@ -58,37 +58,38 @@
     }
 
     function diagnoseFailure(detail) {
-        const error = String(detail.error || detail.payload?.error || detail.payload?.message || `HTTP ${detail.httpStatus || "--"}`);
-        const lower = error.toLowerCase();
-        let cause = "本站后端函数或上游 API 没有返回可用结果。";
-        let action = "查看 Netlify Function 日志，并确认当前路由参数在白名单内。";
+        const payload = detail.payload && typeof detail.payload === "object" ? detail.payload : {};
+        const statusCode = Number(payload.statusCode || detail.httpStatus || 0) || "--";
+        const errorType = payload.errorType || detail.errorType || "FUNCTION_UNREACHABLE";
+        const message = payload.message || payload.error || detail.error || `HTTP ${detail.httpStatus || "--"}`;
+        let possibleCauses = Array.isArray(payload.possibleCauses) ? payload.possibleCauses : [];
+        let suggestions = Array.isArray(payload.suggestions) ? payload.suggestions : [];
 
-        if (detail.httpStatus === 404 || /404|not found|未知/.test(lower)) {
-            cause = "Netlify 没有找到该静态页面或 Function 路由，常见原因是站点未部署到当前仓库、publish 目录错误，或函数目录没有被发布。";
-            action = "确认 Netlify build command 为 node scripts/build-static.js，publish directory 为 dist，functions directory 为 netlify/functions。";
-        } else if (detail.httpStatus === 405 || /只支持 get|method/.test(lower)) {
-            cause = "请求方法不符合后端函数约束；当前函数只接受 GET。";
-            action = "保持前端使用 fetch GET 请求，不要改成 POST。";
-        } else if (detail.httpStatus === 403 || /403|forbidden|rate limit|限流/.test(lower)) {
-            cause = "上游 API 拒绝请求，通常是匿名额度、频率限制或缺少 Token。";
-            action = "把 Token 配置到 Netlify 环境变量，由后端函数读取，不要写进前端。";
-        } else if (detail.httpStatus >= 500 || /5\d\d|server|上游/.test(lower)) {
-            cause = "后端函数可达，但上游服务或函数运行时出现异常。";
-            action = "保留错误展示，检查 Netlify Functions 日志；如果长期失败，替换为更稳定的数据源。";
-        } else if (/timeout|abort|超时/.test(lower)) {
-            cause = "请求超时，可能是上游 API 响应慢或网络不稳定。";
-            action = "提高对应 API 的 timeoutMs，减少返回数据量，或替换数据源。";
-        } else if (/failed to fetch|network|load failed|fetch/.test(lower)) {
-            cause = "浏览器没有连到本站 Netlify Function，可能是本地静态预览没有 Serverless 环境，或线上站点仍返回 404。";
-            action = "在线上确认 /.netlify/functions/api-lab?list=1 能返回 JSON；本地需要 Netlify Dev 才能运行函数。";
+        // 浏览器完全没有收到 JSON 时，才使用客户端网络层的兜底诊断。
+        if (!possibleCauses.length) {
+            possibleCauses = [
+                detail.error
+                    ? "浏览器没有成功取得 Netlify Function 的结构化 JSON。"
+                    : "后端响应缺少 possibleCauses 字段。"
+            ];
+        }
+        if (!suggestions.length) {
+            suggestions = [
+                detail.error
+                    ? "本地使用 Netlify Dev；线上检查 Function 路由和部署日志。"
+                    : "检查 Function 日志与响应契约。"
+            ];
         }
 
         return {
             status: detail.status || "failed",
             endpoint: detail.endpoint || endpoint,
-            error,
-            cause,
-            action
+            statusCode,
+            errorType,
+            message,
+            possibleCauses,
+            suggestions,
+            latencyMs: Number(payload.latencyMs ?? detail.latencyMs) || 0
         };
     }
 
@@ -97,9 +98,12 @@
         const reason = diagnoseFailure(detail);
         reasonPanel.querySelector("[data-proxy-reason-status]").textContent = reason.status;
         reasonPanel.querySelector("[data-proxy-reason-endpoint]").textContent = reason.endpoint;
-        reasonPanel.querySelector("[data-proxy-reason-error]").textContent = reason.error;
-        reasonPanel.querySelector("[data-proxy-reason-cause]").textContent = reason.cause;
-        reasonPanel.querySelector("[data-proxy-reason-action]").textContent = reason.action;
+        reasonPanel.querySelector("[data-proxy-reason-code]").textContent = String(reason.statusCode);
+        reasonPanel.querySelector("[data-proxy-reason-type]").textContent = reason.errorType;
+        reasonPanel.querySelector("[data-proxy-reason-message]").textContent = reason.message;
+        reasonPanel.querySelector("[data-proxy-reason-causes]").textContent = reason.possibleCauses.join("；");
+        reasonPanel.querySelector("[data-proxy-reason-suggestions]").textContent = reason.suggestions.join("；");
+        reasonPanel.querySelector("[data-proxy-reason-latency]").textContent = `${Math.round(reason.latencyMs)} ms`;
         reasonButton.hidden = false;
         reasonPanel.hidden = true;
         reasonButton.setAttribute("aria-expanded", "false");
@@ -122,8 +126,13 @@
             message: "浏览器正在调用本站 Netlify Function"
         });
 
+        const controller = new AbortController();
+        const timer = window.setTimeout(() => controller.abort(), 32000);
         try {
-            const response = await fetch(url, { headers: { Accept: "application/json" } });
+            const response = await fetch(url, {
+                signal: controller.signal,
+                headers: { Accept: "application/json" }
+            });
             const text = await response.text();
             let payload;
             try {
@@ -132,17 +141,21 @@
                 payload = { raw: text };
             }
 
+            const failed = !response.ok || payload.status === "failed";
             const wrapped = {
-                status: response.ok ? "ok" : "failed",
+                status: failed ? "failed" : "ok",
                 httpStatus: response.status,
                 latencyMs: Date.now() - started,
                 endpoint: url,
                 payload
             };
             writeOutput(wrapped);
-            setStatus(response.ok ? "ok" : "failed", response.ok ? `代理成功 · ${wrapped.latencyMs} ms` : `后端返回 HTTP ${response.status}`);
-            if (response.ok) clearFailureReason();
-            else setFailureReason(wrapped);
+            setStatus(
+                failed ? "failed" : "ok",
+                failed ? `${payload.errorType || "REQUEST_FAILED"} · ${wrapped.latencyMs} ms` : `代理成功 · ${wrapped.latencyMs} ms`
+            );
+            if (failed) setFailureReason(wrapped);
+            else clearFailureReason();
         } catch (error) {
             const reason = error.name === "AbortError" ? "请求超时" : error.message || "请求失败";
             const wrapped = {
@@ -154,6 +167,8 @@
             writeOutput(wrapped);
             setStatus("failed", reason);
             setFailureReason(wrapped);
+        } finally {
+            window.clearTimeout(timer);
         }
     }
 

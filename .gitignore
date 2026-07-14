@@ -2,4 +2,11 @@ dist/
 .netlify/
 node_modules/
 npm-debug.log*
+test.html
 test1.html
+
+# Local environment files may contain credentials.
+.env
+.env.*
+!.env.example
+!server/.env.example

@@ -1,15 +1,18 @@
 const { handler } = require("../netlify/functions/api-lab");
 const { apiGroups, liveApis } = require("../netlify/functions/lib/api-lab-config");
 
-function event(queryStringParameters) {
+function event(queryStringParameters, ip = "192.0.2.1") {
   return {
     httpMethod: "GET",
-    queryStringParameters
+    queryStringParameters,
+    headers: {
+      "x-nf-client-connection-ip": ip
+    }
   };
 }
 
-async function callFunction(params) {
-  const response = await handler(event(params));
+async function callFunction(params, ip) {
+  const response = await handler(event(params, ip));
   const body = response.body ? JSON.parse(response.body) : {};
   return {
     statusCode: response.statusCode,
@@ -42,15 +45,29 @@ async function runWithConcurrency(items, concurrency, worker) {
     throw new Error("Function list did not return the expected page groups");
   }
 
+  const anonymousBulk = await callFunction({ all: "1" }, "192.0.2.2");
+  if (anonymousBulk.statusCode !== 403 || anonymousBulk.body.errorType !== "BULK_AUTH_REQUIRED") {
+    throw new Error("Anonymous ?all=1 request was not rejected with structured 403 diagnostics");
+  }
+
+  const unknownId = await callFunction({ id: "not-in-the-whitelist" }, "192.0.2.3");
+  if (unknownId.statusCode !== 404 || unknownId.body.errorType !== "UNKNOWN_API_ID") {
+    throw new Error("Unknown API id did not return the structured whitelist error");
+  }
+
   const groupedIds = new Set(Object.values(apiGroups).flatMap((group) => group.ids));
   const missingFromGroups = liveApis.map((api) => api.id).filter((id) => !groupedIds.has(id));
   if (missingFromGroups.length) {
     throw new Error(`APIs are not embedded in any page group: ${missingFromGroups.join(", ")}`);
   }
 
-  const groupResults = await runWithConcurrency(Object.keys(apiGroups), 3, async (groupKey) => {
+  const groupKeys = Object.keys(apiGroups);
+  const groupResults = await runWithConcurrency(groupKeys, 3, async (groupKey) => {
     const started = Date.now();
-    const response = await callFunction({ group: groupKey });
+    const response = await callFunction(
+      { group: groupKey },
+      `198.51.100.${groupKeys.indexOf(groupKey) + 1}`
+    );
     return {
       groupKey,
       ok: response.statusCode === 200 &&
@@ -76,14 +93,17 @@ async function runWithConcurrency(items, concurrency, worker) {
   const results = await runWithConcurrency(liveApis, 6, async (api) => {
     const started = Date.now();
     try {
-      const response = await callFunction({ id: api.id });
+      const response = await callFunction(
+        { id: api.id },
+        `203.0.113.${liveApis.indexOf(api) + 1}`
+      );
       return {
         id: api.id,
         title: api.title,
         ok: response.statusCode === 200 && response.body.status === "ok",
         statusCode: response.statusCode,
         status: response.body.status,
-        error: response.body.error || "",
+        error: response.body.message || response.body.error || "",
         ms: Date.now() - started
       };
     } catch (error) {

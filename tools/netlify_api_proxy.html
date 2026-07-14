@@ -81,9 +81,9 @@
                                 <small>按页面分组测试首页需要展示的后端数据。</small>
                             </button>
                             <button type="button" class="proxy-route-card" data-proxy-run="all">
-                                <span><i class="fas fa-gauge-high"></i></span>
-                                <strong>GET ?all=1</strong>
-                                <small>通过后端并发测试全部 API，适合健康检查。</small>
+                                <span><i class="fas fa-lock"></i></span>
+                                <strong>GET ?all=1 · 受保护</strong>
+                                <small>匿名调用只返回结构化 403；全量健康检查必须使用服务端令牌。</small>
                             </button>
                         </div>
 
@@ -98,8 +98,9 @@
                         <span class="section-kicker">SERVER BOUNDARY</span>
                         <h2>后端做了什么</h2>
                         <ul class="proxy-check-list">
-                            <li><i class="fas fa-check"></i><span>只接受白名单 id / group / all / list，不允许前端传任意外部 URL。</span></li>
+                            <li><i class="fas fa-check"></i><span>只接受白名单 id / group / list，不允许前端传任意外部 URL；all 仅对受控服务端监控开放。</span></li>
                             <li><i class="fas fa-check"></i><span>统一设置请求头、超时、重试、缓存和 JSON/XML 文本解析。</span></li>
+                            <li><i class="fas fa-check"></i><span>按访客限制 Function 请求与上游调用预算，批量路由另有十分钟频率限制。</span></li>
                             <li><i class="fas fa-check"></i><span>未来需要 Key 的 API 只读 Netlify 环境变量，不写进前端代码。</span></li>
                         </ul>
                         <div class="proxy-file-map">
@@ -133,9 +134,12 @@
                     <div class="proxy-reason-panel" data-proxy-reason-panel hidden>
                         <div><strong>状态</strong><span data-proxy-reason-status>--</span></div>
                         <div><strong>调用地址</strong><span data-proxy-reason-endpoint>--</span></div>
-                        <div><strong>原始错误</strong><span data-proxy-reason-error>--</span></div>
-                        <div><strong>判断原因</strong><span data-proxy-reason-cause>--</span></div>
-                        <div><strong>处理建议</strong><span data-proxy-reason-action>--</span></div>
+                        <div><strong>状态码</strong><span data-proxy-reason-code>--</span></div>
+                        <div><strong>错误类型</strong><span data-proxy-reason-type>--</span></div>
+                        <div><strong>错误信息</strong><span data-proxy-reason-message>--</span></div>
+                        <div><strong>可能原因</strong><span data-proxy-reason-causes>--</span></div>
+                        <div><strong>处理建议</strong><span data-proxy-reason-suggestions>--</span></div>
+                        <div><strong>响应耗时</strong><span data-proxy-reason-latency>--</span></div>
                     </div>
                 </article>
 

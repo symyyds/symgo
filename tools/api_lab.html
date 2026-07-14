@@ -60,7 +60,7 @@
                     <div>
                         <span class="section-kicker">BACKEND STATUS</span>
                         <h2>Netlify Functions API 代理</h2>
-                    <p>点击“刷新全部”时，浏览器只会访问 <code>/.netlify/functions/api-lab</code>。后端函数再按白名单请求外部 API，返回统一的状态、耗时、摘要和结构化事实；以后需要 Key 的 API 也可以只放在 Netlify 环境变量里。</p>
+                    <p>点击“刷新全部”时，浏览器会按白名单逐项访问 <code>/.netlify/functions/api-lab?id=...</code>。后端函数统一返回状态码、错误类型、耗时、可能原因和处理建议；每位访客都有请求与上游调用预算，受保护的 <code>?all=1</code> 不接受匿名浏览器调用。</p>
                     <div class="api-backend-status loading" data-api-backend-status>
                         <i class="fas fa-circle-notch fa-spin"></i> 正在连接后端代理
                     </div>
@@ -148,6 +148,8 @@
                     <ul class="compact-list">
                         <li><i class="fas fa-check"></i><span>前端只能传白名单 id，不能传任意外部 URL。</span></li>
                         <li><i class="fas fa-check"></i><span>后端统一处理超时、错误和缓存响应头。</span></li>
+                        <li><i class="fas fa-check"></i><span>失败结果返回 statusCode、errorType、possibleCauses、suggestions 和 latencyMs。</span></li>
+                        <li><i class="fas fa-check"></i><span>按访客限流；全量健康检查仅允许携带服务端环境变量令牌的任务调用。</span></li>
                         <li><i class="fas fa-check"></i><span>能服务博客、论文、项目、材料或设计展示。</span></li>
                     </ul>
                 </aside>

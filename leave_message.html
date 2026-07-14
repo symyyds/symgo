@@ -1,563 +1,89 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="孙远鸣个人博客留言板，用于访客留言、交流和反馈。">
-    <title>留言板 | 孙远鸣</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/dropdown.css">
-    <link rel="stylesheet" href="css/site.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        .message-board {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-            padding: 16px;
-            margin-bottom: 16px;
-            min-height: 60vh;
-        }
-
-        .message-item {
-            background: #fff;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 12px;
-            animation: fadeIn 0.3s ease-in;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .message-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        }
-
-        .message-header {
-            color: var(--text-light);
-            font-size: 0.85em;
-            margin-bottom: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .message-content {
-            line-height: 1.5;
-            color: var(--text-color);
-            white-space: pre-wrap;
-            font-size: 0.95em;
-            margin: 6px 0;
-        }
-
-        .message-footer {
-            margin-top: 8px;
-            color: var(--text-light);
-            font-size: 0.8em;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .input-container {
-            margin-top: 16px;
-            background: white;
-            padding: 16px;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-        }
-
-        .input-group {
-            margin-bottom: 12px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-color);
-            font-weight: 500;
-            font-size: 0.9em;
-        }
-
-        textarea {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            resize: vertical;
-            min-height: 100px;
-            font-family: var(--font-main);
-            font-size: 0.95em;
-            line-height: 1.5;
-            color: #333;
-            background-color: #f8f9fa;
-            transition: all 0.3s ease;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            background-color: #fff;
-            box-shadow: 0 0 0 4px rgba(var(--primary-color-rgb), 0.1);
-        }
-
-        .nickname-input {
-            padding: 8px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 0.95em;
-            width: 200px;
-            transition: all 0.3s ease;
-        }
-
-        .nickname-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 4px rgba(var(--primary-color-rgb), 0.1);
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.9em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .btn.primary {
-            background: var(--primary-color);
-            color: white;
-            padding: 12px 24px;
-        }
-
-        .btn.danger {
-            background: #dc3545;
-            color: white;
-            padding: 4px 8px;
-            font-size: 0.8em;
-            opacity: 0.8;
-        }
-
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .delete-btn {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            display: none;
-        }
-
-        .message-item:hover .delete-btn {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .empty-message {
-            text-align: center;
-            padding: 48px;
-            color: var(--text-light);
-            font-style: italic;
-            font-size: 0.95em;
-        }
-
-        .admin-mode {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            z-index: 1000;
-            backdrop-filter: blur(4px);
-        }
-
-        /* 分页样式 */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 24px;
-            gap: 8px;
-        }
-
-        .pagination button {
-            padding: 8px 16px;
-            border: 1px solid var(--border-color);
-            background: white;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.85em;
-        }
-
-        .pagination .current-page {
-            padding: 8px 12px;
-            color: var(--text-color);
-            font-size: 0.85em;
-        }
-
-        /* 管理员登录模态框样式 */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(4px);
-        }
-
-        .modal-content {
-            background: white;
-            padding: 32px;
-            border-radius: 16px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.15);
-        }
-
-        .modal-header {
-            margin-bottom: 24px;
-            text-align: center;
-        }
-
-        .modal-header h2 {
-            margin: 0;
-            color: var(--text-color);
-            font-size: 1.2em;
-        }
-
-        .modal-body {
-            margin-bottom: 20px;
-        }
-
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-    </style>
-    <link rel="manifest" href="manifest.webmanifest">
-    <link rel="canonical" href="https://symgo.netlify.app/leave_message.html">
-    <meta property="og:title" content="留言板 | 孙远鸣">
-    <meta property="og:description" content="孙远鸣个人博客留言板，用于访客留言、交流和反馈。">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://symgo.netlify.app/leave_message.html">
-    <meta property="og:image" content="https://symgo.netlify.app/images/sym_photo.jpg">
-    <meta name="twitter:card" content="summary_large_image">
-</head>
-<body class="site-shell">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="孙远鸣的联系方式、合作方向与浏览器本地备忘工具。" />
+    <title>联系与本地备忘 | 孙远鸣</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/dropdown.css" />
+    <link rel="stylesheet" href="css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="canonical" href="https://symgo.netlify.app/leave_message.html" />
+    <meta property="og:title" content="联系与本地备忘 | 孙远鸣" />
+    <meta property="og:description" content="邮箱、GitHub、简历与合作方向；本地备忘只保存在访问者当前浏览器。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://symgo.netlify.app/leave_message.html" />
+  </head>
+  <body class="site-shell">
     <header>
-        <div class="container">
-            <a class="site-brand" href="index.html" aria-label="返回首页">
-                <img src="images/sym_photo.jpg" alt="孙远鸣个人照片" class="profile-img">
-                <div class="profile-info">
-                    <h1>孙远鸣</h1>
-                    <p class="title">Computer Science / Software Engineering</p>
-                    <p class="keywords">研究 · 工程 · 写作</p>
-                </div>
-            </a>
-            <nav>
-                <ul>
-                    <li><a href="index.html">首页</a></li>
-                    <li><a href="profile.html">档案</a></li>
-                    <li><a href="research.html">研究</a></li>
-                    <li><a href="publications.html">论文</a></li>
-                    <li><a href="projects.html">项目</a></li>
-                    <li><a href="handbook/index.html">手册</a></li>
-                    <li><a href="evidence/index.html">证据</a></li>
-                    <li><a href="materials.html">材料</a></li>
-                    <li><a href="blog.html">博客</a></li>
-                    <li><a href="ai.html">AI助手</a></li>
-                    <li class="dropdown">
-                        <a href="tools/markdown_to_word.html">工具箱</a>
-                        <div class="dropdown-content">
-                            <a href="tools/code_runner.html">代码高亮</a>
-                            <a href="tools/markdown_to_word.html">Markdown工具</a>
-                            <a href="tools/python_nav.html">Python学习</a>
-                            <a href="tools/deep_learning.html">深度学习</a>
-                            <a href="tools/resume_builder.html">简历制作</a>
-                            <a href="tools/api_lab.html">API实验室</a>
-                        </div>
-                    </li>
-                    <li><a href="leave_message.html" class="active">留言</a></li>
-                </ul>
-            </nav>
-        </div>
+      <div class="container">
+        <a class="site-brand" href="index.html"><span>孙远鸣</span></a>
+        <nav><ul><li><a href="index.html">首页</a></li><li><a href="leave_message.html">联系</a></li></ul></nav>
+      </div>
     </header>
 
-    <main>
-        <section class="page-hero">
-            <div class="container">
-                <div class="eyebrow"><i class="fas fa-message"></i> Message Board</div>
-                <h1>留言板</h1>
-                <p>这是本地留言板，留言保存在当前浏览器 localStorage 中。适合做个人练习和演示，如果要全站共享留言，后续可以接入 Netlify Forms 或数据库服务。</p>
-            </div>
-        </section>
+    <main id="main-content">
+      <section class="page-hero">
         <div class="container">
-            <div id="adminMode" class="admin-mode" style="display: none;">管理员模式</div>
-
-            <div class="message-board" id="messageBoard">
-                <!-- 留言内容将通过 JavaScript 动态加载 -->
-            </div>
-
-            <div class="pagination" id="pagination">
-                <!-- 分页控件将通过 JavaScript 动态加载 -->
-            </div>
-
-            <div class="input-container">
-                <div class="input-group">
-                    <label for="nickname">昵称（选填）</label>
-                    <input type="text" id="nickname" class="nickname-input" placeholder="匿名">
-                </div>
-                <div class="input-group">
-                    <label for="messageContent">留言内容</label>
-                    <textarea id="messageContent" placeholder="说点什么吧..."></textarea>
-                </div>
-                <button class="btn primary" onclick="submitMessage()">发表留言</button>
-            </div>
+          <div class="eyebrow"><i class="fas fa-message" aria-hidden="true"></i> Contact</div>
+          <h1>联系与本地备忘</h1>
+          <p>需要真正联系我，请使用邮箱或 GitHub。下方备忘工具只保存到你当前的浏览器，不会上传、不会公开，也不会发送给站点作者。</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="mailto:19861208800@163.com"><i class="fas fa-envelope" aria-hidden="true"></i> 发送邮件</a>
+            <a class="btn secondary" href="https://github.com/symyyds/symgo" target="_blank" rel="noopener noreferrer"><i class="fab fa-github" aria-hidden="true"></i> GitHub</a>
+          </div>
         </div>
+      </section>
+
+      <section class="section-band white">
+        <div class="container contact-page-grid">
+          <article class="contact-directory">
+            <span class="section-kicker">CONTACT DIRECTORY</span>
+            <h2>合作与交流入口</h2>
+            <p>适合讨论科研合作、工程原型、技术材料治理、研究生/博士申请与技术交流。</p>
+            <dl>
+              <div><dt>邮箱</dt><dd><a href="mailto:19861208800@163.com">19861208800@163.com ↗</a></dd></div>
+              <div><dt>GitHub</dt><dd><a href="https://github.com/symyyds/symgo" target="_blank" rel="noopener noreferrer">github.com/symyyds/symgo ↗</a></dd></div>
+              <div><dt>论文主页</dt><dd><a href="publications.html">查看 DOI、PDF 与作者角色 →</a></dd></div>
+              <div><dt>简历</dt><dd><a href="files/CV.pdf" target="_blank" rel="noopener noreferrer">下载中文 CV ↗</a></dd></div>
+            </dl>
+          </article>
+
+          <section class="local-note-panel" aria-labelledby="local-note-title">
+            <div class="local-note-head">
+              <div>
+                <span class="section-kicker">LOCAL ONLY</span>
+                <h2 id="local-note-title">浏览器本地备忘</h2>
+              </div>
+              <button type="button" class="text-link" data-clear-notes>清空本机记录</button>
+            </div>
+            <p class="local-note-notice" role="note">
+              隐私说明：内容仅写入当前浏览器的 localStorage。它不是公共留言板，也不存在前端“管理员密码”。清除浏览器数据后记录会消失。
+            </p>
+            <form id="local-note-form" novalidate>
+              <div class="input-group">
+                <label for="local-note-name">名称或主题（选填，最多 40 字）</label>
+                <input id="local-note-name" name="name" type="text" maxlength="40" autocomplete="off" placeholder="例如：科研合作问题" />
+              </div>
+              <div class="input-group">
+                <label for="local-note-content">备忘内容（最多 800 字）</label>
+                <textarea id="local-note-content" name="content" rows="6" maxlength="800" required placeholder="记录准备通过邮件沟通的问题……"></textarea>
+              </div>
+              <div class="local-note-actions">
+                <button class="btn primary" type="submit">保存到本机</button>
+                <button class="btn secondary" type="button" data-copy-contact>复制联系邮箱</button>
+              </div>
+              <p class="form-status" data-note-status role="status" aria-live="polite"></p>
+            </form>
+            <div class="local-note-list" data-note-list aria-label="本机备忘记录"></div>
+          </section>
+        </div>
+      </section>
     </main>
 
-    <!-- 管理员登录模态框 -->
-    <div id="adminLoginModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>管理员登录</h2>
-            </div>
-            <div class="modal-body">
-                <div class="input-group">
-                    <label for="adminPassword">管理员密码</label>
-                    <input type="password" id="adminPassword" class="nickname-input" placeholder="请输入密码">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn" onclick="closeAdminLogin()">取消</button>
-                <button class="btn primary" onclick="verifyAdminPassword()">登录</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // 配置参数
-        const CONFIG = {
-            STORAGE_KEY: 'message_board_v1',
-            ADMIN_KEY: 'admin_mode_v1',
-            ADMIN_PASSWORD: '123456', // 这里设置管理员密码，实际使用时应该使用更复杂的密码
-            ITEMS_PER_PAGE: 3 // 每页显示的留言数量
-        };
-
-        let currentPage = 1;
-
-        // 初始化页面
-        document.addEventListener('DOMContentLoaded', () => {
-            loadMessages();
-            checkAdminMode();
-
-            // 添加快捷键支持
-            document.addEventListener('keydown', (e) => {
-                // Alt + S 打开管理员登录
-                if (e.altKey && e.key === 's') {
-                    showAdminLogin();
-                }
-            });
-        });
-
-        // 加载留言
-        function loadMessages() {
-            const messages = getMessages();
-            const messageBoard = document.getElementById('messageBoard');
-
-            if (messages.length === 0) {
-                messageBoard.innerHTML = '<div class="empty-message">暂无留言，来说点什么吧~</div>';
-                document.getElementById('pagination').style.display = 'none';
-                return;
-            }
-
-            // 计算分页
-            const totalPages = Math.ceil(messages.length / CONFIG.ITEMS_PER_PAGE);
-            const startIndex = (currentPage - 1) * CONFIG.ITEMS_PER_PAGE;
-            const endIndex = Math.min(startIndex + CONFIG.ITEMS_PER_PAGE, messages.length);
-            const currentMessages = messages.slice(startIndex, endIndex);
-
-            // 渲染留言
-            messageBoard.innerHTML = currentMessages.map((msg, index) => `
-                <div class="message-item" data-index="${startIndex + index}">
-                    <div class="message-header">
-                        <span>${msg.nickname || '匿名用户'}</span>
-                        ${isAdminMode() ? `
-                            <button class="btn danger delete-btn" onclick="deleteMessage(${startIndex + index})">
-                                删除
-                            </button>
-                        ` : ''}
-                    </div>
-                    <div class="message-content">${msg.content}</div>
-                    <div class="message-footer">
-                        <span>${new Date(msg.timestamp).toLocaleString('zh-CN')}</span>
-                    </div>
-                </div>
-            `).join('');
-
-            // 更新分页控件
-            updatePagination(totalPages);
-        }
-
-        // 更新分页控件
-        function updatePagination(totalPages) {
-            const pagination = document.getElementById('pagination');
-            if (totalPages <= 1) {
-                pagination.style.display = 'none';
-                return;
-            }
-
-            pagination.style.display = 'flex';
-            pagination.innerHTML = `
-                <button onclick="changePage(1)" ${currentPage === 1 ? 'disabled' : ''}>首页</button>
-                <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>上一页</button>
-                <span class="current-page">${currentPage} / ${totalPages}</span>
-                <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>下一页</button>
-                <button onclick="changePage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''}>末页</button>
-            `;
-        }
-
-        // 切换页面
-        function changePage(page) {
-            currentPage = page;
-            loadMessages();
-            window.scrollTo(0, 0);
-        }
-
-        // 管理员登录相关函数
-        function showAdminLogin() {
-            document.getElementById('adminLoginModal').style.display = 'flex';
-        }
-
-        function closeAdminLogin() {
-            document.getElementById('adminLoginModal').style.display = 'none';
-            document.getElementById('adminPassword').value = '';
-        }
-
-        function verifyAdminPassword() {
-            const password = document.getElementById('adminPassword').value;
-            if (password === CONFIG.ADMIN_PASSWORD) {
-                localStorage.setItem(CONFIG.ADMIN_KEY, 'true');
-                closeAdminLogin();
-                checkAdminMode();
-                loadMessages();
-            } else {
-                alert('密码错误！');
-            }
-        }
-
-        // 提交留言
-        function submitMessage() {
-            const nickname = document.getElementById('nickname').value.trim();
-            const content = document.getElementById('messageContent').value.trim();
-
-            if (!content) {
-                alert('请输入留言内容');
-                return;
-            }
-
-            const messages = getMessages();
-            messages.unshift({
-                nickname: nickname || '匿名用户',
-                content: content,
-                timestamp: Date.now()
-            });
-
-            localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(messages));
-
-            // 清空输入框
-            document.getElementById('messageContent').value = '';
-            document.getElementById('nickname').value = '';
-
-            // 确保显示第一页
-            currentPage = 1;
-
-            // 重新加载留言
-            loadMessages();
-
-            // 平滑滚动到留言板顶部
-            document.getElementById('messageBoard').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // 删除留言
-        function deleteMessage(index) {
-            if (!isAdminMode()) return;
-
-            if (confirm('确定要删除这条留言吗？')) {
-                const messages = getMessages();
-                messages.splice(index, 1);
-                localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(messages));
-                loadMessages();
-            }
-        }
-
-        // 获取所有留言
-        function getMessages() {
-            return JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEY) || '[]');
-        }
-
-        // 管理员模式相关函数
-        function isAdminMode() {
-            return localStorage.getItem(CONFIG.ADMIN_KEY) === 'true';
-        }
-
-        function checkAdminMode() {
-            const adminModeDiv = document.getElementById('adminMode');
-            adminModeDiv.style.display = isAdminMode() ? 'block' : 'none';
-        }
-    </script>
+    <footer class="site-footer"><div class="container"><p>© 2026 孙远鸣</p></div></footer>
     <script src="js/main.js"></script>
-
-    <footer class="site-footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div>
-                    <h3>孙远鸣</h3>
-                    <p>个人博客与学术展示站，用来承载简历之外的论文、项目、文章和材料。</p>
-                </div>
-                <div>
-                    <h4>快速链接</h4>
-                    <ul>
-                        <li><a href="publications.html">论文发表</a></li>
-                        <li><a href="projects.html">项目展示</a></li>
-                        <li><a href="handbook/index.html">扩展手册</a></li>
-                        <li><a href="evidence/index.html">证据档案库</a></li>
-                        <li><a href="tools/api_lab.html">API 实验室</a></li>
-                        <li><a href="blog.html">博客文章</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4>联系</h4>
-                    <p><i class="fas fa-envelope"></i> 19861208800@163.com</p>
-                    <p><i class="fas fa-phone"></i> +86-19861208800</p>
-                    <p><i class="fab fa-github"></i> <a href="https://github.com/symyyds/symgo" target="_blank" rel="noopener noreferrer">github.com/symyyds/symgo</a></p>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 孙远鸣. Built as a static portfolio for Netlify.</p>
-            </div>
-        </div>
-    </footer>
-
-</body>
+    <script src="js/local-notes.js"></script>
+  </body>
 </html>

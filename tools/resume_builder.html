@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="本地运行的结构化简历制作工具，支持安全 Markdown 预览、模板切换、图片插入与 PDF/Word 导出。">
     <title>简历制作工具</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/dropdown.css">
@@ -13,9 +14,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/markdown/markdown.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.6/purify.min.js"></script>
+    <script src="../js/safe-markdown.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.1.0/docx.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docx@7.1.0/build/index.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
         .resume-builder-container {
@@ -253,7 +256,8 @@
             transform: scale(1.1);
         }
 
-        .resume-preview h1 {
+        .resume-preview h1,
+        .resume-preview .resume-document-heading {
             color: #333;
             border-bottom: 2px solid #eee;
             padding-bottom: 10px;
@@ -469,7 +473,8 @@
             padding: 40px;
         }
 
-        .resume-preview.template-简约 h1 {
+        .resume-preview.template-简约 h1,
+        .resume-preview.template-简约 .resume-document-heading {
             color: #2c3e50;
             border-bottom: 2px solid #3498db;
             padding-bottom: 8px;
@@ -502,7 +507,8 @@
             border: 10px solid #ffeb3b;
         }
 
-        .resume-preview.template-皮卡丘 h1 {
+        .resume-preview.template-皮卡丘 h1,
+        .resume-preview.template-皮卡丘 .resume-document-heading {
             color: #e53935;
             border-bottom: 3px dashed #e53935;
             padding-bottom: 8px;
@@ -543,11 +549,12 @@
             font-family: 'Segoe UI', 'Roboto', sans-serif;
             color: #fff;
             line-height: 1.6;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #5a5fc7;
             padding: 40px;
         }
 
-        .resume-preview.template-活力 h1 {
+        .resume-preview.template-活力 h1,
+        .resume-preview.template-活力 .resume-document-heading {
             color: #fff;
             border-bottom: 2px solid rgba(255, 255, 255, 0.5);
             padding-bottom: 8px;
@@ -590,7 +597,8 @@
             border-left: 15px solid #e74c3c;
         }
 
-        .resume-preview.template-明瑞 h1 {
+        .resume-preview.template-明瑞 h1,
+        .resume-preview.template-明瑞 .resume-document-heading {
             color: #e74c3c;
             border-bottom: none;
             padding-bottom: 0;
@@ -625,12 +633,13 @@
             font-family: 'Helvetica Neue', 'Arial', sans-serif;
             color: #2c3e50;
             line-height: 1.6;
-            background: linear-gradient(to bottom, #e0f7fa, #ffffff);
+            background: #e0f7fa;
             padding: 40px;
             border: 1px solid #b2ebf2;
         }
 
-        .resume-preview.template-冰川 h1 {
+        .resume-preview.template-冰川 h1,
+        .resume-preview.template-冰川 .resume-document-heading {
             color: #0097a7;
             border-bottom: 2px solid #0097a7;
             padding-bottom: 8px;
@@ -671,7 +680,8 @@
             border-bottom: 10px solid #4caf50;
         }
 
-        .resume-preview.template-明星 h1 {
+        .resume-preview.template-明星 h1,
+        .resume-preview.template-明星 .resume-document-heading {
             color: #2e7d32;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -780,7 +790,7 @@
         }
 
         .template-item.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #5a5fc7;
         }
 
         .template-item.active::before {
@@ -809,7 +819,7 @@
         }
 
         .template-item.glacier {
-            background: linear-gradient(to bottom, #e0f7fa, #ffffff);
+            background: #e0f7fa;
             border: 1px solid #b2ebf2;
         }
 
@@ -866,7 +876,7 @@
     <link rel="manifest" href="../manifest.webmanifest">
     <link rel="canonical" href="https://symgo.netlify.app/tools/resume_builder.html">
     <meta property="og:title" content="简历制作工具">
-    <meta property="og:description" content="????????????????????????/??????????">
+    <meta property="og:description" content="本地运行的结构化简历制作工具，支持安全 Markdown 预览、模板切换、图片插入与 PDF/Word 导出。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://symgo.netlify.app/tools/resume_builder.html">
     <meta property="og:image" content="https://symgo.netlify.app/images/sym_photo.jpg">
@@ -878,7 +888,7 @@
             <div class="profile">
                 <img src="../images/sym_photo.jpg" alt="个人照片" class="profile-img">
                 <div class="profile-info">
-                    <h1>孙远鸣</h1>
+                    <p class="legacy-profile-name">孙远鸣</p>
                     <p class="title">Computer Science / Software Engineering</p>
                     <p class="keywords">研究 · 工程 · 写作</p>
                 </div>
@@ -907,6 +917,7 @@
         </div>
     </header>
 
+    <main>
     <div class="resume-builder-container">
         <h1 class="page-title">简历制作工具</h1>
         <p class="page-description">创建一份专业的简历，支持Markdown语法，可以导出为PDF或Word格式。</p>
@@ -951,9 +962,9 @@
                 </div>
 
                 <!-- 添加新部分按钮 -->
-                <div class="add-section-btn" id="addSectionBtn">
+                <button type="button" class="add-section-btn" id="addSectionBtn">
                     <i class="fas fa-plus"></i> 添加新部分
-                </div>
+                </button>
             </div>
 
             <div class="resume-content">
@@ -968,35 +979,36 @@
                     <i class="fas fa-palette"></i> 选择模板样式
                 </div>
                 <div class="templates-grid">
-                    <div class="template-item simple selected" data-template="简约">
+                    <button type="button" class="template-item simple selected" data-template="简约" aria-pressed="true">
                         <div class="template-name">简约</div>
-                    </div>
-                    <div class="template-item pikachu" data-template="皮卡丘">
+                    </button>
+                    <button type="button" class="template-item pikachu" data-template="皮卡丘" aria-pressed="false">
                         <div class="template-name">皮卡丘</div>
-                    </div>
-                    <div class="template-item active" data-template="活力">
+                    </button>
+                    <button type="button" class="template-item active" data-template="活力" aria-pressed="false">
                         <div class="template-name">活力</div>
-                    </div>
-                    <div class="template-item mingrui" data-template="明瑞">
+                    </button>
+                    <button type="button" class="template-item mingrui" data-template="明瑞" aria-pressed="false">
                         <div class="template-name">明瑞</div>
-                    </div>
-                    <div class="template-item glacier" data-template="冰川">
+                    </button>
+                    <button type="button" class="template-item glacier" data-template="冰川" aria-pressed="false">
                         <div class="template-name">冰川</div>
-                    </div>
-                    <div class="template-item star" data-template="明星">
+                    </button>
+                    <button type="button" class="template-item star" data-template="明星" aria-pressed="false">
                         <div class="template-name">明星</div>
-                    </div>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+    </main>
 
     <!-- 编辑弹窗 -->
     <div class="overlay" id="overlay"></div>
-    <div class="section-editor" id="sectionEditor">
+    <div class="section-editor" id="sectionEditor" role="dialog" aria-modal="true" aria-labelledby="editorTitle" aria-hidden="true">
         <div class="editor-header">
             <h3 id="editorTitle">编辑部分</h3>
-            <button id="closeEditor" class="control-btn secondary">
+            <button id="closeEditor" class="control-btn secondary" type="button" aria-label="关闭编辑器">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -1015,10 +1027,10 @@
     </div>
 
     <!-- 图片上传弹窗 -->
-    <div class="section-editor" id="imageUploader">
+    <div class="section-editor" id="imageUploader" role="dialog" aria-modal="true" aria-labelledby="imageUploaderTitle" aria-hidden="true">
         <div class="editor-header">
-            <h3>上传图片</h3>
-            <button id="closeUploader" class="control-btn secondary">
+            <h3 id="imageUploaderTitle">上传图片</h3>
+            <button id="closeUploader" class="control-btn secondary" type="button" aria-label="关闭图片上传">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -1041,17 +1053,17 @@
     </div>
 
     <!-- 添加新部分弹窗 -->
-    <div class="section-editor" id="addSectionDialog">
+    <div class="section-editor" id="addSectionDialog" role="dialog" aria-modal="true" aria-labelledby="addSectionTitle" aria-hidden="true">
         <div class="editor-header">
-            <h3>添加新部分</h3>
-            <button id="closeAddDialog" class="control-btn secondary">
+            <h3 id="addSectionTitle">添加新部分</h3>
+            <button id="closeAddDialog" class="control-btn secondary" type="button" aria-label="关闭添加栏目对话框">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <div class="editor-content">
             <div style="margin-bottom: 15px;">
                 <label style="display: block; margin-bottom: 5px;">部分名称:</label>
-                <input type="text" id="newSectionName" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ddd;">
+                <input type="text" id="newSectionName" maxlength="60" autocomplete="off" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ddd;">
             </div>
             <div>
                 <label style="display: block; margin-bottom: 5px;">图标:</label>
@@ -1113,6 +1125,7 @@
         let currentSection = 'personal-info';
         let currentTemplate = '简约';
         let editor;
+        let lastDialogFocus = null;
 
         // 默认部分配置
         const defaultSections = [
@@ -1128,28 +1141,88 @@
             { id: 'others', name: '其他信息', icon: 'fa-ellipsis-h', hidden: false }
         ];
 
+        const allowedTemplates = new Set(['简约', '皮卡丘', '活力', '明瑞', '冰川', '明星']);
+        const allowedSectionIcons = new Set([
+            'fa-user', 'fa-comment', 'fa-briefcase', 'fa-graduation-cap', 'fa-award',
+            'fa-tools', 'fa-heart', 'fa-language', 'fa-project-diagram', 'fa-ellipsis-h',
+            'fa-code', 'fa-trophy', 'fa-user-friends', 'fa-certificate', 'fa-book',
+            'fa-globe', 'fa-palette', 'fa-clipboard-list'
+        ]);
+        const safeSectionIdPattern = /^[a-z0-9][a-z0-9-]{0,63}$/i;
+
+        function readStoredJson(key) {
+            try {
+                const rawValue = localStorage.getItem(key);
+                return rawValue === null ? null : JSON.parse(rawValue);
+            } catch (error) {
+                console.warn(`忽略损坏的本地数据：${key}`, error);
+                return null;
+            }
+        }
+
+        function sanitizeSectionConfig(value) {
+            if (!Array.isArray(value)) return defaultSections.map(section => ({ ...section }));
+
+            const seenIds = new Set();
+            const safeSections = value.slice(0, 30).flatMap((section) => {
+                if (!section || typeof section !== 'object' || Array.isArray(section)) return [];
+                const id = typeof section.id === 'string' ? section.id.trim() : '';
+                const name = typeof section.name === 'string' ? section.name.trim().slice(0, 60) : '';
+                if (!safeSectionIdPattern.test(id) || !name || seenIds.has(id)) return [];
+                seenIds.add(id);
+                return [{
+                    id,
+                    name,
+                    icon: allowedSectionIcons.has(section.icon) ? section.icon : 'fa-briefcase',
+                    hidden: section.hidden === true
+                }];
+            });
+
+            return safeSections.length ? safeSections : defaultSections.map(section => ({ ...section }));
+        }
+
+        function sanitizeResumeData(value, fallback) {
+            const source = value && typeof value === 'object' && !Array.isArray(value) ? value : fallback;
+            const safeData = Object.create(null);
+            let totalLength = 0;
+
+            Object.entries(source || {}).slice(0, 50).forEach(([id, content]) => {
+                if (!safeSectionIdPattern.test(id) || ['__proto__', 'prototype', 'constructor'].includes(id)) return;
+                if (typeof content !== 'string') return;
+                const limitedContent = content.slice(0, 200000);
+                if (totalLength + limitedContent.length > 500000) return;
+                totalLength += limitedContent.length;
+                safeData[id] = limitedContent;
+            });
+
+            return safeData;
+        }
+
         // 从本地存储加载部分配置，如果没有则使用默认配置
-        let sectionConfig = JSON.parse(localStorage.getItem('resumeSectionConfig')) || defaultSections;
+        let sectionConfig = sanitizeSectionConfig(readStoredJson('resumeSectionConfig'));
 
         // 从本地存储中加载数据或使用默认数据
-        let resumeData = JSON.parse(localStorage.getItem('resumeData')) || {
-            'personal-info': `# 个人信息\n\n姓名：张三\n电话：13800138000\n邮箱：zhangsan@example.com\n地址：北京市海淀区XX街道\n\n![个人照片](https://via.placeholder.com/150)`,
-            'self-evaluation': `# 自我评价\n\n我是一名充满激情的软件开发者，拥有5年的开发经验。我热爱学习新技术，善于解决复杂问题，能够快速适应新环境。`,
-            'work-history': `# 工作经历\n\n## ABC科技有限公司 | 高级开发工程师\n**2020年6月 - 至今**\n\n- 负责公司核心产品的后端开发和维护\n- 优化数据库查询，提升系统性能30%\n- 带领5人小组完成新功能的开发和部署\n\n## XYZ信息技术有限公司 | 开发工程师\n**2018年7月 - 2020年5月**\n\n- 参与电商平台的开发和维护\n- 实现RESTful API接口，对接移动端应用\n- 解决生产环境中的技术问题和性能瓶颈`,
-            'education': `# 教育经历\n\n## 北京大学 | 计算机科学与技术 | 硕士\n**2015年9月 - 2018年6月**\n\n- GPA: 3.8/4.0\n- 研究方向：机器学习与数据挖掘\n- 获得优秀毕业生称号\n\n## 华中科技大学 | 软件工程 | 学士\n**2011年9月 - 2015年6月**\n\n- GPA: 3.7/4.0\n- 获得校级奖学金3次`,
-            'honors': `# 荣誉奖章\n\n- 2022年度公司技术之星\n- 2020年度最佳团队成员\n- 2019年度技术创新奖`,
-            'skills': `# 专业技能\n\n- **编程语言**：Java, Python, JavaScript, C++\n- **前端技术**：React, Vue.js, HTML5, CSS3\n- **后端技术**：Spring Boot, Django, Node.js\n- **数据库**：MySQL, MongoDB, Redis\n- **工具**：Git, Docker, Jenkins, JIRA`,
-            'interests': `# 兴趣爱好\n\n- 编程竞赛\n- 技术博客写作\n- 户外徒步\n- 摄影`,
-            'languages': `# 语言能力\n\n- 中文（母语）\n- 英语（流利，托福100分）\n- 日语（基础）`,
-            'projects': `# 项目经验\n\n## 智能客服系统\n**2021年3月 - 2021年12月**\n\n使用NLP技术打造的智能客服系统，能自动回答用户问题，提高客服效率80%。\n\n- 技术栈：Python, TensorFlow, Flask, Vue.js\n- 负责算法设计和后端开发\n- 实现了意图识别和实体抽取功能\n\n## 电商数据分析平台\n**2019年5月 - 2020年2月**\n\n为电商平台构建的数据分析系统，提供销售预测、用户行为分析等功能。\n\n- 技术栈：Java, Spring Boot, MySQL, ELK, React\n- 负责数据处理和分析模块\n- 设计并实现了实时数据处理管道`,
-            'others': `# 其他信息\n\n## 证书\n- AWS认证解决方案架构师\n- Oracle认证Java工程师\n\n## 社区贡献\n- GitHub开源项目维护者\n- 技术社区活跃贡献者`
+        const defaultResumeData = {
+            'personal-info': `# 个人信息\n\n> 以下内容是简历工具的填写示例，不代表本站作者的真实履历。\n\n姓名：[请填写姓名]\n电话：[请填写电话]\n邮箱：[请填写邮箱]\n所在地：[请填写城市]`,
+            'self-evaluation': `# 自我评价\n\n用 2—3 句话概括你的专业方向、核心优势和目标岗位。尽量使用可验证事实，避免空泛形容词。`,
+            'work-history': `# 工作经历\n\n## [组织名称] | [职位]\n**[开始时间] - [结束时间或至今]**\n\n- 说明你的职责范围\n- 描述一项关键行动\n- 填写可验证的结果；没有数据时不要虚构指标`,
+            'education': `# 教育经历\n\n## [学校名称] | [专业] | [学位]\n**[开始时间] - [结束时间]**\n\n- 研究方向：[待填写]\n- 课程或经历：[待填写]`,
+            'honors': `# 荣誉奖章\n\n- [奖项名称、授予机构与年份]\n- 尚无内容时可删除本栏目`,
+            'skills': `# 专业技能\n\n- **研究方法**：[待填写]\n- **编程语言**：[待填写]\n- **工程工具**：[待填写]\n- **语言能力**：[待填写]`,
+            'interests': `# 兴趣爱好\n\n- [兴趣方向一]\n- [兴趣方向二]`,
+            'languages': `# 语言能力\n\n- [语言与真实等级或考试成绩]\n- 请勿填写无法核验的等级`,
+            'projects': `# 项目经验\n\n## [项目名称]\n**[开始时间] - [结束时间]**\n\n用一句话说明项目背景与目标。\n\n- 我的职责：[待填写]\n- 技术路线：[待填写]\n- 验证方式：[待填写]\n- 成果数据：[仅填写可核验数据]`,
+            'others': `# 其他信息\n\n## 证书或社区贡献\n- [证书名称、签发机构与日期]\n- [公开链接或验证材料]`
         };
+        let resumeData = sanitizeResumeData(readStoredJson('resumeData'), defaultResumeData);
 
         // 加载当前选中的模板（如果有本地存储）
-        currentTemplate = localStorage.getItem('currentTemplate') || '简约';
+        const storedTemplate = localStorage.getItem('currentTemplate');
+        currentTemplate = allowedTemplates.has(storedTemplate) ? storedTemplate : '简约';
 
         // 清晰度设置
-        let exportResolution = localStorage.getItem('resumeExportResolution') || '2';
+        const storedResolution = localStorage.getItem('resumeExportResolution');
+        let exportResolution = ['1', '2', '3'].includes(storedResolution) ? storedResolution : '2';
 
         // DOM元素加载完成后执行
         document.addEventListener('DOMContentLoaded', function() {
@@ -1179,9 +1252,13 @@
             document.querySelectorAll('.template-item').forEach(item => {
                 item.addEventListener('click', function() {
                     // 移除之前的selected类
-                    document.querySelector('.template-item.selected').classList.remove('selected');
+                    document.querySelectorAll('.template-item').forEach(function(template) {
+                        template.classList.remove('selected');
+                        template.setAttribute('aria-pressed', 'false');
+                    });
                     // 添加新的selected类
                     this.classList.add('selected');
+                    this.setAttribute('aria-pressed', 'true');
                     // 更新当前模板
                     currentTemplate = this.getAttribute('data-template');
                     // 保存当前模板到本地存储
@@ -1195,7 +1272,7 @@
             document.getElementById('closeEditor').addEventListener('click', closeEditor);
             document.getElementById('cancelEdit').addEventListener('click', closeEditor);
             document.getElementById('saveEdit').addEventListener('click', saveEdit);
-            document.getElementById('overlay').addEventListener('click', closeEditor);
+            document.getElementById('overlay').addEventListener('click', closeActiveDialog);
 
             // 图片上传相关事件
             document.getElementById('uploadImageBtn').addEventListener('click', openImageUploader);
@@ -1215,27 +1292,51 @@
             document.getElementById('closeAddDialog').addEventListener('click', closeAddSectionDialog);
             document.getElementById('cancelAddSection').addEventListener('click', closeAddSectionDialog);
             document.getElementById('saveNewSection').addEventListener('click', addNewSection);
+            document.addEventListener('keydown', handleDialogKeydown);
         });
 
         // 渲染菜单项
         function renderSectionItems() {
             const container = document.getElementById('sectionItems');
-            container.innerHTML = '';
+            container.replaceChildren();
+
+            function createActionButton(className, title, iconName) {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = `action-btn ${className}`;
+                button.title = title;
+                button.setAttribute('aria-label', title);
+                const icon = document.createElement('i');
+                icon.classList.add('fas', iconName);
+                icon.setAttribute('aria-hidden', 'true');
+                button.appendChild(icon);
+                return button;
+            }
 
             // 为每个部分创建菜单项
             sectionConfig.forEach((section, index) => {
                 const sectionItem = document.createElement('div');
                 sectionItem.className = `section-item${section.id === currentSection ? ' active' : ''}${section.hidden ? ' hidden' : ''}`;
                 sectionItem.setAttribute('data-section', section.id);
-                sectionItem.innerHTML = `
-                    <i class="fas ${section.icon}"></i>
-                    <span>${section.name}</span>
-                    <div class="item-actions">
-                        ${index > 0 ? `<button class="action-btn move-up-btn" title="上移"><i class="fas fa-arrow-up"></i></button>` : ''}
-                        ${index < sectionConfig.length - 1 ? `<button class="action-btn move-down-btn" title="下移"><i class="fas fa-arrow-down"></i></button>` : ''}
-                        <button class="action-btn show-hide-btn" title="${section.hidden ? '显示' : '隐藏'}"><i class="fas ${section.hidden ? 'fa-eye' : 'fa-eye-slash'}"></i></button>
-                    </div>
-                `;
+
+                const sectionIcon = document.createElement('i');
+                sectionIcon.classList.add('fas', allowedSectionIcons.has(section.icon) ? section.icon : 'fa-briefcase');
+                sectionIcon.setAttribute('aria-hidden', 'true');
+
+                const sectionName = document.createElement('span');
+                sectionName.textContent = section.name;
+
+                const actions = document.createElement('div');
+                actions.className = 'item-actions';
+                if (index > 0) actions.appendChild(createActionButton('move-up-btn', '上移', 'fa-arrow-up'));
+                if (index < sectionConfig.length - 1) actions.appendChild(createActionButton('move-down-btn', '下移', 'fa-arrow-down'));
+                actions.appendChild(createActionButton(
+                    'show-hide-btn',
+                    section.hidden ? '显示' : '隐藏',
+                    section.hidden ? 'fa-eye' : 'fa-eye-slash'
+                ));
+
+                sectionItem.append(sectionIcon, sectionName, actions);
 
                 // 点击部分切换编辑
                 sectionItem.addEventListener('click', function(e) {
@@ -1313,22 +1414,22 @@
 
         // 打开添加新部分对话框
         function openAddSectionDialog() {
-            document.getElementById('overlay').classList.add('active');
-            document.getElementById('addSectionDialog').classList.add('active');
+            showDialog('addSectionDialog');
             document.getElementById('newSectionName').value = '';
             document.getElementById('newSectionIcon').value = 'fa-briefcase';
+            requestAnimationFrame(() => document.getElementById('newSectionName').focus());
         }
 
         // 关闭添加新部分对话框
         function closeAddSectionDialog() {
-            document.getElementById('overlay').classList.remove('active');
-            document.getElementById('addSectionDialog').classList.remove('active');
+            hideDialog('addSectionDialog');
         }
 
         // 添加新部分
         function addNewSection() {
-            const name = document.getElementById('newSectionName').value.trim();
-            const icon = document.getElementById('newSectionIcon').value;
+            const name = document.getElementById('newSectionName').value.trim().slice(0, 60);
+            const requestedIcon = document.getElementById('newSectionIcon').value;
+            const icon = allowedSectionIcons.has(requestedIcon) ? requestedIcon : 'fa-briefcase';
 
             if (name) {
                 // 生成唯一ID
@@ -1368,8 +1469,10 @@
         function renderResume() {
             const preview = document.getElementById('resumePreview');
             let resumeHTML = '';
+            const visibleMarkdown = [];
 
             // 根据不同模板应用不同样式
+            if (!allowedTemplates.has(currentTemplate)) currentTemplate = '简约';
             preview.className = 'resume-preview template-' + currentTemplate;
 
             // 按照配置顺序渲染部分内容
@@ -1377,10 +1480,12 @@
                 // 只渲染未隐藏的部分
                 if (!section.hidden && resumeData[section.id]) {
                     resumeHTML += marked.parse(resumeData[section.id]);
+                    visibleMarkdown.push(resumeData[section.id]);
                 }
             });
 
-            preview.innerHTML = resumeHTML;
+            // marked 会保留原始 HTML；预览必须先经过 DOMPurify 白名单，再进入页面 DOM。
+            window.SymgoSafeMarkdown.render(preview, resumeHTML, visibleMarkdown.join('\n\n'));
 
             // 处理所有图片，应用自定义样式类
             preview.querySelectorAll('img').forEach(img => {
@@ -1389,7 +1494,7 @@
                 if (nextSibling && nextSibling.nodeType === Node.TEXT_NODE) {
                     const text = nextSibling.nodeValue;
                     const classMatch = text.match(/\{\.([a-zA-Z0-9-]+)\}/);
-                    if (classMatch) {
+                    if (classMatch && classMatch[1] === 'personal-photo') {
                         // 添加类名并移除文本节点中的类名标记
                         img.classList.add(classMatch[1]);
                         nextSibling.nodeValue = text.replace(/\{\.([a-zA-Z0-9-]+)\}/, '');
@@ -1403,27 +1508,104 @@
                     img.classList.add('personal-photo');
                 }
             });
+
+            // The builder page owns the single document H1. Resume section
+            // headings stay visually prominent but are demoted in the host page
+            // outline so previews do not create 10+ competing H1 elements.
+            preview.querySelectorAll('h1').forEach(function(heading) {
+                const replacement = document.createElement('h2');
+                replacement.className = 'resume-document-heading';
+                replacement.append(...heading.childNodes);
+                heading.replaceWith(replacement);
+            });
+        }
+
+        function activeDialog() {
+            return document.querySelector('.section-editor.active');
+        }
+
+        function setBackgroundInert(inert) {
+            [document.querySelector('body > header'), document.querySelector('main'), document.querySelector('body > footer')]
+                .filter(Boolean)
+                .forEach(function(element) { element.inert = inert; });
+        }
+
+        function showDialog(dialogId) {
+            const dialog = document.getElementById(dialogId);
+            if (!dialog) return;
+            document.querySelectorAll('.section-editor.active').forEach(function(item) {
+                item.classList.remove('active');
+                item.setAttribute('aria-hidden', 'true');
+            });
+            lastDialogFocus = document.activeElement;
+            document.getElementById('overlay').classList.add('active');
+            dialog.classList.add('active');
+            dialog.setAttribute('aria-hidden', 'false');
+            setBackgroundInert(true);
+        }
+
+        function hideDialog(dialogId) {
+            const dialog = document.getElementById(dialogId);
+            dialog?.classList.remove('active');
+            dialog?.setAttribute('aria-hidden', 'true');
+            if (!activeDialog()) {
+                document.getElementById('overlay').classList.remove('active');
+                setBackgroundInert(false);
+                if (lastDialogFocus instanceof HTMLElement) lastDialogFocus.focus();
+                lastDialogFocus = null;
+            }
+        }
+
+        function closeActiveDialog() {
+            const dialog = activeDialog();
+            if (!dialog) return;
+            hideDialog(dialog.id);
+        }
+
+        function handleDialogKeydown(event) {
+            const dialog = activeDialog();
+            if (!dialog) return;
+            if (event.key === 'Escape') {
+                event.preventDefault();
+                closeActiveDialog();
+                return;
+            }
+            if (event.key !== 'Tab') return;
+            const focusable = [...dialog.querySelectorAll('button, input, select, textarea, a[href], [tabindex]:not([tabindex="-1"])')]
+                .filter(function(element) { return !element.disabled && element.offsetParent !== null; });
+            if (!focusable.length) {
+                event.preventDefault();
+                dialog.focus();
+                return;
+            }
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+            }
         }
 
         // 打开编辑器
         function openEditor() {
             document.getElementById('editorTitle').textContent = `编辑 ${getDisplayName(currentSection)}`;
             editor.setValue(resumeData[currentSection] || '');
-            document.getElementById('overlay').classList.add('active');
-            document.getElementById('sectionEditor').classList.add('active');
+            showDialog('sectionEditor');
             editor.refresh(); // 刷新编辑器以避免显示问题
             setTimeout(() => editor.focus(), 100);
         }
 
         // 关闭编辑器
         function closeEditor() {
-            document.getElementById('overlay').classList.remove('active');
-            document.getElementById('sectionEditor').classList.remove('active');
+            hideDialog('sectionEditor');
         }
 
         // 保存编辑内容
         function saveEdit() {
-            resumeData[currentSection] = editor.getValue();
+            resumeData[currentSection] = editor.getValue().slice(0, 200000);
             // 保存到本地存储
             localStorage.setItem('resumeData', JSON.stringify(resumeData));
             renderResume();
@@ -1432,22 +1614,26 @@
 
         // 打开图片上传器
         function openImageUploader() {
-            document.getElementById('overlay').classList.add('active');
-            document.getElementById('imageUploader').classList.add('active');
-            document.getElementById('imagePreview').innerHTML = '';
+            showDialog('imageUploader');
+            document.getElementById('imagePreview').replaceChildren();
             document.getElementById('imageFile').value = '';
+            requestAnimationFrame(() => document.getElementById('imageFile').focus());
         }
 
         // 关闭图片上传器
         function closeImageUploader() {
-            document.getElementById('overlay').classList.remove('active');
-            document.getElementById('imageUploader').classList.remove('active');
+            hideDialog('imageUploader');
         }
 
         // 预览上传的图片
         function previewImage() {
             const file = document.getElementById('imageFile').files[0];
             if (file) {
+                if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type) || file.size > 10 * 1024 * 1024) {
+                    alert('请选择 10MB 以内的 JPEG、PNG、WebP 或 GIF 图片');
+                    document.getElementById('imageFile').value = '';
+                    return;
+                }
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     // 创建一个临时图片元素来获取原始尺寸
@@ -1465,7 +1651,7 @@
 
                         // 清空并添加预览
                         const previewEl = document.getElementById('imagePreview');
-                        previewEl.innerHTML = '';
+                        previewEl.replaceChildren();
                         previewEl.appendChild(img);
 
                         // 添加尺寸信息
@@ -1546,8 +1732,8 @@
             const file = document.getElementById('imageFile').files[0];
             if (file) {
                 // 检查是否为图片文件
-                if (!file.type.startsWith('image/')) {
-                    alert('请选择图片文件');
+                if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type) || file.size > 10 * 1024 * 1024) {
+                    alert('请选择 10MB 以内的 JPEG、PNG、WebP 或 GIF 图片');
                     return;
                 }
 
@@ -1614,7 +1800,7 @@
 
             // 创建一个临时的div来应用打印样式
             const printContent = document.createElement('div');
-            printContent.innerHTML = element.innerHTML;
+            window.SymgoSafeMarkdown.cloneRenderedContent(element, printContent);
             printContent.className = element.className;
             printContent.style.width = `${paperSize.width}mm`;
             printContent.style.padding = '15mm';
@@ -1626,7 +1812,7 @@
 
             // 添加打印样式
             const style = document.createElement('style');
-            style.innerHTML = `
+            style.textContent = `
                 @media print {
                     body, html {
                         -webkit-print-color-adjust: exact;
@@ -1740,11 +1926,22 @@
             input.onchange = function(event) {
                 const file = event.target.files[0];
                 if (file) {
+                    if (file.size > 1024 * 1024) {
+                        alert('导入文件不能超过 1MB');
+                        return;
+                    }
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         try {
                             const imported = JSON.parse(e.target.result);
-                            resumeData = imported;
+                            if (!imported || typeof imported !== 'object' || Array.isArray(imported)) {
+                                throw new Error('简历数据必须是 JSON 对象');
+                            }
+                            resumeData = sanitizeResumeData(imported, Object.create(null));
+                            if (!Object.keys(resumeData).length && Object.keys(imported).length) {
+                                throw new Error('文件中没有可识别的简历字段');
+                            }
+                            localStorage.setItem('resumeData', JSON.stringify(resumeData));
                             renderResume();
                             alert('简历导入成功！');
                         } catch (error) {
@@ -1758,6 +1955,14 @@
             input.click();
         }
 
+        function setButtonLabel(button, iconName, label) {
+            const icon = document.createElement('i');
+            icon.classList.add('fas', iconName);
+            icon.setAttribute('aria-hidden', 'true');
+            button.replaceChildren(icon);
+            if (label) button.appendChild(document.createTextNode(` ${label}`));
+        }
+
         // 切换预览模式
         function togglePreview() {
             const preview = document.getElementById('resumePreview');
@@ -1766,13 +1971,15 @@
             } else {
                 // 进入预览模式
                 preview.classList.add('preview-mode');
-                document.getElementById('previewBtn').innerHTML = '<i class="fas fa-edit"></i> 编辑';
+                setButtonLabel(document.getElementById('previewBtn'), 'fa-edit', '编辑');
 
                 // 创建并添加关闭按钮
                 const closeBtn = document.createElement('button');
+                closeBtn.type = 'button';
                 closeBtn.className = 'close-preview-btn';
-                closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                setButtonLabel(closeBtn, 'fa-times', '');
                 closeBtn.title = '关闭预览';
+                closeBtn.setAttribute('aria-label', '关闭预览');
                 closeBtn.addEventListener('click', closePreviewMode);
                 document.body.appendChild(closeBtn);
             }
@@ -1782,7 +1989,7 @@
         function closePreviewMode() {
             // 移除预览模式类
             document.getElementById('resumePreview').classList.remove('preview-mode');
-            document.getElementById('previewBtn').innerHTML = '<i class="fas fa-eye"></i> 预览';
+            setButtonLabel(document.getElementById('previewBtn'), 'fa-eye', '预览');
 
             // 移除关闭按钮
             const closeBtn = document.querySelector('.close-preview-btn');
