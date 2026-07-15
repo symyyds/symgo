@@ -42,6 +42,10 @@
             .replace(/'/g, "&#039;");
     }
 
+    function renderApiGlyph() {
+        return '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="5" cy="10" r="2"/><circle cx="15" cy="5" r="2"/><circle cx="15" cy="15" r="2"/><path d="m6.8 9 6.4-3M6.8 11l6.4 3"/></svg>';
+    }
+
     function trimText(value, maxLength) {
         const text = String(value || "").replace(/\s+/g, " ").trim();
         if (text.length <= maxLength) return text;
@@ -232,7 +236,7 @@
         apiGrid.innerHTML = Array.from({ length: 6 }, (_, index) => `
             <article class="api-card api-card-skeleton premium-surface" aria-hidden="true">
                 <div class="api-card-top">
-                    <span class="api-icon"></span>
+                    <span class="api-icon">${renderApiGlyph()}</span>
                     <span class="api-status loading">加载中</span>
                 </div>
                 <div class="api-card-body">
@@ -261,7 +265,7 @@
             return `
                 <article class="api-card premium-surface" data-api-card="${escapeHtml(api.id)}">
                     <div class="api-card-top">
-                        <span class="api-icon"><i class="fas ${escapeHtml(api.icon)}"></i></span>
+                        <span class="api-icon">${renderApiGlyph()}</span>
                         <div class="api-card-status">
                             <span class="api-status ${status}">${resultLabel(result)}</span>
                             ${result?.status === "failed" ? `<button type="button" class="api-reason-button" data-api-reason="${escapeHtml(api.id)}"><i class="fas fa-circle-question"></i> 查询原因</button>` : ""}
@@ -291,10 +295,10 @@
                         <span>上次检查：${escapeHtml(checked)}</span>
                         <div>
                             <button type="button" class="api-mini-button" data-api-refresh="${escapeHtml(api.id)}" aria-label="刷新 ${escapeHtml(api.title)}">
-                                <i class="fas fa-rotate"></i>
+                                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M15.8 7.1A6.3 6.3 0 1 0 16 12"/><path d="M15.8 3.4v3.9h-3.9"/></svg>
                             </button>
                             <a class="api-mini-button" href="${escapeHtml(api.docs)}" target="_blank" rel="noopener noreferrer" aria-label="查看 ${escapeHtml(api.title)} 文档">
-                                <i class="fas fa-arrow-up-right-from-square"></i>
+                                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8 4H4.8A1.8 1.8 0 0 0 3 5.8v9.4A1.8 1.8 0 0 0 4.8 17h9.4a1.8 1.8 0 0 0 1.8-1.8V12"/><path d="M11 3h6v6M17 3l-8 8"/></svg>
                             </a>
                         </div>
                     </div>

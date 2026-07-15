@@ -4,6 +4,8 @@ const { protectedSitemapPages } = require("./site-governance");
 
 const root = path.resolve(__dirname, "..");
 const outDir = path.join(root, "dist");
+const DEFAULT_SITE_URL = "https://symweb.netlify.app";
+const STALE_SITE_HOST = ["symgo", "netlify", "app"].join(".");
 
 const rootFiles = [
   "_headers",
@@ -208,7 +210,7 @@ function injectSeoMetadata(html, relativeFile, siteUrl) {
   const escapedUrl = escapeAttribute(canonicalUrl);
   const robots = isIndexablePage(relativeFile) ? "index,follow" : "noindex,follow";
 
-  let output = html.replace(/https:\/\/symgo\.netlify\.app/g, siteUrl);
+  let output = html.replaceAll(DEFAULT_SITE_URL, siteUrl);
   if (notebookHeadingPages.has(relativeFile)) {
     let headingIndex = 0;
     output = output.replace(/<h1\b([^>]*)>([\s\S]*?)<\/h1>/gi, (match, attributes, content) => {
@@ -296,6 +298,14 @@ function validateBuildOutput() {
     throw new Error(`Non-public source artifacts leaked into dist: ${forbidden.join(", ")}`);
   }
 
+  const staleDomainFiles = outputFiles.filter((file) => {
+    if (!/\.(?:html?|css|js|json|xml|txt|webmanifest)$/i.test(file)) return false;
+    return fs.readFileSync(path.join(outDir, file), "utf8").includes(STALE_SITE_HOST);
+  });
+  if (staleDomainFiles.length) {
+    throw new Error(`Stale production host leaked into dist: ${staleDomainFiles.join(", ")}`);
+  }
+
   for (const page of protectedSitemapPages.slice(1)) {
     if (!fs.existsSync(path.join(outDir, page))) {
       throw new Error(`Protected project page missing from dist: ${page}`);
@@ -350,7 +360,7 @@ const siteUrl = (
   process.env.SITE_URL ||
   process.env.URL ||
   process.env.DEPLOY_PRIME_URL ||
-  "https://symgo.netlify.app"
+  DEFAULT_SITE_URL
 ).replace(/\/$/, "");
 
 const htmlCount = rewriteHtmlMetadata(siteUrl);

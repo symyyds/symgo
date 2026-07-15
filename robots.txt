@@ -5,4 +5,4 @@ Disallow: /test.html
 Disallow: /test1.html
 Disallow: /*.ipynb$
 
-Sitemap: https://symgo.netlify.app/sitemap.xml
+Sitemap: https://symweb.netlify.app/sitemap.xml

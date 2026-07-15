@@ -680,7 +680,7 @@
         if (item.cover) {
             return `
                 <a class="publication-preview${isPlaceholder ? " placeholder-preview" : ""}" href="${item.pdf}" target="_blank" rel="noopener noreferrer" aria-label="打开 ${isPlaceholder ? "占位说明" : item.title + " PDF"}">
-                    <img src="${item.cover}" alt="${label}" loading="lazy" decoding="async">
+                    <img src="${item.cover}" alt="${label}" width="1191" height="1684" loading="lazy" decoding="async">
                     <span><i class="fas fa-file-pdf"></i> ${isPlaceholder ? "占位说明 · 非论文全文" : "查看 PDF 全文"}</span>
                 </a>
             `;

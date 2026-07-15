@@ -476,7 +476,7 @@ const liveApis = [
         icon: "fa-link",
         publicApisCategory: "URL Shorteners",
         purpose: "抽取网页标题、描述和截图元信息，适合博客引用卡片和项目链接预览。",
-        endpoint: "https://api.microlink.io/?url=https%3A%2F%2Fsymgo.netlify.app",
+        endpoint: "https://api.microlink.io/?url=https%3A%2F%2Fsymweb.netlify.app",
         docs: "https://microlink.io/docs/api/getting-started/overview",
         parse(data) {
             const meta = data.data || {};

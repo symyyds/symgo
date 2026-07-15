@@ -169,7 +169,7 @@ function getGroup(key) {
 function requestHeaders(api) {
     const headers = {
         Accept: "application/json",
-        "User-Agent": "symgo-api-lab/1.0 (+https://symgo.netlify.app)"
+        "User-Agent": "symgo-api-lab/1.0 (+https://symweb.netlify.app)"
     };
 
     if (api.id.startsWith("github-") && process.env.GITHUB_TOKEN) {
