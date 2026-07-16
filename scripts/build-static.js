@@ -664,6 +664,7 @@ function injectSeoMetadata(html, relativeFile, siteUrl) {
   const page = outputPageForFile(relativeFile);
   const canonicalUrl = encodeURI(`${siteUrl}/${page}`);
   const escapedUrl = escapeAttribute(canonicalUrl);
+  const primaryFontHref = escapeAttribute(relativeHref(relativeFile, "vendor/fonts/inter/inter-latin-wght-normal.woff2"));
   const robots = isIndexablePage(relativeFile) ? "index,follow" : "noindex,follow";
   const pageTitle = stripTags((html.match(/<title[^>]*>([\s\S]*?)<\/title>/i) || [])[1]) || "孙远鸣个人成果网站";
   const description = findMetaContent(html, "name", "description")
@@ -676,6 +677,11 @@ function injectSeoMetadata(html, relativeFile, siteUrl) {
   output = injectStaticLegacyShell(output, relativeFile);
   output = injectStaticSiteShell(output, relativeFile);
   output = ensureImageMetadata(output, relativeFile);
+  output = upsertHeadTag(
+    output,
+    /<link(?=[^>]*\bdata-symgo-font-preload\b)[^>]*>/i,
+    `<link rel="preload" href="${primaryFontHref}" as="font" type="font/woff2" crossorigin data-symgo-font-preload>`
+  );
   if (notebookHeadingPages.has(relativeFile)) {
     let headingIndex = 0;
     output = output.replace(/<h1\b([^>]*)>([\s\S]*?)<\/h1>/gi, (match, attributes, content) => {
@@ -826,8 +832,13 @@ function validateBuildOutput() {
     const canonicalCount = (html.match(/<link(?=[^>]*\brel=["']canonical["'])[^>]*>/gi) || []).length;
     const robotsCount = (html.match(/<meta(?=[^>]*\bname=["']robots["'])[^>]*>/gi) || []).length;
     const openGraphUrlCount = (html.match(/<meta(?=[^>]*\bproperty=["']og:url["'])[^>]*>/gi) || []).length;
+    const fontPreloads = html.match(/<link(?=[^>]*\bdata-symgo-font-preload\b)[^>]*>/gi) || [];
     if (canonicalCount !== 1 || robotsCount !== 1 || openGraphUrlCount !== 1) {
       throw new Error(`SEO metadata must appear exactly once in ${relativeFile}.`);
+    }
+    const fontPreloadHref = fontPreloads[0]?.match(/\bhref=(["'])(.*?)\1/i)?.[2] || "";
+    if (fontPreloads.length !== 1 || !resolveLocalImage(relativeFile, fontPreloadHref)) {
+      throw new Error(`The self-hosted primary font must be preloaded exactly once in ${relativeFile}.`);
     }
 
     if (/<(?:link|script)\b[^>]*(?:href|src)=["']https:\/\/(?:cdnjs\.cloudflare\.com|cdn\.jsdelivr\.net|unpkg\.com|html2canvas\.hertzen\.com)\//i.test(html)) {
