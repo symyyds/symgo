@@ -57,6 +57,8 @@
         { label: "API 实验室", href: "tools/api_lab.html", desc: "Functions 状态与调用结果" },
         { label: "AI 助手", href: "ai.html", desc: "安全代理与文档问答" },
         { label: "代码展示", href: "tools/code_runner.html", desc: "隔离运行与代码高亮" },
+        { label: "Python 导航", href: "tools/python_nav.html", desc: "入门、数据类型与编程笔记" },
+        { label: "深度学习", href: "tools/deep_learning.html", desc: "框架、课程与教程资源" },
         { label: "Markdown 工具", href: "tools/markdown_to_word.html", desc: "预览、排版与导出" },
         { label: "简历制作", href: "tools/resume_builder.html", desc: "结构化简历编辑工具" },
       ],
@@ -84,6 +86,8 @@
     ["API 实验室", "Functions 状态与调用结果", "tools/api_lab.html"],
     ["AI 助手", "安全代理与文档问答", "ai.html"],
     ["代码展示", "隔离运行与代码高亮", "tools/code_runner.html"],
+    ["Python 导航", "入门、数据类型与编程笔记", "tools/python_nav.html"],
+    ["深度学习", "框架、课程与教程资源", "tools/deep_learning.html"],
     ["Markdown 工具", "预览、排版与导出", "tools/markdown_to_word.html"],
     ["简历制作", "结构化简历编辑", "tools/resume_builder.html"],
     ["联系", "邮箱、GitHub 与合作方向", "leave_message.html"],
@@ -331,21 +335,57 @@
 
   function markActiveNavigation() {
     const current = currentRelativePath();
-    const section = current.includes("/") ? current.split("/")[0] : "";
-    document.querySelectorAll("[data-nav-path]").forEach((link) => {
-      const target = normalizeTarget(link.href);
-      const targetSection = target.includes("/") ? target.split("/")[0] : "";
-      const active = target === current
-        || (section && target === `${section}/index.html`)
-        || (section === "blog" && target === "blog.html")
-        || (["library", "cases", "handbook", "evidence"].includes(section) && targetSection === section)
-        || (section === "tools" && target === "tools/api_lab.html");
-      link.classList.toggle("is-current", active);
-      if (active) link.setAttribute("aria-current", "page");
+    const currentSection = current.includes("/") ? current.split("/")[0] : "";
+    const nav = document.querySelector("[data-site-nav]");
+    if (!nav) return;
+
+    const setLinkState = (link, visuallyCurrent, currentPage = false) => {
+      link.classList.toggle("is-current", visuallyCurrent);
+      if (currentPage) link.setAttribute("aria-current", "page");
       else link.removeAttribute("aria-current");
-    });
-    document.querySelectorAll(".site-nav-v2__cluster").forEach((cluster) => {
-      cluster.classList.toggle("has-current", Boolean(cluster.querySelector("a.is-current")));
+    };
+
+    const representsCurrentSection = (target) => {
+      const targetSection = target.includes("/") ? target.split("/")[0] : "";
+      return Boolean(currentSection) && (
+        target === `${currentSection}/index.html`
+        || (currentSection === "blog" && target === "blog.html")
+        || (["library", "cases", "handbook", "evidence"].includes(currentSection) && targetSection === currentSection)
+      );
+    };
+
+    nav.querySelectorAll(":scope > ul > li").forEach((item) => {
+      const cluster = item.querySelector(":scope > .site-nav-v2__cluster-head")?.parentElement;
+      const primary = cluster
+        ? cluster.querySelector(":scope > .site-nav-v2__cluster-head > .site-nav-v2__primary")
+        : item.querySelector(":scope > .site-nav-v2__primary");
+      if (!primary) return;
+
+      const primaryTarget = normalizeTarget(primary.href);
+      if (!cluster) {
+        const exactPrimary = primaryTarget === current;
+        setLinkState(primary, exactPrimary, exactPrimary);
+        return;
+      }
+
+      const children = [...cluster.querySelectorAll(":scope > .site-nav-v2__panel > a[data-nav-path]")];
+      const exactChild = children.find((link) => normalizeTarget(link.href) === current) || null;
+      const sectionChild = exactChild || children.find((link) => representsCurrentSection(normalizeTarget(link.href))) || null;
+
+      children.forEach((link) => {
+        setLinkState(link, link === sectionChild, link === exactChild);
+      });
+
+      const primarySection = primaryTarget.includes("/") ? primaryTarget.split("/")[0] : "";
+      const sectionCurrent = primaryTarget === current
+        || Boolean(sectionChild)
+        || (Boolean(currentSection) && primarySection === currentSection);
+
+      /* A clustered primary identifies the active section visually. The exact
+         child owns aria-current="page", avoiding two page announcements for
+         duplicated landing targets such as Publications and API Lab. */
+      setLinkState(primary, sectionCurrent, sectionCurrent && !exactChild && primaryTarget === current);
+      cluster.classList.toggle("has-current", sectionCurrent);
     });
   }
 
@@ -537,7 +577,7 @@
     if (!main || document.body.classList.contains("home-v2")) return;
     const headings = [...main.querySelectorAll("h2")]
       .filter((heading) => heading.textContent.trim())
-      .filter((heading) => !heading.closest(".publication-card, .project-showcase, .blog-card, .capability-card, .material-card, .api-log-card"))
+      .filter((heading) => !heading.closest(".publication-card, .project-showcase, .blog-card, .capability-card, .material-card, .api-log-card, [data-api-widget]"))
       .slice(0, 7);
     if (headings.length < 3) return;
     const rail = document.createElement("aside");
@@ -580,6 +620,81 @@
     });
   }
 
+  function initImagePreview() {
+    if (document.documentElement.dataset.imagePreviewReady === "true") return;
+    document.documentElement.dataset.imagePreviewReady = "true";
+
+    const dialog = document.createElement("dialog");
+    dialog.className = "image-preview-dialog";
+    dialog.setAttribute("aria-labelledby", "image-preview-title");
+    dialog.innerHTML = `
+      <div class="image-preview-dialog__shell">
+        <div class="image-preview-dialog__head">
+          <div>
+            <span class="section-kicker">VISUAL EVIDENCE</span>
+            <h2 id="image-preview-title">项目截图预览</h2>
+          </div>
+          <button class="image-preview-dialog__close" type="button" data-image-preview-close aria-label="关闭截图预览">×</button>
+        </div>
+        <div class="image-preview-dialog__media">
+          <span data-image-preview-status role="status" aria-live="polite">正在加载截图…</span>
+          <img alt="" decoding="async" hidden>
+        </div>
+        <p data-image-preview-caption></p>
+      </div>
+    `;
+    document.body.appendChild(dialog);
+
+    const previewImage = dialog.querySelector("img");
+    const caption = dialog.querySelector("[data-image-preview-caption]");
+    const status = dialog.querySelector("[data-image-preview-status]");
+    let opener = null;
+
+    const closePreview = () => {
+      if (dialog.open) dialog.close();
+    };
+
+    document.addEventListener("click", (event) => {
+      const trigger = event.target.closest("[data-image-preview-src]");
+      if (!trigger) return;
+      event.preventDefault();
+      const source = trigger.dataset.imagePreviewSrc;
+      if (!source) return;
+      opener = trigger;
+      const label = trigger.dataset.imagePreviewAlt || "项目截图";
+      previewImage.alt = label;
+      previewImage.hidden = true;
+      status.hidden = false;
+      status.textContent = "正在加载截图…";
+      caption.textContent = label;
+      dialog.showModal();
+      document.body.classList.add("dialog-open");
+      previewImage.src = new URL(source, document.baseURI).href;
+    });
+
+    previewImage.addEventListener("load", () => {
+      previewImage.hidden = false;
+      status.hidden = true;
+    });
+    previewImage.addEventListener("error", () => {
+      previewImage.hidden = true;
+      status.hidden = false;
+      status.textContent = "截图加载失败；可关闭预览后打开对应项目页面。";
+    });
+
+    dialog.querySelector("[data-image-preview-close]").addEventListener("click", closePreview);
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) closePreview();
+    });
+    dialog.addEventListener("close", () => {
+      document.body.classList.remove("dialog-open");
+      previewImage.removeAttribute("src");
+      previewImage.hidden = true;
+      status.hidden = true;
+      if (opener?.isConnected) opener.focus();
+    });
+  }
+
   function initContactValidation() {
     const form = document.getElementById("contact-form");
     if (!form) return;
@@ -615,6 +730,7 @@
     initBackToTop();
     initBreadcrumbs();
     initContactValidation();
+    initImagePreview();
     refreshEnhancements();
     window.symgoRefreshEnhancements = refreshEnhancements;
     document.addEventListener("symgo:content-updated", refreshEnhancements);

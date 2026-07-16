@@ -8,18 +8,18 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/dropdown.css">
     <link rel="stylesheet" href="../css/site.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/markdown/markdown.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.2.6/purify.min.js"></script>
+    <link rel="stylesheet" href="../vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../vendor/codemirror/codemirror.min.css">
+    <link rel="stylesheet" href="../vendor/codemirror/theme/monokai.min.css">
+    <script src="../vendor/codemirror/codemirror.min.js"></script>
+    <script src="../vendor/codemirror/mode/markdown.min.js"></script>
+    <script src="../vendor/libs/marked.min.js"></script>
+    <script src="../vendor/libs/purify.min.js"></script>
     <script src="../js/safe-markdown.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/docx@7.1.0/build/index.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="../vendor/libs/jspdf.umd.min.js"></script>
+    <script src="../vendor/libs/html2canvas.min.js"></script>
+    <script src="../vendor/libs/docx.min.js"></script>
+    <script src="../vendor/libs/FileSaver.min.js"></script>
     <style>
         .resume-builder-container {
             padding: 2rem;
@@ -340,7 +340,7 @@
         .section-item .action-btn {
             background: none;
             border: none;
-            color: #777;
+            color: #65635c;
             cursor: pointer;
             padding: 2px;
             border-radius: 3px;
@@ -367,7 +367,7 @@
                 content: '正在准备栏目…';
                 display: block;
                 padding: 12px;
-                color: #777;
+                color: #65635c;
                 border: 1px dashed #ccc;
                 border-radius: 6px;
                 font-size: 12px;
@@ -407,7 +407,7 @@
         }
 
         .section-item.hidden .show-hide-btn i {
-            color: #f44336;
+            color: #b3261e;
         }
 
         .add-section-btn {
@@ -512,6 +512,44 @@
             border-radius: 4px;
         }
 
+        .cm-s-monokai.CodeMirror .cm-comment {
+            color: #b8b39f;
+        }
+
+        .cm-s-monokai.CodeMirror .cm-keyword,
+        .cm-s-monokai.CodeMirror .cm-atom {
+            color: #ff80aa;
+        }
+
+        .resume-editor-fallback {
+            display: block;
+            width: 100%;
+            min-height: 300px;
+            padding: 1rem;
+            border: 1px solid #77736b;
+            border-radius: 4px;
+            background: #171716;
+            color: #f5f3ed;
+            font: 14px/1.5 Consolas, monospace;
+            resize: vertical;
+        }
+
+        .tool-dependency-status {
+            margin: 1rem 0;
+            padding: 0.8rem 1rem;
+            border-left: 3px solid #b83218;
+            background: #fff1ed;
+            color: #70200f;
+            line-height: 1.55;
+        }
+
+        .resume-plain-fallback {
+            margin: 0;
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            font: inherit;
+        }
+
         /* 简历模板样式 */
 
         /* 简约模板 */
@@ -526,13 +564,13 @@
         .resume-preview.template-简约 h1,
         .resume-preview.template-简约 .resume-document-heading {
             color: #2c3e50;
-            border-bottom: 2px solid #3498db;
+            border-bottom: 2px solid #17679b;
             padding-bottom: 8px;
             font-size: 22px;
         }
 
         .resume-preview.template-简约 h2 {
-            color: #3498db;
+            color: #17679b;
             font-size: 18px;
             margin-top: 20px;
             margin-bottom: 10px;
@@ -559,7 +597,7 @@
 
         .resume-preview.template-皮卡丘 h1,
         .resume-preview.template-皮卡丘 .resume-document-heading {
-            color: #e53935;
+            color: #b62624;
             border-bottom: 3px dashed #e53935;
             padding-bottom: 8px;
             font-size: 24px;
@@ -567,7 +605,7 @@
         }
 
         .resume-preview.template-皮卡丘 h2 {
-            color: #e53935;
+            color: #b62624;
             font-size: 18px;
             margin-top: 20px;
             margin-bottom: 10px;
@@ -584,7 +622,7 @@
 
         .resume-preview.template-皮卡丘 ul li:before {
             content: "⚡ ";
-            color: #e53935;
+            color: #b62624;
         }
 
         .resume-preview.template-皮卡丘 img {
@@ -649,7 +687,7 @@
 
         .resume-preview.template-明瑞 h1,
         .resume-preview.template-明瑞 .resume-document-heading {
-            color: #e74c3c;
+            color: #b52d24;
             border-bottom: none;
             padding-bottom: 0;
             font-size: 26px;
@@ -657,7 +695,7 @@
         }
 
         .resume-preview.template-明瑞 h2 {
-            color: #e74c3c;
+            color: #b52d24;
             font-size: 20px;
             margin-top: 25px;
             margin-bottom: 15px;
@@ -690,14 +728,14 @@
 
         .resume-preview.template-冰川 h1,
         .resume-preview.template-冰川 .resume-document-heading {
-            color: #0097a7;
+            color: #006b76;
             border-bottom: 2px solid #0097a7;
             padding-bottom: 8px;
             font-size: 24px;
         }
 
         .resume-preview.template-冰川 h2 {
-            color: #00838f;
+            color: #00626b;
             font-size: 18px;
             margin-top: 20px;
             margin-bottom: 10px;
@@ -710,7 +748,7 @@
 
         .resume-preview.template-冰川 ul li:before {
             content: "❄ ";
-            color: #0097a7;
+            color: #006b76;
         }
 
         .resume-preview.template-冰川 img {
@@ -742,7 +780,7 @@
         }
 
         .resume-preview.template-明星 h2 {
-            color: #388e3c;
+            color: #2b6e31;
             font-size: 18px;
             margin-top: 20px;
             margin-bottom: 10px;
@@ -757,7 +795,7 @@
 
         .resume-preview.template-明星 ul li:before {
             content: "★ ";
-            color: #4caf50;
+            color: #237a2f;
         }
 
         .resume-preview.template-明星 img {
@@ -820,7 +858,7 @@
             right: 10px;
             height: 20px;
             background: #2c3e50;
-            border-bottom: 3px solid #3498db;
+            border-bottom: 3px solid #17679b;
         }
 
         .template-item.pikachu {
@@ -971,6 +1009,7 @@
     <div class="resume-builder-container">
         <h1 class="page-title">简历制作工具</h1>
         <p class="page-description">创建一份专业的简历，支持Markdown语法，可以导出为PDF或Word格式。</p>
+        <div class="tool-dependency-status" id="resume-dependency-status" role="status" aria-live="polite" hidden></div>
 
         <div class="control-panel">
             <div class="control-group">
@@ -992,7 +1031,8 @@
                 <button id="exportPdfBtn" class="control-btn">
                     <i class="fas fa-file-pdf"></i> PDF
                 </button>
-                <select id="resolutionSelect" class="resolution-select">
+                <label class="sr-only" for="resolutionSelect">PDF 导出清晰度</label>
+                <select id="resolutionSelect" class="resolution-select" aria-label="PDF 导出清晰度">
                     <option value="1">普通清晰度</option>
                     <option value="2" selected>中等清晰度</option>
                     <option value="3">高清晰度</option>
@@ -1005,10 +1045,13 @@
         </div>
 
         <div class="resume-panel">
-            <div class="resume-sidebar">
+            <div class="resume-sidebar" tabindex="0" aria-label="可滚动的简历栏目列表">
                 <!-- 菜单项部分 -->
                 <div id="sectionItems" class="is-pending">
-                    <!-- 菜单项将在这里动态生成 -->
+                    <div class="static-tool-fallback" data-static-fallback>
+                        <strong>结构化简历栏目</strong>
+                        <p>个人信息、教育经历、项目经历、实习经历、技能、奖项、证书、校园经历、自我评价和自定义栏目将在编辑器加载后显示。</p>
+                    </div>
                 </div>
 
                 <!-- 添加新部分按钮 -->
@@ -1017,14 +1060,14 @@
                 </button>
             </div>
 
-            <div class="resume-content">
+            <div class="resume-content" tabindex="0" aria-label="可滚动的简历预览">
                 <div class="resume-preview" id="resumePreview">
-                    <!-- 简历内容将在这里动态生成 -->
+                    <div class="static-tool-fallback" data-static-fallback><h2>简历预览</h2><p>此工具需要 JavaScript 才能编辑和导出；即使编辑器资源不可用，页面仍会保留说明和现有 CV 下载入口。</p><p><a href="../files/CV.pdf" target="_blank" rel="noopener noreferrer">下载现有 CV</a></p></div>
                 </div>
             </div>
 
             <!-- 模板选择移到右侧 -->
-            <div class="templates-section">
+            <div class="templates-section" tabindex="0" aria-label="可滚动的简历模板列表">
                 <div class="templates-title">
                     <i class="fas fa-palette"></i> 选择模板样式
                 </div>
@@ -1176,6 +1219,63 @@
         let currentTemplate = '简约';
         let editor;
         let lastDialogFocus = null;
+        const resumeDependencyMessages = new Set();
+
+        function reportResumeDependencyIssue(message) {
+            resumeDependencyMessages.add(message);
+            const status = document.getElementById('resume-dependency-status');
+            if (!status) return;
+            status.hidden = false;
+            status.textContent = Array.from(resumeDependencyMessages).join(' ');
+        }
+
+        function createResumeTextareaEditor(host) {
+            host.replaceChildren();
+            const textarea = document.createElement('textarea');
+            textarea.className = 'resume-editor-fallback';
+            textarea.setAttribute('aria-label', '简历 Markdown 编辑器（基础文本模式）');
+            host.appendChild(textarea);
+
+            return {
+                getValue: function() { return textarea.value; },
+                setValue: function(value) { textarea.value = String(value || ''); },
+                refresh: function() {},
+                focus: function() { textarea.focus(); },
+                getCursor: function() { return textarea.selectionStart; },
+                replaceRange: function(value, cursor) {
+                    const start = Number.isInteger(cursor) ? cursor : textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    const insertion = String(value || '');
+                    textarea.setRangeText(insertion, start, end, 'end');
+                }
+            };
+        }
+
+        function initializeResumeEditor() {
+            const host = document.getElementById('markdownEditor');
+            if (window.CodeMirror && typeof window.CodeMirror === 'function') {
+                try {
+                    const enhancedEditor = window.CodeMirror(host, {
+                        mode: 'markdown',
+                        theme: 'monokai',
+                        lineNumbers: true,
+                        lineWrapping: true,
+                        extraKeys: {"Enter": "newlineAndIndentContinueMarkdownList"}
+                    });
+                    const inputField = enhancedEditor.getInputField?.();
+                    inputField?.setAttribute('aria-label', '简历 Markdown 编辑器');
+                    const scroller = enhancedEditor.getScrollerElement?.();
+                    scroller?.setAttribute('tabindex', '0');
+                    scroller?.setAttribute('aria-label', '可滚动的简历 Markdown 编辑区域');
+                    return enhancedEditor;
+                } catch (error) {
+                    reportResumeDependencyIssue('增强简历编辑器初始化失败，已切换到基础文本编辑模式。');
+                }
+            } else {
+                reportResumeDependencyIssue('增强简历编辑器未加载，已切换到基础文本编辑模式。');
+            }
+            return createResumeTextareaEditor(host);
+        }
 
         // 默认部分配置
         const defaultSections = [
@@ -1277,13 +1377,16 @@
         // DOM元素加载完成后执行
         document.addEventListener('DOMContentLoaded', function() {
             // 初始化编辑器
-            editor = CodeMirror(document.getElementById('markdownEditor'), {
-                mode: 'markdown',
-                theme: 'monokai',
-                lineNumbers: true,
-                lineWrapping: true,
-                extraKeys: {"Enter": "newlineAndIndentContinueMarkdownList"}
-            });
+            editor = initializeResumeEditor();
+
+            if (!window.marked || typeof window.marked.parse !== 'function') {
+                reportResumeDependencyIssue('Markdown 转换组件未加载，简历预览暂以可读的纯文本显示。');
+            }
+            if (!window.SymgoSafeMarkdown || typeof window.SymgoSafeMarkdown.render !== 'function') {
+                reportResumeDependencyIssue('安全预览组件未加载，页面不会渲染未经消毒的 HTML。');
+            } else if (!window.DOMPurify || typeof window.DOMPurify.sanitize !== 'function') {
+                reportResumeDependencyIssue('HTML 消毒组件未加载，简历预览已自动退化为纯文本。');
+            }
 
             // 渲染菜单项
             renderSectionItems();
@@ -1539,6 +1642,7 @@
             const preview = document.getElementById('resumePreview');
             let resumeHTML = '';
             const visibleMarkdown = [];
+            let markdownAvailable = Boolean(window.marked && typeof window.marked.parse === 'function');
 
             // 根据不同模板应用不同样式
             if (!allowedTemplates.has(currentTemplate)) currentTemplate = '简约';
@@ -1548,13 +1652,35 @@
             sectionConfig.forEach(section => {
                 // 只渲染未隐藏的部分
                 if (!section.hidden && resumeData[section.id]) {
-                    resumeHTML += marked.parse(resumeData[section.id]);
                     visibleMarkdown.push(resumeData[section.id]);
                 }
             });
 
+            if (markdownAvailable) {
+                try {
+                    resumeHTML = visibleMarkdown.map(function(markdown) {
+                        return window.marked.parse(markdown);
+                    }).join('');
+                } catch (error) {
+                    markdownAvailable = false;
+                    reportResumeDependencyIssue('Markdown 转换失败，简历预览已自动退化为纯文本。');
+                }
+            }
+
             // marked 会保留原始 HTML；预览必须先经过 DOMPurify 白名单，再进入页面 DOM。
-            window.SymgoSafeMarkdown.render(preview, resumeHTML, visibleMarkdown.join('\n\n'));
+            if (markdownAvailable && window.SymgoSafeMarkdown && typeof window.SymgoSafeMarkdown.render === 'function') {
+                window.SymgoSafeMarkdown.render(preview, resumeHTML, visibleMarkdown.join('\n\n'));
+            } else {
+                const fallback = document.createElement('pre');
+                fallback.className = 'resume-plain-fallback';
+                fallback.textContent = visibleMarkdown.join('\n\n');
+                preview.replaceChildren(fallback);
+            }
+
+            preview.querySelectorAll('pre').forEach(function(codeBlock) {
+                codeBlock.setAttribute('tabindex', '0');
+                codeBlock.setAttribute('aria-label', '可横向滚动的简历文本或代码内容');
+            });
 
             // 处理所有图片，应用自定义样式类
             preview.querySelectorAll('img').forEach(img => {
@@ -1861,6 +1987,12 @@
 
         // 导出为PDF
         function exportToPdf() {
+            if (typeof window.html2canvas !== 'function' || !window.jspdf || typeof window.jspdf.jsPDF !== 'function') {
+                const message = 'PDF 导出组件未加载，当前无法生成 PDF；简历内容仍可继续编辑并保存在本机。';
+                reportResumeDependencyIssue(message);
+                alert(message);
+                return;
+            }
             const element = document.getElementById('resumePreview');
             const filename = '我的简历.pdf';
 
@@ -1869,7 +2001,13 @@
 
             // 创建一个临时的div来应用打印样式
             const printContent = document.createElement('div');
-            window.SymgoSafeMarkdown.cloneRenderedContent(element, printContent);
+            if (window.SymgoSafeMarkdown && typeof window.SymgoSafeMarkdown.cloneRenderedContent === 'function') {
+                window.SymgoSafeMarkdown.cloneRenderedContent(element, printContent);
+            } else {
+                printContent.replaceChildren(...Array.from(element.childNodes, function(node) {
+                    return node.cloneNode(true);
+                }));
+            }
             printContent.className = element.className;
             printContent.style.width = `${paperSize.width}mm`;
             printContent.style.padding = '15mm';
@@ -1892,8 +2030,12 @@
 
             // 根据选择的清晰度设置缩放比例
             const scale = parseInt(exportResolution);
+            const cleanup = function() {
+                if (printContent.isConnected) printContent.remove();
+                if (style.isConnected) style.remove();
+            };
 
-            html2canvas(printContent, {
+            window.html2canvas(printContent, {
                 scale: scale,
                 useCORS: true,
                 allowTaint: true,
@@ -1901,11 +2043,10 @@
                 windowWidth: printContent.offsetWidth,
                 logging: false
             }).then(canvas => {
-                document.body.removeChild(printContent);
-                document.head.removeChild(style);
+                cleanup();
 
                 const imgData = canvas.toDataURL('image/jpeg', 1.0);
-                const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+                const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
                 const pageWidth = pdf.internal.pageSize.getWidth();
                 const pageHeight = pdf.internal.pageSize.getHeight();
 
@@ -1921,26 +2062,36 @@
                 // 缩放图像以适应整个页面，保持所有内容可见
                 pdf.addImage(imgData, 'JPEG', x, y, imgWidth * ratio, imgHeight * ratio);
                 pdf.save(filename);
+            }).catch(function(error) {
+                cleanup();
+                reportResumeDependencyIssue('PDF 生成失败，请保留当前内容并稍后重试。');
+                alert('导出 PDF 时出错：' + (error.message || String(error)));
             });
         }
 
         // 导出为Word文档
         function exportToWord() {
+            if (!window.docx || typeof window.docx.Document !== 'function' || typeof window.docx.Packer?.toBlob !== 'function' || typeof window.saveAs !== 'function') {
+                const message = 'Word 导出组件未加载，当前无法生成 DOCX；简历内容仍可继续编辑并保存在本机。';
+                reportResumeDependencyIssue(message);
+                alert(message);
+                return;
+            }
             // 使用docx.js库创建Word文档
-            const doc = new docx.Document({
+            const doc = new window.docx.Document({
                 sections: [
                     {
                         properties: {},
                         children: [
-                            new docx.Paragraph({
+                            new window.docx.Paragraph({
                                 text: "简历导出",
-                                heading: docx.HeadingLevel.HEADING_1
+                                heading: window.docx.HeadingLevel.HEADING_1
                             }),
-                            new docx.Paragraph({
+                            new window.docx.Paragraph({
                                 text: "注意：由于技术限制，Word格式可能无法完全保留所有样式和图片。建议使用PDF格式获得最佳效果。",
                                 style: "Emphasis"
                             }),
-                            new docx.Paragraph({
+                            new window.docx.Paragraph({
                                 text: "以下是简历内容的纯文本版本：",
                                 spacing: {
                                     after: 200
@@ -1965,15 +2116,15 @@
                     doc.addSection({
                         properties: {},
                         children: [
-                            new docx.Paragraph({
+                            new window.docx.Paragraph({
                                 text: getDisplayName(section),
-                                heading: docx.HeadingLevel.HEADING_1,
+                                heading: window.docx.HeadingLevel.HEADING_1,
                                 spacing: {
                                     before: 400,
                                     after: 200
                                 }
                             }),
-                            new docx.Paragraph({
+                            new window.docx.Paragraph({
                                 text: plainText
                             })
                         ]
@@ -1982,8 +2133,11 @@
             }
 
             // 生成并下载Word文档
-            docx.Packer.toBlob(doc).then(blob => {
-                saveAs(blob, "我的简历.docx");
+            window.docx.Packer.toBlob(doc).then(blob => {
+                window.saveAs(blob, "我的简历.docx");
+            }).catch(function(error) {
+                reportResumeDependencyIssue('Word 文档生成失败，请保留当前内容并稍后重试。');
+                alert('导出 Word 时出错：' + (error.message || String(error)));
             });
         }
 

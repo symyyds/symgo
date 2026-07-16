@@ -173,6 +173,9 @@
 
         .framework-card img {
             height: 70px;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
             margin-bottom: 20px;
             transition: transform 0.3s ease;
         }
@@ -202,6 +205,11 @@
             border-radius: 8px;
             font-weight: 500;
             transition: all 0.3s ease;
+        }
+
+        body.site-shell a.framework-btn {
+            color: #fff;
+            background: #3a5794;
         }
 
         .framework-btn:hover {
@@ -281,12 +289,11 @@
         </div>
     </header>
 
+    <main>
     <section class="welcome-section">
         <h1>深度学习资源中心</h1>
         <p>这里汇集了深度学习的优质教程、框架文档和学习资源，帮助您系统学习深度学习知识</p>
     </section>
-
-    <main>
         <div class="resource-grid">
             <div class="resource-card">
                 <div class="resource-card-header">
@@ -357,21 +364,21 @@
             <h2>主流深度学习框架</h2>
             <div class="framework-cards">
                 <div class="framework-card">
-                    <img src="https://www.tensorflow.org/images/tf_logo_social.png" alt="TensorFlow Logo">
+                    <img src="../images/frameworks/tensorflow-logo.svg" alt="TensorFlow Logo" width="115" height="123" loading="lazy" decoding="async">
                     <h3>TensorFlow</h3>
                     <p>Google开发的端到端开源平台，拥有全面的工具、库和社区资源</p>
                     <a href="https://www.tensorflow.org/" target="_blank" rel="noopener noreferrer" class="framework-btn">官方文档</a>
                 </div>
 
                 <div class="framework-card">
-                    <img src="https://pytorch.org/assets/images/pytorch-logo.png" alt="PyTorch Logo">
+                    <img src="../images/frameworks/pytorch-logo.svg" alt="PyTorch Logo" width="488" height="121" loading="lazy" decoding="async">
                     <h3>PyTorch</h3>
                     <p>由Facebook开发的灵活深度学习框架，以动态计算图和直观API著称</p>
                     <a href="https://pytorch.org/" target="_blank" rel="noopener noreferrer" class="framework-btn">官方文档</a>
                 </div>
 
                 <div class="framework-card">
-                    <img src="https://keras.io/img/logo.png" alt="Keras Logo">
+                    <img src="../images/frameworks/keras-logo.svg" alt="Keras Logo" width="1080" height="1080" loading="lazy" decoding="async">
                     <h3>Keras</h3>
                     <p>专注于用户体验的高级神经网络API，以简洁、灵活和功能强大著称</p>
                     <a href="https://keras.io/" target="_blank" rel="noopener noreferrer" class="framework-btn">官方文档</a>

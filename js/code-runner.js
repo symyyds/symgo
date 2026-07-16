@@ -131,17 +131,66 @@ int main() {
     const runButton = document.getElementById("run-btn");
     const languageSelect = document.getElementById("language-select");
     const languageInfo = document.getElementById("language-info");
-    let activeExecution = null;
+    const sourceTextarea = document.getElementById("code-editor");
+    const dependencyStatus = document.getElementById("code-runner-dependency-status");
+    if (!output || !runButton || !languageSelect || !languageInfo || !sourceTextarea) return;
 
-    const editor = CodeMirror.fromTextArea(document.getElementById("code-editor"), {
-        lineNumbers: true,
-        mode: "javascript",
-        theme: "monokai",
-        indentUnit: 4,
-        autoCloseBrackets: true,
-        matchBrackets: true,
-        lineWrapping: true
-    });
+    let activeExecution = null;
+    const dependencyMessages = new Set();
+
+    function reportDependencyIssue(message) {
+        dependencyMessages.add(message);
+        if (!dependencyStatus) return;
+        dependencyStatus.hidden = false;
+        dependencyStatus.textContent = Array.from(dependencyMessages).join(" ");
+    }
+
+    function createTextareaEditor(textarea) {
+        textarea.hidden = false;
+        textarea.style.display = "block";
+        textarea.classList.add("code-editor-fallback");
+        textarea.setAttribute("aria-label", "代码编辑器（基础文本模式）");
+
+        return {
+            getValue: () => textarea.value,
+            setValue(value) {
+                textarea.value = String(value || "");
+            },
+            setOption() {},
+            on(eventName, handler) {
+                if (eventName === "change") textarea.addEventListener("input", handler);
+            },
+            focus: () => textarea.focus()
+        };
+    }
+
+    let editor;
+    if (window.CodeMirror && typeof window.CodeMirror.fromTextArea === "function") {
+        try {
+            editor = window.CodeMirror.fromTextArea(sourceTextarea, {
+                lineNumbers: true,
+                mode: "javascript",
+                theme: "monokai",
+                indentUnit: 4,
+                autoCloseBrackets: true,
+                matchBrackets: true,
+                lineWrapping: true
+            });
+
+            const inputField = editor.getInputField?.();
+            inputField?.setAttribute("aria-label", "代码编辑器");
+            const scroller = editor.getScrollerElement?.();
+            scroller?.setAttribute("tabindex", "0");
+            scroller?.setAttribute("aria-label", "可滚动的代码编辑区域");
+        } catch (error) {
+            document.querySelector(".editor-section > .CodeMirror")?.remove();
+            editor = createTextareaEditor(sourceTextarea);
+            reportDependencyIssue("增强代码编辑器初始化失败，已切换到基础文本编辑模式。");
+        }
+    } else {
+        editor = createTextareaEditor(sourceTextarea);
+        reportDependencyIssue("增强代码编辑器未加载，已切换到基础文本编辑模式；代码仍可编辑，JavaScript 仍可在沙箱中运行。");
+    }
 
     function setOutputStatus(message, className) {
         output.replaceChildren();
@@ -242,14 +291,18 @@ int main() {
         const themeLink = document.createElement("link");
         themeLink.rel = "stylesheet";
         const themePath = highlightThemePaths[theme] || theme;
-        themeLink.href = `https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/${themePath}.min.css`;
+        themeLink.href = new URL(`../vendor/highlight/styles/${themePath}.min.css`, document.baseURI).href;
         themeLink.dataset.highlightTheme = theme;
         document.head.appendChild(themeLink);
 
         codeElement.className = `language-${language}`;
         codeElement.textContent = editor.getValue();
         codeElement.removeAttribute("data-highlighted");
-        hljs.highlightElement(codeElement);
+        if (window.hljs && typeof window.hljs.highlightElement === "function") {
+            window.hljs.highlightElement(codeElement);
+        } else {
+            reportDependencyIssue("语法高亮组件未加载，预览将显示为可读的纯文本代码。");
+        }
         previewElement.style.display = "block";
     }
 
@@ -280,8 +333,14 @@ int main() {
 
     document.getElementById("export-btn").addEventListener("click", async () => {
         const previewElement = document.getElementById("code-preview");
+        if (typeof window.html2canvas !== "function") {
+            const message = "图片导出组件未加载，当前无法导出 PNG；代码编辑、预览和运行不受影响。";
+            reportDependencyIssue(message);
+            setOutputStatus(message, "error-output");
+            return;
+        }
         try {
-            const canvas = await html2canvas(previewElement, {
+            const canvas = await window.html2canvas(previewElement, {
                 backgroundColor: "#272822",
                 scale: 2,
                 padding: 0,

@@ -185,10 +185,102 @@ body.legacy-page {
     border-radius: 8px;
     background: #0f172a;
     color: #e5edf7;
+    scrollbar-color: #8192a8 #0f172a;
 }
 
 .legacy-content code {
     border-radius: 6px;
+}
+
+/* The archived notebooks bring their own low-contrast Pygments palette.
+   Keep the source markup intact, but render every token against one known
+   dark surface so code remains readable in both notebooks and PyTorch notes. */
+.legacy-content .highlight,
+.legacy-content .highlight pre {
+    background: #0f172a;
+    color: #e5edf7;
+}
+
+.legacy-content .highlight .n,
+.legacy-content .highlight .p,
+.legacy-content .highlight .w {
+    color: #e5edf7;
+}
+
+.legacy-content .highlight .c,
+.legacy-content .highlight .c1,
+.legacy-content .highlight .ch,
+.legacy-content .highlight .cm,
+.legacy-content .highlight .cp,
+.legacy-content .highlight .cpf,
+.legacy-content .highlight .cs {
+    color: #aebfd1;
+}
+
+.legacy-content .highlight .k,
+.legacy-content .highlight .kc,
+.legacy-content .highlight .kd,
+.legacy-content .highlight .kn,
+.legacy-content .highlight .kp,
+.legacy-content .highlight .kr,
+.legacy-content .highlight .kt,
+.legacy-content .highlight .ow {
+    color: #f2a9ff;
+}
+
+.legacy-content .highlight .s,
+.legacy-content .highlight .s1,
+.legacy-content .highlight .s2,
+.legacy-content .highlight .sa,
+.legacy-content .highlight .sb,
+.legacy-content .highlight .sc,
+.legacy-content .highlight .sd,
+.legacy-content .highlight .se,
+.legacy-content .highlight .sh,
+.legacy-content .highlight .si,
+.legacy-content .highlight .sr,
+.legacy-content .highlight .ss,
+.legacy-content .highlight .sx {
+    color: #a7e3a1;
+}
+
+.legacy-content .highlight .m,
+.legacy-content .highlight .mb,
+.legacy-content .highlight .mf,
+.legacy-content .highlight .mh,
+.legacy-content .highlight .mi,
+.legacy-content .highlight .mo,
+.legacy-content .highlight .il {
+    color: #ffd38a;
+}
+
+.legacy-content .highlight .nb,
+.legacy-content .highlight .bp,
+.legacy-content .highlight .fm,
+.legacy-content .highlight .nf,
+.legacy-content .highlight .nn {
+    color: #8bd5ff;
+}
+
+.legacy-content .highlight .nc,
+.legacy-content .highlight .nd {
+    color: #c9b6ff;
+}
+
+.legacy-content .highlight .o,
+.legacy-content .highlight .pm {
+    color: #f4c2a1;
+}
+
+.legacy-content .highlight .err {
+    color: #ffb4ab;
+}
+
+.legacy-content pre:focus-visible {
+    outline: 3px solid #ff9b62;
+    outline-offset: 3px;
+    border-color: #ff9b62;
+    box-shadow: 0 0 0 6px rgba(255, 155, 98, 0.24);
 }
 
 .legacy-content table {

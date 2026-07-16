@@ -22,9 +22,14 @@
     const coverageStrip = document.querySelector("[data-api-coverage]");
     const backendStatus = document.querySelector("[data-api-backend-status]");
     const backendEndpoint = document.querySelector("[data-api-backend-endpoint]");
+    const pagination = document.querySelector("[data-api-pagination]");
+    const paginationStatus = document.querySelector("[data-api-page-status]");
+    const loadMoreButton = document.querySelector("[data-api-load-more]");
+    const pageSize = 12;
 
     let currentFilter = "all";
     let currentSearch = "";
+    let visibleLimit = pageSize;
     let activeRequests = 0;
     let liveApis = [];
     let proxyCandidates = [];
@@ -158,13 +163,42 @@
         }
     }
 
-    function getVisibleApis() {
+    function getMatchingApis() {
         const search = currentSearch.trim().toLowerCase();
         return liveApis.filter((api) => {
             const categoryMatch = currentFilter === "all" || api.category === currentFilter;
             const searchable = `${api.title} ${api.source} ${api.purpose} ${api.publicApisCategory}`.toLowerCase();
             return categoryMatch && (!search || searchable.includes(search));
         });
+    }
+
+    function resetPagination() {
+        visibleLimit = pageSize;
+    }
+
+    function updatePagination(matchingCount, renderedCount) {
+        if (!pagination) return;
+
+        pagination.hidden = !backendReady;
+        if (paginationStatus) {
+            const noun = currentSearch.trim() || currentFilter !== "all" ? "个匹配 API" : "个 API";
+            paginationStatus.textContent = `当前显示 ${renderedCount} / ${matchingCount} ${noun}`;
+        }
+
+        if (!loadMoreButton) return;
+        const hasMultiplePages = matchingCount > pageSize;
+        const remaining = Math.max(0, matchingCount - renderedCount);
+        loadMoreButton.hidden = !hasMultiplePages;
+        loadMoreButton.disabled = remaining === 0;
+        loadMoreButton.textContent = remaining > 0
+            ? `显示更多（剩余 ${remaining}）`
+            : "已显示全部";
+        loadMoreButton.setAttribute(
+            "aria-label",
+            remaining > 0
+                ? `显示更多 API，当前显示 ${renderedCount} 个，共 ${matchingCount} 个`
+                : `已显示全部 ${matchingCount} 个 API`
+        );
     }
 
     function resultClass(result) {
@@ -233,6 +267,7 @@
     }
 
     function renderSkeleton() {
+        if (pagination) pagination.hidden = true;
         apiGrid.innerHTML = Array.from({ length: 6 }, (_, index) => `
             <article class="api-card api-card-skeleton premium-surface" aria-hidden="true">
                 <div class="api-card-top">
@@ -254,7 +289,8 @@
     }
 
     function renderCards() {
-        const visibleApis = getVisibleApis();
+        const matchingApis = getMatchingApis();
+        const visibleApis = matchingApis.slice(0, visibleLimit);
         apiGrid.innerHTML = visibleApis.map((api) => {
             const result = apiResults[api.id];
             const status = resultClass(result);
@@ -306,6 +342,7 @@
             `;
         }).join("") || '<div class="empty-state api-empty">没有匹配的 API。换一个关键词或分类试试。</div>';
 
+        updatePagination(matchingApis.length, visibleApis.length);
         updateSummary();
     }
 
@@ -395,6 +432,7 @@
             autoRefreshFeaturedApis();
         } catch (error) {
             backendReady = false;
+            if (pagination) pagination.hidden = true;
             const failure = browserFailure(error);
             const reason = failure.message;
             updateBackendStatus("failed", `<i class="fas fa-triangle-exclamation"></i> ${escapeHtml(reason)}`);
@@ -476,8 +514,10 @@
         document.querySelectorAll("[data-api-filter]").forEach((button) => {
             button.addEventListener("click", () => {
                 currentFilter = button.dataset.apiFilter || "all";
+                resetPagination();
                 document.querySelectorAll("[data-api-filter]").forEach((tab) => {
                     tab.classList.toggle("active", tab === button);
+                    tab.setAttribute("aria-pressed", String(tab === button));
                 });
                 renderCards();
             });
@@ -486,6 +526,15 @@
         if (searchInput) {
             searchInput.addEventListener("input", () => {
                 currentSearch = searchInput.value || "";
+                resetPagination();
+                renderCards();
+            });
+        }
+
+        if (loadMoreButton) {
+            loadMoreButton.addEventListener("click", () => {
+                const matchingCount = getMatchingApis().length;
+                visibleLimit = Math.min(visibleLimit + pageSize, matchingCount);
                 renderCards();
             });
         }
@@ -518,6 +567,7 @@
             clearButton.addEventListener("click", () => {
                 apiResults = {};
                 localStorage.removeItem(cacheKey);
+                resetPagination();
                 renderCards();
                 addLog("已清空本地缓存结果；后端缓存仍由 Netlify 控制", "info");
             });

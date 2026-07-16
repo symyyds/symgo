@@ -93,22 +93,31 @@
                 <div class="api-coverage-strip" data-api-coverage></div>
 
                 <div class="page-tools api-tools">
-                    <div class="filter-tabs" aria-label="按 API 使用场景筛选">
-                        <button class="filter-tab active" type="button" data-api-filter="all">全部</button>
-                        <button class="filter-tab" type="button" data-api-filter="portfolio">作品集</button>
-                        <button class="filter-tab" type="button" data-api-filter="research">研究</button>
-                        <button class="filter-tab" type="button" data-api-filter="career">求职申博</button>
-                        <button class="filter-tab" type="button" data-api-filter="writing">写作</button>
-                        <button class="filter-tab" type="button" data-api-filter="utility">工具</button>
-                        <button class="filter-tab" type="button" data-api-filter="design">设计</button>
-                        <button class="filter-tab" type="button" data-api-filter="data">开放数据</button>
+                    <div class="filter-tabs" role="group" aria-label="按 API 使用场景筛选">
+                        <button class="filter-tab active" type="button" data-api-filter="all" aria-pressed="true">全部</button>
+                        <button class="filter-tab" type="button" data-api-filter="portfolio" aria-pressed="false">作品集</button>
+                        <button class="filter-tab" type="button" data-api-filter="research" aria-pressed="false">研究</button>
+                        <button class="filter-tab" type="button" data-api-filter="career" aria-pressed="false">求职申博</button>
+                        <button class="filter-tab" type="button" data-api-filter="writing" aria-pressed="false">写作</button>
+                        <button class="filter-tab" type="button" data-api-filter="utility" aria-pressed="false">工具</button>
+                        <button class="filter-tab" type="button" data-api-filter="design" aria-pressed="false">设计</button>
+                        <button class="filter-tab" type="button" data-api-filter="data" aria-pressed="false">开放数据</button>
                     </div>
                     <div class="search-box">
                         <input type="search" data-api-search aria-label="搜索 API" placeholder="搜索 API、用途或数据源">
                     </div>
                 </div>
 
-                <div class="api-grid" data-api-grid></div>
+                <div class="api-grid" id="api-lab-grid" data-api-grid>
+                    <article class="api-card premium-surface static-api-fallback" data-static-fallback>
+                        <div class="api-card-body"><div class="api-meta-line"><span>Netlify Function</span><span>50 APIs</span></div><h3>公开 API 目录</h3><p>本站通过 Netlify Function 代理 50 个白名单 API，不在浏览器中暴露密钥或任意第三方请求地址。</p></div>
+                        <div class="api-result"><p>启用 JavaScript 后可查看请求状态、响应时间、返回摘要、状态码和失败原因。</p><a class="text-link" href="/.netlify/functions/api-lab?list=1">打开静态 API 元数据</a></div>
+                    </article>
+                </div>
+                <div class="api-pagination" data-api-pagination hidden>
+                    <p class="api-pagination__status" data-api-page-status role="status" aria-live="polite" aria-atomic="true">当前显示 0 / 0 个 API</p>
+                    <button class="btn secondary api-pagination__button" type="button" data-api-load-more aria-controls="api-lab-grid">显示更多</button>
+                </div>
             </div>
         </section>
 

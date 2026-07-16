@@ -7,20 +7,20 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/dropdown.css">
     <link rel="stylesheet" href="../css/site.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/solarized.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai-sublime.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/vs2015.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/base16/dracula.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/nord.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/tokyo-night-dark.min.css">
+    <link rel="stylesheet" href="../vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="../vendor/codemirror/codemirror.min.css">
+    <link rel="stylesheet" href="../vendor/codemirror/theme/monokai.min.css">
+    <link rel="stylesheet" href="../vendor/codemirror/theme/dracula.min.css">
+    <link rel="stylesheet" href="../vendor/codemirror/theme/material.min.css">
+    <link rel="stylesheet" href="../vendor/codemirror/theme/solarized.min.css">
+    <link rel="stylesheet" href="../vendor/highlight/styles/default.min.css">
+    <link rel="stylesheet" href="../vendor/highlight/styles/monokai-sublime.min.css">
+    <link rel="stylesheet" href="../vendor/highlight/styles/github.min.css">
+    <link rel="stylesheet" href="../vendor/highlight/styles/atom-one-dark.min.css">
+    <link rel="stylesheet" href="../vendor/highlight/styles/vs2015.min.css">
+    <link rel="stylesheet" href="../vendor/highlight/styles/base16/dracula.min.css">
+    <link rel="stylesheet" href="../vendor/highlight/styles/nord.min.css">
+    <link rel="stylesheet" href="../vendor/highlight/styles/tokyo-night-dark.min.css">
     <style>
         .code-runner-container {
             padding: 2rem;
@@ -54,7 +54,7 @@
             cursor: pointer;
         }
         .run-btn {
-            background: #28a745;
+            background: #19712f;
             color: white;
             border: none;
             padding: 0.5rem 1rem;
@@ -66,7 +66,7 @@
             transition: background-color 0.3s;
         }
         .run-btn:hover {
-            background: #218838;
+            background: #145c27;
         }
         .run-btn:disabled {
             background: #6c757d;
@@ -74,6 +74,9 @@
         }
         .output-section {
             background: #1e1e1e;
+            color: #fff;
+        }
+        .output-section h2 {
             color: #fff;
         }
         .output-content {
@@ -133,7 +136,7 @@
             }
         }
         .export-btn {
-            background: #007bff;
+            background: #095db5;
             color: white;
             border: none;
             padding: 0.5rem 1rem;
@@ -145,7 +148,7 @@
             transition: background-color 0.3s;
         }
         .export-btn:hover {
-            background: #0056b3;
+            background: #084b91;
         }
         .code-preview {
             padding: 0;
@@ -155,12 +158,14 @@
         .code-preview pre {
             margin: 0;
             padding: 0;
+            overflow-x: auto;
         }
-        .code-preview code {
+        .code-preview pre code.hljs {
             font-family: 'Consolas', monospace;
             font-size: 14px;
             padding: 1rem;
             display: block;
+            overflow-x: visible;
         }
         /* 添加主题样式控制 */
         .theme-label {
@@ -169,6 +174,39 @@
         }
         #highlight-theme-select {
             min-width: 150px;
+        }
+        .cm-s-monokai.CodeMirror .cm-comment {
+            color: #b8b39f;
+        }
+        .cm-s-monokai.CodeMirror .cm-keyword,
+        .cm-s-monokai.CodeMirror .cm-atom {
+            color: #ff80aa;
+        }
+        .code-preview .hljs-comment,
+        .code-preview .hljs-quote {
+            color: #b8b39f !important;
+        }
+        .code-preview .hljs-keyword,
+        .code-preview .hljs-selector-tag,
+        .code-preview .hljs-literal {
+            color: #ff80aa !important;
+        }
+        .tool-dependency-status {
+            margin: 0 0 1rem;
+            padding: 0.8rem 1rem;
+            border-left: 3px solid #b83218;
+            background: #fff1ed;
+            color: #70200f;
+            line-height: 1.55;
+        }
+        .code-editor-fallback {
+            min-height: 400px;
+            padding: 1rem;
+            border: 1px solid #77736b;
+            background: #171716;
+            color: #f5f3ed;
+            font: 14px/1.55 Consolas, monospace;
+            resize: vertical;
         }
     </style>
     <link rel="manifest" href="../manifest.webmanifest">
@@ -224,21 +262,22 @@
         </section>
 
         <section class="code-runner-container">
+            <div class="tool-dependency-status" id="code-runner-dependency-status" role="status" aria-live="polite" hidden></div>
             <div class="control-panel">
-                <select class="language-select" id="language-select">
+                <select class="language-select" id="language-select" aria-label="编程语言">
                     <option value="javascript">JavaScript</option>
                     <option value="python">Python</option>
                     <option value="java">Java</option>
                     <option value="cpp">C++</option>
                 </select>
-                <select class="theme-select" id="theme-select">
+                <select class="theme-select" id="theme-select" aria-label="编辑器主题">
                     <option value="monokai">Monokai</option>
                     <option value="dracula">Dracula</option>
                     <option value="material">Material</option>
                     <option value="solarized">Solarized</option>
                 </select>
-                <span class="theme-label">代码高亮主题：</span>
-                <select class="theme-select" id="highlight-theme-select">
+                <label class="theme-label" for="highlight-theme-select">代码高亮主题：</label>
+                <select class="theme-select" id="highlight-theme-select" aria-label="代码高亮主题">
                     <option value="monokai-sublime">Monokai Sublime</option>
                     <option value="github">GitHub Light</option>
                     <option value="atom-one-dark">Atom Dark</option>
@@ -263,14 +302,14 @@
 
             <div class="code-panel">
                 <div class="editor-section">
-                    <textarea id="code-editor"></textarea>
+                    <textarea id="code-editor" aria-label="代码编辑器"></textarea>
                     <div id="code-preview" class="code-preview">
-                        <pre><code></code></pre>
+                        <pre tabindex="0" aria-label="可横向滚动的代码高亮预览"><code></code></pre>
                     </div>
                 </div>
                 <div class="output-section">
-                    <h3>输出结果</h3>
-                    <div class="output-content" id="output">// 运行结果将显示在这里</div>
+                    <h2>输出结果</h2>
+                    <div class="output-content" id="output" tabindex="0" role="status" aria-live="polite" aria-label="代码运行输出结果">// 运行结果将显示在这里</div>
                 </div>
             </div>
         </section>
@@ -300,12 +339,12 @@
         </div>
     </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
-    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="../vendor/codemirror/codemirror.min.js"></script>
+    <script src="../vendor/codemirror/mode/python.min.js"></script>
+    <script src="../vendor/codemirror/mode/javascript.min.js"></script>
+    <script src="../vendor/codemirror/mode/clike.min.js"></script>
+    <script src="../vendor/highlight/highlight.min.js"></script>
+    <script src="../vendor/libs/html2canvas.min.js"></script>
     <script src="../js/code-runner.js"></script>
     <script src="../js/main.js"></script>
 </body>

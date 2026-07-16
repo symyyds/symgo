@@ -127,7 +127,7 @@
 
     if (extension === "pdf") {
       if (!window.pdfjsLib) throw new Error("PDF 解析组件加载失败。");
-      window.pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = new URL("vendor/libs/pdf.worker.min.js", document.baseURI).href;
       const pdf = await window.pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
       const pages = [];
       const limit = Math.min(pdf.numPages, 20);

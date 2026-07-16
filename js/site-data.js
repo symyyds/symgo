@@ -80,7 +80,7 @@
             year: "2025 - 2026",
             name: "Symgo 个人博客与学术展示站",
             role: "独立开发 / 内容维护",
-            cover: "images/engineering-projects/symgo-portfolio-screenshot.png",
+            cover: "images/engineering-projects/symgo-portfolio-screenshot.webp",
             stack: ["HTML", "CSS", "JavaScript", "Netlify"],
             summary: "将原有博客升级为求职与申博可用的个人展示站，集中呈现论文、项目、博客、工具和可下载材料。",
             work: [
@@ -106,7 +106,7 @@
             year: "2025",
             name: "升学复试与保研资料工具包",
             role: "资料整理 / 经验沉淀 / 页面开发",
-            cover: "images/engineering-projects/interview-toolkit-screenshot.png",
+            cover: "images/engineering-projects/interview-toolkit-screenshot.webp",
             stack: ["Content Design", "PDF/Docx", "HTML"],
             summary: "围绕保研推免、考研复试和导师联系，整理流程、术语、时间轴、材料清单和视频讲解，帮助低年级同学快速建立准备框架。",
             work: [
@@ -131,7 +131,7 @@
             year: "2025 - 2026",
             name: "Netlify 安全代理学术助手",
             role: "前端功能 / Function 安全边界",
-            cover: "images/engineering-projects/academic-ai-assistant-screenshot.png",
+            cover: "images/engineering-projects/academic-ai-assistant-screenshot.webp",
             stack: ["JavaScript", "Netlify Functions", "LocalStorage", "PDF.js", "Mammoth.js"],
             summary: "实现支持多轮上下文、本地会话与 TXT/Markdown/PDF/DOCX 文本提取的学术助手；模型密钥只从 Netlify 环境变量读取。",
             work: [
@@ -155,7 +155,7 @@
             year: "2025",
             name: "在线简历制作工具",
             role: "页面设计 / 交互开发",
-            cover: "images/engineering-projects/resume-builder-screenshot.png",
+            cover: "images/engineering-projects/resume-builder-screenshot.webp",
             stack: ["HTML", "CSS", "JavaScript"],
             summary: "面向学生求职和升学申请的简历编辑工具，提供结构化输入、模板预览和内容生成入口。",
             work: [
@@ -179,7 +179,7 @@
             year: "2026",
             name: "Public API 实验室",
             role: "API 选型 / 后端代理 / 页面植入",
-            cover: "images/engineering-projects/public-api-lab-screenshot.png",
+            cover: "images/engineering-projects/public-api-lab-screenshot.webp",
             stack: ["public-apis", "Netlify Functions", "Serverless Proxy", "Static UI"],
             summary: "参考 public-apis/public-apis，把适合个人博客、论文展示、项目证据、求职申博和写作辅助的免费公开 API 接入成可实时测试、可跨页面复用的后端代理控制台。",
             work: [
@@ -877,15 +877,16 @@
                     </div>
                     <div class="work-grid">
                         <div class="work-box">
-                            <h4>关键工作</h4>
+                            <h3>关键工作</h3>
                             <ul>${project.work.map((item) => `<li>${item}</li>`).join("")}</ul>
                         </div>
                         <div class="work-box">
-                            <h4>成果与验证方式</h4>
+                            <h3>成果与验证方式</h3>
                             <ul>${project.outcomes.map((item) => `<li>${item}</li>`).join("")}</ul>
                         </div>
                     </div>
                     <div class="project-actions">
+                        ${project.cover ? `<button class="text-link image-preview-trigger" type="button" data-image-preview-src="${project.cover}" data-image-preview-alt="${project.name} 视觉证据图" aria-haspopup="dialog"><i class="fas fa-expand" aria-hidden="true"></i> 放大截图</button>` : ""}
                         <a class="text-link" href="${getProjectHref(project)}"><i class="fas fa-link"></i> 固定链接</a>
                         ${project.links.map((link) => {
                             const href = normalizeProjectLink(link);
@@ -1182,7 +1183,12 @@
                 const categoryMatch = active === "all" || card.dataset.category === active;
                 const yearMatch = year === "all" || card.dataset.year === year;
                 const tagMatch = tag === "all" || normalize(card.dataset.tags).includes(normalize(tag));
-                const haystack = normalize(card.textContent);
+                const haystack = normalize([
+                    card.textContent,
+                    card.dataset.tags || "",
+                    card.dataset.category || "",
+                    card.dataset.year || ""
+                ].join(" "));
                 const searchMatch = !keyword || haystack.includes(keyword);
                 const show = categoryMatch && yearMatch && tagMatch && searchMatch;
                 card.style.display = show ? "" : "none";
