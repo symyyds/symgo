@@ -1,239 +1,89 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="孙远鸣的联系方式、合作方向与浏览器本地备忘工具。">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="孙远鸣的联系方式、合作方向与浏览器本地备忘工具。" />
     <title>联系与本地备忘 | 孙远鸣</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/dropdown.css">
-    <link rel="stylesheet" href="css/site.css">
-    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
-    <style>
-        .contact-layout {
-            display: grid;
-            grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-            gap: 24px;
-            margin: 32px auto 56px;
-        }
-        .contact-card,
-        .local-note-panel {
-            padding: 24px;
-            border-radius: 8px;
-            background: #fff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-        }
-        .contact-card h2,
-        .local-note-panel h2 { margin-top: 0; }
-        .contact-list { margin: 22px 0 0; }
-        .contact-list div {
-            display: grid;
-            grid-template-columns: 90px minmax(0, 1fr);
-            gap: 12px;
-            padding: 14px 0;
-            border-top: 1px solid #e7e7e7;
-        }
-        .contact-list dt { font-weight: 700; }
-        .contact-list dd { margin: 0; overflow-wrap: anywhere; }
-        .local-note-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 14px;
-        }
-        .local-note-head button {
-            border: 0;
-            background: transparent;
-            color: var(--primary-color, #2864a5);
-            cursor: pointer;
-        }
-        .local-note-notice {
-            padding: 12px 14px;
-            border-left: 4px solid #d99614;
-            border-radius: 4px;
-            background: #fff8e8;
-            line-height: 1.6;
-        }
-        .local-note-panel .input-group { margin-bottom: 16px; }
-        .local-note-panel label {
-            display: block;
-            margin-bottom: 7px;
-            font-weight: 600;
-        }
-        .local-note-panel input,
-        .local-note-panel textarea {
-            box-sizing: border-box;
-            width: 100%;
-            padding: 11px 12px;
-            border: 1px solid #cfd5da;
-            border-radius: 6px;
-            font: inherit;
-        }
-        .local-note-panel textarea { resize: vertical; }
-        .local-note-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .form-status { min-height: 1.5em; color: #52606d; }
-        .local-note-list {
-            display: grid;
-            gap: 12px;
-            margin-top: 22px;
-        }
-        .local-note-item {
-            padding: 16px;
-            border: 1px solid #e0e4e7;
-            border-radius: 6px;
-            background: #fafafa;
-        }
-        .local-note-item__head {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            margin-bottom: 8px;
-        }
-        .local-note-item__head time { color: #687078; font-size: 0.86rem; }
-        .local-note-item p { white-space: pre-wrap; overflow-wrap: anywhere; }
-        .local-note-item button {
-            border: 0;
-            background: transparent;
-            color: #a12c1e;
-            cursor: pointer;
-        }
-        @media (max-width: 768px) {
-            .contact-layout { grid-template-columns: 1fr; }
-            .local-note-head,
-            .local-note-item__head { align-items: flex-start; flex-direction: column; }
-        }
-    </style>
-    <link rel="manifest" href="manifest.webmanifest">
-    <link rel="canonical" href="https://symweb.netlify.app/leave_message.html">
-    <meta property="og:title" content="联系与本地备忘 | 孙远鸣">
-    <meta property="og:description" content="邮箱、GitHub、简历与合作方向；本地备忘只保存在访问者当前浏览器。">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://symweb.netlify.app/leave_message.html">
-</head>
-<body class="site-shell">
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/dropdown.css" />
+    <link rel="stylesheet" href="css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="canonical" href="https://symweb.netlify.app/leave_message.html" />
+    <meta property="og:title" content="联系与本地备忘 | 孙远鸣" />
+    <meta property="og:description" content="邮箱、GitHub、简历与合作方向；本地备忘只保存在访问者当前浏览器。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://symweb.netlify.app/leave_message.html" />
+  </head>
+  <body class="site-shell">
     <header>
-        <div class="container">
-            <a class="site-brand" href="index.html" aria-label="返回首页">
-                <img src="images/sym_photo.jpg" alt="孙远鸣个人照片" class="profile-img">
-                <div class="profile-info">
-                    <h1>孙远鸣</h1>
-                    <p class="title">Computer Science / Software Engineering</p>
-                    <p class="keywords">研究 · 工程 · 写作</p>
-                </div>
-            </a>
-            <nav>
-                <ul>
-                    <li><a href="index.html">首页</a></li>
-                    <li><a href="profile.html">档案</a></li>
-                    <li><a href="research.html">研究</a></li>
-                    <li><a href="publications.html">论文</a></li>
-                    <li><a href="projects.html">项目</a></li>
-                    <li><a href="handbook/index.html">手册</a></li>
-                    <li><a href="evidence/index.html">证据</a></li>
-                    <li><a href="materials.html">材料</a></li>
-                    <li><a href="blog.html">博客</a></li>
-                    <li><a href="ai.html">AI助手</a></li>
-                    <li class="dropdown">
-                        <a href="tools/markdown_to_word.html">工具箱</a>
-                        <div class="dropdown-content">
-                            <a href="tools/code_runner.html">代码高亮</a>
-                            <a href="tools/markdown_to_word.html">Markdown工具</a>
-                            <a href="tools/python_nav.html">Python学习</a>
-                            <a href="tools/deep_learning.html">深度学习</a>
-                            <a href="tools/resume_builder.html">简历制作</a>
-                            <a href="tools/api_lab.html">API实验室</a>
-                        </div>
-                    </li>
-                    <li><a href="leave_message.html" class="active">留言</a></li>
-                </ul>
-            </nav>
-        </div>
+      <div class="container">
+        <a class="site-brand" href="index.html"><span>孙远鸣</span></a>
+        <nav><ul><li><a href="index.html">首页</a></li><li><a href="leave_message.html">联系</a></li></ul></nav>
+      </div>
     </header>
 
     <main id="main-content">
-        <section class="page-hero">
-            <div class="container">
-                <div class="eyebrow"><i class="fas fa-message" aria-hidden="true"></i> Contact</div>
-                <h1>联系与本地备忘</h1>
-                <p>需要真正联系我，请使用邮箱或 GitHub。下方内容只保存到你当前的浏览器，不会公开，也不会发送给站点作者。</p>
-                <div class="hero-actions">
-                    <a class="btn primary" href="mailto:19861208800@163.com"><i class="fas fa-envelope" aria-hidden="true"></i> 发送邮件</a>
-                    <a class="btn secondary" href="https://github.com/symyyds/symgo" target="_blank" rel="noopener noreferrer"><i class="fab fa-github" aria-hidden="true"></i> GitHub</a>
-                </div>
-            </div>
-        </section>
-
-        <div class="container contact-layout">
-            <article class="contact-card">
-                <h2>合作与交流入口</h2>
-                <p>适合讨论科研合作、工程原型、技术材料治理、研究生或博士申请与技术交流。</p>
-                <dl class="contact-list">
-                    <div><dt>邮箱</dt><dd><a href="mailto:19861208800@163.com">19861208800@163.com</a></dd></div>
-                    <div><dt>GitHub</dt><dd><a href="https://github.com/symyyds/symgo" target="_blank" rel="noopener noreferrer">github.com/symyyds/symgo</a></dd></div>
-                    <div><dt>论文主页</dt><dd><a href="publications.html">查看论文材料</a></dd></div>
-                    <div><dt>简历</dt><dd><a href="files/CV.pdf" target="_blank" rel="noopener noreferrer">下载中文 CV</a></dd></div>
-                </dl>
-            </article>
-
-            <section class="local-note-panel" aria-labelledby="local-note-title">
-                <div class="local-note-head">
-                    <h2 id="local-note-title">浏览器本地备忘</h2>
-                    <button type="button" data-clear-notes>清空本机记录</button>
-                </div>
-                <p class="local-note-notice" role="note"><strong>隐私说明：</strong>内容仅写入当前浏览器的 localStorage。这不是公共留言板，也不存在前端管理员密码；清除浏览器数据后记录会消失。</p>
-                <form id="local-note-form" novalidate>
-                    <div class="input-group">
-                        <label for="local-note-name">名称或主题（选填，最多 40 字）</label>
-                        <input id="local-note-name" name="name" type="text" maxlength="40" autocomplete="off" placeholder="例如：科研合作问题">
-                    </div>
-                    <div class="input-group">
-                        <label for="local-note-content">备忘内容（最多 800 字）</label>
-                        <textarea id="local-note-content" name="content" rows="6" maxlength="800" required placeholder="记录准备通过邮件沟通的问题……"></textarea>
-                    </div>
-                    <div class="local-note-actions">
-                        <button class="btn primary" type="submit">保存到本机</button>
-                        <button class="btn secondary" type="button" data-copy-contact>复制联系邮箱</button>
-                    </div>
-                    <p class="form-status" data-note-status role="status" aria-live="polite"></p>
-                </form>
-                <div class="local-note-list" data-note-list aria-label="本机备忘记录">
-                    <p>启用 JavaScript 后可在当前浏览器保存备忘。</p>
-                </div>
-            </section>
+      <section class="page-hero">
+        <div class="container">
+          <div class="eyebrow"><i class="fas fa-message" aria-hidden="true"></i> Contact</div>
+          <h1>联系与本地备忘</h1>
+          <p>需要真正联系我，请使用邮箱或 GitHub。下方备忘工具只保存到你当前的浏览器，不会上传、不会公开，也不会发送给站点作者。</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="mailto:19861208800@163.com"><i class="fas fa-envelope" aria-hidden="true"></i> 发送邮件</a>
+            <a class="btn secondary" href="https://github.com/symyyds/symgo" target="_blank" rel="noopener noreferrer"><i class="fab fa-github" aria-hidden="true"></i> GitHub</a>
+          </div>
         </div>
+      </section>
+
+      <section class="section-band white">
+        <div class="container contact-page-grid">
+          <article class="contact-directory">
+            <span class="section-kicker">CONTACT DIRECTORY</span>
+            <h2>合作与交流入口</h2>
+            <p>适合讨论科研合作、工程原型、技术材料治理、研究生/博士申请与技术交流。</p>
+            <dl>
+              <div><dt>邮箱</dt><dd><a href="mailto:19861208800@163.com">19861208800@163.com ↗</a></dd></div>
+              <div><dt>GitHub</dt><dd><a href="https://github.com/symyyds/symgo" target="_blank" rel="noopener noreferrer">github.com/symyyds/symgo ↗</a></dd></div>
+              <div><dt>论文主页</dt><dd><a href="publications.html">查看 DOI、PDF 与作者角色 →</a></dd></div>
+              <div><dt>简历</dt><dd><a href="files/CV.pdf" target="_blank" rel="noopener noreferrer">下载中文 CV ↗</a></dd></div>
+            </dl>
+          </article>
+
+          <section class="local-note-panel" aria-labelledby="local-note-title">
+            <div class="local-note-head">
+              <div>
+                <span class="section-kicker">LOCAL ONLY</span>
+                <h2 id="local-note-title">浏览器本地备忘</h2>
+              </div>
+              <button type="button" class="text-link" data-clear-notes>清空本机记录</button>
+            </div>
+            <p class="local-note-notice" role="note">
+              隐私说明：内容仅写入当前浏览器的 localStorage。它不是公共留言板，也不存在前端“管理员密码”。清除浏览器数据后记录会消失。
+            </p>
+            <form id="local-note-form" novalidate>
+              <div class="input-group">
+                <label for="local-note-name">名称或主题（选填，最多 40 字）</label>
+                <input id="local-note-name" name="name" type="text" maxlength="40" autocomplete="off" placeholder="例如：科研合作问题" />
+              </div>
+              <div class="input-group">
+                <label for="local-note-content">备忘内容（最多 800 字）</label>
+                <textarea id="local-note-content" name="content" rows="6" maxlength="800" required placeholder="记录准备通过邮件沟通的问题……"></textarea>
+              </div>
+              <div class="local-note-actions">
+                <button class="btn primary" type="submit">保存到本机</button>
+                <button class="btn secondary" type="button" data-copy-contact>复制联系邮箱</button>
+              </div>
+              <p class="form-status" data-note-status role="status" aria-live="polite"></p>
+            </form>
+            <div class="local-note-list" data-note-list aria-label="本机备忘记录"></div>
+          </section>
+        </div>
+      </section>
     </main>
 
-    <footer class="site-footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div><h3>孙远鸣</h3><p>个人博客与学术展示站，用来承载简历之外的论文、项目、文章和材料。</p></div>
-                <div>
-                    <h4>快速链接</h4>
-                    <ul>
-                        <li><a href="publications.html">论文发表</a></li>
-                        <li><a href="projects.html">项目展示</a></li>
-                        <li><a href="handbook/index.html">扩展手册</a></li>
-                        <li><a href="evidence/index.html">证据档案库</a></li>
-                        <li><a href="tools/api_lab.html">API 实验室</a></li>
-                        <li><a href="blog.html">博客文章</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4>联系</h4>
-                    <p><i class="fas fa-envelope" aria-hidden="true"></i> 19861208800@163.com</p>
-                    <p><i class="fas fa-phone" aria-hidden="true"></i> +86-19861208800</p>
-                    <p><i class="fab fa-github" aria-hidden="true"></i> <a href="https://github.com/symyyds/symgo" target="_blank" rel="noopener noreferrer">github.com/symyyds/symgo</a></p>
-                </div>
-            </div>
-            <div class="footer-bottom"><p>&copy; 2026 孙远鸣. Built as a static portfolio for Netlify.</p></div>
-        </div>
-    </footer>
-
+    <footer class="site-footer"><div class="container"><p>© 2026 孙远鸣</p></div></footer>
     <script src="js/main.js"></script>
     <script src="js/local-notes.js"></script>
-</body>
+  </body>
 </html>

@@ -7,6 +7,64 @@ const outDir = path.join(root, "dist");
 const DEFAULT_SITE_URL = "https://symweb.netlify.app";
 const STALE_SITE_HOST = ["symgo", "netlify", "app"].join(".");
 
+const navigationGroups = [
+  { label: "首页", href: "index.html" },
+  {
+    label: "关于",
+    href: "profile.html",
+    children: [
+      ["个人档案", "profile.html", "定位、能力与经历概览"],
+      ["阶段成果", "resume.html", "本科材料与研究生阶段预留"],
+      ["研究方向", "research.html", "问题意识、方法与未来课题"],
+      ["一页式档案", "snapshot.html", "快速发给导师或招聘方"]
+    ]
+  },
+  {
+    label: "成果",
+    href: "publications.html",
+    children: [
+      ["论文发表", "publications.html", "论文首页、DOI 与 PDF"],
+      ["项目总览", "projects.html", "工程项目与横向项目入口"],
+      ["材料中心", "materials.html", "简历、论文和可验证材料"],
+      ["成果证明", "achievements.html", "奖项、项目与公开证据"]
+    ]
+  },
+  {
+    label: "项目",
+    href: "engineering-projects.html",
+    children: [
+      ["工程项目", "engineering-projects.html", "开发、工具、API 与部署"],
+      ["横向项目", "horizontal-projects.html", "技术路线、材料与验收证据"],
+      ["证据档案", "evidence/index.html", "公开边界内的证据链"],
+      ["合作方向", "services.html", "原型、材料与科研协作"]
+    ]
+  },
+  {
+    label: "知识",
+    href: "blog.html",
+    children: [
+      ["技术博客", "blog.html", "教程、阅读与项目复盘"],
+      ["知识库", "library/index.html", "研究笔记与维护记录"],
+      ["案例库", "cases/index.html", "模块级实践与复盘"],
+      ["扩展手册", "handbook/index.html", "工程、研究和申请专题"]
+    ]
+  },
+  {
+    label: "工具",
+    href: "tools/api_lab.html",
+    children: [
+      ["API 实验室", "tools/api_lab.html", "Functions 状态与调用结果"],
+      ["AI 助手", "ai.html", "安全代理与文档问答"],
+      ["代码展示", "tools/code_runner.html", "隔离运行与代码高亮"],
+      ["Python 导航", "tools/python_nav.html", "入门、数据类型与编程笔记"],
+      ["深度学习", "tools/deep_learning.html", "框架、课程与教程资源"],
+      ["Markdown 工具", "tools/markdown_to_word.html", "预览、排版与导出"],
+      ["简历制作", "tools/resume_builder.html", "结构化简历编辑工具"]
+    ]
+  },
+  { label: "联系", href: "leave_message.html" }
+];
+
 const pageDescriptions = new Map([
   ["blog/25_skills.html", "孙远鸣整理的复试与面试技巧，涵盖材料准备、表达方法、常见问题和视频讲解。"],
   ["blog/git.html", "面向初学者的 Git 学习笔记，介绍版本控制、常用命令与协作流程。"],
@@ -19,6 +77,14 @@ const pageDescriptions = new Map([
   ["tools/python/python入门.html", "Python 零基础入门 Jupyter 笔记，涵盖变量、输入输出、数据类型、程序结构与函数。"],
   ["tools/python/六大数据类型.html", "Python 六大数据类型及常用增删改查操作的 Jupyter 学习笔记。"],
   ["tools/python/面向对象编程.html", "Python 面向对象编程学习笔记，涵盖类、对象、继承、封装与常用示例。"]
+]);
+
+const legacyPageTitles = new Map([
+  ["tools/pytorch.html", "PyTorch 学习归档"],
+  ["tools/python/python三大程序结构.html", "Python 三大程序结构"],
+  ["tools/python/python入门.html", "Python 零基础入门"],
+  ["tools/python/六大数据类型.html", "Python 六大数据类型"],
+  ["tools/python/面向对象编程.html", "Python 面向对象编程"]
 ]);
 
 const rootFiles = [
@@ -322,6 +388,83 @@ function rewriteExternalAssets(html, relativeFile) {
   return output;
 }
 
+function pageMatchesTarget(relativeFile, target, allowSectionLanding = false) {
+  const current = outputPageForFile(relativeFile) || "index.html";
+  const section = current.includes("/") ? current.split("/")[0] : "";
+  const targetSection = target.includes("/") ? target.split("/")[0] : "";
+  return target === current
+    || (section && target === `${section}/index.html`)
+    || (allowSectionLanding && section === "blog" && target === "blog.html")
+    || (["library", "cases", "handbook", "evidence"].includes(section) && targetSection === section)
+    || (allowSectionLanding && section === "tools" && target === "tools/api_lab.html");
+}
+
+function renderStaticHeader(relativeFile) {
+  const link = (target) => escapeAttribute(relativeHref(relativeFile, target));
+  const navigation = navigationGroups.map((item, index) => {
+    const primaryCurrent = normalizePath(relativeFile) === item.href;
+    const childVisualActive = item.children?.some(([, href]) => pageMatchesTarget(relativeFile, href, false)) || false;
+    const active = pageMatchesTarget(relativeFile, item.href, true) || childVisualActive;
+    const primaryClass = `site-nav-v2__primary${active ? " is-current" : ""}`;
+    const current = primaryCurrent ? ' aria-current="page"' : "";
+    if (!item.children) {
+      return `<li><a class="${primaryClass}" href="${link(item.href)}" data-nav-path="${item.href}"${current}>${item.label}</a></li>`;
+    }
+    const id = `site-nav-panel-${index}`;
+    const childLinks = item.children.map(([label, href, description]) => {
+      const childActive = pageMatchesTarget(relativeFile, href, false);
+      const childCurrent = normalizePath(relativeFile) === href && !(primaryCurrent && href === item.href);
+      const childClass = childActive ? ' class="is-current"' : "";
+      const childAriaCurrent = childCurrent ? ' aria-current="page"' : "";
+      return `<a href="${link(href)}" data-nav-path="${href}"${childClass}${childAriaCurrent}><span>${label}</span><small>${description}</small></a>`;
+    }).join("");
+    return `<li class="site-nav-v2__cluster${active ? " has-current" : ""}">
+      <div class="site-nav-v2__cluster-head">
+        <a class="${primaryClass}" href="${link(item.href)}" data-nav-path="${item.href}"${current}>${item.label}</a>
+        <button type="button" aria-controls="${id}" aria-label="显示${item.label}分类"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="m2.5 4.5 3.5 3 3.5-3" /></svg></button>
+      </div>
+      <div class="site-nav-v2__panel" id="${id}">${childLinks}</div>
+    </li>`;
+  }).join("");
+
+  return `<header class="site-header-v2 is-static-shell" data-site-header>
+    <div class="container site-header-v2__inner">
+      <a class="site-brand-v2" href="${link("index.html")}" aria-label="孙远鸣个人成果网站首页">
+        <span class="site-brand-v2__mark" aria-hidden="true">SYM<span>.</span></span>
+        <span class="site-brand-v2__copy"><strong>孙远鸣</strong><small>Research × Engineering</small></span>
+      </a>
+      <nav class="site-nav-v2 site-nav-v2--static" id="site-navigation" aria-label="主导航" data-site-nav><ul>${navigation}</ul></nav>
+      <div class="site-header-v2__actions">
+        <a class="site-search-button" href="${link("sitemap.xml")}" aria-label="查看站点地图"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" /><path d="m13 13 4 4" /></svg></a>
+        <a class="site-cv-button" href="${link("files/CV.pdf")}" target="_blank" rel="noopener noreferrer">CV <span>↗</span></a>
+        <button class="site-menu-button" type="button" aria-expanded="false" aria-controls="site-navigation" aria-label="打开导航菜单"><span></span><span></span></button>
+      </div>
+    </div>
+  </header>`;
+}
+
+function injectStaticSiteShell(html, relativeFile) {
+  if (/<body\b[^>]*class=["'][^"']*legacy-page/i.test(html)) return html;
+  if (!/<body\b/i.test(html) || !/(?:site-shell|home-v2)/i.test(html)) return html;
+
+  let output = html;
+  const skipLink = '<a class="skip-link-v2" href="#main-content">跳到主要内容</a>';
+  const header = renderStaticHeader(relativeFile);
+  const bodyHeader = /(<body\b[^>]*>\s*)(?:<a\b[^>]*class=["'][^"']*skip-link[^"']*["'][^>]*>[\s\S]*?<\/a>\s*)?<header\b[\s\S]*?<\/header>/i;
+  if (bodyHeader.test(output)) {
+    output = output.replace(bodyHeader, `$1${skipLink}\n${header}`);
+  } else {
+    output = output.replace(/(<body\b[^>]*>)/i, `$1\n${skipLink}\n${header}`);
+  }
+  output = output.replace(/<main(?![^>]*\bid=)([^>]*)>/i, '<main id="main-content"$1>');
+  // Contextual side panels live inside the main landmark and should not announce
+  // as additional top-level complementary landmarks.
+  output = output
+    .replace(/<aside\b/gi, "<div")
+    .replace(/<\/aside>/gi, "</div>");
+  return output;
+}
+
 function stripTags(value) {
   return String(value)
     .replace(/<[^>]+>/g, " ")
@@ -334,6 +477,68 @@ function stripTags(value) {
     .trim();
 }
 
+function injectStaticLegacyShell(html, relativeFile) {
+  if (!/<body\b[^>]*class=["'][^"']*legacy-page/i.test(html)) return html;
+  const match = html.match(/<body\b([^>]*)>([\s\S]*?)<\/body>/i);
+  if (!match) return html;
+
+  const title = legacyPageTitles.get(relativeFile) || stripTags((html.match(/<title[^>]*>([\s\S]*?)<\/title>/i) || [])[1]) || "学习资料";
+  let attributes = match[1];
+  if (/\bclass=["']/i.test(attributes)) {
+    attributes = attributes.replace(/\bclass=(["'])([^"']*)\1/i, (full, quote, classes) => `class=${quote}${classes} legacy-ready${quote}`);
+  } else {
+    attributes += ' class="legacy-page legacy-ready"';
+  }
+  if (!/\bid=["']/i.test(attributes)) attributes += ' id="top"';
+
+  let bodyContent = match[2].replace(/<script\b[^>]*\bsrc=["'][^"']*js\/legacy\.js[^"']*["'][^>]*>\s*<\/script>/gi, "");
+  const existingMain = bodyContent.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i);
+  if (existingMain) bodyContent = existingMain[1];
+  bodyContent = bodyContent
+    .replace(/<h1\b([^>]*)>([\s\S]*?)<\/h1>/gi, '<h2$1>$2</h2>')
+    .replace(/(<code\b[^>]*?)\s+lang=(["'])(?:python|java|javascript|cpp|c\+\+|bash|shell)\2/gi, "$1")
+    .replace(/<pre(?![^>]*\btabindex)([^>]*)>/gi, '<pre role="group" tabindex="0" aria-label="可横向滚动的代码示例"$1>');
+
+  let previousHeadingLevel = 1;
+  bodyContent = bodyContent.replace(/<h([2-6])\b([^>]*)>([\s\S]*?)<\/h\1>/gi, (full, rawLevel, attrs, content) => {
+    const level = Math.min(Number(rawLevel), previousHeadingLevel + 1);
+    previousHeadingLevel = level;
+    return `<h${level}${attrs}>${content}</h${level}>`;
+  });
+
+  const tocItems = [];
+  let headingIndex = 0;
+  bodyContent = bodyContent.replace(/<(h[23])\b([^>]*)>([\s\S]*?)<\/\1>/gi, (full, tag, attrs, content) => {
+    headingIndex += 1;
+    let nextAttrs = attrs;
+    const idMatch = attrs.match(/\bid=(["'])([^"']+)\1/i);
+    const id = idMatch ? idMatch[2] : `legacy-section-${headingIndex}`;
+    if (!idMatch) nextAttrs += ` id="${id}"`;
+    if (tocItems.length < 14) tocItems.push([id, stripTags(content).replace(/¶/g, "").trim() || `Section ${headingIndex}`]);
+    return `<${tag}${nextAttrs}>${content}</${tag}>`;
+  });
+
+  const href = (target) => escapeAttribute(relativeHref(relativeFile, target));
+  const toc = tocItems.length
+    ? tocItems.map(([id, label]) => `<a href="#${escapeAttribute(id)}">${escapeAttribute(label)}</a>`).join("")
+    : '<span class="legacy-toc-empty">暂无目录</span>';
+  const staticBody = `<header class="legacy-topbar"><div class="legacy-shell">
+      <a class="legacy-brand" href="${href("index.html")}"><img src="${href("images/sym_photo.jpg")}" alt="孙远鸣" width="46" height="46"><span>孙远鸣作品集</span></a>
+      <nav class="legacy-nav" aria-label="归档页面导航"><a href="${href("index.html")}">首页</a><a href="${href("projects.html")}">项目</a><a href="${href("blog.html")}">博客</a><a href="${href("tools/python_nav.html")}">Python导航</a><a href="${href("materials.html")}">材料</a></nav>
+    </div></header>
+    <main id="main-content"><section class="legacy-hero" aria-labelledby="legacy-page-title"><div class="legacy-shell"><div class="legacy-kicker">Archive / Learning Material</div><h1 id="legacy-page-title">${escapeAttribute(title)}</h1><p>这是从旧博客或学习资料中保留下来的页面，已接入统一的作品集阅读外壳，方便继续浏览、复盘和引用。</p></div></section>
+    <div class="legacy-shell legacy-layout"><article class="legacy-content">${bodyContent}</article><nav class="legacy-toc" aria-label="页面目录"><div class="legacy-toc-title">Contents</div>${toc}</nav></div>
+    <a class="legacy-back-top" href="#top" aria-label="返回顶部">↑</a></main>`;
+
+  let output = html.replace(match[0], `<body${attributes}>${staticBody}</body>`);
+  if (/<html\b[^>]*\blang=/i.test(output)) {
+    output = output.replace(/(<html\b[^>]*\blang=)(["'])[^"']*\2/i, '$1"zh-CN"');
+  } else {
+    output = output.replace(/<html\b([^>]*)>/i, '<html lang="zh-CN"$1>');
+  }
+  return output;
+}
+
 const imageDimensionCache = new Map();
 
 function readImageDimensions(target) {
@@ -342,13 +547,9 @@ function readImageDimensions(target) {
   try {
     const extension = path.extname(target).toLowerCase();
     const data = fs.readFileSync(target);
-    const isPng = data.length >= 24 && data.toString("ascii", 1, 4) === "PNG";
-    const isJpeg = data.length >= 4 && data[0] === 0xff && data[1] === 0xd8;
-    const isGif = data.length >= 10 && data.toString("ascii", 0, 3) === "GIF";
-    const isWebp = data.length >= 30 && data.toString("ascii", 0, 4) === "RIFF" && data.toString("ascii", 8, 12) === "WEBP";
-    if (isPng) {
+    if (extension === ".png" && data.length >= 24 && data.toString("ascii", 1, 4) === "PNG") {
       dimensions = { width: data.readUInt32BE(16), height: data.readUInt32BE(20) };
-    } else if (isJpeg) {
+    } else if ((extension === ".jpg" || extension === ".jpeg") && data.length >= 4) {
       let offset = 2;
       while (offset + 9 < data.length) {
         if (data[offset] !== 0xff) {
@@ -368,9 +569,9 @@ function readImageDimensions(target) {
         if (segmentLength < 2) break;
         offset += segmentLength + 2;
       }
-    } else if (isGif) {
+    } else if (extension === ".gif" && data.length >= 10) {
       dimensions = { width: data.readUInt16LE(6), height: data.readUInt16LE(8) };
-    } else if (isWebp) {
+    } else if (extension === ".webp" && data.length >= 30 && data.toString("ascii", 0, 4) === "RIFF") {
       const chunk = data.toString("ascii", 12, 16);
       if (chunk === "VP8X") {
         dimensions = {
@@ -463,18 +664,24 @@ function injectSeoMetadata(html, relativeFile, siteUrl) {
   const page = outputPageForFile(relativeFile);
   const canonicalUrl = encodeURI(`${siteUrl}/${page}`);
   const escapedUrl = escapeAttribute(canonicalUrl);
+  const primaryFontHref = escapeAttribute(relativeHref(relativeFile, "vendor/fonts/inter/inter-latin-wght-normal.woff2"));
   const robots = isIndexablePage(relativeFile) ? "index,follow" : "noindex,follow";
   const pageTitle = stripTags((html.match(/<title[^>]*>([\s\S]*?)<\/title>/i) || [])[1]) || "孙远鸣个人成果网站";
   const description = findMetaContent(html, "name", "description")
     || pageDescriptions.get(relativeFile)
     || `${pageTitle}：孙远鸣的研究、工程、写作与可验证成果档案。`;
   const socialImage = findMetaContent(html, "property", "og:image")
-    || `${siteUrl}/images/sym_photo.jpg`;
+    || `${siteUrl}/images/profile/sun-yuanming-portrait.jpg`;
 
-  let output = rewriteExternalAssets(html, relativeFile)
-    .replaceAll(DEFAULT_SITE_URL, siteUrl)
-    .replaceAll(`https://${STALE_SITE_HOST}`, siteUrl);
+  let output = rewriteExternalAssets(html, relativeFile).replaceAll(DEFAULT_SITE_URL, siteUrl);
+  output = injectStaticLegacyShell(output, relativeFile);
+  output = injectStaticSiteShell(output, relativeFile);
   output = ensureImageMetadata(output, relativeFile);
+  output = upsertHeadTag(
+    output,
+    /<link(?=[^>]*\bdata-symgo-font-preload\b)[^>]*>/i,
+    `<link rel="preload" href="${primaryFontHref}" as="font" type="font/woff2" crossorigin data-symgo-font-preload>`
+  );
   if (notebookHeadingPages.has(relativeFile)) {
     let headingIndex = 0;
     output = output.replace(/<h1\b([^>]*)>([\s\S]*?)<\/h1>/gi, (match, attributes, content) => {
@@ -510,11 +717,7 @@ function injectSeoMetadata(html, relativeFile, siteUrl) {
   output = upsertHeadTag(
     output,
     /<meta(?=[^>]*\bproperty=["']og:image["'])[^>]*>/i,
-    `<meta property="og:image" content="${escapeAttribute(
-      socialImage
-        .replaceAll(DEFAULT_SITE_URL, siteUrl)
-        .replaceAll(`https://${STALE_SITE_HOST}`, siteUrl)
-    )}">`
+    `<meta property="og:image" content="${escapeAttribute(socialImage.replaceAll(DEFAULT_SITE_URL, siteUrl))}">`
   );
   output = upsertHeadTag(
     output,
@@ -579,9 +782,8 @@ Sitemap: ${siteUrl}/sitemap.xml
   return pages.length;
 }
 
-function validateBuildOutput(siteUrl) {
+function validateBuildOutput() {
   const outputFiles = collectFiles(outDir).map((target) => normalizePath(path.relative(outDir, target)));
-  const siteOrigin = new URL(siteUrl).origin;
   const forbidden = outputFiles.filter((file) => shouldExcludeFromPublish(file, false));
   if (forbidden.length) {
     throw new Error(`Non-public source artifacts leaked into dist: ${forbidden.join(", ")}`);
@@ -630,20 +832,13 @@ function validateBuildOutput(siteUrl) {
     const canonicalCount = (html.match(/<link(?=[^>]*\brel=["']canonical["'])[^>]*>/gi) || []).length;
     const robotsCount = (html.match(/<meta(?=[^>]*\bname=["']robots["'])[^>]*>/gi) || []).length;
     const openGraphUrlCount = (html.match(/<meta(?=[^>]*\bproperty=["']og:url["'])[^>]*>/gi) || []).length;
+    const fontPreloads = html.match(/<link(?=[^>]*\bdata-symgo-font-preload\b)[^>]*>/gi) || [];
     if (canonicalCount !== 1 || robotsCount !== 1 || openGraphUrlCount !== 1) {
       throw new Error(`SEO metadata must appear exactly once in ${relativeFile}.`);
     }
-
-    const socialImage = findMetaContent(html, "property", "og:image");
-    if (socialImage) {
-      const pageUrl = `${siteUrl}/${outputPageForFile(relativeFile)}`;
-      const socialImageUrl = new URL(socialImage, pageUrl);
-      if (socialImageUrl.origin === siteOrigin) {
-        const imagePath = decodeURIComponent(socialImageUrl.pathname).replace(/^\/+/, "");
-        if (!imagePath || !fs.existsSync(path.join(outDir, imagePath))) {
-          throw new Error(`Same-site og:image is missing from dist in ${relativeFile}: ${socialImage}`);
-        }
-      }
+    const fontPreloadHref = fontPreloads[0]?.match(/\bhref=(["'])(.*?)\1/i)?.[2] || "";
+    if (fontPreloads.length !== 1 || !resolveLocalImage(relativeFile, fontPreloadHref)) {
+      throw new Error(`The self-hosted primary font must be preloaded exactly once in ${relativeFile}.`);
     }
 
     if (/<(?:link|script)\b[^>]*(?:href|src)=["']https:\/\/(?:cdnjs\.cloudflare\.com|cdn\.jsdelivr\.net|unpkg\.com|html2canvas\.hertzen\.com)\//i.test(html)) {
@@ -652,6 +847,17 @@ function validateBuildOutput(siteUrl) {
 
     if (/<img\b[^>]*\/\s+(?:decoding|loading|width|height)=/i.test(visibleHtml)) {
       throw new Error(`Image metadata was appended after a self-closing slash in ${relativeFile}.`);
+    }
+
+    const staticHeader = visibleHtml.match(/<header\b[^>]*\bdata-site-header\b[^>]*>[\s\S]*?<\/header>/i)?.[0] || "";
+    if (staticHeader) {
+      const pageCurrentCount = (staticHeader.match(/\baria-current=["']page["']/gi) || []).length;
+      if (pageCurrentCount > 1) {
+        throw new Error(`Static navigation has multiple aria-current=page items in ${relativeFile}.`);
+      }
+      if (/<div\b[^>]*\bclass=["'][^"']*site-nav-v2__panel[^"']*["'][^>]*(?:\binert\b|\baria-hidden=["']true["'])/i.test(staticHeader)) {
+        throw new Error(`Static navigation panels are unavailable without JavaScript in ${relativeFile}.`);
+      }
     }
 
     for (const imageTag of visibleHtml.match(/<img\b[^>]*>/gi) || []) {
@@ -670,30 +876,20 @@ function validateBuildOutput(siteUrl) {
     const relativeFile = outputFileForPage(page);
     const html = fs.readFileSync(path.join(outDir, relativeFile), "utf8");
     const h1Count = (html.match(/<h1\b[^>]*>/gi) || []).length;
-    const hasRuntimeLegacyShell = /<body\b[^>]*class=["'][^"']*legacy-page/i.test(html);
     const descriptionCount = (html.match(/<meta(?=[^>]*\bname=["']description["'])[^>]*\bcontent=["'][^"']+["'][^>]*>/gi) || []).length;
     const openGraphImageCount = (html.match(/<meta(?=[^>]*\bproperty=["']og:image["'])[^>]*\bcontent=["'][^"']+["'][^>]*>/gi) || []).length;
-    if (h1Count < 1 && !hasRuntimeLegacyShell) {
-      throw new Error(`Indexable page must contain an H1: ${relativeFile}.`);
+    if (h1Count !== 1) {
+      throw new Error(`Indexable page must contain exactly one H1: ${relativeFile}.`);
     }
     if (descriptionCount !== 1 || openGraphImageCount !== 1) {
       throw new Error(`Indexable page is missing a unique description or og:image: ${relativeFile}.`);
     }
   }
 
-  const runtimeContainerChecks = new Map([
+  const staticFallbackChecks = new Map([
     ["publications.html", /<div\b[^>]*\bdata-publications\b[^>]*>([\s\S]*?)<\/div>/i],
     ["engineering-projects.html", /<div\b[^>]*\bdata-projects\b[^>]*>([\s\S]*?)<\/div>/i],
-    ["horizontal-projects.html", /<div\b[^>]*\bdata-projects\b[^>]*>([\s\S]*?)<\/div>/i]
-  ]);
-  for (const [relativeFile, matcher] of runtimeContainerChecks) {
-    const html = fs.readFileSync(path.join(outDir, relativeFile), "utf8");
-    if (!matcher.test(html)) {
-      throw new Error(`Required runtime content container is missing in ${relativeFile}.`);
-    }
-  }
-
-  const staticFallbackChecks = new Map([
+    ["horizontal-projects.html", /<div\b[^>]*\bdata-projects\b[^>]*>([\s\S]*?)<\/div>/i],
     ["tools/api_lab.html", /<div\b[^>]*\bdata-api-grid\b[^>]*>([\s\S]*?)<\/div>/i],
     ["tools/resume_builder.html", /<div\b[^>]*\bid=["']sectionItems["'][^>]*>([\s\S]*?)<\/div>/i],
     ["ai.html", /<div\b[^>]*\bdata-ai-sessions\b[^>]*>([\s\S]*?)<\/div>/i]
@@ -706,6 +902,12 @@ function validateBuildOutput(siteUrl) {
     }
   }
 
+  for (const relativeFile of legacyPageTitles.keys()) {
+    const legacyHtml = fs.readFileSync(path.join(outDir, relativeFile), "utf8");
+    if (!/<html\b[^>]*\blang=["']zh-CN["']/i.test(legacyHtml)) {
+      throw new Error(`Legacy archive must declare html lang=zh-CN: ${relativeFile}.`);
+    }
+  }
 }
 
 function reportLargeAssets() {
@@ -736,7 +938,7 @@ const siteUrl = (
 
 const htmlCount = rewriteHtmlMetadata(siteUrl);
 const sitemapCount = writeSitemapAndRobots(siteUrl);
-validateBuildOutput(siteUrl);
+validateBuildOutput();
 reportLargeAssets();
 
 console.log(`Static site built to ${path.relative(root, outDir)}: ${htmlCount} HTML files, ${sitemapCount} indexed URLs, ${skippedPublishPaths.size} non-public source artifacts excluded.`);
