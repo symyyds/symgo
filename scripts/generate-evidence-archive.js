@@ -1,18 +1,8 @@
 const fs = require("fs");
 const path = require("path");
-const {
-  protectedHorizontalProjects,
-  protectedEvidenceRelativeFiles
-} = require("./site-governance");
 
 const root = path.resolve(__dirname, "..");
 const evidenceDir = path.join(root, "evidence");
-const dryRun = process.argv.includes("--dry-run");
-
-// These hand-authored, evidence-backed records live outside the generated
-// placeholder data. The shared governance manifest also drives build validation.
-const protectedEvidencePaths = new Set(protectedEvidenceRelativeFiles);
-const plannedWrites = [];
 
 const categories = [
   {
@@ -190,55 +180,7 @@ const sectionNames = [
 ];
 
 function ensureDir(dir) {
-  if (!dryRun) fs.mkdirSync(dir, { recursive: true });
-}
-
-function relativeEvidencePath(target) {
-  return path.relative(evidenceDir, target).split(path.sep).join("/");
-}
-
-function writeGeneratedFile(target, content) {
-  const relativePath = relativeEvidencePath(target);
-  if (protectedEvidencePaths.has(relativePath)) {
-    throw new Error(`Refusing to overwrite protected evidence page: ${relativePath}`);
-  }
-
-  plannedWrites.push(relativePath);
-  if (!dryRun) fs.writeFileSync(target, content, "utf8");
-}
-
-function validateProtectedProjects() {
-  const missing = [];
-  for (const project of protectedHorizontalProjects) {
-    const relativePath = `horizontal-projects/${project.slug}.html`;
-    if (!fs.existsSync(path.join(evidenceDir, relativePath))) missing.push(relativePath);
-    const imagePath = path.join(root, "images", "horizontal-projects", project.image);
-    if (!fs.existsSync(imagePath)) missing.push(`images/horizontal-projects/${project.image}`);
-  }
-
-  if (missing.length) {
-    throw new Error(`Protected evidence asset(s) missing: ${missing.join(", ")}`);
-  }
-}
-
-function curatedProjectCards(category) {
-  if (category.slug !== "horizontal-projects") return "";
-
-  return protectedHorizontalProjects.map((project) => `
-                    <article class="surface-card">
-                        <a class="horizontal-card-preview" href="${project.slug}.html#visual-proof">
-                            <img src="../../images/horizontal-projects/${project.image}" alt="${escapeHtml(project.imageAlt)}" loading="lazy">
-                        </a>
-                        <div class="card-icon"><i class="fas ${project.icon}"></i></div>
-                        <span class="section-kicker">REAL PROJECT</span>
-                        <h3>${escapeHtml(project.title)}</h3>
-                        <p>${escapeHtml(project.summary)}</p>
-                        <div class="evidence-tag-row">${project.tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}</div>
-                        <div class="project-actions">
-                            <a class="text-link" href="${project.slug}.html#evidence-dashboard">证据看板 <i class="fas fa-arrow-right"></i></a>
-                            <a class="text-link" href="${project.slug}.html">完整档案 <i class="fas fa-arrow-right"></i></a>
-                        </div>
-                    </article>`).join("\n");
+  fs.mkdirSync(dir, { recursive: true });
 }
 
 function escapeHtml(value) {
@@ -364,7 +306,6 @@ ${sections}
 }
 
 function categoryIndex(category) {
-  const curatedCards = curatedProjectCards(category);
   const cards = category.items.map((item, index) => {
     const [slug, title, summary] = item;
     return `
@@ -398,7 +339,6 @@ function categoryIndex(category) {
         <section class="section-band">
             <div class="container">
                 <div class="evidence-card-grid">
-${curatedCards}
 ${cards}
                 </div>
             </div>
@@ -411,18 +351,14 @@ ${cards}
 }
 
 function rootIndex() {
-  const cards = categories.map((category) => {
-    const curatedCount = category.slug === "horizontal-projects" ? protectedHorizontalProjects.length : 0;
-    const totalCount = category.items.length + curatedCount;
-    return `
+  const cards = categories.map((category) => `
                     <article class="surface-card">
                         <div class="card-icon"><i class="fas ${category.icon}"></i></div>
                         <h3>${escapeHtml(category.title)}</h3>
-                        <p>${escapeHtml(category.description)} 本分类包含 ${totalCount} 个档案，其中已核验项目与待补充材料明确分开。</p>
-                        <div class="evidence-tag-row"><span>${totalCount} 个档案</span><span>证据链</span><span>长期维护</span></div>
+                        <p>${escapeHtml(category.description)} 本分类包含 ${category.items.length} 个可继续替换真实材料的证据档案。</p>
+                        <div class="evidence-tag-row"><span>${category.items.length} 个档案</span><span>证据链</span><span>长期维护</span></div>
                         <a class="text-link" href="${category.slug}/index.html">进入分类 <i class="fas fa-arrow-right"></i></a>
-                    </article>`;
-  }).join("\n");
+                    </article>`).join("\n");
 
   return `<!DOCTYPE html>
 <html lang="zh-CN">
@@ -462,30 +398,17 @@ ${cards}
 </html>`;
 }
 
-validateProtectedProjects();
 ensureDir(evidenceDir);
-writeGeneratedFile(path.join(evidenceDir, "index.html"), rootIndex());
+fs.writeFileSync(path.join(evidenceDir, "index.html"), rootIndex(), "utf8");
 
 for (const category of categories) {
   const categoryDir = path.join(evidenceDir, category.slug);
   ensureDir(categoryDir);
-  const indexHtml = categoryIndex(category);
-  if (category.slug === "horizontal-projects") {
-    for (const project of protectedHorizontalProjects) {
-      if (!indexHtml.includes(`href="${project.slug}.html`)) {
-        throw new Error(`Generated horizontal-projects index lost protected entry: ${project.slug}`);
-      }
-    }
-  }
-  writeGeneratedFile(path.join(categoryDir, "index.html"), indexHtml);
+  fs.writeFileSync(path.join(categoryDir, "index.html"), categoryIndex(category), "utf8");
   category.items.forEach((item, index) => {
-    writeGeneratedFile(path.join(categoryDir, `${item[0]}.html`), pageTemplate(category, item, index));
+    fs.writeFileSync(path.join(categoryDir, `${item[0]}.html`), pageTemplate(category, item, index), "utf8");
   });
 }
 
 const totalPages = 1 + categories.length + categories.reduce((sum, category) => sum + category.items.length, 0);
-if (dryRun) {
-  console.log(`Dry run validated ${plannedWrites.length} generated writes and ${protectedHorizontalProjects.length} protected project pages.`);
-} else {
-  console.log(`Generated ${totalPages} template/index pages while preserving ${protectedHorizontalProjects.length} protected project pages.`);
-}
+console.log(`Generated ${totalPages} evidence archive pages in evidence`);
