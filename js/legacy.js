@@ -24,10 +24,10 @@
         content.className = document.body.classList.contains("template-preview") ? "legacy-content legacy-template-board" : "legacy-content";
         existingNodes.forEach((node) => content.appendChild(node));
         content.querySelectorAll("h1").forEach((heading) => {
-            const replacement = document.createElement("h2");
-            for (const attribute of heading.attributes) replacement.setAttribute(attribute.name, attribute.value);
-            replacement.append(...heading.childNodes);
-            heading.replaceWith(replacement);
+            const subheading = document.createElement("h2");
+            Array.from(heading.attributes).forEach((attribute) => subheading.setAttribute(attribute.name, attribute.value));
+            while (heading.firstChild) subheading.appendChild(heading.firstChild);
+            heading.replaceWith(subheading);
         });
 
         const topbar = document.createElement("header");

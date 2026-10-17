@@ -1,741 +1,2704 @@
-(() => {
-  "use strict";
-
-  const mainScript = [...document.scripts].find((script) => /(?:^|\/)js\/main\.js(?:[?#]|$)/.test(script.src));
-  const siteRoot = mainScript
-    ? new URL(mainScript.src.replace(/js\/main\.js(?:[?#].*)?$/, ""))
-    : new URL("./", document.baseURI);
-  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const desktopNav = window.matchMedia("(min-width: 1181px)");
-
-  const navigationGroups = [
-    { label: "首页", href: "index.html" },
-    {
-      label: "关于",
-      href: "profile.html",
-      children: [
-        { label: "个人档案", href: "profile.html", desc: "定位、能力与经历概览" },
-        { label: "阶段成果", href: "resume.html", desc: "本科材料与研究生阶段预留" },
-        { label: "研究方向", href: "research.html", desc: "问题意识、方法与未来课题" },
-        { label: "一页式档案", href: "snapshot.html", desc: "快速发给导师或招聘方" },
-      ],
-    },
-    {
-      label: "成果",
-      href: "publications.html",
-      children: [
-        { label: "论文发表", href: "publications.html", desc: "论文首页、DOI 与 PDF" },
-        { label: "项目总览", href: "projects.html", desc: "工程项目与横向项目入口" },
-        { label: "材料中心", href: "materials.html", desc: "简历、论文和可验证材料" },
-        { label: "成果证明", href: "achievements.html", desc: "奖项、项目与公开证据" },
-      ],
-    },
-    {
-      label: "项目",
-      href: "engineering-projects.html",
-      children: [
-        { label: "工程项目", href: "engineering-projects.html", desc: "开发、工具、API 与部署" },
-        { label: "横向项目", href: "horizontal-projects.html", desc: "技术路线、材料与验收证据" },
-        { label: "证据档案", href: "evidence/index.html", desc: "公开边界内的证据链" },
-        { label: "合作方向", href: "services.html", desc: "原型、材料与科研协作" },
-      ],
-    },
-    {
-      label: "知识",
-      href: "blog.html",
-      children: [
-        { label: "技术博客", href: "blog.html", desc: "教程、阅读与项目复盘" },
-        { label: "知识库", href: "library/index.html", desc: "研究笔记与维护记录" },
-        { label: "案例库", href: "cases/index.html", desc: "模块级实践与复盘" },
-        { label: "扩展手册", href: "handbook/index.html", desc: "工程、研究和申请专题" },
-      ],
-    },
-    {
-      label: "工具",
-      href: "tools/api_lab.html",
-      children: [
-        { label: "API 实验室", href: "tools/api_lab.html", desc: "Functions 状态与调用结果" },
-        { label: "AI 助手", href: "ai.html", desc: "安全代理与文档问答" },
-        { label: "代码展示", href: "tools/code_runner.html", desc: "隔离运行与代码高亮" },
-        { label: "Python 导航", href: "tools/python_nav.html", desc: "入门、数据类型与编程笔记" },
-        { label: "深度学习", href: "tools/deep_learning.html", desc: "框架、课程与教程资源" },
-        { label: "Markdown 工具", href: "tools/markdown_to_word.html", desc: "预览、排版与导出" },
-        { label: "简历制作", href: "tools/resume_builder.html", desc: "结构化简历编辑工具" },
-      ],
-    },
-    { label: "联系", href: "leave_message.html" },
-  ];
-
-  const paletteItems = [
-    ["首页", "真实成果与核心入口", "index.html"],
-    ["个人档案", "定位、能力与经历概览", "profile.html"],
-    ["阶段成果", "本科材料与研究生阶段预留", "resume.html"],
-    ["研究方向", "问题意识、方法与未来课题", "research.html"],
-    ["一页式档案", "导师、招聘与合作快速入口", "snapshot.html"],
-    ["论文发表", "论文首页、DOI 与 PDF", "publications.html"],
-    ["项目总览", "工程项目与横向项目", "projects.html"],
-    ["工程项目", "开发、工具、API 与部署", "engineering-projects.html"],
-    ["横向项目", "技术路线、材料与验收证据", "horizontal-projects.html"],
-    ["材料中心", "CV、论文与公开材料", "materials.html"],
-    ["成果证明", "奖项、项目与公开证据", "achievements.html"],
-    ["技术博客", "教程、论文阅读与项目复盘", "blog.html"],
-    ["知识库", "研究笔记与更新日志", "library/index.html"],
-    ["案例库", "模块级实践与复盘", "cases/index.html"],
-    ["扩展手册", "工程、研究与申请专题", "handbook/index.html"],
-    ["证据档案", "公开边界内的证据链", "evidence/index.html"],
-    ["API 实验室", "Functions 状态与调用结果", "tools/api_lab.html"],
-    ["AI 助手", "安全代理与文档问答", "ai.html"],
-    ["代码展示", "隔离运行与代码高亮", "tools/code_runner.html"],
-    ["Python 导航", "入门、数据类型与编程笔记", "tools/python_nav.html"],
-    ["深度学习", "框架、课程与教程资源", "tools/deep_learning.html"],
-    ["Markdown 工具", "预览、排版与导出", "tools/markdown_to_word.html"],
-    ["简历制作", "结构化简历编辑", "tools/resume_builder.html"],
-    ["联系", "邮箱、GitHub 与合作方向", "leave_message.html"],
-  ].map(([label, desc, href]) => ({ label, desc, href }));
-
-  const categoryNames = {
-    blog: "技术博客",
-    tools: "工具",
-    library: "知识库",
-    cases: "案例库",
-    handbook: "扩展手册",
-    evidence: "证据档案",
-  };
-
-  function siteUrl(path = "") {
-    return new URL(path.replace(/^\//, ""), siteRoot).href;
-  }
-
-  function currentRelativePath() {
-    const current = new URL(window.location.href);
-    const rootPath = decodeURI(siteRoot.pathname).replace(/\/$/, "");
-    const currentPath = decodeURI(current.pathname);
-    let relative = currentPath.startsWith(`${rootPath}/`) ? currentPath.slice(rootPath.length + 1) : currentPath.replace(/^\//, "");
-    if (!relative || relative.endsWith("/")) relative += "index.html";
-    return relative.replace(/\\/g, "/");
-  }
-
-  function normalizeTarget(href) {
-    try {
-      const target = new URL(href, window.location.href);
-      const rootPath = decodeURI(siteRoot.pathname).replace(/\/$/, "");
-      let relative = decodeURI(target.pathname);
-      if (relative.startsWith(`${rootPath}/`)) relative = relative.slice(rootPath.length + 1);
-      else relative = relative.replace(/^\//, "");
-      if (!relative || relative.endsWith("/")) relative += "index.html";
-      return relative;
-    } catch {
-      return href;
-    }
-  }
-
-  function showToast(message) {
-    let toast = document.querySelector(".site-toast-v2");
-    if (!toast) {
-      toast = document.createElement("div");
-      toast.className = "site-toast-v2";
-      toast.setAttribute("role", "status");
-      toast.setAttribute("aria-live", "polite");
-      document.body.appendChild(toast);
-    }
-    toast.textContent = message;
-    toast.classList.add("is-visible");
-    window.clearTimeout(showToast.timer);
-    showToast.timer = window.setTimeout(() => toast.classList.remove("is-visible"), 2000);
-  }
-
-  function ensureSkipLink() {
-    if (document.querySelector(".skip-link-v2, .skip-link")) return;
-    const main = document.querySelector("main");
-    if (!main) return;
-    if (!main.id) main.id = "main-content";
-    const link = document.createElement("a");
-    link.className = "skip-link-v2";
-    link.href = `#${main.id}`;
-    link.textContent = "跳到主要内容";
-    document.body.prepend(link);
-  }
-
-  function renderHeader() {
-    const header = document.querySelector("body > header");
-    if (!header) return;
-
-    header.className = "site-header-v2";
-    header.setAttribute("data-site-header", "");
-    header.innerHTML = `
-      <div class="container site-header-v2__inner">
-        <a class="site-brand-v2" href="${siteUrl("index.html")}" aria-label="孙远鸣个人成果网站首页">
-          <span class="site-brand-v2__mark" aria-hidden="true">SYM<span>.</span></span>
-          <span class="site-brand-v2__copy"><strong>孙远鸣</strong><small>Research × Engineering</small></span>
-        </a>
-        <nav class="site-nav-v2" id="site-navigation" aria-label="主导航" data-site-nav>
-          <ul>${navigationGroups.map((item, index) => {
-            if (!item.children) {
-              return `<li><a class="site-nav-v2__primary" href="${siteUrl(item.href)}" data-nav-path="${item.href}">${item.label}</a></li>`;
-            }
-            const id = `site-nav-panel-${index}`;
-            return `
-              <li class="site-nav-v2__cluster">
-                <div class="site-nav-v2__cluster-head">
-                  <a class="site-nav-v2__primary" href="${siteUrl(item.href)}" data-nav-path="${item.href}">${item.label}</a>
-                  <button type="button" aria-expanded="false" aria-controls="${id}" aria-haspopup="true" aria-label="展开${item.label}分类">
-                    <svg viewBox="0 0 12 12" aria-hidden="true"><path d="m2.5 4.5 3.5 3 3.5-3" /></svg>
-                  </button>
-                </div>
-                <div class="site-nav-v2__panel" id="${id}" role="menu" aria-hidden="true" inert>
-                  ${item.children.map((child) => `
-                    <a href="${siteUrl(child.href)}" role="menuitem" data-nav-path="${child.href}"><span>${child.label}</span><small>${child.desc}</small></a>
-                  `).join("")}
-                </div>
-              </li>
-            `;
-          }).join("")}</ul>
-        </nav>
-        <div class="site-header-v2__actions">
-          <button class="site-search-button" type="button" data-command-open aria-label="搜索页面，快捷键 Ctrl+K">
-            <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" /><path d="m13 13 4 4" /></svg>
-          </button>
-          <a class="site-cv-button" href="${siteUrl("files/CV.pdf")}" target="_blank" rel="noopener noreferrer">CV <span>↗</span></a>
-          <button class="site-menu-button" type="button" aria-expanded="false" aria-controls="site-navigation" aria-label="打开导航菜单"><span></span><span></span></button>
-        </div>
-      </div>
-    `;
-  }
-
-  function initNavigation() {
-    const header = document.querySelector("[data-site-header]");
-    const nav = document.querySelector("[data-site-nav]");
-    const menuButton = document.querySelector(".site-menu-button");
-    const main = document.querySelector("main");
-    const footer = document.querySelector("body > footer");
-    if (!header || !nav || !menuButton || !main) return;
-
-    const clusters = [...nav.querySelectorAll(".site-nav-v2__cluster")];
-    let lastFocused = null;
-    let suppressClusterFocusOpen = false;
-
-    function setCluster(cluster, open) {
-      const button = cluster.querySelector(".site-nav-v2__cluster-head button");
-      const panel = cluster.querySelector(".site-nav-v2__panel");
-      cluster.classList.toggle("is-open", open);
-      button?.setAttribute("aria-expanded", String(open));
-      if (panel) {
-        panel.setAttribute("aria-hidden", String(!open));
-        panel.inert = !open;
-      }
+(function () {
+    function getAssetPrefix() {
+        const pathParts = window.location.pathname.split("/").filter(Boolean);
+        if (!pathParts.length) return "";
+        const lastPart = pathParts[pathParts.length - 1];
+        const depth = lastPart.includes(".") ? pathParts.length - 1 : pathParts.length;
+        return depth > 0 ? "../".repeat(depth) : "";
     }
 
-    function closeClusters(except = null) {
-      clusters.forEach((cluster) => {
-        if (cluster !== except) setCluster(cluster, false);
-      });
-    }
+    const prefix = getAssetPrefix();
 
-    clusters.forEach((cluster) => {
-      const button = cluster.querySelector(".site-nav-v2__cluster-head button");
-      const panel = cluster.querySelector(".site-nav-v2__panel");
-      let closeTimer;
-      if (!button || !panel) return;
+    const navigationGroups = [
+        { label: "首页", href: "index.html", icon: "fa-house" },
+        {
+            label: "关于我",
+            icon: "fa-user-graduate",
+            children: [
+                { label: "个人档案", href: "profile.html", desc: "能力矩阵与经历概览" },
+                { label: "阶段成果", href: "resume.html", desc: "本科成果与研究生阶段预留" },
+                { label: "作品集仪表盘", href: "dashboard.html", desc: "页面、材料与质量总览" },
+                { label: "研究方向", href: "research.html", desc: "问题意识与未来课题" },
+                { label: "一页式档案", href: "snapshot.html", desc: "快速发给导师或 HR" },
+                { label: "成就与证明", href: "achievements.html", desc: "成果、荣誉与沉淀" },
+                { label: "路线图", href: "roadmap.html", desc: "后续补强计划" }
+            ]
+        },
+        {
+            label: "成果与证据",
+            icon: "fa-layer-group",
+            children: [
+                { label: "论文发表", href: "publications.html", desc: "论文、级别、PDF 与关联项目" },
+                { label: "项目总览", href: "projects.html", desc: "工程项目与横向项目入口" },
+                { label: "工程项目", href: "engineering-projects.html", desc: "独立开发、部署与维护能力" },
+                { label: "横向项目", href: "horizontal-projects.html", desc: "需求理解、协作交付与验收" },
+                { label: "材料库", href: "materials.html", desc: "CV、论文、证明与申请材料" },
+                { label: "证据档案", href: "evidence/index.html", desc: "可追问材料与证据链" },
+                { label: "合作服务", href: "services.html", desc: "可交付原型与展示材料" },
+                { label: "面试故事", href: "interview.html", desc: "STAR 项目复盘" }
+            ]
+        },
+        {
+            label: "知识库",
+            icon: "fa-book-open",
+            children: [
+                { label: "博客文章", href: "blog.html", desc: "技术、升学与写作记录" },
+                { label: "作品集知识库", href: "library/index.html", desc: "项目深化、FAQ 与更新日志" },
+                { label: "案例库", href: "cases/index.html", desc: "模块级案例复盘" },
+                { label: "扩展手册", href: "handbook/index.html", desc: "工程、研究、求职与合作专题" }
+            ]
+        },
+        {
+            label: "工具",
+            icon: "fa-screwdriver-wrench",
+            children: [
+                { label: "AI 助手", href: "ai.html", desc: "本地历史记录与文档问答" },
+                { label: "代码高亮", href: "tools/code_runner.html", desc: "代码展示与片段处理" },
+                { label: "Markdown 工具", href: "tools/markdown_to_word.html", desc: "Markdown 转换与排版" },
+                { label: "Python 学习", href: "tools/python_nav.html", desc: "Python 内容导航" },
+                { label: "深度学习", href: "tools/deep_learning.html", desc: "学习路径与资料入口" },
+                { label: "复试抽题", href: "test.html", desc: "专业课随机抽题练习" },
+                { label: "简历制作", href: "tools/resume_builder.html", desc: "结构化简历编辑工具" },
+                { label: "API 代理", href: "tools/netlify_api_proxy.html", desc: "函数端点、白名单和 JSON 返回" },
+                { label: "API 实验室", href: "tools/api_lab.html", desc: "public-apis 接入与健康检查" },
+                { label: "PyTorch 教程", href: "tools/pytorch.html", desc: "PyTorch 深度学习入门教程" }
+            ]
+        },
+        { label: "联系", href: "leave_message.html", icon: "fa-message" }
+    ];
 
-      const openCluster = () => {
-        window.clearTimeout(closeTimer);
-        closeClusters(cluster);
-        setCluster(cluster, true);
-      };
-      const queueClose = () => {
-        window.clearTimeout(closeTimer);
-        closeTimer = window.setTimeout(() => setCluster(cluster, false), 240);
-      };
+    function enhanceNavigation() {
+        const navList = document.querySelector("nav ul");
+        if (!navList) return;
 
-      cluster.addEventListener("pointerenter", () => desktopNav.matches && openCluster());
-      cluster.addEventListener("pointerleave", () => desktopNav.matches && queueClose());
-      cluster.addEventListener("focusin", () => desktopNav.matches && !suppressClusterFocusOpen && openCluster());
-      cluster.addEventListener("focusout", (event) => {
-        if (desktopNav.matches && !cluster.contains(event.relatedTarget)) queueClose();
-      });
-      button.addEventListener("click", (event) => {
-        event.stopPropagation();
-        const willOpen = !cluster.classList.contains("is-open");
-        closeClusters(cluster);
-        setCluster(cluster, willOpen);
-        if (willOpen && !desktopNav.matches) requestAnimationFrame(() => panel.querySelector("a")?.focus());
-      });
-    });
+        const nav = navList.closest("nav");
+        const header = navList.closest("header");
+        const mobileNavQuery = window.matchMedia("(max-width: 900px)");
 
-    function setMobileMenu(open, restoreFocus = true) {
-      if (open) lastFocused = document.activeElement;
-      nav.classList.toggle("is-open", open);
-      if (!desktopNav.matches) nav.setAttribute("aria-hidden", String(!open));
-      menuButton.setAttribute("aria-expanded", String(open));
-      menuButton.setAttribute("aria-label", open ? "关闭导航菜单" : "打开导航菜单");
-      header.classList.toggle("menu-active", open);
-      document.body.classList.toggle("menu-open", open);
-      main.inert = open;
-      if (footer) footer.inert = open;
+        nav.id = nav.id || "site-primary-navigation";
+        nav.setAttribute("aria-label", "主导航");
 
-      if (open) requestAnimationFrame(() => nav.querySelector("a")?.focus());
-      else {
-        closeClusters();
-        if (restoreFocus && lastFocused instanceof HTMLElement) lastFocused.focus();
-      }
-    }
+        navList.className = "nav-menu";
+        navList.id = navList.id || "site-primary-navigation-list";
+        navList.innerHTML = "";
 
-    menuButton.addEventListener("click", () => setMobileMenu(menuButton.getAttribute("aria-expanded") !== "true"));
-    nav.addEventListener("click", (event) => {
-      if (event.target.closest("a") && !desktopNav.matches) setMobileMenu(false, false);
-    });
-    document.addEventListener("click", (event) => {
-      if (!event.target.closest(".site-nav-v2__cluster")) closeClusters();
-    });
-    document.addEventListener("keydown", (event) => {
-      const menuOpen = menuButton.getAttribute("aria-expanded") === "true";
-      if (event.key === "Escape") {
-        if (menuOpen) setMobileMenu(false);
-        else {
-          const activeCluster = event.target instanceof Element
-            ? event.target.closest(".site-nav-v2__cluster.is-open")
-            : null;
-          closeClusters();
-          const clusterButton = activeCluster?.querySelector(".site-nav-v2__cluster-head button");
-          if (clusterButton instanceof HTMLElement) {
-            event.preventDefault();
-            suppressClusterFocusOpen = true;
-            clusterButton.focus();
-            suppressClusterFocusOpen = false;
-          }
+        const mobileToggle = document.createElement("button");
+        mobileToggle.type = "button";
+        mobileToggle.className = "mobile-nav-toggle";
+        mobileToggle.setAttribute("aria-controls", navList.id);
+        mobileToggle.setAttribute("aria-expanded", "false");
+        mobileToggle.setAttribute("aria-label", "打开主导航");
+        mobileToggle.title = "打开主导航";
+        mobileToggle.innerHTML = '<i class="fas fa-bars" aria-hidden="true"></i>';
+        header?.querySelector(".container")?.insertBefore(mobileToggle, nav);
+        document.body.classList.add("mobile-nav-ready");
+
+        function buildHref(href) {
+            if (!href || href.startsWith("http") || href.startsWith("#")) return href;
+            return prefix + href;
         }
-        return;
-      }
-      if (event.key !== "Tab" || !menuOpen) return;
-      const focusable = [
-        ...nav.querySelectorAll("a, .site-nav-v2__cluster-head button"),
-        menuButton,
-      ].filter((element) => element.offsetParent !== null && !element.closest("[inert]"));
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last?.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first?.focus();
-      }
-    });
-    desktopNav.addEventListener("change", (event) => {
-      if (event.matches) {
-        setMobileMenu(false, false);
-        nav.removeAttribute("aria-hidden");
-        document.querySelector(".site-brand-v2")?.focus();
-      } else {
-        nav.setAttribute("aria-hidden", "true");
-      }
-    });
-    if (!desktopNav.matches) nav.setAttribute("aria-hidden", "true");
-  }
 
-  function markActiveNavigation() {
-    const current = currentRelativePath();
-    const currentSection = current.includes("/") ? current.split("/")[0] : "";
-    const nav = document.querySelector("[data-site-nav]");
-    if (!nav) return;
+        function createLink(item) {
+            const link = document.createElement("a");
+            link.href = buildHref(item.href);
+            link.className = item.desc ? "nav-dropdown-link" : "";
+            link.innerHTML = item.desc
+                ? `<span>${item.label}</span><small>${item.desc}</small>`
+                : `<i class="fas ${item.icon}" aria-hidden="true"></i><span>${item.label}</span>`;
+            return link;
+        }
 
-    const setLinkState = (link, visuallyCurrent, currentPage = false) => {
-      link.classList.toggle("is-current", visuallyCurrent);
-      if (currentPage) link.setAttribute("aria-current", "page");
-      else link.removeAttribute("aria-current");
-    };
+        navigationGroups.forEach((item, groupIndex) => {
+            const li = document.createElement("li");
+            if (!item.children) {
+                li.className = "nav-single";
+                li.appendChild(createLink(item));
+                navList.appendChild(li);
+                return;
+            }
 
-    const representsCurrentSection = (target) => {
-      const targetSection = target.includes("/") ? target.split("/")[0] : "";
-      return Boolean(currentSection) && (
-        target === `${currentSection}/index.html`
-        || (currentSection === "blog" && target === "blog.html")
-        || (["library", "cases", "handbook", "evidence"].includes(currentSection) && targetSection === currentSection)
-      );
-    };
+            li.className = "nav-group";
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "nav-group-toggle";
+            button.setAttribute("aria-expanded", "false");
+            button.setAttribute("aria-haspopup", "true");
+            button.innerHTML = `<i class="fas ${item.icon}" aria-hidden="true"></i><span>${item.label}</span><i class="fas fa-chevron-down nav-chevron" aria-hidden="true"></i>`;
 
-    nav.querySelectorAll(":scope > ul > li").forEach((item) => {
-      const cluster = item.querySelector(":scope > .site-nav-v2__cluster-head")?.parentElement;
-      const primary = cluster
-        ? cluster.querySelector(":scope > .site-nav-v2__cluster-head > .site-nav-v2__primary")
-        : item.querySelector(":scope > .site-nav-v2__primary");
-      if (!primary) return;
+            const dropdown = document.createElement("div");
+            dropdown.className = "nav-dropdown";
+            dropdown.id = `site-nav-dropdown-${groupIndex + 1}`;
+            dropdown.setAttribute("aria-hidden", "true");
+            dropdown.inert = true;
+            button.setAttribute("aria-controls", dropdown.id);
+            item.children.forEach((child) => dropdown.appendChild(createLink(child)));
+            dropdown.querySelectorAll("a").forEach((link) => link.setAttribute("tabindex", "-1"));
 
-      const primaryTarget = normalizeTarget(primary.href);
-      if (!cluster) {
-        const exactPrimary = primaryTarget === current;
-        setLinkState(primary, exactPrimary, exactPrimary);
-        return;
-      }
-
-      const children = [...cluster.querySelectorAll(":scope > .site-nav-v2__panel > a[data-nav-path]")];
-      const exactChild = children.find((link) => normalizeTarget(link.href) === current) || null;
-      const sectionChild = exactChild || children.find((link) => representsCurrentSection(normalizeTarget(link.href))) || null;
-
-      children.forEach((link) => {
-        setLinkState(link, link === sectionChild, link === exactChild);
-      });
-
-      const primarySection = primaryTarget.includes("/") ? primaryTarget.split("/")[0] : "";
-      const sectionCurrent = primaryTarget === current
-        || Boolean(sectionChild)
-        || (Boolean(currentSection) && primarySection === currentSection);
-
-      /* A clustered primary identifies the active section visually. The exact
-         child owns aria-current="page", avoiding two page announcements for
-         duplicated landing targets such as Publications and API Lab. */
-      setLinkState(primary, sectionCurrent, sectionCurrent && !exactChild && primaryTarget === current);
-      cluster.classList.toggle("has-current", sectionCurrent);
-    });
-  }
-
-  function initHeaderState() {
-    const header = document.querySelector("[data-site-header]");
-    if (!header) return;
-    let scheduled = false;
-    function update() {
-      header.classList.toggle("is-scrolled", window.scrollY > 24);
-      scheduled = false;
-    }
-    window.addEventListener("scroll", () => {
-      if (scheduled) return;
-      scheduled = true;
-      requestAnimationFrame(update);
-    }, { passive: true });
-    update();
-  }
-
-  function renderFooter() {
-    const footer = document.querySelector("body > footer");
-    if (!footer) return;
-    footer.className = "site-footer-v2";
-    footer.innerHTML = `
-      <div class="container site-footer-v2__grid">
-        <div class="site-footer-v2__identity">
-          <span class="site-brand-v2__mark" aria-hidden="true">SYM<span>.</span></span>
-          <p>Research × Engineering × Evidence</p>
-        </div>
-        <div><span>成果</span><a href="${siteUrl("publications.html")}">论文</a><a href="${siteUrl("engineering-projects.html")}">工程项目</a><a href="${siteUrl("horizontal-projects.html")}">横向项目</a></div>
-        <div><span>材料</span><a href="${siteUrl("resume.html")}">阶段档案</a><a href="${siteUrl("materials.html")}">材料中心</a><a href="${siteUrl("blog.html")}">技术博客</a></div>
-        <div><span>联系</span><a href="mailto:19861208800@163.com">Email ↗</a><a href="https://github.com/symyyds/symgo" target="_blank" rel="noopener noreferrer">GitHub ↗</a><button type="button" data-copy-email>复制邮箱</button></div>
-        <p class="site-footer-v2__copyright">© 2026 孙远鸣。所有事实内容以公开材料为准。</p>
-      </div>
-    `;
-    footer.querySelector("[data-copy-email]")?.addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText("19861208800@163.com");
-        showToast("邮箱已复制");
-      } catch {
-        showToast("复制失败，请手动复制邮箱");
-      }
-    });
-  }
-
-  function initReadingProgress() {
-    const progress = document.createElement("div");
-    progress.className = "reading-progress-v2";
-    progress.innerHTML = "<span></span>";
-    document.body.appendChild(progress);
-    const bar = progress.querySelector("span");
-    let scheduled = false;
-    function update() {
-      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-      const ratio = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0;
-      bar.style.transform = `scaleX(${ratio})`;
-      scheduled = false;
-    }
-    window.addEventListener("scroll", () => {
-      if (scheduled) return;
-      scheduled = true;
-      requestAnimationFrame(update);
-    }, { passive: true });
-    update();
-  }
-
-  function initCommandPalette() {
-    if (typeof HTMLDialogElement === "undefined") return;
-    const dialog = document.createElement("dialog");
-    dialog.className = "command-palette-v2";
-    dialog.setAttribute("aria-labelledby", "command-title");
-    dialog.innerHTML = `
-      <div class="command-palette-v2__dialog">
-        <div class="command-palette-v2__head">
-          <div><span>QUICK NAVIGATION</span><h2 id="command-title">搜索页面与材料</h2></div>
-          <button type="button" data-command-close aria-label="关闭搜索">×</button>
-        </div>
-        <label class="command-palette-v2__search"><span class="sr-only">搜索关键词</span><input type="search" placeholder="输入论文、项目、材料或工具名称" autocomplete="off" /></label>
-        <div class="command-palette-v2__results" role="list"></div>
-      </div>
-    `;
-    document.body.appendChild(dialog);
-    const input = dialog.querySelector("input");
-    const results = dialog.querySelector(".command-palette-v2__results");
-    let previousFocus = null;
-
-    function render(keyword = "") {
-      const term = keyword.trim().toLowerCase();
-      const matches = paletteItems.filter((item) => `${item.label} ${item.desc}`.toLowerCase().includes(term));
-      results.innerHTML = matches.length
-        ? matches.map((item, index) => `<a href="${siteUrl(item.href)}" role="listitem"><span>${String(index + 1).padStart(2, "0")}</span><strong>${item.label}</strong><small>${item.desc}</small><b>↗</b></a>`).join("")
-        : '<p class="empty-state">没有匹配结果，请换一个关键词。</p>';
-    }
-    function open() {
-      previousFocus = document.activeElement;
-      render(input.value);
-      dialog.showModal();
-      document.body.classList.add("dialog-open");
-      requestAnimationFrame(() => input.focus());
-    }
-    function close() {
-      if (!dialog.open) return;
-      dialog.close();
-      document.body.classList.remove("dialog-open");
-      if (previousFocus instanceof HTMLElement) previousFocus.focus();
-    }
-    document.querySelectorAll("[data-command-open]").forEach((button) => button.addEventListener("click", open));
-    dialog.querySelector("[data-command-close]").addEventListener("click", close);
-    input.addEventListener("input", () => render(input.value));
-    dialog.addEventListener("click", (event) => {
-      if (event.target === dialog) close();
-    });
-    dialog.addEventListener("close", () => document.body.classList.remove("dialog-open"));
-    document.addEventListener("keydown", (event) => {
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
-        event.preventDefault();
-        if (dialog.open) close();
-        else open();
-      }
-    });
-    render();
-  }
-
-  function initBackToTop() {
-    const button = document.createElement("button");
-    button.className = "back-top-v2";
-    button.type = "button";
-    button.setAttribute("aria-label", "返回页面顶部");
-    button.textContent = "↑";
-    document.body.appendChild(button);
-    function update() {
-      button.classList.toggle("is-visible", window.scrollY > 700);
-    }
-    window.addEventListener("scroll", update, { passive: true });
-    button.addEventListener("click", () => window.scrollTo({ top: 0, behavior: prefersReducedMotion.matches ? "auto" : "smooth" }));
-    update();
-  }
-
-  function initBreadcrumbs() {
-    const current = currentRelativePath();
-    if (current === "index.html" || document.querySelector(".breadcrumbs-v2")) return;
-    const target = document.querySelector(".page-hero .container, .article-header, main > .container:first-child");
-    if (!target) return;
-    const section = current.includes("/") ? current.split("/")[0] : "";
-    const title = document.title.split("|")[0].trim() || document.querySelector("main h1")?.textContent.trim();
-    const crumbs = [{ label: "首页", href: siteUrl("index.html") }];
-    if (section && categoryNames[section]) crumbs.push({ label: categoryNames[section], href: siteUrl(`${section}/index.html`) });
-    crumbs.push({ label: title, href: "" });
-    const nav = document.createElement("nav");
-    nav.className = "breadcrumbs-v2";
-    nav.setAttribute("aria-label", "面包屑导航");
-    nav.innerHTML = crumbs.map((crumb, index) => index === crumbs.length - 1
-      ? `<span aria-current="page">${crumb.label}</span>`
-      : `<a href="${crumb.href}">${crumb.label}</a><i aria-hidden="true">/</i>`).join("");
-    target.prepend(nav);
-  }
-
-  let revealObserver = null;
-  function initReveal() {
-    const selectors = ".section-band, .surface-card, .project-showcase, .publication-card, .handbook-section, .evidence-section, .blog-card, .timeline-card, .metric-card, .material-card, .capability-card, .artifact-card, .library-card, .case-block, .visual-proof-card";
-    const items = [...document.querySelectorAll(selectors)].filter((item) => item.dataset.revealReady !== "true");
-    if (!items.length) return;
-    items.forEach((item) => {
-      item.dataset.revealReady = "true";
-      item.classList.add("reveal-ready-v2");
-    });
-    if (prefersReducedMotion.matches || !("IntersectionObserver" in window)) {
-      items.forEach((item) => item.classList.add("reveal-in-v2"));
-      return;
-    }
-    if (!revealObserver) {
-      revealObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("reveal-in-v2");
-          revealObserver.unobserve(entry.target);
+            li.appendChild(button);
+            li.appendChild(dropdown);
+            navList.appendChild(li);
         });
-      // Large, content-driven sections can be several viewports tall on mobile.
-      // A percentage threshold would otherwise keep the entire section invisible
-      // even though its first screen is already in view.
-      }, { threshold: 0.01, rootMargin: "0px 0px -2% 0px" });
+
+        const groups = Array.from(navList.querySelectorAll(".nav-group"));
+
+        function setGroupOpen(group, isOpen, pinOpen = false) {
+            const button = group.querySelector(".nav-group-toggle");
+            const dropdown = group.querySelector(".nav-dropdown");
+            group.classList.toggle("open", isOpen);
+            if (pinOpen && isOpen) group.dataset.navPinned = "true";
+            else if (!isOpen) delete group.dataset.navPinned;
+            button?.setAttribute("aria-expanded", String(isOpen));
+            if (dropdown) {
+                dropdown.setAttribute("aria-hidden", String(!isOpen));
+                dropdown.inert = !isOpen;
+                dropdown.querySelectorAll("a").forEach((link) => {
+                    if (isOpen) link.removeAttribute("tabindex");
+                    else link.setAttribute("tabindex", "-1");
+                });
+            }
+        }
+
+        function closeGroups(except) {
+            groups.forEach((group) => {
+                if (group === except) return;
+                setGroupOpen(group, false);
+            });
+        }
+
+        function setMobileNavOpen(isOpen, restoreFocus = false) {
+            document.body.classList.toggle("mobile-nav-open", isOpen);
+            mobileToggle.setAttribute("aria-expanded", String(isOpen));
+            mobileToggle.setAttribute("aria-label", isOpen ? "关闭主导航" : "打开主导航");
+            mobileToggle.title = isOpen ? "关闭主导航" : "打开主导航";
+            mobileToggle.innerHTML = `<i class="fas ${isOpen ? "fa-xmark" : "fa-bars"}" aria-hidden="true"></i>`;
+            if (!isOpen) closeGroups();
+            if (restoreFocus) mobileToggle.focus();
+        }
+
+        mobileToggle.addEventListener("click", (event) => {
+            event.stopPropagation();
+            setMobileNavOpen(!document.body.classList.contains("mobile-nav-open"));
+        });
+
+        groups.forEach((group) => {
+            const button = group.querySelector(".nav-group-toggle");
+            let hoverTimer;
+            if (!button) return;
+            function openGroup() {
+                clearTimeout(hoverTimer);
+                closeGroups(group);
+                setGroupOpen(group, true);
+            }
+
+            function queueCloseGroup() {
+                clearTimeout(hoverTimer);
+                if (group.dataset.navPinned === "true") return;
+                hoverTimer = setTimeout(() => {
+                    setGroupOpen(group, false);
+                }, 160);
+            }
+
+            group.addEventListener("mouseover", (event) => {
+                if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+                if (group.contains(event.relatedTarget)) return;
+                if (group.dataset.navPinned === "true") return;
+                openGroup();
+            });
+            group.addEventListener("mouseout", (event) => {
+                if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+                if (group.contains(event.relatedTarget)) return;
+                queueCloseGroup();
+            });
+            button.addEventListener("click", (event) => {
+                event.stopPropagation();
+                const willOpen = group.dataset.navPinned !== "true";
+                closeGroups(group);
+                setGroupOpen(group, willOpen, willOpen);
+            });
+        });
+
+        navList.addEventListener("click", (event) => {
+            if (!event.target.closest("a")) return;
+            closeGroups();
+            if (mobileNavQuery.matches) setMobileNavOpen(false);
+        });
+
+        document.addEventListener("click", (event) => {
+            if (!event.target.closest("nav")) closeGroups();
+            if (mobileNavQuery.matches && !event.target.closest("header")) setMobileNavOpen(false);
+        });
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key !== "Escape") return;
+            if (mobileNavQuery.matches && document.body.classList.contains("mobile-nav-open")) {
+                setMobileNavOpen(false, true);
+                return;
+            }
+            const openGroup = groups.find((group) => group.classList.contains("open"));
+            closeGroups();
+            openGroup?.querySelector(".nav-group-toggle")?.focus();
+        });
+
+        function syncNavigationMode() {
+            if (!mobileNavQuery.matches) {
+                document.body.classList.remove("mobile-nav-open");
+                mobileToggle.setAttribute("aria-expanded", "false");
+                mobileToggle.setAttribute("aria-label", "打开主导航");
+                mobileToggle.title = "打开主导航";
+                mobileToggle.innerHTML = '<i class="fas fa-bars" aria-hidden="true"></i>';
+                closeGroups();
+            }
+        }
+
+        mobileNavQuery.addEventListener?.("change", syncNavigationMode);
+        syncNavigationMode();
     }
-    items.forEach((item) => revealObserver.observe(item));
-  }
 
-  function refreshPageRail() {
-    document.querySelector(".page-side-rail-v2")?.remove();
-    const main = document.querySelector("main");
-    if (!main || document.body.classList.contains("home-v2")) return;
-    const headings = [...main.querySelectorAll("h2")]
-      .filter((heading) => heading.textContent.trim())
-      .filter((heading) => !heading.closest(".publication-card, .project-showcase, .blog-card, .capability-card, .material-card, .api-log-card, [data-api-widget]"))
-      .slice(0, 7);
-    if (headings.length < 3) return;
-    const rail = document.createElement("aside");
-    rail.className = "page-side-rail-v2";
-    rail.setAttribute("aria-label", "页面快速定位");
-    rail.innerHTML = `<span>ON THIS PAGE</span>${headings.map((heading, index) => {
-      if (!heading.id) heading.id = `section-${index + 1}`;
-      return `<a href="#${heading.id}">${heading.textContent.trim()}</a>`;
-    }).join("")}`;
-    main.appendChild(rail);
-  }
+    function initHeaderState() {
+        const header = document.querySelector("header");
+        if (!header) return;
 
-  function sanitizeLinksAndImages() {
-    document.querySelectorAll('a[target="_blank"]').forEach((link) => {
-      const rel = new Set((link.getAttribute("rel") || "").split(/\s+/).filter(Boolean));
-      rel.add("noopener");
-      rel.add("noreferrer");
-      link.setAttribute("rel", [...rel].join(" "));
-    });
-    document.querySelectorAll('a[href="#"], a[href=""]').forEach((link) => {
-      if (link.dataset.placeholderReady === "true") return;
-      link.dataset.placeholderReady = "true";
-      link.setAttribute("aria-disabled", "true");
-      link.classList.add("is-placeholder-link");
-      link.addEventListener("click", (event) => {
-        event.preventDefault();
-        showToast("此入口为明确占位，尚未提供真实材料。");
-      });
-    });
-    document.querySelectorAll("main img").forEach((image, index) => {
-      if (index > 0 && !image.hasAttribute("loading")) image.loading = "lazy";
-      image.decoding = "async";
-      if (image.dataset.errorReady === "true") return;
-      image.dataset.errorReady = "true";
-      image.addEventListener("error", () => {
-        image.classList.add("is-broken-image");
-        const visualFrame = image.closest("figure, .publication-preview, .project-cover-link, .horizontal-card-preview, .blog-img, .resume-preview-link");
-        visualFrame?.classList.add("has-broken-image");
-      });
-    });
-  }
+        function update() {
+            header.classList.toggle("scrolled", window.scrollY > 50);
+        }
 
-  function initImagePreview() {
-    if (document.documentElement.dataset.imagePreviewReady === "true") return;
-    document.documentElement.dataset.imagePreviewReady = "true";
+        window.addEventListener("scroll", update, { passive: true });
+        update();
+    }
 
-    const dialog = document.createElement("dialog");
-    dialog.className = "image-preview-dialog";
-    dialog.setAttribute("aria-labelledby", "image-preview-title");
-    dialog.innerHTML = `
-      <div class="image-preview-dialog__shell">
-        <div class="image-preview-dialog__head">
-          <div>
-            <span class="section-kicker">VISUAL EVIDENCE</span>
-            <h2 id="image-preview-title">项目截图预览</h2>
-          </div>
-          <button class="image-preview-dialog__close" type="button" data-image-preview-close aria-label="关闭截图预览">×</button>
-        </div>
-        <div class="image-preview-dialog__media">
-          <span data-image-preview-status role="status" aria-live="polite">正在加载截图…</span>
-          <img alt="" decoding="async" hidden>
-        </div>
-        <p data-image-preview-caption></p>
-      </div>
-    `;
-    document.body.appendChild(dialog);
+    function markActiveNav() {
+        const pathParts = window.location.pathname.split("/").filter(Boolean);
+        const currentPath = pathParts.join("/") || "index.html";
+        const currentTopSection = currentPath.includes("/") ? currentPath.split("/")[0] : "";
+        const currentHash = window.location.hash;
 
-    const previewImage = dialog.querySelector("img");
-    const caption = dialog.querySelector("[data-image-preview-caption]");
-    const status = dialog.querySelector("[data-image-preview-status]");
-    let opener = null;
+        function normalizePath(href) {
+            if (!href || href === "#") return { hash: "", path: href };
+            try {
+                const url = new URL(href, window.location.href);
+                return {
+                    hash: url.hash,
+                    path: url.pathname.split("/").filter(Boolean).join("/") || "index.html"
+                };
+            } catch (error) {
+                return {
+                    hash: href.includes("#") ? `#${href.split("#")[1].split("?")[0]}` : "",
+                    path: href.split("#")[0].split("?")[0]
+                };
+            }
+        }
 
-    const closePreview = () => {
-      if (dialog.open) dialog.close();
+        document.querySelectorAll("nav a").forEach((link) => {
+            const href = link.getAttribute("href") || "";
+            const target = normalizePath(href);
+            const targetPath = target.path;
+            const targetTopSection = targetPath.includes("/") ? targetPath.split("/")[0] : "";
+            const isExact = targetPath === currentPath && (target.hash ? target.hash === currentHash : !currentHash);
+            const isHome = currentPath === "index.html" && targetPath === "index.html";
+            const isSectionIndex = currentTopSection && targetPath === `${currentTopSection}/index.html`;
+            const isBlogChild = currentTopSection === "blog" && targetPath === "blog.html";
+            const isToolChild = currentTopSection === "tools" && targetPath === currentPath;
+            const isGeneratedSection = ["library", "cases", "handbook", "evidence"].includes(currentTopSection) && targetTopSection === currentTopSection;
+            const isActive = isExact || isHome || isSectionIndex || isBlogChild || isToolChild || isGeneratedSection;
+            link.classList.toggle("active", isActive);
+            if (isActive) link.setAttribute("aria-current", "page");
+            else link.removeAttribute("aria-current");
+        });
+
+        document.querySelectorAll(".nav-group").forEach((group) => {
+            const isActiveGroup = Boolean(group.querySelector("a.active"));
+            group.classList.toggle("active", isActiveGroup);
+            group.querySelector(".nav-group-toggle")?.classList.toggle("active", isActiveGroup);
+        });
+    }
+
+    function initThemeToggle() {
+        const storageKey = "symgo-theme";
+        if (localStorage.getItem(storageKey) === "dark") document.body.classList.add("dark-mode");
+
+        const button = document.createElement("button");
+        button.className = "floating-tool theme-toggle";
+        button.type = "button";
+        button.setAttribute("aria-label", "切换明暗主题");
+        button.innerHTML = '<i class="fas fa-circle-half-stroke"></i>';
+        document.body.appendChild(button);
+
+        button.addEventListener("click", () => {
+            document.body.classList.toggle("dark-mode");
+            localStorage.setItem(storageKey, document.body.classList.contains("dark-mode") ? "dark" : "light");
+        });
+    }
+
+    function showToast(message) {
+        let toast = document.querySelector(".site-toast");
+        if (!toast) {
+            toast = document.createElement("div");
+            toast.className = "site-toast";
+            toast.setAttribute("role", "status");
+            toast.setAttribute("aria-live", "polite");
+            document.body.appendChild(toast);
+        }
+
+        toast.textContent = message;
+        toast.classList.add("show");
+        clearTimeout(showToast.timer);
+        showToast.timer = setTimeout(() => toast.classList.remove("show"), 2200);
+    }
+
+    function initReadingProgress() {
+        const progress = document.createElement("div");
+        progress.className = "reading-progress";
+        progress.innerHTML = "<span></span>";
+        document.body.appendChild(progress);
+
+        const bar = progress.querySelector("span");
+        function update() {
+            const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+            const ratio = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0;
+            bar.style.width = `${ratio * 100}%`;
+        }
+
+        window.addEventListener("scroll", update, { passive: true });
+        update();
+    }
+
+    function initCommandPalette() {
+        const items = [
+            { label: "首页", desc: "总体入口与精选项目", href: "index.html", icon: "fa-house" },
+            { label: "作品集仪表盘", desc: "页面、项目、材料和质量总览", href: "dashboard.html", icon: "fa-chart-line" },
+            { label: "个人档案", desc: "能力矩阵与技术栈", href: "profile.html", icon: "fa-id-card" },
+            { label: "阶段成果档案", desc: "本科阶段完整简历与研究生阶段预留", href: "resume.html", icon: "fa-timeline" },
+            { label: "研究方向", desc: "问题意识、方法栈和未来课题", href: "research.html", icon: "fa-microscope" },
+            { label: "一页式档案", desc: "适合快速发给导师或 HR", href: "snapshot.html", icon: "fa-bolt" },
+            { label: "成就与证明", desc: "工程成果、内容成果和学习沉淀", href: "achievements.html", icon: "fa-award" },
+            { label: "合作与能力服务", desc: "可提供的原型、材料和展示能力", href: "services.html", icon: "fa-handshake" },
+            { label: "路线图", desc: "下一步材料替换和能力升级计划", href: "roadmap.html", icon: "fa-route" },
+            { label: "面试故事库", desc: "STAR 结构项目复盘", href: "interview.html", icon: "fa-comments" },
+            { label: "作品集知识库", desc: "项目深挖、研究笔记、FAQ 和更新日志", href: "library/index.html", icon: "fa-book-open" },
+            { label: "案例备忘录", desc: "20 个模块级案例复盘", href: "cases/index.html", icon: "fa-layer-group" },
+            { label: "扩展手册", desc: "工程、研究、求职、合作、内容和产品化专题", href: "handbook/index.html", icon: "fa-book" },
+            { label: "证据档案库", desc: "项目、论文、合作和申请材料的证据链", href: "evidence/index.html", icon: "fa-boxes-stacked" },
+            { label: "论文发表", desc: "论文、级别、PDF 与相关项目", href: "publications.html", icon: "fa-file-lines" },
+            { label: "项目总览", desc: "工程项目与横向项目入口", href: "projects.html", icon: "fa-diagram-project" },
+            { label: "工程项目", desc: "独立开发、工具构建、API 接入和部署维护", href: "engineering-projects.html", icon: "fa-code-branch" },
+            { label: "横向项目", desc: "需求理解、材料治理、协作交付和验收证据", href: "horizontal-projects.html", icon: "fa-handshake-angle" },
+            { label: "材料库", desc: "CV、论文、项目证据和升学资料", href: "materials.html", icon: "fa-box-archive" },
+            { label: "博客文章", desc: "升学经验、技术笔记和写作证明", href: "blog.html", icon: "fa-pen-nib" },
+            { label: "AI助手", desc: "本地历史记录和文档问答", href: "ai.html", icon: "fa-wand-magic-sparkles" },
+            { label: "复试抽题", desc: "专业课随机抽题练习", href: "test.html", icon: "fa-shuffle" },
+            { label: "简历制作", desc: "在线简历工具原型", href: "tools/resume_builder.html", icon: "fa-file-signature" },
+            { label: "Netlify API 代理", desc: "后端函数调用、JSON 返回和白名单控制台", href: "tools/netlify_api_proxy.html", icon: "fa-server" },
+            { label: "API 实验室", desc: "public-apis 接入、健康检查和后端代理候选", href: "tools/api_lab.html", icon: "fa-plug" },
+            { label: "代码高亮", desc: "代码展示与片段处理工具", href: "tools/code_runner.html", icon: "fa-code" },
+            { label: "Markdown 工具", desc: "Markdown 转 Word 排版工具", href: "tools/markdown_to_word.html", icon: "fa-file-word" },
+            { label: "Python 导航", desc: "Python 学习内容导航合集", href: "tools/python_nav.html", icon: "fa-python" },
+            { label: "深度学习", desc: "深度学习学习路径与资料入口", href: "tools/deep_learning.html", icon: "fa-brain" },
+            { label: "PyTorch 教程", desc: "PyTorch 深度学习入门教程", href: "tools/pytorch.html", icon: "fa-fire" }
+        ];
+
+        const openButton = document.createElement("button");
+        openButton.className = "floating-tool command-open";
+        openButton.type = "button";
+        openButton.setAttribute("aria-label", "打开快速导航");
+        openButton.innerHTML = '<i class="fas fa-magnifying-glass"></i>';
+        document.body.appendChild(openButton);
+
+        const palette = document.createElement("div");
+        palette.className = "command-palette";
+        palette.setAttribute("aria-hidden", "true");
+        palette.innerHTML = `
+            <div class="command-dialog" role="dialog" aria-modal="true" aria-label="快速导航">
+                <div class="command-head">
+                    <i class="fas fa-magnifying-glass"></i>
+                    <input type="search" aria-label="搜索页面、材料、项目或功能" placeholder="搜索页面、材料、项目或功能">
+                    <button type="button" aria-label="关闭"><i class="fas fa-xmark"></i></button>
+                </div>
+                <div class="command-results"></div>
+            </div>
+        `;
+        document.body.appendChild(palette);
+
+        const input = palette.querySelector("input");
+        const results = palette.querySelector(".command-results");
+        const closeButton = palette.querySelector(".command-head button");
+        let paletteOpener = null;
+
+        function getPaletteFocusableItems() {
+            return Array.from(palette.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'))
+                .filter((element) => element.getClientRects().length > 0);
+        }
+
+        function render(keyword = "") {
+            const term = keyword.trim().toLowerCase();
+            const filtered = items.filter((item) => `${item.label} ${item.desc}`.toLowerCase().includes(term));
+            results.innerHTML = filtered.map((item) => `
+                <a class="command-item" href="${prefix + item.href}">
+                    <span><i class="fas ${item.icon}"></i></span>
+                    <strong>${item.label}</strong>
+                    <small>${item.desc}</small>
+                </a>
+            `).join("") || '<div class="empty-state">没有匹配结果</div>';
+        }
+
+        function openPalette() {
+            if (!palette.classList.contains("open")) {
+                paletteOpener = document.activeElement instanceof HTMLElement ? document.activeElement : openButton;
+            }
+            palette.classList.add("open");
+            palette.setAttribute("aria-hidden", "false");
+            document.body.classList.add("dialog-open");
+            render(input.value);
+            input.focus();
+        }
+
+        function closePalette({ restoreFocus = true } = {}) {
+            if (!palette.classList.contains("open")) return;
+            palette.classList.remove("open");
+            palette.setAttribute("aria-hidden", "true");
+            document.body.classList.remove("dialog-open");
+            if (restoreFocus) (paletteOpener || openButton).focus();
+            paletteOpener = null;
+        }
+
+        openButton.addEventListener("click", openPalette);
+        closeButton.addEventListener("click", closePalette);
+        input.addEventListener("input", () => render(input.value));
+        palette.addEventListener("click", (event) => {
+            if (event.target === palette) closePalette();
+        });
+        document.addEventListener("keydown", (event) => {
+            if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+                event.preventDefault();
+                openPalette();
+                return;
+            }
+            if (!palette.classList.contains("open")) return;
+            if (event.key === "Escape") {
+                event.preventDefault();
+                closePalette();
+                return;
+            }
+            if (event.key !== "Tab") return;
+
+            const focusableItems = getPaletteFocusableItems();
+            if (!focusableItems.length) {
+                event.preventDefault();
+                return;
+            }
+            const firstItem = focusableItems[0];
+            const lastItem = focusableItems[focusableItems.length - 1];
+            if (event.shiftKey && (document.activeElement === firstItem || !palette.contains(document.activeElement))) {
+                event.preventDefault();
+                lastItem.focus();
+            } else if (!event.shiftKey && document.activeElement === lastItem) {
+                event.preventDefault();
+                firstItem.focus();
+            }
+        });
+        render();
+    }
+
+    function initPageActionBar() {
+        if (document.querySelector(".page-action-bar")) return;
+
+        const bar = document.createElement("div");
+        bar.className = "page-action-bar";
+        bar.setAttribute("aria-label", "页面操作");
+        bar.innerHTML = `
+            <button type="button" data-page-action="copy" aria-label="复制当前页面链接"><i class="fas fa-link"></i></button>
+            <button type="button" data-page-action="print" aria-label="打印或另存为 PDF"><i class="fas fa-print"></i></button>
+            <button type="button" data-page-action="top" aria-label="返回页面顶部"><i class="fas fa-arrow-up"></i></button>
+        `;
+        document.body.appendChild(bar);
+
+        bar.addEventListener("click", async (event) => {
+            const button = event.target.closest("button");
+            if (!button) return;
+
+            const action = button.dataset.pageAction;
+            if (action === "top") {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                return;
+            }
+
+            if (action === "print") {
+                window.print();
+                return;
+            }
+
+            if (action === "copy") {
+                const url = window.location.href;
+                try {
+                    if (navigator.clipboard?.writeText) {
+                        await navigator.clipboard.writeText(url);
+                    } else {
+                        const input = document.createElement("input");
+                        input.value = url;
+                        input.style.position = "fixed";
+                        input.style.opacity = "0";
+                        document.body.appendChild(input);
+                        input.select();
+                        document.execCommand("copy");
+                        input.remove();
+                    }
+                    showToast("页面链接已复制");
+                } catch (error) {
+                    showToast("复制失败，请手动复制地址栏链接");
+                }
+            }
+        });
+    }
+
+    function initMobileToolDock() {
+        const mobileQuery = window.matchMedia("(max-width: 768px)");
+
+        function update() {
+            const shouldShow = !mobileQuery.matches || window.scrollY > Math.min(360, window.innerHeight * 0.45);
+            document.body.classList.toggle("mobile-tools-visible", shouldShow);
+        }
+
+        window.addEventListener("scroll", update, { passive: true });
+        window.addEventListener("resize", update, { passive: true });
+        mobileQuery.addEventListener?.("change", update);
+        update();
+    }
+
+    function initScrollTopButton() {
+        const scrollTopBtn = document.getElementById("scroll-top");
+        if (!scrollTopBtn) return;
+
+        window.addEventListener("scroll", () => {
+            scrollTopBtn.classList.toggle("show", window.scrollY > 300);
+        }, { passive: true });
+
+        scrollTopBtn.addEventListener("click", () => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    }
+
+    function initContactValidation() {
+        const contactForm = document.getElementById("contact-form");
+        if (!contactForm) return;
+
+        function isValidEmail(email) {
+            return /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email.toLowerCase());
+        }
+
+        function showError(input, message) {
+            const formGroup = input.parentElement;
+            let errorElement = formGroup.querySelector(".error-message");
+            if (!errorElement) {
+                errorElement = document.createElement("div");
+                errorElement.className = "error-message";
+                formGroup.appendChild(errorElement);
+            }
+            errorElement.innerText = message;
+            errorElement.style.display = "block";
+            input.classList.add("error");
+        }
+
+        contactForm.addEventListener("submit", (event) => {
+            const email = contactForm.querySelector('input[type="email"]');
+            if (email && !isValidEmail(email.value)) {
+                event.preventDefault();
+                showError(email, "请输入有效的电子邮件地址");
+            }
+        });
+    }
+
+    function sanitizeLinks() {
+        document.querySelectorAll('a[target="_blank"]').forEach((link) => {
+            const rel = new Set((link.getAttribute("rel") || "").split(/\s+/).filter(Boolean));
+            rel.add("noopener");
+            rel.add("noreferrer");
+            link.setAttribute("rel", Array.from(rel).join(" "));
+        });
+
+        document.querySelectorAll("a").forEach((link) => {
+            const href = link.getAttribute("href");
+            if (href !== "#" && href !== "") return;
+            const text = link.textContent.trim();
+            if (text === "工具箱" || link.closest(".nav-group")) return;
+            link.setAttribute("role", "button");
+            link.setAttribute("aria-disabled", "true");
+            link.classList.add("is-disabled-link");
+            link.addEventListener("click", (event) => {
+                event.preventDefault();
+                showToast("这个入口还在整理，已先保留为占位。");
+            });
+        });
+    }
+
+    let sectionCompassObserver;
+
+    function getMainContent() {
+        return document.querySelector("main");
+    }
+
+    function getReadableText(root) {
+        return (root?.innerText || "")
+            .replace(/\s+/g, " ")
+            .trim();
+    }
+
+    const visualWidgetSelector = [
+        "header",
+        "footer",
+        ".page-intel-strip",
+        ".page-motion-ticker",
+        ".page-shot-wall",
+        ".page-media-filmstrip",
+        ".site-visual-showcase",
+        ".page-constellation",
+        ".page-flow-lab",
+        ".page-evidence-bento",
+        ".page-orbit-dashboard",
+        ".page-route-strip",
+        ".hero-signal-console",
+        ".hero-panel-shots",
+        ".section-signal",
+        ".section-blueprint",
+        ".section-mini-map",
+        ".list-telemetry",
+        ".collection-telemetry",
+        ".card-micro-widget",
+        ".card-signal-strip",
+        ".card-pixel-grid",
+        ".card-proof-thumb",
+        ".section-compass",
+        ".page-side-rail"
+    ].join(",");
+
+    function getCleanNodeText(node) {
+        if (!node) return "";
+        const clone = node.cloneNode(true);
+        clone.querySelectorAll(".heading-signal-badge, .card-micro-widget, .card-signal-strip").forEach((item) => item.remove());
+        return clone.textContent.trim().replace(/\s+/g, " ");
+    }
+
+    function getPageHeadings(root) {
+        return Array.from(root?.querySelectorAll("h2, h3") || [])
+            .filter((heading) => !heading.closest(visualWidgetSelector))
+            .map((heading) => ({
+                node: heading,
+                text: getCleanNodeText(heading)
+            }))
+            .filter((item) => item.text.length > 1)
+            .slice(0, 10);
+    }
+
+    function ensureHeadingId(heading, index) {
+        if (!heading.id) heading.id = `section-${index + 1}`;
+        return heading.id;
+    }
+
+    function escapeHtml(value) {
+        return String(value || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+    }
+
+    function getPageTitle() {
+        return document.querySelector(".page-hero h1, .page-header h1, .hero-redesign h1, .resume-hero h1, main h1")?.textContent.trim()
+            || document.title.split("|")[0].trim();
+    }
+
+    function getPageKeywords(root) {
+        const text = getReadableText(root);
+        const seedWords = [
+            "研究", "工程", "项目", "论文", "材料", "证据", "API", "Netlify", "AI", "横向",
+            "简历", "博客", "Python", "深度学习", "物联网", "能源", "IPv6", "导师", "求职", "申博",
+            "Dashboard", "Portfolio", "Publication", "Research", "Engineering", "Serverless"
+        ];
+        const keywords = [];
+
+        seedWords.forEach((word) => {
+            if (text.includes(word) && !keywords.includes(word)) keywords.push(word);
+        });
+
+        const englishWords = text.match(/[A-Za-z][A-Za-z0-9+#.-]{2,}/g) || [];
+        englishWords.forEach((word) => {
+            const clean = word.replace(/[.,;:!?]/g, "");
+            if (clean.length < 3) return;
+            if (/^(the|and|for|with|from|this|that|html|http|https|www)$/i.test(clean)) return;
+            if (!keywords.some((item) => item.toLowerCase() === clean.toLowerCase())) keywords.push(clean);
+        });
+
+        getPageHeadings(root).forEach((item) => {
+            item.text.split(/[、，,·\s/|]+/).forEach((part) => {
+                const clean = part.trim();
+                if (clean.length >= 2 && clean.length <= 18 && !keywords.includes(clean)) keywords.push(clean);
+            });
+        });
+
+        return keywords.slice(0, 12);
+    }
+
+    function getPageActions(root) {
+        return Array.from(root?.querySelectorAll(".btn[href], .text-link[href], .project-actions a[href], .publication-actions a[href], .material-actions a[href]") || [])
+            .filter((link) => !link.closest(".page-motion-ticker") && !link.closest(".page-constellation"))
+            .map((link) => ({
+                text: link.textContent.trim().replace(/\s+/g, " "),
+                href: link.getAttribute("href")
+            }))
+            .filter((item) => item.text && item.href && item.href !== "#")
+            .slice(0, 6);
+    }
+
+    function getCurrentPageKey() {
+        const parts = window.location.pathname.split("/").filter(Boolean);
+        return parts.pop() || "index.html";
+    }
+
+    function getCurrentPagePath() {
+        let pagePath = decodeURIComponent(window.location.pathname || "")
+            .replace(/\\/g, "/")
+            .replace(/^\/+/, "");
+        const distIndex = pagePath.lastIndexOf("dist/");
+        if (distIndex >= 0) pagePath = pagePath.slice(distIndex + 5);
+        if (!pagePath || pagePath.endsWith("/")) pagePath += "index.html";
+        return pagePath;
+    }
+
+    function localAsset(path) {
+        if (!path || path.startsWith("http") || path.startsWith("#") || path.startsWith("/")) return path;
+        return `${prefix}${path}`;
+    }
+
+    const visualEvidencePresets = {
+        "index.html": {
+            kicker: "Portfolio Visual System",
+            title: "真实页面截图组成的作品集现场",
+            copy: "把首页、项目、论文、材料库和 API 实验室变成可见证据，让访问者先看到界面完成度，再进入具体材料。",
+            items: [
+                { title: "首页首屏", label: "Home", href: "index.html", src: "images/site-screenshots/home.webp" },
+                { title: "工程项目", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.webp" },
+                { title: "横向项目", label: "Horizontal", href: "horizontal-projects.html", src: "images/site-screenshots/horizontal-projects.webp" },
+                { title: "论文发表", label: "Publication", href: "publications.html", src: "images/site-screenshots/publications.webp" },
+                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.webp" },
+                { title: "API 实验室", label: "API", href: "tools/api_lab.html", src: "images/site-screenshots/api-lab.webp" }
+            ]
+        },
+        "projects.html": {
+            kicker: "Project Evidence",
+            title: "项目入口先给界面证据",
+            copy: "工程项目和横向项目都保留截图入口，避免项目总览变成只有文字的目录页。",
+            items: [
+                { title: "工程项目页", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.webp" },
+                { title: "横向项目页", label: "Horizontal", href: "horizontal-projects.html", src: "images/site-screenshots/horizontal-projects.webp" },
+                { title: "物联网项目", label: "IoT", href: "horizontal-projects.html#iot-flexible-access-trusted-control", src: "images/horizontal-projects/iot-access-screenshot.png" },
+                { title: "IPv6 项目", label: "IPv6", href: "horizontal-projects.html#minning-green-power-ipv6-terminal-access", src: "images/horizontal-projects/ipv6-sdn-qos-screenshot.png" },
+                { title: "综合能源", label: "Energy", href: "horizontal-projects.html#ningxia-multi-energy-architecture", src: "images/horizontal-projects/energy-architecture-screenshot.png" }
+            ]
+        },
+        "engineering-projects.html": {
+            kicker: "Engineering Gallery",
+            title: "工程项目截图与工具界面",
+            copy: "用实际页面截图展示个人站、AI 助手、简历工具和 API 实验室的产品完成度。",
+            items: [
+                { title: "工程项目总屏", label: "Page", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.webp" },
+                { title: "个人展示站", label: "Portfolio", href: "index.html", src: "images/engineering-projects/symgo-portfolio-screenshot.png" },
+                { title: "学术 AI 助手", label: "AI", href: "ai.html", src: "images/engineering-projects/academic-ai-assistant-screenshot.png" },
+                { title: "API 实验室", label: "API", href: "tools/api_lab.html", src: "images/engineering-projects/public-api-lab-screenshot.png" },
+                { title: "简历制作", label: "Resume", href: "tools/resume_builder.html", src: "images/engineering-projects/resume-builder-screenshot.png" }
+            ]
+        },
+        "horizontal-projects.html": {
+            kicker: "Horizontal Project Gallery",
+            title: "横向项目图谱与脱敏界面",
+            copy: "用脱敏截图和系统结构图表达真实合作项目的复杂度、技术链路和成果证据。",
+            items: [
+                { title: "横向项目总屏", label: "Page", href: "horizontal-projects.html", src: "images/site-screenshots/horizontal-projects.webp" },
+                { title: "柔性接入", label: "IoT", href: "evidence/horizontal-projects/iot-flexible-access-trusted-control.html#visual-proof", src: "images/horizontal-projects/iot-access-screenshot.png" },
+                { title: "可信认证链路", label: "Trust", href: "evidence/horizontal-projects/iot-flexible-access-trusted-control.html#visual-proof", src: "images/horizontal-projects/iot-trusted-flow-visual.png" },
+                { title: "IPv6 接入网", label: "IPv6", href: "evidence/horizontal-projects/minning-green-power-ipv6-terminal-access.html#visual-proof", src: "images/horizontal-projects/ipv6-sdn-qos-screenshot.png" },
+                { title: "综合能源架构", label: "Energy", href: "evidence/horizontal-projects/ningxia-multi-energy-architecture.html#visual-proof", src: "images/horizontal-projects/energy-architecture-screenshot.png" },
+                { title: "预测调度", label: "Schedule", href: "evidence/horizontal-projects/ningxia-multi-energy-architecture.html#visual-proof", src: "images/horizontal-projects/energy-prediction-scheduling-visual.png" }
+            ]
+        },
+        "publications.html": {
+            kicker: "Publication Preview",
+            title: "论文首图与学术材料预览",
+            copy: "论文卡片保留首页截图、PDF 入口和 DOI/链接，让学术成果不只停留在标题层面。",
+            items: [
+                { title: "论文页截图", label: "Page", href: "publications.html", src: "images/site-screenshots/publications.webp" },
+                { title: "SSA-RF 论文首图", label: "ACE", href: "files/papers/sun-2024-sparrow-random-forest-weight-class.pdf", src: "images/publications/sun-2024-sparrow-random-forest-weight-class.png" },
+                { title: "Profile Mining 占位", label: "Preprint", href: "files/papers/placeholder-profile-mining.pdf", src: "images/publications/placeholder-profile-mining.png" },
+                { title: "Toolkit 占位", label: "Workshop", href: "files/papers/placeholder-toolkit.pdf", src: "images/publications/placeholder-toolkit.png" }
+            ]
+        },
+        "materials.html": {
+            kicker: "Material Gallery",
+            title: "材料库不只列文件，也展示证据外观",
+            copy: "把简历、论文、项目页、博客和 API 实验室截图集中展示，让材料入口更像申请/求职资料中台。",
+            items: [
+                { title: "材料库截图", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.webp" },
+                { title: "阶段成果", label: "Resume", href: "resume.html", src: "images/site-screenshots/resume.webp" },
+                { title: "论文发表", label: "Papers", href: "publications.html", src: "images/site-screenshots/publications.webp" },
+                { title: "博客索引", label: "Blog", href: "blog.html", src: "images/site-screenshots/blog.webp" },
+                { title: "API 实验室", label: "API", href: "tools/api_lab.html", src: "images/site-screenshots/api-lab.webp" }
+            ]
+        },
+        "resume.html": {
+            kicker: "Resume Evidence",
+            title: "本科成果与后续阶段的视觉档案",
+            copy: "简历页加入页面截图和成果材料预览，方便后续继续补研究生阶段成果。",
+            items: [
+                { title: "阶段成果页", label: "Page", href: "resume.html", src: "images/site-screenshots/resume.webp" },
+                { title: "本科简历截图", label: "CV", href: "resume.html", src: "images/resume/undergraduate-resume.png" },
+                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.webp" },
+                { title: "项目总览", label: "Projects", href: "projects.html", src: "images/site-screenshots/engineering-projects.webp" }
+            ]
+        },
+        "blog.html": {
+            kicker: "Writing Gallery",
+            title: "写作内容配上封面和页面截图",
+            copy: "博客页用封面、站内截图和内容分类展示长期写作沉淀，不再只有标题列表。",
+            items: [
+                { title: "博客索引截图", label: "Blog", href: "blog.html", src: "images/site-screenshots/blog.webp" },
+                { title: "保研经验", label: "Guide", href: "blog/baoyan.html", src: "images/blog/baoyan/baoyan-card.webp" },
+                { title: "复试技巧", label: "Interview", href: "blog/25_skills.html", src: "images/blog/25_skills/fig1-card.webp" },
+                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.webp" }
+            ]
+        },
+        "api_lab.html": {
+            kicker: "API Visual Console",
+            title: "API 代理和错误诊断也要可视化",
+            copy: "把接口实验室、后端代理、健康检查和失败原因查询做成可展示的工程页面。",
+            items: [
+                { title: "API 实验室截图", label: "API", href: "tools/api_lab.html", src: "images/site-screenshots/api-lab.webp" },
+                { title: "代理控制台", label: "Proxy", href: "tools/netlify_api_proxy.html", src: "images/engineering-projects/public-api-lab-screenshot.png" },
+                { title: "工程项目", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.webp" },
+                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.webp" }
+            ]
+        },
+        "tools/markdown_to_word.html": {
+            kicker: "Tool Screenshot Lab",
+            title: "Markdown 工具页加入真实渲染截图",
+            copy: "工具页不再只是表单和说明文字，而是把编辑器、预览区和导出流程做成可展示的产品证据。",
+            items: [
+                { title: "Markdown 转 Word 工具", label: "Markdown", href: "tools/markdown_to_word.html", src: "images/site-screenshots/markdown-to-word.webp" },
+                { title: "代码高亮工具", label: "Code", href: "tools/code_runner.html", src: "images/site-screenshots/code-runner.webp" },
+                { title: "Python 学习导航", label: "Python", href: "tools/python_nav.html", src: "images/site-screenshots/python-nav.webp" },
+                { title: "深度学习资料", label: "DL", href: "tools/deep_learning.html", src: "images/site-screenshots/deep-learning.webp" },
+                { title: "API 实验室", label: "API", href: "tools/api_lab.html", src: "images/site-screenshots/api-lab.webp" }
+            ]
+        },
+        "tools/code_runner.html": {
+            kicker: "Tool Screenshot Lab",
+            title: "代码工具页也要有视觉证据",
+            copy: "把工具入口、代码展示、页面结构和相关学习资料通过截图串起来，形成可被快速理解的工程展示。",
+            items: [
+                { title: "代码高亮工具", label: "Code", href: "tools/code_runner.html", src: "images/site-screenshots/code-runner.webp" },
+                { title: "Markdown 转 Word 工具", label: "Markdown", href: "tools/markdown_to_word.html", src: "images/site-screenshots/markdown-to-word.webp" },
+                { title: "Python 学习导航", label: "Python", href: "tools/python_nav.html", src: "images/site-screenshots/python-nav.webp" },
+                { title: "工程项目页", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.webp" }
+            ]
+        },
+        "tools/python_nav.html": {
+            kicker: "Learning Visual Map",
+            title: "Python 学习页增加截图化导航",
+            copy: "学习资料页通过真实截图、章节蓝图和卡片信号条展示内容结构，减少纯文字目录感。",
+            items: [
+                { title: "Python 学习导航", label: "Python", href: "tools/python_nav.html", src: "images/site-screenshots/python-nav.webp" },
+                { title: "深度学习资料", label: "Deep Learning", href: "tools/deep_learning.html", src: "images/site-screenshots/deep-learning.webp" },
+                { title: "代码高亮工具", label: "Code", href: "tools/code_runner.html", src: "images/site-screenshots/code-runner.webp" },
+                { title: "手册入口", label: "Handbook", href: "handbook/index.html", src: "images/site-screenshots/handbook.webp" }
+            ]
+        },
+        "tools/deep_learning.html": {
+            kicker: "Learning Visual Map",
+            title: "深度学习资料页补齐图像化入口",
+            copy: "把视频、资料和学习路径整理成可视化的学习证据，让页面看起来更像课程作品集而不是资料列表。",
+            items: [
+                { title: "深度学习资料", label: "Deep Learning", href: "tools/deep_learning.html", src: "images/site-screenshots/deep-learning.webp" },
+                { title: "Python 学习导航", label: "Python", href: "tools/python_nav.html", src: "images/site-screenshots/python-nav.webp" },
+                { title: "Markdown 转 Word 工具", label: "Markdown", href: "tools/markdown_to_word.html", src: "images/site-screenshots/markdown-to-word.webp" },
+                { title: "知识库入口", label: "Library", href: "library/index.html", src: "images/site-screenshots/library.webp" }
+            ]
+        }
     };
 
-    document.addEventListener("click", (event) => {
-      const trigger = event.target.closest("[data-image-preview-src]");
-      if (!trigger) return;
-      event.preventDefault();
-      const source = trigger.dataset.imagePreviewSrc;
-      if (!source) return;
-      opener = trigger;
-      const label = trigger.dataset.imagePreviewAlt || "项目截图";
-      previewImage.alt = label;
-      previewImage.hidden = true;
-      status.hidden = false;
-      status.textContent = "正在加载截图…";
-      caption.textContent = label;
-      dialog.showModal();
-      document.body.classList.add("dialog-open");
-      previewImage.src = new URL(source, document.baseURI).href;
-    });
+    const coreVisualFallbacks = {
+        "profile.html": { shot: "profile", label: "Profile", kind: "个人档案" },
+        "research.html": { shot: "research", label: "Research", kind: "研究方向" },
+        "dashboard.html": { shot: "dashboard", label: "Dashboard", kind: "作品集仪表盘" },
+        "achievements.html": { shot: "achievements", label: "Achievement", kind: "成就证明" },
+        "roadmap.html": { shot: "roadmap", label: "Roadmap", kind: "长期路线图" },
+        "snapshot.html": { shot: "snapshot", label: "Snapshot", kind: "一页式档案" },
+        "services.html": { shot: "services", label: "Service", kind: "合作服务" },
+        "interview.html": { shot: "interview", label: "Interview", kind: "面试故事" },
+        "ai.html": { shot: "ai", label: "AI", kind: "学术助手" },
+        "leave_message.html": { shot: "leave-message", label: "Contact", kind: "联系入口" },
+        "netlify_api_proxy.html": { shot: "netlify-api-proxy", label: "Proxy", kind: "API 代理控制台", href: "tools/netlify_api_proxy.html" },
+        "resume_builder.html": { shot: "resume-builder", label: "Builder", kind: "简历制作工具", href: "tools/resume_builder.html" },
+        "handbook/index.html": { shot: "handbook", label: "Handbook", kind: "扩展手册", href: "handbook/index.html" },
+        "evidence/index.html": { shot: "evidence", label: "Evidence", kind: "证据档案库", href: "evidence/index.html" },
+        "library/index.html": { shot: "library", label: "Library", kind: "知识库入口", href: "library/index.html" },
+        "cases/index.html": { shot: "cases", label: "Cases", kind: "案例索引", href: "cases/index.html" },
+        "evidence/horizontal-projects/iot-flexible-access-trusted-control.html": { shot: "iot-evidence-page", label: "IoT", kind: "物联网横向项目证据页", href: "evidence/horizontal-projects/iot-flexible-access-trusted-control.html" },
+        "evidence/horizontal-projects/ningxia-multi-energy-architecture.html": { shot: "ningxia-evidence-page", label: "Energy", kind: "宁夏多能互补横向项目证据页", href: "evidence/horizontal-projects/ningxia-multi-energy-architecture.html" },
+        "evidence/horizontal-projects/minning-green-power-ipv6-terminal-access.html": { shot: "ipv6-evidence-page", label: "IPv6", kind: "IPv6 终端接入网横向项目证据页", href: "evidence/horizontal-projects/minning-green-power-ipv6-terminal-access.html" }
+    };
 
-    previewImage.addEventListener("load", () => {
-      previewImage.hidden = false;
-      status.hidden = true;
-    });
-    previewImage.addEventListener("error", () => {
-      previewImage.hidden = true;
-      status.hidden = false;
-      status.textContent = "截图加载失败；可关闭预览后打开对应项目页面。";
-    });
+    function getVisualEvidencePreset() {
+        const pagePath = getCurrentPagePath();
+        const pageKey = getCurrentPageKey();
+        if (visualEvidencePresets[pagePath]) return visualEvidencePresets[pagePath];
+        if (coreVisualFallbacks[pagePath]) return buildFallbackVisualPreset(coreVisualFallbacks[pagePath], pagePath);
+        if (pagePath !== "index.html" && pageKey === "index.html") return null;
+        if (visualEvidencePresets[pageKey]) return visualEvidencePresets[pageKey];
 
-    dialog.querySelector("[data-image-preview-close]").addEventListener("click", closePreview);
-    dialog.addEventListener("click", (event) => {
-      if (event.target === dialog) closePreview();
-    });
-    dialog.addEventListener("close", () => {
-      document.body.classList.remove("dialog-open");
-      previewImage.removeAttribute("src");
-      previewImage.hidden = true;
-      status.hidden = true;
-      if (opener?.isConnected) opener.focus();
-    });
-  }
+        const fallback = coreVisualFallbacks[pageKey];
+        if (!fallback) return null;
 
-  function initContactValidation() {
-    const form = document.getElementById("contact-form");
-    if (!form) return;
-    form.addEventListener("submit", (event) => {
-      const email = form.querySelector('input[type="email"]');
-      if (!email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) return;
-      event.preventDefault();
-      email.setAttribute("aria-invalid", "true");
-      email.focus();
-      showToast("请输入有效的电子邮件地址");
-    });
-  }
+        return buildFallbackVisualPreset(fallback, pageKey);
+    }
 
-  function refreshEnhancements() {
-    sanitizeLinksAndImages();
-    initReveal();
-    window.clearTimeout(refreshEnhancements.railTimer);
-    refreshEnhancements.railTimer = window.setTimeout(refreshPageRail, 80);
-  }
+    function buildFallbackVisualPreset(fallback, fallbackHref) {
+        const pageTitle = getPageTitle();
+        return {
+            kicker: `${fallback.label} Visual Proof`,
+            title: `${pageTitle}的截图证据与相关入口`,
+            copy: `${fallback.kind}页面补充真实渲染截图，并关联论文、项目、材料库和工具入口，让访问者能从当前页面继续追踪完整证据链。`,
+            items: [
+                { title: pageTitle, label: fallback.label, href: fallback.href || fallbackHref, src: `images/site-screenshots/${fallback.shot}.webp` },
+                { title: "项目总览", label: "Projects", href: "projects.html", src: "images/site-screenshots/projects.webp" },
+                { title: "论文发表", label: "Papers", href: "publications.html", src: "images/site-screenshots/publications.webp" },
+                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.webp" },
+                { title: "工程项目", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.webp" }
+            ]
+        };
+    }
 
-  function init() {
-    // Remove the key used by the retired browser-direct AI implementation.
-    // Model credentials now belong exclusively in Netlify environment variables.
-    try { localStorage.removeItem("deepseek_api_key"); } catch { /* storage may be unavailable */ }
-    ensureSkipLink();
-    renderHeader();
-    renderFooter();
-    initNavigation();
-    markActiveNavigation();
+    function getEvidenceMetrics(items) {
+        const validItems = (items || []).filter((item) => item?.src && item?.href);
+        const pageCount = new Set(validItems.map((item) => item.href.split("#")[0])).size;
+        const localAssets = validItems.filter((item) => !/^https?:/i.test(item.src)).length;
+        const fileLinks = validItems.filter((item) => /\.(?:pdf|docx?|zip)(?:$|[?#])/i.test(item.href)).length;
+        const values = [validItems.length, pageCount, localAssets, fileLinks];
+        return [
+            { label: "截图", value: values[0], meter: Math.min(100, 22 + values[0] * 13) },
+            { label: "页面", value: values[1], meter: Math.min(100, 22 + values[1] * 13) },
+            { label: "本地素材", value: values[2], meter: Math.min(100, 22 + values[2] * 13) },
+            { label: "文件入口", value: values[3], meter: Math.min(100, 18 + values[3] * 24) }
+        ];
+    }
+
+    function renderVisualEvidenceDeck() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const preset = getVisualEvidencePreset();
+        if (!preset || !preset.items?.length) return;
+
+        let deck = main.querySelector(".site-visual-showcase");
+        if (!deck) {
+            deck = document.createElement("section");
+            deck.className = "site-visual-showcase";
+            deck.setAttribute("aria-label", "视觉证据看板");
+            const anchor = main.querySelector(".page-route-strip") || main.querySelector(".page-shot-wall") || main.querySelector(".page-intel-strip");
+            const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
+            if (anchor) anchor.insertAdjacentElement("afterend", deck);
+            else if (hero) hero.insertAdjacentElement("afterend", deck);
+            else main.prepend(deck);
+        }
+
+        const items = preset.items.slice(0, 6);
+        const primary = items[0];
+        const rest = items.slice(1);
+        const metrics = getEvidenceMetrics(items);
+        const dialMeter = Math.min(100, 22 + items.length * 13);
+
+        deck.innerHTML = `
+            <div class="visual-showcase-inner">
+                <div class="visual-showcase-head">
+                    <div>
+                        <span>${escapeHtml(preset.kicker)}</span>
+                        <h2>${escapeHtml(preset.title)}</h2>
+                    </div>
+                    <p>${escapeHtml(preset.copy)}</p>
+                </div>
+                <div class="visual-showcase-layout">
+                    <div class="screenshot-stage">
+                        <a class="screenshot-card screenshot-card-main" href="${localAsset(primary.href)}">
+                            <img src="${localAsset(primary.src)}" alt="${escapeHtml(primary.title)}截图" loading="lazy" decoding="async">
+                            <span>${escapeHtml(primary.label)}</span>
+                            <strong>${escapeHtml(primary.title)}</strong>
+                        </a>
+                        <div class="screenshot-stack">
+                            ${rest.map((item, index) => `
+                                <a class="screenshot-card" href="${localAsset(item.href)}" style="--shot-index:${index}">
+                                    <img src="${localAsset(item.src)}" alt="${escapeHtml(item.title)}截图" loading="lazy" decoding="async">
+                                    <span>${escapeHtml(item.label)}</span>
+                                    <strong>${escapeHtml(item.title)}</strong>
+                                </a>
+                            `).join("")}
+                        </div>
+                    </div>
+                    <aside class="visual-radar-panel">
+                        <div class="radar-dial" style="--score:${dialMeter * 3.6}deg">
+                            <strong>${items.length}</strong>
+                            <span>Visual Assets</span>
+                        </div>
+                        <div class="signal-bars">
+                            ${metrics.map((metric) => `
+                                <div class="signal-bar" style="--bar:${metric.meter}%">
+                                    <span>${escapeHtml(metric.label)}</span>
+                                    <strong>${metric.value}</strong>
+                                    <em></em>
+                                </div>
+                            `).join("")}
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderPageScreenshotWall() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const preset = getVisualEvidencePreset();
+        const items = (preset?.items || []).filter((item) => item.src && item.href).slice(0, 5);
+        let wall = main.querySelector(".page-shot-wall");
+        if (items.length < 3) {
+            wall?.remove();
+            return;
+        }
+
+        if (!wall) {
+            wall = document.createElement("section");
+            wall.className = "page-shot-wall";
+            wall.setAttribute("aria-label", "真实页面截图墙");
+            const intel = main.querySelector(".page-intel-strip");
+            const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
+            if (intel) intel.insertAdjacentElement("afterend", wall);
+            else if (hero) hero.insertAdjacentElement("afterend", wall);
+            else main.prepend(wall);
+        }
+
+        const primary = items[0];
+        const rest = items.slice(1);
+        const metrics = getEvidenceMetrics(items);
+
+        wall.innerHTML = `
+            <div class="shot-wall-inner">
+                <div class="shot-wall-copy">
+                    <div>
+                        <span>Screenshot Evidence</span>
+                        <h2>${escapeHtml(preset.title)}</h2>
+                        <p>${escapeHtml(preset.copy)}</p>
+                    </div>
+                    <div class="shot-wall-metrics">
+                        ${metrics.map((metric) => `
+                            <div class="shot-wall-metric" style="--metric-meter:${metric.meter}%">
+                                <span>${escapeHtml(metric.label)}</span>
+                                <strong>${metric.value}</strong>
+                                <em></em>
+                            </div>
+                        `).join("")}
+                    </div>
+                </div>
+                <div class="shot-wall-browser">
+                    <div class="shot-browser-chrome">
+                        <span><i></i><i></i><i></i></span>
+                        <strong>${escapeHtml(primary.label || "Preview")}</strong>
+                    </div>
+                    <a class="shot-wall-main" href="${localAsset(primary.href)}">
+                        <img src="${localAsset(primary.src)}" alt="${escapeHtml(primary.title)}截图" loading="lazy" decoding="async">
+                        <span>${escapeHtml(primary.title)}</span>
+                    </a>
+                    <div class="shot-wall-status">
+                        <span>Captured assets</span>
+                        <strong>${items.length}</strong>
+                    </div>
+                </div>
+                <div class="shot-wall-stack">
+                    ${rest.map((item, index) => `
+                        <a class="shot-stack-item" href="${localAsset(item.href)}" style="--shot-index:${index}">
+                            <img src="${localAsset(item.src)}" alt="${escapeHtml(item.title)}截图" loading="lazy" decoding="async">
+                            <span>
+                                <em>${escapeHtml(item.label || "Shot")}</em>
+                                <strong>${escapeHtml(item.title)}</strong>
+                            </span>
+                        </a>
+                    `).join("")}
+                </div>
+            </div>
+        `;
+    }
+
+    function renderHeroSignalConsole() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const hero = main.querySelector(".hero-redesign, .page-hero, .page-header, .resume-hero, .markdown-converter-container, .code-runner-container");
+        if (!hero || hero.closest(visualWidgetSelector)) return;
+
+        const container = hero.querySelector(":scope > .container") || hero;
+        const heroTextSlot = container.matches(".hero-layout") ? container.querySelector(":scope > div") : null;
+        const consoleHost = heroTextSlot || container;
+        let consolePanel = consoleHost.querySelector(":scope > .hero-signal-console");
+        const strayConsole = container.querySelector(":scope > .hero-signal-console");
+        if (!consolePanel && strayConsole && consoleHost !== container) {
+            consoleHost.appendChild(strayConsole);
+            consolePanel = strayConsole;
+        }
+        const text = getReadableText(main);
+        const headings = getPageHeadings(main);
+        const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector));
+        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector) && !img.closest("header"));
+        const cards = main.querySelectorAll(".surface-card, .project-showcase, .publication-card, .material-card, .blog-card, .capability-card, .timeline-card, .evidence-section, .handbook-section").length;
+        const charCount = text.replace(/\s/g, "").length;
+        const pageTitle = getPageTitle();
+        const keywords = getPageKeywords(main).slice(0, 6);
+        const shots = (getVisualEvidencePreset()?.items || [])
+            .filter((item) => item.src && item.href)
+            .slice(0, 3);
+        const pulseMeter = Math.min(100, 26 + headings.length * 8 + Math.min(images.length, 6) * 4);
+        const stats = [
+            { label: "结构", value: headings.length || 1, icon: "fa-sitemap", meter: Math.min(100, 24 + headings.length * 12) },
+            { label: "证据", value: images.length, icon: "fa-image", meter: Math.min(100, 20 + images.length * 14) },
+            { label: "入口", value: links.length, icon: "fa-link", meter: Math.min(100, 22 + links.length * 4) },
+            { label: "密度", value: Math.max(1, Math.ceil(charCount / 700)), icon: "fa-wave-square", meter: Math.min(100, 28 + charCount / 130) }
+        ];
+
+        if (!consolePanel) {
+            consolePanel = document.createElement("aside");
+            consolePanel.className = "hero-signal-console";
+            consolePanel.setAttribute("aria-label", "首屏页面信号控制台");
+            consoleHost.appendChild(consolePanel);
+        }
+
+        consolePanel.style.setProperty("--hero-pulse", `${pulseMeter * 3.6}deg`);
+        consolePanel.innerHTML = `
+            <div class="hero-console-core">
+                <span>Page Sections</span>
+                <strong>${headings.length || 1}</strong>
+                <em>${escapeHtml(pageTitle)}</em>
+            </div>
+            <div class="hero-console-grid">
+                ${stats.map((stat, index) => `
+                    <div class="hero-console-stat" style="--stat-meter:${stat.meter}%;--stat-index:${index}">
+                        <i class="fas ${stat.icon}" aria-hidden="true"></i>
+                        <span>${escapeHtml(stat.label)}</span>
+                        <strong>${escapeHtml(String(stat.value))}</strong>
+                    </div>
+                `).join("")}
+            </div>
+            <div class="hero-console-wave" aria-hidden="true">
+                ${stats.map((stat, index) => `<span style="--wave-meter:${stat.meter}%;--wave-index:${index}"></span>`).join("")}
+            </div>
+            <div class="hero-console-tags">
+                ${keywords.map((keyword, index) => `<span style="--tag-index:${index}">${escapeHtml(keyword)}</span>`).join("")}
+            </div>
+            ${shots.length ? `
+                <div class="hero-console-shots">
+                    ${shots.map((shot, index) => `
+                        <a href="${localAsset(shot.href)}" style="--hero-shot-index:${index}">
+                            <img src="${localAsset(shot.src)}" alt="${escapeHtml(shot.title)}截图" loading="lazy" decoding="async">
+                            <span>${escapeHtml(shot.label || "Shot")}</span>
+                        </a>
+                    `).join("")}
+                </div>
+            ` : ""}
+        `;
+    }
+
+    function renderHeroPanelShots() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const panel = main.querySelector(".hero-redesign .hero-panel");
+        if (!panel) return;
+
+        if (panel.querySelector(".hero-visual-stage")) {
+            panel.querySelector(".hero-panel-shots")?.remove();
+            return;
+        }
+
+        const shots = (getVisualEvidencePreset()?.items || [])
+            .filter((item) => item.src && item.href)
+            .slice(0, 3);
+        let shotGrid = panel.querySelector(".hero-panel-shots");
+        if (!shots.length) {
+            shotGrid?.remove();
+            return;
+        }
+
+        if (!shotGrid) {
+            shotGrid = document.createElement("div");
+            shotGrid.className = "hero-panel-shots";
+            const heading = panel.querySelector("h2");
+            if (heading) heading.insertAdjacentElement("afterend", shotGrid);
+            else panel.prepend(shotGrid);
+        }
+
+        shotGrid.innerHTML = shots.map((shot, index) => `
+            <a href="${localAsset(shot.href)}" class="hero-panel-shot" style="--panel-shot-index:${index}">
+                <img src="${localAsset(shot.src)}" alt="${escapeHtml(shot.title)}截图" loading="lazy" decoding="async">
+                <span>${escapeHtml(shot.label || "Shot")}</span>
+            </a>
+        `).join("");
+    }
+
+    function renderCardScreenshotThumbs() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const preset = getVisualEvidencePreset();
+        const shots = (preset?.items || [])
+            .filter((item) => item.src && item.href)
+            .slice(0, 6);
+        if (!shots.length) return;
+
+        const cardSelectors = [
+            ".surface-card",
+            ".material-card",
+            ".capability-card",
+            ".roadmap-card",
+            ".achievement-card",
+            ".service-card",
+            ".story-card",
+            ".library-card",
+            ".resource-card",
+            ".framework-card",
+            ".nav-card",
+            ".example-card",
+            ".case-block",
+            ".handbook-section",
+            ".evidence-section"
+        ].join(",");
+
+        Array.from(main.querySelectorAll(cardSelectors))
+            .filter((card) => {
+                if (card.closest(".page-shot-wall, .site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .section-signal, .section-blueprint, header, footer")) return false;
+                if (card.querySelector(":scope > .card-proof-thumb")) return false;
+                if (card.querySelector("img, video, canvas, iframe")) return false;
+                return getReadableText(card).length >= 80;
+            })
+            .slice(0, 36)
+            .forEach((card, index) => {
+                const shot = shots[index % shots.length];
+                const isCardLink = card.matches("a");
+                const thumb = document.createElement(isCardLink ? "div" : "a");
+                thumb.className = "card-proof-thumb";
+                thumb.innerHTML = `
+                    <img src="${localAsset(shot.src)}" alt="${escapeHtml(shot.title)} screenshot" loading="lazy" decoding="async">
+                    <span>${escapeHtml(shot.label || "Visual")}</span>
+                `;
+                if (!isCardLink) {
+                    thumb.setAttribute("href", localAsset(shot.href));
+                    thumb.setAttribute("aria-label", `${shot.title} screenshot`);
+                } else {
+                    thumb.setAttribute("aria-hidden", "true");
+                }
+                card.classList.add("has-card-proof-thumb");
+                card.prepend(thumb);
+            });
+    }
+
+    function initAmbientLayer() {
+        if (document.querySelector(".ambient-stage")) return;
+
+        const stage = document.createElement("div");
+        stage.className = "ambient-stage";
+        stage.setAttribute("aria-hidden", "true");
+        stage.innerHTML = '<span class="ambient-grid"></span><span class="ambient-ribbon one"></span><span class="ambient-ribbon two"></span>';
+        document.body.prepend(stage);
+
+        if (window.matchMedia("(pointer: fine)").matches) {
+            window.addEventListener("pointermove", (event) => {
+                document.documentElement.style.setProperty("--cursor-x", `${event.clientX}px`);
+                document.documentElement.style.setProperty("--cursor-y", `${event.clientY}px`);
+            }, { passive: true });
+        }
+    }
+
+    function renderPageIntelligence() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const text = getReadableText(main);
+        const charCount = text.replace(/\s/g, "").length;
+        const headings = getPageHeadings(main);
+        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(".page-intel-strip") && !img.closest(".page-shot-wall") && !img.closest(".page-constellation"));
+        const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(".page-intel-strip") && !link.closest(".page-shot-wall") && !link.closest(".page-motion-ticker") && !link.closest(".page-constellation"));
+        const readingMinutes = Math.max(1, Math.ceil(charCount / 650));
+        const pageTitle = getPageTitle();
+
+        const cards = [
+            { icon: "fa-hourglass-half", label: "阅读时间", value: `${readingMinutes} min` },
+            { icon: "fa-diagram-project", label: "内容区块", value: `${Math.max(1, headings.length)}` },
+            { icon: "fa-image", label: "视觉素材", value: `${images.length}` },
+            { icon: "fa-link", label: "可点入口", value: `${links.length}` }
+        ];
+
+        let strip = main.querySelector(".page-intel-strip");
+        if (!strip) {
+            strip = document.createElement("section");
+            strip.className = "page-intel-strip";
+            strip.setAttribute("aria-label", "页面情报概览");
+            const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
+            if (hero) hero.insertAdjacentElement("afterend", strip);
+            else main.prepend(strip);
+        }
+
+        strip.innerHTML = `
+            <div class="page-intel-copy">
+                <span>Page Signal</span>
+                <strong>${escapeHtml(pageTitle)}</strong>
+            </div>
+            <div class="page-intel-grid">
+                ${cards.map((card) => `
+                    <div class="page-intel-card">
+                        <i class="fas ${card.icon}" aria-hidden="true"></i>
+                        <span>${escapeHtml(card.label)}</span>
+                        <strong>${escapeHtml(card.value)}</strong>
+                    </div>
+                `).join("")}
+            </div>
+        `;
+    }
+
+    function renderMotionTicker() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const headings = getPageHeadings(main).slice(0, 7);
+        const actions = Array.from(main.querySelectorAll(".text-link[href], .btn[href]"))
+            .filter((link) => !link.closest(".page-constellation"))
+            .map((link) => ({
+                text: link.textContent.trim().replace(/\s+/g, " "),
+                href: link.getAttribute("href")
+            }))
+            .filter((item) => item.text && item.href)
+            .slice(0, 5);
+        const items = [
+            ...headings.map((item, index) => ({
+                text: item.text,
+                href: `#${ensureHeadingId(item.node, index)}`
+            })),
+            ...actions
+        ].slice(0, 8);
+
+        let ticker = main.querySelector(".page-motion-ticker");
+        if (items.length < 3) {
+            ticker?.remove();
+            return;
+        }
+
+        if (!ticker) {
+            ticker = document.createElement("section");
+            ticker.className = "page-motion-ticker";
+            ticker.setAttribute("aria-label", "页面重点速览");
+            const anchor = main.querySelector(".site-visual-showcase") || main.querySelector(".page-route-strip") || main.querySelector(".page-shot-wall") || main.querySelector(".page-intel-strip");
+            if (anchor) anchor.insertAdjacentElement("afterend", ticker);
+            else main.prepend(ticker);
+        }
+
+        const track = [...items, ...items].map((item) => `
+            <a href="${item.href}">
+                <i class="fas fa-sparkles" aria-hidden="true"></i>
+                <span>${escapeHtml(item.text)}</span>
+            </a>
+        `).join("");
+        ticker.innerHTML = `<div class="motion-track">${track}</div>`;
+    }
+
+    function renderPageRouteStrip() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const headings = getPageHeadings(main).slice(0, 7).map((item, index) => ({
+            text: item.text,
+            href: `#${ensureHeadingId(item.node, index)}`,
+            kind: "Section",
+            icon: "fa-location-dot"
+        }));
+        const actions = getPageActions(main).slice(0, 3).map((item) => ({
+            text: item.text,
+            href: item.href,
+            kind: "Action",
+            icon: "fa-arrow-up-right-from-square"
+        }));
+        const keywordItems = getPageKeywords(main).slice(0, 7).map((keyword) => ({
+            text: keyword,
+            href: "",
+            kind: "Signal",
+            icon: "fa-sparkles"
+        }));
+        const items = [...headings, ...actions];
+        while (items.length < 5 && keywordItems.length) items.push(keywordItems.shift());
+
+        let routeStrip = main.querySelector(".page-route-strip");
+        if (items.length < 3) {
+            routeStrip?.remove();
+            return;
+        }
+
+        if (!routeStrip) {
+            routeStrip = document.createElement("section");
+            routeStrip.className = "page-route-strip";
+            routeStrip.setAttribute("aria-label", "页面章节路径");
+            const anchor = main.querySelector(".page-shot-wall") || main.querySelector(".page-intel-strip");
+            const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
+            if (anchor) anchor.insertAdjacentElement("afterend", routeStrip);
+            else if (hero) hero.insertAdjacentElement("afterend", routeStrip);
+            else main.prepend(routeStrip);
+        }
+
+        const visibleItems = items.slice(0, 8);
+        const progressStops = visibleItems.map((_, index) => {
+            const position = visibleItems.length > 1 ? (index / (visibleItems.length - 1)) * 100 : 0;
+            return `<span style="--route-pos:${position}%"></span>`;
+        }).join("");
+        routeStrip.innerHTML = `
+            <div class="route-strip-head">
+                <span>Page Route</span>
+                <strong>${escapeHtml(getPageTitle())}</strong>
+            </div>
+            <div class="route-strip-line" aria-hidden="true">${progressStops}</div>
+            <div class="route-strip-track">
+                ${visibleItems.map((item, index) => {
+                    const content = `
+                        <em>${String(index + 1).padStart(2, "0")}</em>
+                        <i class="fas ${item.icon}" aria-hidden="true"></i>
+                        <span>${escapeHtml(item.text)}</span>
+                        <b>${escapeHtml(item.kind)}</b>
+                    `;
+                    if (item.href) {
+                        return `<a href="${item.href}" class="route-node" style="--route-index:${index}">${content}</a>`;
+                    }
+                    return `<span class="route-node" style="--route-index:${index}">${content}</span>`;
+                }).join("")}
+            </div>
+        `;
+    }
+
+    function renderPageOrbitDashboard() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const headings = getPageHeadings(main);
+        const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector));
+        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector) && !img.closest("header"));
+        const cards = Array.from(main.querySelectorAll(".surface-card, .project-showcase, .publication-card, .material-card, .blog-card, .capability-card, .timeline-card, .handbook-section, .evidence-section, .case-block"))
+            .filter((card) => !card.closest(visualWidgetSelector));
+        const keywords = getPageKeywords(main).slice(0, 8);
+        const textLength = getReadableText(main).replace(/\s/g, "").length;
+        const orbitMeter = Math.min(100, Math.max(28, Math.round(30 + headings.length * 5 + images.length * 5 + cards.length * 2 + links.length * 0.8)));
+
+        let orbit = main.querySelector(".page-orbit-dashboard");
+        if (headings.length + cards.length + links.length < 6) {
+            orbit?.remove();
+            return;
+        }
+
+        if (!orbit) {
+            orbit = document.createElement("section");
+            orbit.className = "page-orbit-dashboard";
+            orbit.setAttribute("aria-label", "页面轨道仪表盘");
+            const intel = main.querySelector(".page-intel-strip");
+            const shotWall = main.querySelector(".page-shot-wall");
+            const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
+            if (intel) intel.insertAdjacentElement("afterend", orbit);
+            else if (shotWall) shotWall.insertAdjacentElement("beforebegin", orbit);
+            else if (hero) hero.insertAdjacentElement("afterend", orbit);
+            else main.prepend(orbit);
+        }
+
+        const metrics = [
+            { label: "章节", value: headings.length, meter: Math.min(100, 20 + headings.length * 10), icon: "fa-sitemap" },
+            { label: "图像", value: images.length, meter: Math.min(100, 20 + images.length * 12), icon: "fa-image" },
+            { label: "入口", value: links.length, meter: Math.min(100, 12 + links.length * 4), icon: "fa-link" },
+            { label: "卡片", value: cards.length, meter: Math.min(100, 18 + cards.length * 5), icon: "fa-table-cells-large" }
+        ];
+        const orbitNodes = metrics.concat(keywords.slice(0, 4).map((keyword, index) => ({
+            label: keyword,
+            value: index + 1,
+            meter: 46 + index * 10,
+            icon: "fa-sparkles"
+        }))).slice(0, 8);
+
+        orbit.style.setProperty("--orbit-score", `${orbitMeter * 3.6}deg`);
+        orbit.innerHTML = `
+            <div class="orbit-core">
+                <strong>${headings.length}</strong>
+                <span>Sections</span>
+            </div>
+            <div class="orbit-rings" aria-hidden="true">
+                ${orbitNodes.map((node, index) => `
+                    <span class="orbit-node orbit-node-${index + 1}" style="--orbit-meter:${node.meter}%">
+                        <i class="fas ${node.icon}" aria-hidden="true"></i>
+                    </span>
+                `).join("")}
+            </div>
+            <div class="orbit-copy">
+                <span>Page Orbit</span>
+                <strong>${escapeHtml(getPageTitle())}</strong>
+                <em>${Math.max(1, Math.ceil(textLength / 650))} min read · ${cards.length} cards · ${links.length} links</em>
+            </div>
+            <div class="orbit-metrics">
+                ${metrics.map((metric) => `
+                    <div style="--metric:${metric.meter}%">
+                        <i class="fas ${metric.icon}" aria-hidden="true"></i>
+                        <span>${escapeHtml(metric.label)}</span>
+                        <strong>${escapeHtml(String(metric.value))}</strong>
+                    </div>
+                `).join("")}
+            </div>
+            <div class="orbit-keywords">
+                ${keywords.map((keyword, index) => `<span style="--keyword-index:${index}">${escapeHtml(keyword)}</span>`).join("")}
+            </div>
+        `;
+    }
+
+    function renderMediaFilmstrip() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const images = Array.from(main.querySelectorAll("img"))
+            .filter((img) => {
+                const src = img.getAttribute("src") || "";
+                return src && !img.closest("header") && !img.closest(".page-shot-wall") && !img.closest(".site-visual-showcase") && !img.closest(".page-media-filmstrip") && !img.closest(".page-constellation") && !img.classList.contains("profile-img");
+            })
+            .slice(0, 8);
+
+        let strip = main.querySelector(".page-media-filmstrip");
+        if (images.length < 2) {
+            strip?.remove();
+            return;
+        }
+
+        if (!strip) {
+            strip = document.createElement("section");
+            strip.className = "page-media-filmstrip";
+            strip.setAttribute("aria-label", "页面视觉素材速览");
+            const ticker = main.querySelector(".page-motion-ticker");
+            const intel = main.querySelector(".page-intel-strip");
+            if (ticker) ticker.insertAdjacentElement("afterend", strip);
+            else if (intel) intel.insertAdjacentElement("afterend", strip);
+            else main.prepend(strip);
+        }
+
+        strip.innerHTML = `
+            <div class="filmstrip-head">
+                <span>Visual Deck</span>
+                <strong>${images.length} 张页面素材</strong>
+            </div>
+            <div class="filmstrip-track">
+                ${images.map((img, index) => {
+                    const src = img.currentSrc || img.src || img.getAttribute("src");
+                    const alt = img.getAttribute("alt") || `页面视觉素材 ${index + 1}`;
+                    return `<a href="${src}" target="_blank" rel="noopener noreferrer"><img src="${src}" alt="${escapeHtml(alt)}" loading="lazy"></a>`;
+                }).join("")}
+            </div>
+        `;
+    }
+
+    function renderPageConstellation() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const headings = getPageHeadings(main).slice(0, 6);
+        const keywords = getPageKeywords(main);
+        const actions = getPageActions(main);
+        const pageTitle = getPageTitle();
+        const signals = headings.length + keywords.length + actions.length;
+        let constellation = main.querySelector(".page-constellation");
+
+        if (signals < 4) {
+            constellation?.remove();
+            return;
+        }
+
+        if (!constellation) {
+            constellation = document.createElement("section");
+            constellation.className = "page-constellation";
+            constellation.setAttribute("aria-label", "页面内容星图");
+            const filmstrip = main.querySelector(".page-media-filmstrip");
+            const ticker = main.querySelector(".page-motion-ticker");
+            const showcase = main.querySelector(".site-visual-showcase");
+            const route = main.querySelector(".page-route-strip");
+            const shotWall = main.querySelector(".page-shot-wall");
+            const intel = main.querySelector(".page-intel-strip");
+            if (filmstrip) filmstrip.insertAdjacentElement("afterend", constellation);
+            else if (ticker) ticker.insertAdjacentElement("afterend", constellation);
+            else if (showcase) showcase.insertAdjacentElement("afterend", constellation);
+            else if (route) route.insertAdjacentElement("afterend", constellation);
+            else if (shotWall) shotWall.insertAdjacentElement("afterend", constellation);
+            else if (intel) intel.insertAdjacentElement("afterend", constellation);
+            else main.prepend(constellation);
+        }
+
+        const orbitNodes = headings.length ? headings : keywords.slice(0, 6).map((keyword) => ({ text: keyword }));
+        constellation.innerHTML = `
+            <div class="constellation-visual" aria-hidden="true">
+                <div class="constellation-core">
+                    <span>Focus</span>
+                    <strong>${escapeHtml(pageTitle)}</strong>
+                </div>
+                ${orbitNodes.slice(0, 6).map((item, index) => `
+                    <span class="constellation-node node-${index + 1}">
+                        <i class="fas fa-circle"></i>
+                        <em>${escapeHtml(item.text)}</em>
+                    </span>
+                `).join("")}
+            </div>
+            <div class="constellation-panel">
+                <div class="constellation-heading">
+                    <span>Content Map</span>
+                    <h2>页面内容星图</h2>
+                    <p>自动从本页章节、关键词和操作入口生成，用来把长页面变成可扫读的视觉导航。</p>
+                </div>
+                <div class="keyword-lattice">
+                    ${keywords.slice(0, 10).map((keyword, index) => `<span style="--chip-index:${index}">${escapeHtml(keyword)}</span>`).join("")}
+                </div>
+                ${actions.length ? `
+                    <div class="action-cluster">
+                        ${actions.map((action, index) => `
+                            <a href="${action.href}" style="--action-index:${index}">
+                                <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                                <span>${escapeHtml(action.text)}</span>
+                            </a>
+                        `).join("")}
+                    </div>
+                ` : ""}
+            </div>
+        `;
+    }
+
+    function renderPageFlowLab() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const headings = getPageHeadings(main).slice(0, 6);
+        const keywords = getPageKeywords(main).filter((keyword) => keyword.length <= 18).slice(0, 10);
+        const actions = getPageActions(main).slice(0, 5);
+        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector));
+        const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector));
+        const textLength = getReadableText(main).replace(/\s/g, "").length;
+        const signalCount = headings.length + keywords.length + actions.length + images.length;
+        let lab = main.querySelector(".page-flow-lab");
+
+        if (signalCount < 5) {
+            lab?.remove();
+            return;
+        }
+
+        if (!lab) {
+            lab = document.createElement("section");
+            lab.className = "page-flow-lab";
+            lab.setAttribute("aria-label", "页面证据流工作台");
+            const constellation = main.querySelector(".page-constellation");
+            const filmstrip = main.querySelector(".page-media-filmstrip");
+            const showcase = main.querySelector(".site-visual-showcase");
+            const route = main.querySelector(".page-route-strip");
+            const shotWall = main.querySelector(".page-shot-wall");
+            const ticker = main.querySelector(".page-motion-ticker");
+            const intel = main.querySelector(".page-intel-strip");
+            if (constellation) constellation.insertAdjacentElement("afterend", lab);
+            else if (filmstrip) filmstrip.insertAdjacentElement("afterend", lab);
+            else if (showcase) showcase.insertAdjacentElement("afterend", lab);
+            else if (route) route.insertAdjacentElement("afterend", lab);
+            else if (shotWall) shotWall.insertAdjacentElement("afterend", lab);
+            else if (ticker) ticker.insertAdjacentElement("afterend", lab);
+            else if (intel) intel.insertAdjacentElement("afterend", lab);
+            else main.prepend(lab);
+        }
+
+        const routeItems = headings.length ? headings : keywords.slice(0, 6).map((keyword) => ({ text: keyword }));
+        const meters = [
+            { label: "结构", value: Math.min(100, 28 + headings.length * 11), count: headings.length, icon: "fa-sitemap" },
+            { label: "视觉", value: Math.min(100, 24 + images.length * 12), count: images.length, icon: "fa-image" },
+            { label: "入口", value: Math.min(100, 24 + links.length * 5), count: links.length, icon: "fa-link" },
+            { label: "密度", value: Math.min(100, 28 + textLength / 95), count: Math.max(1, Math.ceil(textLength / 650)), icon: "fa-wave-square" }
+        ];
+        const average = Math.round(meters.reduce((sum, item) => sum + item.value, 0) / meters.length);
+        const routeMarkup = routeItems.slice(0, 6).map((item, index) => {
+            const id = item.node ? ensureHeadingId(item.node, index) : "";
+            const href = id ? `#${id}` : "#";
+            const width = Math.min(96, 32 + (index + 1) * 10 + item.text.length * 1.4);
+            return `
+                <a href="${href}" class="flow-node node-${index + 1}" style="--node-meter:${width}%;--node-index:${index}">
+                    <span>${String(index + 1).padStart(2, "0")}</span>
+                    <strong>${escapeHtml(item.text)}</strong>
+                </a>
+            `;
+        }).join("");
+
+        lab.style.setProperty("--flow-score", `${average * 3.6}deg`);
+        lab.innerHTML = `
+            <div class="flow-lab-head">
+                <div>
+                    <span>Layout Pulse</span>
+                    <h2>${escapeHtml(getPageTitle())} 证据流</h2>
+                </div>
+                <div class="flow-lab-score">
+                    <strong>${routeItems.slice(0, 6).length}</strong>
+                    <span>Flow Nodes</span>
+                </div>
+            </div>
+            <div class="flow-lab-grid">
+                <div class="flow-route-board">
+                    <div class="flow-route-line" aria-hidden="true">
+                        ${routeItems.slice(0, 6).map((_, index) => `<span style="--dot-index:${index}"></span>`).join("")}
+                    </div>
+                    <div class="flow-node-stack">
+                        ${routeMarkup}
+                    </div>
+                </div>
+                <div class="flow-meter-grid">
+                    ${meters.map((meter) => `
+                        <div class="flow-meter-card" style="--meter:${meter.value * 3.6}deg">
+                            <i class="fas ${meter.icon}" aria-hidden="true"></i>
+                            <strong>${escapeHtml(String(meter.count))}</strong>
+                            <span>${escapeHtml(meter.label)}</span>
+                        </div>
+                    `).join("")}
+                </div>
+                <div class="flow-chip-panel">
+                    <div class="flow-chip-cloud">
+                        ${keywords.map((keyword, index) => `<span style="--chip-index:${index}">${escapeHtml(keyword)}</span>`).join("")}
+                    </div>
+                    ${actions.length ? `
+                        <div class="flow-action-list">
+                            ${actions.map((action) => `
+                                <a href="${action.href}">
+                                    <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                                    <span>${escapeHtml(action.text)}</span>
+                                </a>
+                            `).join("")}
+                        </div>
+                    ` : ""}
+                </div>
+            </div>
+        `;
+    }
+
+    function renderPageEvidenceBento() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const headings = getPageHeadings(main).slice(0, 6);
+        const keywords = getPageKeywords(main).filter((keyword) => keyword.length <= 18).slice(0, 9);
+        const actions = getPageActions(main).slice(0, 4);
+        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector) && !img.closest("header"));
+        const cards = Array.from(main.querySelectorAll(".surface-card, .project-showcase, .publication-card, .material-card, .blog-card, .capability-card, .timeline-card, .handbook-section, .evidence-section, .case-block"))
+            .filter((card) => !card.closest(visualWidgetSelector));
+        const textLength = getReadableText(main).replace(/\s/g, "").length;
+        const signalCount = headings.length + keywords.length + actions.length + images.length + cards.length;
+        let bento = main.querySelector(".page-evidence-bento");
+
+        if (signalCount < 6) {
+            bento?.remove();
+            return;
+        }
+
+        if (!bento) {
+            bento = document.createElement("section");
+            bento.className = "page-evidence-bento";
+            bento.setAttribute("aria-label", "页面证据 Bento 可视化");
+            const flow = main.querySelector(".page-flow-lab");
+            const constellation = main.querySelector(".page-constellation");
+            const filmstrip = main.querySelector(".page-media-filmstrip");
+            const showcase = main.querySelector(".site-visual-showcase");
+            const route = main.querySelector(".page-route-strip");
+            const shotWall = main.querySelector(".page-shot-wall");
+            if (flow) flow.insertAdjacentElement("afterend", bento);
+            else if (constellation) constellation.insertAdjacentElement("afterend", bento);
+            else if (filmstrip) filmstrip.insertAdjacentElement("afterend", bento);
+            else if (showcase) showcase.insertAdjacentElement("afterend", bento);
+            else if (route) route.insertAdjacentElement("afterend", bento);
+            else if (shotWall) shotWall.insertAdjacentElement("afterend", bento);
+            else main.prepend(bento);
+        }
+
+        const metrics = [
+            { label: "章节", value: Math.max(1, headings.length), icon: "fa-sitemap", meter: Math.min(100, 28 + headings.length * 11) },
+            { label: "图像", value: images.length, icon: "fa-image", meter: Math.min(100, 20 + images.length * 12) },
+            { label: "卡片", value: cards.length, icon: "fa-table-cells-large", meter: Math.min(100, 18 + cards.length * 6) },
+            { label: "行动", value: actions.length, icon: "fa-arrow-up-right-from-square", meter: Math.min(100, 26 + actions.length * 14) }
+        ];
+        const density = Math.min(100, Math.max(18, Math.round(textLength / 90)));
+        const heatCells = Array.from({ length: 24 }, (_, index) => {
+            const seed = [textLength, headings.length, images.length, cards.length, actions.length, keywords.length][index % 6] || 1;
+            return Math.min(100, Math.max(16, Math.round((seed * (index + 3)) % 92) + 8));
+        });
+        const timeline = headings.length ? headings : keywords.slice(0, 6).map((keyword) => ({ text: keyword }));
+        const presetImage = (getVisualEvidencePreset()?.items || []).find((item) => item.src);
+        const firstImage = images[0];
+        const imgSrc = presetImage?.src ? localAsset(presetImage.src) : (firstImage ? (firstImage.currentSrc || firstImage.src || firstImage.getAttribute("src")) : "");
+        const imgAlt = presetImage?.title || (firstImage ? (firstImage.getAttribute("alt") || getPageTitle()) : "");
+
+        bento.style.setProperty("--bento-density", `${density * 3.6}deg`);
+        bento.innerHTML = `
+            <div class="bento-head">
+                <div>
+                    <span>Evidence Bento</span>
+                    <h2>${escapeHtml(getPageTitle())} 可视证据面板</h2>
+                </div>
+                <p>自动读取本页章节、图像、卡片和操作入口，生成一组更像作品集产品页的小组件。</p>
+            </div>
+            <div class="bento-grid">
+                <div class="bento-tile bento-tile-score">
+                    <span>Sections</span>
+                    <strong>${headings.length}</strong>
+                    <em>Content Map</em>
+                </div>
+                <div class="bento-tile bento-tile-heat" aria-hidden="true">
+                    ${heatCells.map((value, index) => `<span style="--heat:${value}%;--heat-index:${index}"></span>`).join("")}
+                </div>
+                <div class="bento-tile bento-tile-metrics">
+                    ${metrics.map((metric) => `
+                        <div style="--metric:${metric.meter}%">
+                            <i class="fas ${metric.icon}" aria-hidden="true"></i>
+                            <span>${escapeHtml(metric.label)}</span>
+                            <strong>${escapeHtml(String(metric.value))}</strong>
+                            <em></em>
+                        </div>
+                    `).join("")}
+                </div>
+                <div class="bento-tile bento-tile-timeline">
+                    ${timeline.slice(0, 6).map((item, index) => {
+                        const id = item.node ? ensureHeadingId(item.node, index) : "";
+                        const href = id ? `#${id}` : "";
+                        const content = `<b>${String(index + 1).padStart(2, "0")}</b><span>${escapeHtml(item.text)}</span>`;
+                        return href ? `<a href="${href}">${content}</a>` : `<span>${content}</span>`;
+                    }).join("")}
+                </div>
+                <div class="bento-tile bento-tile-image">
+                    ${imgSrc ? `<img src="${imgSrc}" alt="${escapeHtml(imgAlt)}" loading="lazy" decoding="async">` : `<span class="bento-image-placeholder"><i class="fas fa-image" aria-hidden="true"></i>No image</span>`}
+                    <strong>${escapeHtml(imgAlt || "页面视觉入口")}</strong>
+                </div>
+                <div class="bento-tile bento-tile-keywords">
+                    ${keywords.map((keyword, index) => `<span style="--keyword-index:${index}">${escapeHtml(keyword)}</span>`).join("")}
+                </div>
+                ${actions.length ? `
+                    <div class="bento-tile bento-tile-actions">
+                        ${actions.map((action) => `
+                            <a href="${action.href}">
+                                <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                                <span>${escapeHtml(action.text)}</span>
+                            </a>
+                        `).join("")}
+                    </div>
+                ` : ""}
+            </div>
+        `;
+    }
+
+    function renderHeadingSignalBadges() {
+        const main = getMainContent();
+        if (!main) return;
+
+        getPageHeadings(main).slice(0, 18).forEach((item, index) => {
+            const heading = item.node;
+            let badge = heading.querySelector(":scope > .heading-signal-badge");
+            const host = heading.closest("section, article, .container, .handbook-section, .evidence-section, .case-block") || heading.parentElement;
+            const text = getReadableText(host).replace(/\s/g, "");
+            const links = Array.from(host.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector)).length;
+            const images = Array.from(host.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector)).length;
+            const lower = item.text.toLowerCase();
+            let label = "Signal";
+            let icon = "fa-sparkles";
+
+            if (/论文|publication|paper|doi|pdf/i.test(lower)) {
+                label = "Paper";
+                icon = "fa-file-lines";
+            } else if (/项目|project|工程|横向|case/i.test(lower)) {
+                label = "Project";
+                icon = "fa-diagram-project";
+            } else if (/api|接口|function|proxy/i.test(lower)) {
+                label = "API";
+                icon = "fa-plug";
+            } else if (/材料|证据|resume|cv|档案|证明/i.test(lower)) {
+                label = "Proof";
+                icon = "fa-box-archive";
+            } else if (/研究|路线|方法|模型|算法/i.test(lower)) {
+                label = "Research";
+                icon = "fa-flask";
+            }
+
+            const score = Math.min(99, Math.max(18, Math.round(18 + text.length / 80 + links * 5 + images * 9)));
+            if (!badge) {
+                badge = document.createElement("span");
+                badge.className = "heading-signal-badge";
+                badge.setAttribute("aria-hidden", "true");
+                heading.appendChild(badge);
+            }
+
+            heading.classList.add("has-heading-signal");
+            badge.style.setProperty("--heading-score", `${score}%`);
+            badge.innerHTML = `
+                <i class="fas ${icon}"></i>
+                <span>${escapeHtml(label)}</span>
+                <b>${String(index + 1).padStart(2, "0")}</b>
+            `;
+        });
+    }
+
+    function renderListTelemetry() {
+        const main = getMainContent();
+        if (!main) return;
+        if (main.querySelector(".jp-Notebook, .jp-Cell, .jp-RenderedHTMLCommon")) return;
+
+        const skipSelector = [
+            visualWidgetSelector,
+            "header",
+            "footer",
+            "nav",
+            ".dropdown-content",
+            ".hero-actions",
+            ".project-actions",
+            ".publication-actions",
+            ".material-actions",
+            ".page-action-bar",
+            ".command-palette",
+            ".floating-tool",
+            ".api-direct-entry",
+            ".section-compass",
+            ".tag-list",
+            ".project-tags",
+            ".publication-tags",
+            ".social-links",
+            ".breadcrumb",
+            ".tabs",
+            ".tab-list"
+        ].join(",");
+
+        Array.from(main.querySelectorAll("ul, ol"))
+            .filter((list) => {
+                if (list.closest(skipSelector)) return false;
+                if (list.closest(".visual-list")) return false;
+                const className = String(list.className || "");
+                if (/nav|menu|tag|action|tabs|pagination|breadcrumb/i.test(className)) return false;
+                const items = Array.from(list.children).filter((item) => item.tagName === "LI");
+                if (items.length < 3 || items.length > 14) return false;
+                const textLength = items.map((item) => getCleanNodeText(item)).join(" ").replace(/\s/g, "").length;
+                return textLength >= 70;
+            })
+            .slice(0, 56)
+            .forEach((list, index) => {
+                const items = Array.from(list.children).filter((item) => item.tagName === "LI");
+                const links = Array.from(list.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector)).length;
+                const section = list.closest("section, article, .container, .handbook-section, .evidence-section, .case-block") || main;
+                const heading = Array.from(section.querySelectorAll("h2, h3"))
+                    .filter((node) => !node.closest(visualWidgetSelector))[0];
+                const title = getCleanNodeText(heading) || (list.tagName === "OL" ? "步骤清单" : "结构要点");
+                const itemTexts = items.map((item) => getCleanNodeText(item));
+                const longest = Math.max(...itemTexts.map((text) => text.replace(/\s/g, "").length), 1);
+                const average = Math.round(itemTexts.reduce((sum, text) => sum + text.replace(/\s/g, "").length, 0) / Math.max(items.length, 1));
+                const completion = Math.min(98, Math.max(24, Math.round(26 + items.length * 5 + links * 8 + average / 3)));
+                let telemetry = list.previousElementSibling?.classList?.contains("list-telemetry")
+                    ? list.previousElementSibling
+                    : null;
+
+                list.classList.add("visual-list");
+                list.style.setProperty("--list-accent-index", String(index % 6));
+                items.forEach((item, itemIndex) => {
+                    const density = Math.min(100, Math.max(14, Math.round((itemTexts[itemIndex].replace(/\s/g, "").length / longest) * 100)));
+                    item.style.setProperty("--item-meter", `${density}%`);
+                    item.style.setProperty("--item-index", String(itemIndex + 1));
+                });
+
+                if (!telemetry) {
+                    telemetry = document.createElement("div");
+                    telemetry.className = "list-telemetry";
+                    telemetry.setAttribute("aria-label", "列表可视化概览");
+                    list.insertAdjacentElement("beforebegin", telemetry);
+                }
+
+                telemetry.style.setProperty("--list-score", `${completion}%`);
+                telemetry.innerHTML = `
+                    <div class="list-telemetry-copy">
+                        <span>${list.tagName === "OL" ? "Step Signal" : "List Signal"}</span>
+                        <strong>${escapeHtml(title)}</strong>
+                    </div>
+                    <div class="list-telemetry-bars" aria-hidden="true">
+                        ${itemTexts.map((text, barIndex) => {
+                            const density = Math.min(100, Math.max(14, Math.round((text.replace(/\s/g, "").length / longest) * 100)));
+                            return `<span style="--bar-meter:${density}%;--bar-index:${barIndex}"></span>`;
+                        }).join("")}
+                    </div>
+                    <div class="list-telemetry-stats">
+                        <span><i class="fas fa-list-check" aria-hidden="true"></i><b>${items.length}</b><em>项</em></span>
+                        <span><i class="fas fa-link" aria-hidden="true"></i><b>${links}</b><em>入口</em></span>
+                        <span><i class="fas fa-wave-square" aria-hidden="true"></i><b>${average}</b><em>密度</em></span>
+                    </div>
+                `;
+            });
+    }
+
+    function renderCollectionTelemetry() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const collectionSelectors = [
+            ".metrics-grid",
+            ".focus-grid",
+            ".capability-grid",
+            ".project-hub-grid",
+            ".project-list-group",
+            ".blog-grid",
+            ".material-grid",
+            ".resource-grid",
+            ".nav-grid",
+            ".video-grid",
+            ".visual-proof-grid",
+            ".two-column",
+            ".evidence-card-grid",
+            ".markdown-panel",
+            ".markdown-examples",
+            ".control-panel",
+            ".code-panel",
+            ".evidence-grid",
+            ".handbook-grid",
+            ".timeline-grid"
+        ].join(",");
+
+        Array.from(main.querySelectorAll(collectionSelectors))
+            .filter((collection) => {
+                if (collection.closest(visualWidgetSelector)) return false;
+                if (collection.previousElementSibling?.classList?.contains("collection-telemetry")) return false;
+                const children = Array.from(collection.children).filter((child) => {
+                    if (!(child instanceof HTMLElement)) return false;
+                    if (child.matches(visualWidgetSelector)) return false;
+                    return getReadableText(child).length >= 20 || child.querySelector("img, a[href]");
+                });
+                return children.length >= 2;
+            })
+            .slice(0, 42)
+            .forEach((collection, index) => {
+                const children = Array.from(collection.children).filter((child) => child instanceof HTMLElement && !child.matches(visualWidgetSelector));
+                const cards = children.length;
+                const links = Array.from(collection.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector)).length;
+                const images = Array.from(collection.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector)).length;
+                const headings = Array.from(collection.querySelectorAll("h2, h3, h4")).filter((heading) => !heading.closest(visualWidgetSelector)).length;
+                const host = collection.closest("section, article, .container, .case-block, .handbook-section, .evidence-section") || main;
+                const heading = Array.from(host.querySelectorAll("h2, h3"))
+                    .filter((node) => !node.closest(visualWidgetSelector))[0];
+                const title = getCleanNodeText(heading) || "内容集合";
+                const score = Math.min(98, Math.max(28, 20 + cards * 8 + links * 4 + images * 6 + headings * 3));
+                const telemetry = document.createElement("div");
+                telemetry.className = "collection-telemetry";
+                telemetry.setAttribute("aria-label", "内容集合可视化概览");
+                telemetry.style.setProperty("--collection-score", `${score}%`);
+                telemetry.innerHTML = `
+                    <div class="collection-telemetry-map" aria-hidden="true">
+                        ${children.slice(0, 12).map((child, childIndex) => {
+                            const weight = Math.min(100, Math.max(18, getReadableText(child).replace(/\s/g, "").length / 3));
+                            return `<span style="--tile-meter:${weight}%;--tile-index:${childIndex}"></span>`;
+                        }).join("")}
+                    </div>
+                    <div class="collection-telemetry-copy">
+                        <span>Collection Signal</span>
+                        <strong>${escapeHtml(title)}</strong>
+                    </div>
+                    <div class="collection-telemetry-stats">
+                        <span><i class="fas fa-layer-group" aria-hidden="true"></i><b>${cards}</b><em>卡片</em></span>
+                        <span><i class="fas fa-link" aria-hidden="true"></i><b>${links}</b><em>入口</em></span>
+                        <span><i class="fas fa-image" aria-hidden="true"></i><b>${images}</b><em>图像</em></span>
+                    </div>
+                `;
+                collection.insertAdjacentElement("beforebegin", telemetry);
+                collection.classList.add("visual-collection");
+                collection.style.setProperty("--collection-index", String(index % 6));
+            });
+    }
+
+    function renderSectionSignals() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const skipClasses = [
+            "page-hero",
+            "hero-redesign",
+            "resume-hero",
+            "page-intel-strip",
+            "page-motion-ticker",
+            "page-shot-wall",
+            "page-route-strip",
+            "page-media-filmstrip",
+            "page-constellation",
+            "page-flow-lab",
+            "page-evidence-bento",
+            "page-orbit-dashboard",
+            "site-visual-showcase",
+            "section-blueprint"
+        ];
+
+        const sections = Array.from(main.querySelectorAll(":scope > section, :scope > .resume-builder-container, :scope > .markdown-converter-container, :scope > .resource-grid, :scope > .nav-grid, :scope > .video-section, .handbook-section, .evidence-section, .case-block"))
+            .filter((section) => {
+                if (skipClasses.some((className) => section.classList.contains(className))) return false;
+                if (section.closest(visualWidgetSelector)) return false;
+                const text = getReadableText(section);
+                if (section.matches(".resume-builder-container, .markdown-converter-container, .resource-grid, .nav-grid, .video-section")) return text.length >= 50;
+                return text.length >= 90;
+            })
+            .slice(0, 18);
+
+        sections.forEach((section, index) => {
+            const host = section.querySelector(":scope > .container") || section;
+            let signal = host.querySelector(":scope > .section-signal");
+            const title = section.querySelector("h2, h3, h1")?.textContent.trim().replace(/\s+/g, " ") || `Section ${index + 1}`;
+            const contentText = Array.from(host.childNodes)
+                .filter((node) => !(node.nodeType === 1 && node.matches?.(visualWidgetSelector)))
+                .map((node) => node.textContent || "")
+                .join(" ")
+                .replace(/\s+/g, " ")
+                .trim();
+            const charCount = contentText.replace(/\s/g, "").length;
+            const readingMinutes = Math.max(1, Math.ceil(charCount / 520));
+            const links = Array.from(section.querySelectorAll("a[href]")).filter((link) => !link.closest(".section-signal, .section-blueprint")).length;
+            const images = Array.from(section.querySelectorAll("img")).filter((img) => !img.closest(".section-signal, .section-blueprint")).length;
+            const energy = Math.min(100, 26 + readingMinutes * 12 + links * 7 + images * 9);
+
+            if (!signal) {
+                signal = document.createElement("div");
+                signal.className = "section-signal";
+                signal.setAttribute("aria-label", "内容区块信号");
+                host.prepend(signal);
+            }
+
+            signal.style.setProperty("--section-meter", `${energy}%`);
+            signal.innerHTML = `
+                <span class="section-signal-index">S${String(index + 1).padStart(2, "0")}</span>
+                <div class="section-signal-main">
+                    <strong>${escapeHtml(title)}</strong>
+                    <span><em></em></span>
+                </div>
+                <div class="section-signal-metrics">
+                    <span><i class="fas fa-clock" aria-hidden="true"></i>${readingMinutes}m</span>
+                    <span><i class="fas fa-link" aria-hidden="true"></i>${links}</span>
+                    <span><i class="fas fa-image" aria-hidden="true"></i>${images}</span>
+                </div>
+            `;
+        });
+    }
+
+    function renderSectionBlueprints() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const skipClasses = [
+            "page-hero",
+            "hero-redesign",
+            "resume-hero",
+            "page-intel-strip",
+            "page-motion-ticker",
+            "page-shot-wall",
+            "page-route-strip",
+            "page-media-filmstrip",
+            "page-constellation",
+            "page-flow-lab",
+            "page-evidence-bento",
+            "page-orbit-dashboard",
+            "site-visual-showcase"
+        ];
+
+        const sections = Array.from(main.querySelectorAll(":scope > section, :scope > .resume-builder-container, :scope > .markdown-converter-container, :scope > .resource-grid, :scope > .nav-grid, :scope > .video-section, .handbook-section, .evidence-section, .case-block"))
+            .filter((section) => {
+                if (skipClasses.some((className) => section.classList.contains(className))) return false;
+                if (section.closest(visualWidgetSelector)) return false;
+                const text = getReadableText(section);
+                if (section.matches(".resume-builder-container, .markdown-converter-container, .resource-grid, .nav-grid, .video-section")) return text.length >= 50;
+                return text.length >= 150;
+            })
+            .slice(0, 14);
+
+        function getBlueprintKind(section) {
+            const text = getReadableText(section);
+            if (section.querySelector("[data-api-widget], .api-card, .proxy-api-card") || /API|Functions|接口|代理/.test(text)) {
+                return { label: "接口", icon: "fa-plug" };
+            }
+            if (section.querySelector(".publication-card") || /论文|PDF|DOI|Publication/i.test(text)) {
+                return { label: "论文", icon: "fa-file-lines" };
+            }
+            if (section.querySelector(".project-showcase, .project-actions") || /项目|交付|验收|工程/.test(text)) {
+                return { label: "项目", icon: "fa-diagram-project" };
+            }
+            if (section.querySelector("img") || /截图|视觉|证据|材料/.test(text)) {
+                return { label: "证据", icon: "fa-image" };
+            }
+            return { label: "内容", icon: "fa-layer-group" };
+        }
+
+        sections.forEach((section, index) => {
+            const host = section.querySelector(":scope > .container") || section;
+            let blueprint = host.querySelector(":scope > .section-blueprint");
+            const rawText = Array.from(host.childNodes)
+                .filter((node) => !(node.nodeType === 1 && node.matches?.(visualWidgetSelector)))
+                .map((node) => node.textContent || "")
+                .join(" ")
+                .replace(/\s+/g, " ")
+                .trim();
+            const charCount = rawText.replace(/\s/g, "").length;
+            const title = section.querySelector("h2, h3, h1")?.textContent.trim().replace(/\s+/g, " ") || `Section ${index + 1}`;
+            const links = Array.from(section.querySelectorAll("a[href]")).filter((link) => !link.closest(".section-signal, .section-blueprint")).length;
+            const images = Array.from(section.querySelectorAll("img")).filter((img) => !img.closest(".section-signal, .section-blueprint")).length;
+            const cards = Array.from(section.querySelectorAll(".surface-card, .project-showcase, .publication-card, .material-card, .blog-card, .timeline-card")).length;
+            const lists = Array.from(section.querySelectorAll("ul, ol")).filter((list) => !list.closest(".section-signal, .section-blueprint")).length;
+            const codeBlocks = section.querySelectorAll("pre, code").length;
+            const kind = getBlueprintKind(section);
+            const density = Math.min(100, Math.max(12, Math.ceil(charCount / 22)));
+            const evidence = Math.min(100, 18 + images * 18 + links * 9 + cards * 8);
+            const structure = Math.min(100, 24 + lists * 16 + cards * 12 + codeBlocks * 10);
+            const action = Math.min(100, 16 + links * 14 + Math.min(cards, 4) * 8);
+            const average = Math.round((density + evidence + structure + action) / 4);
+            const cells = [density, evidence, structure, action, average, Math.max(18, 100 - Math.abs(density - structure))];
+            const metrics = [
+                { label: "密度", value: `${Math.max(1, Math.ceil(charCount / 520))}m`, meter: density, icon: "fa-align-left" },
+                { label: "证据", value: `${images + links}`, meter: evidence, icon: "fa-shield-halved" },
+                { label: "结构", value: `${cards + lists}`, meter: structure, icon: "fa-table-cells-large" },
+                { label: "行动", value: `${links}`, meter: action, icon: "fa-arrow-up-right-from-square" }
+            ];
+
+            if (!blueprint) {
+                blueprint = document.createElement("div");
+                blueprint.className = "section-blueprint";
+                blueprint.setAttribute("aria-label", "章节视觉蓝图");
+                const signal = host.querySelector(":scope > .section-signal");
+                if (signal) signal.insertAdjacentElement("afterend", blueprint);
+                else host.prepend(blueprint);
+            }
+
+            blueprint.style.setProperty("--blueprint-score", `${average * 3.6}deg`);
+            blueprint.innerHTML = `
+                <div class="blueprint-map" aria-hidden="true">
+                    <span class="blueprint-map-label">S${String(index + 1).padStart(2, "0")}</span>
+                    <div class="blueprint-track-lines">
+                        ${metrics.map((metric, metricIndex) => `<span style="--line-meter:${metric.meter}%;--line-index:${metricIndex}"></span>`).join("")}
+                    </div>
+                    <div class="blueprint-cell-grid">
+                        ${cells.map((cell, cellIndex) => `<span style="--cell-level:${cell}%;--cell-index:${cellIndex}"></span>`).join("")}
+                    </div>
+                </div>
+                <div class="blueprint-copy">
+                    <span class="blueprint-kind"><i class="fas ${kind.icon}" aria-hidden="true"></i>${escapeHtml(kind.label)}蓝图</span>
+                    <strong>${escapeHtml(title)}</strong>
+                    <div class="blueprint-metrics">
+                        ${metrics.map((metric) => `
+                            <span style="--metric-meter:${metric.meter}%">
+                                <i class="fas ${metric.icon}" aria-hidden="true"></i>
+                                <em>${escapeHtml(metric.label)}</em>
+                                <b>${escapeHtml(metric.value)}</b>
+                            </span>
+                        `).join("")}
+                    </div>
+                </div>
+                <div class="blueprint-score" aria-hidden="true">
+                    <strong>${cards + lists}</strong>
+                    <span>Blocks</span>
+                </div>
+            `;
+        });
+    }
+
+    function renderSectionMiniMaps() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const sections = Array.from(main.querySelectorAll(":scope > section, :scope > .resume-builder-container, :scope > .markdown-converter-container, .handbook-section, .evidence-section, .case-block"))
+            .filter((section) => {
+                if (section.closest(visualWidgetSelector)) return false;
+                if (section.matches(".page-hero, .hero-redesign, .resume-hero, .page-intel-strip, .page-shot-wall, .page-route-strip, .page-media-filmstrip, .site-visual-showcase, .page-constellation, .page-flow-lab, .page-evidence-bento, .page-orbit-dashboard")) return false;
+                return getReadableText(section).length >= 120;
+            })
+            .slice(0, 18);
+
+        sections.forEach((section, index) => {
+            const host = section.querySelector(":scope > .container") || section;
+            if (host.querySelector(":scope > .section-mini-map")) return;
+
+            const title = section.querySelector("h2, h3, h1")?.textContent.trim().replace(/\s+/g, " ") || `Section ${index + 1}`;
+            const textLength = getReadableText(section).replace(/\s/g, "").length;
+            const links = Array.from(section.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector)).length;
+            const images = Array.from(section.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector)).length;
+            const lists = Array.from(section.querySelectorAll("ul, ol")).filter((list) => !list.closest(visualWidgetSelector)).length;
+            const cells = Array.from({ length: 18 }, (_, cellIndex) => {
+                const seed = [textLength, links * 19, images * 31, lists * 23, index * 17][cellIndex % 5] || 9;
+                return Math.min(100, Math.max(14, (seed + cellIndex * 11) % 100));
+            });
+            const map = document.createElement("div");
+            map.className = "section-mini-map";
+            map.setAttribute("aria-label", "章节微型地图");
+            map.innerHTML = `
+                <div class="mini-map-grid" aria-hidden="true">
+                    ${cells.map((value, cellIndex) => `<span style="--cell:${value}%;--cell-index:${cellIndex}"></span>`).join("")}
+                </div>
+                <div class="mini-map-copy">
+                    <span>M${String(index + 1).padStart(2, "0")}</span>
+                    <strong>${escapeHtml(title)}</strong>
+                </div>
+                <div class="mini-map-stats">
+                    <span><i class="fas fa-align-left" aria-hidden="true"></i>${Math.max(1, Math.ceil(textLength / 520))}m</span>
+                    <span><i class="fas fa-link" aria-hidden="true"></i>${links}</span>
+                    <span><i class="fas fa-image" aria-hidden="true"></i>${images}</span>
+                    <span><i class="fas fa-list" aria-hidden="true"></i>${lists}</span>
+                </div>
+            `;
+
+            const blueprint = host.querySelector(":scope > .section-blueprint");
+            const signal = host.querySelector(":scope > .section-signal");
+            if (blueprint) blueprint.insertAdjacentElement("afterend", map);
+            else if (signal) signal.insertAdjacentElement("afterend", map);
+            else host.prepend(map);
+        });
+    }
+
+    function renderCardMicroWidgets() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const cardSelectors = [
+            ".publication-card",
+            ".project-showcase",
+            ".surface-card",
+            ".material-card",
+            ".capability-card",
+            ".blog-card",
+            ".timeline-card",
+            ".metric-card",
+            ".roadmap-card",
+            ".achievement-card",
+            ".service-card",
+            ".story-card",
+            ".library-card",
+            ".resource-card",
+            ".framework-card",
+            ".nav-card",
+            ".video-card",
+            ".example-card",
+            ".case-block",
+            ".handbook-section",
+            ".evidence-section",
+            ".api-card",
+            ".api-widget-card",
+            ".proxy-api-card"
+        ].join(",");
+
+        function getCardKind(card) {
+            if (card.matches(".project-showcase")) return { label: "Project", icon: "fa-diagram-project" };
+            if (card.matches(".publication-card")) return { label: "Paper", icon: "fa-file-lines" };
+            if (card.matches(".material-card")) return { label: "Material", icon: "fa-box-archive" };
+            if (card.matches(".blog-card")) return { label: "Post", icon: "fa-pen-nib" };
+            if (card.matches(".handbook-section")) return { label: "Guide", icon: "fa-book-open" };
+            if (card.matches(".evidence-section")) return { label: "Proof", icon: "fa-shield-halved" };
+            if (card.matches(".api-card, .api-widget-card, .proxy-api-card")) return { label: "API", icon: "fa-plug" };
+            if (card.matches(".metric-card")) return { label: "Metric", icon: "fa-chart-simple" };
+            return { label: "Signal", icon: "fa-sparkles" };
+        }
+
+        Array.from(main.querySelectorAll(cardSelectors))
+            .filter((card) => {
+                if (card.closest(".page-shot-wall, .site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .section-signal, header, footer")) return false;
+                return getReadableText(card).length >= 40;
+            })
+            .slice(0, 80)
+            .forEach((card) => {
+                const kind = getCardKind(card);
+                const text = getReadableText(card);
+                const links = Array.from(card.querySelectorAll("a[href]")).filter((link) => !link.closest(".card-micro-widget")).length;
+                const images = Array.from(card.querySelectorAll("img")).filter((img) => !img.closest(".card-micro-widget")).length;
+                const density = Math.min(99, Math.max(1, Math.ceil(text.replace(/\s/g, "").length / 90)));
+                let widget = card.querySelector(":scope > .card-micro-widget");
+
+                card.classList.add("has-card-micro-widget");
+                if (!widget) {
+                    widget = document.createElement("div");
+                    widget.className = "card-micro-widget";
+                    widget.setAttribute("aria-hidden", "true");
+                    card.appendChild(widget);
+                }
+
+                widget.innerHTML = `
+                    <span class="micro-kind"><i class="fas ${kind.icon}" aria-hidden="true"></i>${escapeHtml(kind.label)}</span>
+                    <span><i class="fas fa-link" aria-hidden="true"></i>${links}</span>
+                    <span><i class="fas fa-image" aria-hidden="true"></i>${images}</span>
+                    <span><i class="fas fa-wave-square" aria-hidden="true"></i>${density}</span>
+                `;
+            });
+    }
+
+    function renderCardSignalStrips() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const cardSelectors = [
+            ".publication-card",
+            ".project-showcase",
+            ".surface-card",
+            ".material-card",
+            ".capability-card",
+            ".blog-card",
+            ".timeline-card",
+            ".roadmap-card",
+            ".achievement-card",
+            ".service-card",
+            ".story-card",
+            ".library-card",
+            ".resource-card",
+            ".framework-card",
+            ".nav-card",
+            ".video-card",
+            ".example-card",
+            ".case-block",
+            ".handbook-section",
+            ".evidence-section"
+        ].join(",");
+
+        Array.from(main.querySelectorAll(cardSelectors))
+            .filter((card) => {
+                if (card.closest(".page-shot-wall, .site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .section-signal, .section-blueprint, header, footer")) return false;
+                return getReadableText(card).length >= 70;
+            })
+            .slice(0, 90)
+            .forEach((card) => {
+                const textLength = getReadableText(card).replace(/\s/g, "").length;
+                const links = card.querySelectorAll("a[href]").length;
+                const images = card.querySelectorAll("img").length;
+                const headings = card.querySelectorAll("h2, h3, h4").length;
+                const values = [
+                    Math.min(100, 18 + textLength / 18),
+                    Math.min(100, 16 + links * 24),
+                    Math.min(100, 16 + images * 30),
+                    Math.min(100, 20 + headings * 20)
+                ];
+                let strip = card.querySelector(":scope > .card-signal-strip");
+
+                card.classList.add("has-card-signal-strip");
+                if (!strip) {
+                    strip = document.createElement("div");
+                    strip.className = "card-signal-strip";
+                    strip.setAttribute("aria-hidden", "true");
+                    card.appendChild(strip);
+                }
+
+                strip.innerHTML = values.map((value, index) => `<span style="--strip-meter:${value}%;--strip-index:${index}"></span>`).join("");
+            });
+    }
+
+    function renderCardPixelGrids() {
+        const main = getMainContent();
+        if (!main) return;
+
+        const cardSelectors = [
+            ".publication-card",
+            ".project-showcase",
+            ".surface-card",
+            ".material-card",
+            ".capability-card",
+            ".blog-card",
+            ".timeline-card",
+            ".roadmap-card",
+            ".achievement-card",
+            ".service-card",
+            ".story-card",
+            ".library-card",
+            ".resource-card",
+            ".framework-card",
+            ".nav-card",
+            ".video-card",
+            ".example-card",
+            ".case-block",
+            ".handbook-section",
+            ".evidence-section",
+            ".api-card",
+            ".api-widget-card",
+            ".proxy-api-card"
+        ].join(",");
+
+        Array.from(main.querySelectorAll(cardSelectors))
+            .filter((card) => {
+                if (card.closest(".page-shot-wall, .site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .page-evidence-bento, .section-signal, .section-blueprint, header, footer")) return false;
+                if (card.querySelector(":scope > .card-pixel-grid")) return false;
+                return getReadableText(card).length >= 55;
+            })
+            .slice(0, 90)
+            .forEach((card, index) => {
+                const text = getReadableText(card).replace(/\s/g, "");
+                const links = card.querySelectorAll("a[href]").length;
+                const images = card.querySelectorAll("img").length;
+                const headings = card.querySelectorAll("h2, h3, h4").length;
+                const code = card.querySelectorAll("pre, code").length;
+                const values = Array.from({ length: 12 }, (_, cellIndex) => {
+                    const seed = [text.length, links * 17, images * 23, headings * 19, code * 29, index * 11][cellIndex % 6] || 7;
+                    return Math.min(100, Math.max(12, (seed + cellIndex * 13) % 100));
+                });
+                const pixel = document.createElement("div");
+                pixel.className = "card-pixel-grid";
+                pixel.setAttribute("aria-hidden", "true");
+                pixel.innerHTML = values.map((value, cellIndex) => `<span style="--pixel:${value}%;--pixel-index:${cellIndex}"></span>`).join("");
+                card.classList.add("has-card-pixel-grid");
+                card.appendChild(pixel);
+            });
+    }
+
+    function renderSectionCompass() {
+        const main = getMainContent();
+        if (!main) return;
+
+        document.querySelector(".section-compass")?.remove();
+        if (sectionCompassObserver) sectionCompassObserver.disconnect();
+
+        const headings = getPageHeadings(main).slice(0, 8);
+        if (headings.length < 3) return;
+
+        const compass = document.createElement("nav");
+        compass.className = "section-compass";
+        compass.setAttribute("aria-label", "章节雷达");
+        compass.innerHTML = `
+            <span class="section-compass-title">Sections</span>
+            ${headings.map((item, index) => {
+                const id = ensureHeadingId(item.node, index);
+                return `<a href="#${id}" data-compass-target="${id}"><span>${index + 1}</span><em>${item.text}</em></a>`;
+            }).join("")}
+        `;
+        document.body.appendChild(compass);
+
+        const links = Array.from(compass.querySelectorAll("a"));
+        function activate(id) {
+            links.forEach((link) => link.classList.toggle("active", link.dataset.compassTarget === id));
+        }
+
+        if ("IntersectionObserver" in window) {
+            sectionCompassObserver = new IntersectionObserver((entries) => {
+                const visible = entries
+                    .filter((entry) => entry.isIntersecting)
+                    .sort((a, b) => Math.abs(a.boundingClientRect.top) - Math.abs(b.boundingClientRect.top))[0];
+                if (visible) activate(visible.target.id);
+            }, { rootMargin: "-18% 0px -68% 0px", threshold: 0.01 });
+            headings.forEach((item) => sectionCompassObserver.observe(item.node));
+        }
+        activate(headings[0].node.id);
+    }
+
+    function renderGlobalVisualWidgets() {
+        initAmbientLayer();
+        renderHeroSignalConsole();
+        renderHeroPanelShots();
+        renderPageIntelligence();
+        renderPageOrbitDashboard();
+        renderPageScreenshotWall();
+        renderPageRouteStrip();
+        renderVisualEvidenceDeck();
+        renderCardScreenshotThumbs();
+        renderMotionTicker();
+        renderMediaFilmstrip();
+        renderPageConstellation();
+        renderPageFlowLab();
+        renderPageEvidenceBento();
+        renderHeadingSignalBadges();
+        renderListTelemetry();
+        renderCollectionTelemetry();
+        renderSectionSignals();
+        renderSectionBlueprints();
+        renderSectionMiniMaps();
+        renderCardMicroWidgets();
+        renderCardSignalStrips();
+        renderCardPixelGrids();
+        renderSectionCompass();
+    }
+
+    function initPageEnhancements() {
+        const main = document.querySelector("main");
+        if (main && !main.querySelector(".page-side-rail")) {
+            const rail = document.createElement("aside");
+            rail.className = "page-side-rail";
+            rail.setAttribute("aria-label", "页面快速定位");
+
+            const headings = Array.from(main.querySelectorAll("h2"))
+                .filter((heading) => heading.textContent.trim().length > 0)
+                .slice(0, 8);
+            if (headings.length >= 2) {
+                rail.innerHTML = `
+                    <div class="rail-title">On this page</div>
+                    ${headings.map((heading, index) => {
+                        if (!heading.id) heading.id = `section-${index + 1}`;
+                        return `<a href="#${heading.id}">${heading.textContent.trim()}</a>`;
+                    }).join("")}
+                `;
+                main.appendChild(rail);
+            }
+        }
+
+        const revealItems = document.querySelectorAll(".section-band, .surface-card, .project-showcase, .publication-card, .handbook-section, .evidence-section, .blog-card, .timeline-card, .metric-card, .material-card, .capability-card");
+        revealItems.forEach((item, index) => {
+            item.classList.add("reveal-ready");
+            item.style.setProperty("--reveal-delay", `${Math.min(index, 8) * 35}ms`);
+        });
+
+        if ("IntersectionObserver" in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add("reveal-in");
+                    observer.unobserve(entry.target);
+                });
+            }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
+            revealItems.forEach((item) => observer.observe(item));
+        } else {
+            revealItems.forEach((item) => item.classList.add("reveal-in"));
+        }
+
+        document.querySelectorAll(".publication-card, .project-showcase, .surface-card, .material-card, .capability-card, .blog-card").forEach((card) => {
+            card.classList.add("premium-surface");
+        });
+
+        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && window.matchMedia("(pointer: fine)").matches) {
+            document.querySelectorAll(".premium-surface").forEach((card) => {
+                if (card.dataset.tiltReady === "true") return;
+                card.dataset.tiltReady = "true";
+                card.addEventListener("pointermove", (event) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+                    const y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+                    card.style.setProperty("--tilt-x", `${(-y * 3).toFixed(2)}deg`);
+                    card.style.setProperty("--tilt-y", `${(x * 3).toFixed(2)}deg`);
+                    card.style.setProperty("--glow-x", `${event.clientX - rect.left}px`);
+                    card.style.setProperty("--glow-y", `${event.clientY - rect.top}px`);
+                }, { passive: true });
+                card.addEventListener("pointerleave", () => {
+                    card.style.setProperty("--tilt-x", "0deg");
+                    card.style.setProperty("--tilt-y", "0deg");
+                    card.style.removeProperty("--glow-x");
+                    card.style.removeProperty("--glow-y");
+                });
+            });
+        }
+    }
+
+    function refreshEnhancements() {
+        sanitizeLinks();
+        initPageEnhancements();
+        renderGlobalVisualWidgets();
+    }
+
+    enhanceNavigation();
     initHeaderState();
+    markActiveNav();
+    window.addEventListener("hashchange", markActiveNav);
+    initThemeToggle();
     initReadingProgress();
     initCommandPalette();
-    initBackToTop();
-    initBreadcrumbs();
+    initPageActionBar();
+    initMobileToolDock();
+    renderGlobalVisualWidgets();
+    initScrollTopButton();
     initContactValidation();
-    initImagePreview();
     refreshEnhancements();
     window.symgoRefreshEnhancements = refreshEnhancements;
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", refreshEnhancements, { once: true });
+    }
+    window.addEventListener("load", refreshEnhancements, { once: true });
+    [900, 2400].forEach((delay) => window.setTimeout(refreshEnhancements, delay));
     document.addEventListener("symgo:content-updated", refreshEnhancements);
-  }
-
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });
-  else init();
 })();
