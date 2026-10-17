@@ -71,27 +71,8 @@
         const navList = document.querySelector("nav ul");
         if (!navList) return;
 
-        const nav = navList.closest("nav");
-        const header = navList.closest("header");
-        const mobileNavQuery = window.matchMedia("(max-width: 900px)");
-
-        nav.id = nav.id || "site-primary-navigation";
-        nav.setAttribute("aria-label", "主导航");
-
         navList.className = "nav-menu";
-        navList.id = navList.id || "site-primary-navigation-list";
         navList.innerHTML = "";
-
-        const mobileToggle = document.createElement("button");
-        mobileToggle.type = "button";
-        mobileToggle.className = "mobile-nav-toggle";
-        mobileToggle.setAttribute("aria-controls", navList.id);
-        mobileToggle.setAttribute("aria-expanded", "false");
-        mobileToggle.setAttribute("aria-label", "打开主导航");
-        mobileToggle.title = "打开主导航";
-        mobileToggle.innerHTML = '<i class="fas fa-bars" aria-hidden="true"></i>';
-        header?.querySelector(".container")?.insertBefore(mobileToggle, nav);
-        document.body.classList.add("mobile-nav-ready");
 
         function buildHref(href) {
             if (!href || href.startsWith("http") || href.startsWith("#")) return href;
@@ -108,7 +89,7 @@
             return link;
         }
 
-        navigationGroups.forEach((item, groupIndex) => {
+        navigationGroups.forEach((item) => {
             const li = document.createElement("li");
             if (!item.children) {
                 li.className = "nav-single";
@@ -122,17 +103,11 @@
             button.type = "button";
             button.className = "nav-group-toggle";
             button.setAttribute("aria-expanded", "false");
-            button.setAttribute("aria-haspopup", "true");
             button.innerHTML = `<i class="fas ${item.icon}" aria-hidden="true"></i><span>${item.label}</span><i class="fas fa-chevron-down nav-chevron" aria-hidden="true"></i>`;
 
             const dropdown = document.createElement("div");
             dropdown.className = "nav-dropdown";
-            dropdown.id = `site-nav-dropdown-${groupIndex + 1}`;
-            dropdown.setAttribute("aria-hidden", "true");
-            dropdown.inert = true;
-            button.setAttribute("aria-controls", dropdown.id);
             item.children.forEach((child) => dropdown.appendChild(createLink(child)));
-            dropdown.querySelectorAll("a").forEach((link) => link.setAttribute("tabindex", "-1"));
 
             li.appendChild(button);
             li.appendChild(dropdown);
@@ -140,45 +115,13 @@
         });
 
         const groups = Array.from(navList.querySelectorAll(".nav-group"));
-
-        function setGroupOpen(group, isOpen, pinOpen = false) {
-            const button = group.querySelector(".nav-group-toggle");
-            const dropdown = group.querySelector(".nav-dropdown");
-            group.classList.toggle("open", isOpen);
-            if (pinOpen && isOpen) group.dataset.navPinned = "true";
-            else if (!isOpen) delete group.dataset.navPinned;
-            button?.setAttribute("aria-expanded", String(isOpen));
-            if (dropdown) {
-                dropdown.setAttribute("aria-hidden", String(!isOpen));
-                dropdown.inert = !isOpen;
-                dropdown.querySelectorAll("a").forEach((link) => {
-                    if (isOpen) link.removeAttribute("tabindex");
-                    else link.setAttribute("tabindex", "-1");
-                });
-            }
-        }
-
         function closeGroups(except) {
             groups.forEach((group) => {
                 if (group === except) return;
-                setGroupOpen(group, false);
+                group.classList.remove("open");
+                group.querySelector(".nav-group-toggle")?.setAttribute("aria-expanded", "false");
             });
         }
-
-        function setMobileNavOpen(isOpen, restoreFocus = false) {
-            document.body.classList.toggle("mobile-nav-open", isOpen);
-            mobileToggle.setAttribute("aria-expanded", String(isOpen));
-            mobileToggle.setAttribute("aria-label", isOpen ? "关闭主导航" : "打开主导航");
-            mobileToggle.title = isOpen ? "关闭主导航" : "打开主导航";
-            mobileToggle.innerHTML = `<i class="fas ${isOpen ? "fa-xmark" : "fa-bars"}" aria-hidden="true"></i>`;
-            if (!isOpen) closeGroups();
-            if (restoreFocus) mobileToggle.focus();
-        }
-
-        mobileToggle.addEventListener("click", (event) => {
-            event.stopPropagation();
-            setMobileNavOpen(!document.body.classList.contains("mobile-nav-open"));
-        });
 
         groups.forEach((group) => {
             const button = group.querySelector(".nav-group-toggle");
@@ -187,71 +130,46 @@
             function openGroup() {
                 clearTimeout(hoverTimer);
                 closeGroups(group);
-                setGroupOpen(group, true);
+                group.classList.add("open");
+                button.setAttribute("aria-expanded", "true");
             }
 
             function queueCloseGroup() {
                 clearTimeout(hoverTimer);
-                if (group.dataset.navPinned === "true") return;
                 hoverTimer = setTimeout(() => {
-                    setGroupOpen(group, false);
+                    group.classList.remove("open");
+                    button.setAttribute("aria-expanded", "false");
                 }, 160);
             }
 
             group.addEventListener("mouseover", (event) => {
-                if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
                 if (group.contains(event.relatedTarget)) return;
-                if (group.dataset.navPinned === "true") return;
                 openGroup();
             });
             group.addEventListener("mouseout", (event) => {
-                if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
                 if (group.contains(event.relatedTarget)) return;
                 queueCloseGroup();
             });
             button.addEventListener("click", (event) => {
                 event.stopPropagation();
-                const willOpen = group.dataset.navPinned !== "true";
+                const willOpen = !group.classList.contains("open");
                 closeGroups(group);
-                setGroupOpen(group, willOpen, willOpen);
+                group.classList.toggle("open", willOpen);
+                button.setAttribute("aria-expanded", String(willOpen));
             });
         });
 
         navList.addEventListener("click", (event) => {
-            if (!event.target.closest("a")) return;
-            closeGroups();
-            if (mobileNavQuery.matches) setMobileNavOpen(false);
+            if (event.target.closest("a")) closeGroups();
         });
 
         document.addEventListener("click", (event) => {
             if (!event.target.closest("nav")) closeGroups();
-            if (mobileNavQuery.matches && !event.target.closest("header")) setMobileNavOpen(false);
         });
 
         document.addEventListener("keydown", (event) => {
-            if (event.key !== "Escape") return;
-            if (mobileNavQuery.matches && document.body.classList.contains("mobile-nav-open")) {
-                setMobileNavOpen(false, true);
-                return;
-            }
-            const openGroup = groups.find((group) => group.classList.contains("open"));
-            closeGroups();
-            openGroup?.querySelector(".nav-group-toggle")?.focus();
+            if (event.key === "Escape") closeGroups();
         });
-
-        function syncNavigationMode() {
-            if (!mobileNavQuery.matches) {
-                document.body.classList.remove("mobile-nav-open");
-                mobileToggle.setAttribute("aria-expanded", "false");
-                mobileToggle.setAttribute("aria-label", "打开主导航");
-                mobileToggle.title = "打开主导航";
-                mobileToggle.innerHTML = '<i class="fas fa-bars" aria-hidden="true"></i>';
-                closeGroups();
-            }
-        }
-
-        mobileNavQuery.addEventListener?.("change", syncNavigationMode);
-        syncNavigationMode();
     }
 
     function initHeaderState() {
@@ -405,7 +323,6 @@
 
         const palette = document.createElement("div");
         palette.className = "command-palette";
-        palette.setAttribute("aria-hidden", "true");
         palette.innerHTML = `
             <div class="command-dialog" role="dialog" aria-modal="true" aria-label="快速导航">
                 <div class="command-head">
@@ -421,12 +338,6 @@
         const input = palette.querySelector("input");
         const results = palette.querySelector(".command-results");
         const closeButton = palette.querySelector(".command-head button");
-        let paletteOpener = null;
-
-        function getPaletteFocusableItems() {
-            return Array.from(palette.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])'))
-                .filter((element) => element.getClientRects().length > 0);
-        }
 
         function render(keyword = "") {
             const term = keyword.trim().toLowerCase();
@@ -441,23 +352,13 @@
         }
 
         function openPalette() {
-            if (!palette.classList.contains("open")) {
-                paletteOpener = document.activeElement instanceof HTMLElement ? document.activeElement : openButton;
-            }
             palette.classList.add("open");
-            palette.setAttribute("aria-hidden", "false");
-            document.body.classList.add("dialog-open");
             render(input.value);
             input.focus();
         }
 
-        function closePalette({ restoreFocus = true } = {}) {
-            if (!palette.classList.contains("open")) return;
+        function closePalette() {
             palette.classList.remove("open");
-            palette.setAttribute("aria-hidden", "true");
-            document.body.classList.remove("dialog-open");
-            if (restoreFocus) (paletteOpener || openButton).focus();
-            paletteOpener = null;
         }
 
         openButton.addEventListener("click", openPalette);
@@ -470,30 +371,8 @@
             if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
                 event.preventDefault();
                 openPalette();
-                return;
             }
-            if (!palette.classList.contains("open")) return;
-            if (event.key === "Escape") {
-                event.preventDefault();
-                closePalette();
-                return;
-            }
-            if (event.key !== "Tab") return;
-
-            const focusableItems = getPaletteFocusableItems();
-            if (!focusableItems.length) {
-                event.preventDefault();
-                return;
-            }
-            const firstItem = focusableItems[0];
-            const lastItem = focusableItems[focusableItems.length - 1];
-            if (event.shiftKey && (document.activeElement === firstItem || !palette.contains(document.activeElement))) {
-                event.preventDefault();
-                lastItem.focus();
-            } else if (!event.shiftKey && document.activeElement === lastItem) {
-                event.preventDefault();
-                firstItem.focus();
-            }
+            if (event.key === "Escape") closePalette();
         });
         render();
     }
@@ -547,20 +426,6 @@
                 }
             }
         });
-    }
-
-    function initMobileToolDock() {
-        const mobileQuery = window.matchMedia("(max-width: 768px)");
-
-        function update() {
-            const shouldShow = !mobileQuery.matches || window.scrollY > Math.min(360, window.innerHeight * 0.45);
-            document.body.classList.toggle("mobile-tools-visible", shouldShow);
-        }
-
-        window.addEventListener("scroll", update, { passive: true });
-        window.addEventListener("resize", update, { passive: true });
-        mobileQuery.addEventListener?.("change", update);
-        update();
     }
 
     function initScrollTopButton() {
@@ -652,13 +517,11 @@
         ".page-constellation",
         ".page-flow-lab",
         ".page-evidence-bento",
-        ".page-orbit-dashboard",
         ".page-route-strip",
         ".hero-signal-console",
         ".hero-panel-shots",
         ".section-signal",
         ".section-blueprint",
-        ".section-mini-map",
         ".list-telemetry",
         ".collection-telemetry",
         ".card-micro-widget",
@@ -773,22 +636,34 @@
             kicker: "Portfolio Visual System",
             title: "真实页面截图组成的作品集现场",
             copy: "把首页、项目、论文、材料库和 API 实验室变成可见证据，让访问者先看到界面完成度，再进入具体材料。",
+            metrics: [
+                { label: "视觉证据", value: 92 },
+                { label: "项目深度", value: 88 },
+                { label: "学术信号", value: 76 },
+                { label: "部署完成", value: 96 }
+            ],
             items: [
-                { title: "首页首屏", label: "Home", href: "index.html", src: "images/site-screenshots/home.webp" },
-                { title: "工程项目", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.webp" },
-                { title: "横向项目", label: "Horizontal", href: "horizontal-projects.html", src: "images/site-screenshots/horizontal-projects.webp" },
-                { title: "论文发表", label: "Publication", href: "publications.html", src: "images/site-screenshots/publications.webp" },
-                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.webp" },
-                { title: "API 实验室", label: "API", href: "tools/api_lab.html", src: "images/site-screenshots/api-lab.webp" }
+                { title: "首页首屏", label: "Home", href: "index.html", src: "images/site-screenshots/home.png" },
+                { title: "工程项目", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.png" },
+                { title: "横向项目", label: "Horizontal", href: "horizontal-projects.html", src: "images/site-screenshots/horizontal-projects.png" },
+                { title: "论文发表", label: "Publication", href: "publications.html", src: "images/site-screenshots/publications.png" },
+                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.png" },
+                { title: "API 实验室", label: "API", href: "tools/api_lab.html", src: "images/site-screenshots/api-lab.png" }
             ]
         },
         "projects.html": {
             kicker: "Project Evidence",
             title: "项目入口先给界面证据",
             copy: "工程项目和横向项目都保留截图入口，避免项目总览变成只有文字的目录页。",
+            metrics: [
+                { label: "工程项目", value: 90 },
+                { label: "横向项目", value: 88 },
+                { label: "证据链", value: 84 },
+                { label: "可追问", value: 91 }
+            ],
             items: [
-                { title: "工程项目页", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.webp" },
-                { title: "横向项目页", label: "Horizontal", href: "horizontal-projects.html", src: "images/site-screenshots/horizontal-projects.webp" },
+                { title: "工程项目页", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.png" },
+                { title: "横向项目页", label: "Horizontal", href: "horizontal-projects.html", src: "images/site-screenshots/horizontal-projects.png" },
                 { title: "物联网项目", label: "IoT", href: "horizontal-projects.html#iot-flexible-access-trusted-control", src: "images/horizontal-projects/iot-access-screenshot.png" },
                 { title: "IPv6 项目", label: "IPv6", href: "horizontal-projects.html#minning-green-power-ipv6-terminal-access", src: "images/horizontal-projects/ipv6-sdn-qos-screenshot.png" },
                 { title: "综合能源", label: "Energy", href: "horizontal-projects.html#ningxia-multi-energy-architecture", src: "images/horizontal-projects/energy-architecture-screenshot.png" }
@@ -798,8 +673,14 @@
             kicker: "Engineering Gallery",
             title: "工程项目截图与工具界面",
             copy: "用实际页面截图展示个人站、AI 助手、简历工具和 API 实验室的产品完成度。",
+            metrics: [
+                { label: "独立开发", value: 94 },
+                { label: "工具化", value: 86 },
+                { label: "API 接入", value: 89 },
+                { label: "维护性", value: 90 }
+            ],
             items: [
-                { title: "工程项目总屏", label: "Page", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.webp" },
+                { title: "工程项目总屏", label: "Page", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.png" },
                 { title: "个人展示站", label: "Portfolio", href: "index.html", src: "images/engineering-projects/symgo-portfolio-screenshot.png" },
                 { title: "学术 AI 助手", label: "AI", href: "ai.html", src: "images/engineering-projects/academic-ai-assistant-screenshot.png" },
                 { title: "API 实验室", label: "API", href: "tools/api_lab.html", src: "images/engineering-projects/public-api-lab-screenshot.png" },
@@ -810,8 +691,14 @@
             kicker: "Horizontal Project Gallery",
             title: "横向项目图谱与脱敏界面",
             copy: "用脱敏截图和系统结构图表达真实合作项目的复杂度、技术链路和成果证据。",
+            metrics: [
+                { label: "真实项目", value: 95 },
+                { label: "脱敏边界", value: 90 },
+                { label: "成果指标", value: 87 },
+                { label: "技术链路", value: 89 }
+            ],
             items: [
-                { title: "横向项目总屏", label: "Page", href: "horizontal-projects.html", src: "images/site-screenshots/horizontal-projects.webp" },
+                { title: "横向项目总屏", label: "Page", href: "horizontal-projects.html", src: "images/site-screenshots/horizontal-projects.png" },
                 { title: "柔性接入", label: "IoT", href: "evidence/horizontal-projects/iot-flexible-access-trusted-control.html#visual-proof", src: "images/horizontal-projects/iot-access-screenshot.png" },
                 { title: "可信认证链路", label: "Trust", href: "evidence/horizontal-projects/iot-flexible-access-trusted-control.html#visual-proof", src: "images/horizontal-projects/iot-trusted-flow-visual.png" },
                 { title: "IPv6 接入网", label: "IPv6", href: "evidence/horizontal-projects/minning-green-power-ipv6-terminal-access.html#visual-proof", src: "images/horizontal-projects/ipv6-sdn-qos-screenshot.png" },
@@ -823,8 +710,14 @@
             kicker: "Publication Preview",
             title: "论文首图与学术材料预览",
             copy: "论文卡片保留首页截图、PDF 入口和 DOI/链接，让学术成果不只停留在标题层面。",
+            metrics: [
+                { label: "论文首图", value: 90 },
+                { label: "PDF 入口", value: 86 },
+                { label: "元数据", value: 78 },
+                { label: "可替换", value: 92 }
+            ],
             items: [
-                { title: "论文页截图", label: "Page", href: "publications.html", src: "images/site-screenshots/publications.webp" },
+                { title: "论文页截图", label: "Page", href: "publications.html", src: "images/site-screenshots/publications.png" },
                 { title: "SSA-RF 论文首图", label: "ACE", href: "files/papers/sun-2024-sparrow-random-forest-weight-class.pdf", src: "images/publications/sun-2024-sparrow-random-forest-weight-class.png" },
                 { title: "Profile Mining 占位", label: "Preprint", href: "files/papers/placeholder-profile-mining.pdf", src: "images/publications/placeholder-profile-mining.png" },
                 { title: "Toolkit 占位", label: "Workshop", href: "files/papers/placeholder-toolkit.pdf", src: "images/publications/placeholder-toolkit.png" }
@@ -834,90 +727,138 @@
             kicker: "Material Gallery",
             title: "材料库不只列文件，也展示证据外观",
             copy: "把简历、论文、项目页、博客和 API 实验室截图集中展示，让材料入口更像申请/求职资料中台。",
+            metrics: [
+                { label: "材料入口", value: 92 },
+                { label: "筛选检索", value: 84 },
+                { label: "视觉证明", value: 88 },
+                { label: "后续扩展", value: 93 }
+            ],
             items: [
-                { title: "材料库截图", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.webp" },
-                { title: "阶段成果", label: "Resume", href: "resume.html", src: "images/site-screenshots/resume.webp" },
-                { title: "论文发表", label: "Papers", href: "publications.html", src: "images/site-screenshots/publications.webp" },
-                { title: "博客索引", label: "Blog", href: "blog.html", src: "images/site-screenshots/blog.webp" },
-                { title: "API 实验室", label: "API", href: "tools/api_lab.html", src: "images/site-screenshots/api-lab.webp" }
+                { title: "材料库截图", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.png" },
+                { title: "阶段成果", label: "Resume", href: "resume.html", src: "images/site-screenshots/resume.png" },
+                { title: "论文发表", label: "Papers", href: "publications.html", src: "images/site-screenshots/publications.png" },
+                { title: "博客索引", label: "Blog", href: "blog.html", src: "images/site-screenshots/blog.png" },
+                { title: "API 实验室", label: "API", href: "tools/api_lab.html", src: "images/site-screenshots/api-lab.png" }
             ]
         },
         "resume.html": {
             kicker: "Resume Evidence",
             title: "本科成果与后续阶段的视觉档案",
             copy: "简历页加入页面截图和成果材料预览，方便后续继续补研究生阶段成果。",
+            metrics: [
+                { label: "本科成果", value: 86 },
+                { label: "阶段预留", value: 82 },
+                { label: "材料链接", value: 78 },
+                { label: "展示完整", value: 88 }
+            ],
             items: [
-                { title: "阶段成果页", label: "Page", href: "resume.html", src: "images/site-screenshots/resume.webp" },
+                { title: "阶段成果页", label: "Page", href: "resume.html", src: "images/site-screenshots/resume.png" },
                 { title: "本科简历截图", label: "CV", href: "resume.html", src: "images/resume/undergraduate-resume.png" },
-                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.webp" },
-                { title: "项目总览", label: "Projects", href: "projects.html", src: "images/site-screenshots/engineering-projects.webp" }
+                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.png" },
+                { title: "项目总览", label: "Projects", href: "projects.html", src: "images/site-screenshots/engineering-projects.png" }
             ]
         },
         "blog.html": {
             kicker: "Writing Gallery",
             title: "写作内容配上封面和页面截图",
             copy: "博客页用封面、站内截图和内容分类展示长期写作沉淀，不再只有标题列表。",
+            metrics: [
+                { label: "写作资产", value: 84 },
+                { label: "封面质量", value: 82 },
+                { label: "检索体验", value: 78 },
+                { label: "长期维护", value: 88 }
+            ],
             items: [
-                { title: "博客索引截图", label: "Blog", href: "blog.html", src: "images/site-screenshots/blog.webp" },
-                { title: "保研经验", label: "Guide", href: "blog/baoyan.html", src: "images/blog/baoyan/baoyan-card.webp" },
-                { title: "复试技巧", label: "Interview", href: "blog/25_skills.html", src: "images/blog/25_skills/fig1-card.webp" },
-                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.webp" }
+                { title: "博客索引截图", label: "Blog", href: "blog.html", src: "images/site-screenshots/blog.png" },
+                { title: "保研经验", label: "Guide", href: "blog/baoyan.html", src: "images/blog/baoyan/baoyan.png" },
+                { title: "复试技巧", label: "Interview", href: "blog/25_skills.html", src: "images/blog/25_skills/fig1.png" },
+                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.png" }
             ]
         },
         "api_lab.html": {
             kicker: "API Visual Console",
             title: "API 代理和错误诊断也要可视化",
             copy: "把接口实验室、后端代理、健康检查和失败原因查询做成可展示的工程页面。",
+            metrics: [
+                { label: "接口覆盖", value: 88 },
+                { label: "后端代理", value: 86 },
+                { label: "错误解释", value: 82 },
+                { label: "页面嵌入", value: 84 }
+            ],
             items: [
-                { title: "API 实验室截图", label: "API", href: "tools/api_lab.html", src: "images/site-screenshots/api-lab.webp" },
+                { title: "API 实验室截图", label: "API", href: "tools/api_lab.html", src: "images/site-screenshots/api-lab.png" },
                 { title: "代理控制台", label: "Proxy", href: "tools/netlify_api_proxy.html", src: "images/engineering-projects/public-api-lab-screenshot.png" },
-                { title: "工程项目", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.webp" },
-                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.webp" }
+                { title: "工程项目", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.png" },
+                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.png" }
             ]
         },
         "tools/markdown_to_word.html": {
             kicker: "Tool Screenshot Lab",
             title: "Markdown 工具页加入真实渲染截图",
             copy: "工具页不再只是表单和说明文字，而是把编辑器、预览区和导出流程做成可展示的产品证据。",
+            metrics: [
+                { label: "工具完整度", value: 86 },
+                { label: "截图证据", value: 90 },
+                { label: "交互清晰度", value: 82 },
+                { label: "可复用性", value: 84 }
+            ],
             items: [
-                { title: "Markdown 转 Word 工具", label: "Markdown", href: "tools/markdown_to_word.html", src: "images/site-screenshots/markdown-to-word.webp" },
-                { title: "代码高亮工具", label: "Code", href: "tools/code_runner.html", src: "images/site-screenshots/code-runner.webp" },
-                { title: "Python 学习导航", label: "Python", href: "tools/python_nav.html", src: "images/site-screenshots/python-nav.webp" },
-                { title: "深度学习资料", label: "DL", href: "tools/deep_learning.html", src: "images/site-screenshots/deep-learning.webp" },
-                { title: "API 实验室", label: "API", href: "tools/api_lab.html", src: "images/site-screenshots/api-lab.webp" }
+                { title: "Markdown 转 Word 工具", label: "Markdown", href: "tools/markdown_to_word.html", src: "images/site-screenshots/markdown-to-word.png" },
+                { title: "代码高亮工具", label: "Code", href: "tools/code_runner.html", src: "images/site-screenshots/code-runner.png" },
+                { title: "Python 学习导航", label: "Python", href: "tools/python_nav.html", src: "images/site-screenshots/python-nav.png" },
+                { title: "深度学习资料", label: "DL", href: "tools/deep_learning.html", src: "images/site-screenshots/deep-learning.png" },
+                { title: "API 实验室", label: "API", href: "tools/api_lab.html", src: "images/site-screenshots/api-lab.png" }
             ]
         },
         "tools/code_runner.html": {
             kicker: "Tool Screenshot Lab",
             title: "代码工具页也要有视觉证据",
             copy: "把工具入口、代码展示、页面结构和相关学习资料通过截图串起来，形成可被快速理解的工程展示。",
+            metrics: [
+                { label: "代码体验", value: 84 },
+                { label: "页面证据", value: 88 },
+                { label: "学习入口", value: 80 },
+                { label: "工具链路", value: 82 }
+            ],
             items: [
-                { title: "代码高亮工具", label: "Code", href: "tools/code_runner.html", src: "images/site-screenshots/code-runner.webp" },
-                { title: "Markdown 转 Word 工具", label: "Markdown", href: "tools/markdown_to_word.html", src: "images/site-screenshots/markdown-to-word.webp" },
-                { title: "Python 学习导航", label: "Python", href: "tools/python_nav.html", src: "images/site-screenshots/python-nav.webp" },
-                { title: "工程项目页", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.webp" }
+                { title: "代码高亮工具", label: "Code", href: "tools/code_runner.html", src: "images/site-screenshots/code-runner.png" },
+                { title: "Markdown 转 Word 工具", label: "Markdown", href: "tools/markdown_to_word.html", src: "images/site-screenshots/markdown-to-word.png" },
+                { title: "Python 学习导航", label: "Python", href: "tools/python_nav.html", src: "images/site-screenshots/python-nav.png" },
+                { title: "工程项目页", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.png" }
             ]
         },
         "tools/python_nav.html": {
             kicker: "Learning Visual Map",
             title: "Python 学习页增加截图化导航",
             copy: "学习资料页通过真实截图、章节蓝图和卡片信号条展示内容结构，减少纯文字目录感。",
+            metrics: [
+                { label: "章节组织", value: 86 },
+                { label: "导航清晰", value: 84 },
+                { label: "截图证据", value: 88 },
+                { label: "资料可达", value: 82 }
+            ],
             items: [
-                { title: "Python 学习导航", label: "Python", href: "tools/python_nav.html", src: "images/site-screenshots/python-nav.webp" },
-                { title: "深度学习资料", label: "Deep Learning", href: "tools/deep_learning.html", src: "images/site-screenshots/deep-learning.webp" },
-                { title: "代码高亮工具", label: "Code", href: "tools/code_runner.html", src: "images/site-screenshots/code-runner.webp" },
-                { title: "手册入口", label: "Handbook", href: "handbook/index.html", src: "images/site-screenshots/handbook.webp" }
+                { title: "Python 学习导航", label: "Python", href: "tools/python_nav.html", src: "images/site-screenshots/python-nav.png" },
+                { title: "深度学习资料", label: "Deep Learning", href: "tools/deep_learning.html", src: "images/site-screenshots/deep-learning.png" },
+                { title: "代码高亮工具", label: "Code", href: "tools/code_runner.html", src: "images/site-screenshots/code-runner.png" },
+                { title: "手册入口", label: "Handbook", href: "handbook/index.html", src: "images/site-screenshots/handbook.png" }
             ]
         },
         "tools/deep_learning.html": {
             kicker: "Learning Visual Map",
             title: "深度学习资料页补齐图像化入口",
             copy: "把视频、资料和学习路径整理成可视化的学习证据，让页面看起来更像课程作品集而不是资料列表。",
+            metrics: [
+                { label: "学习路径", value: 85 },
+                { label: "视觉素材", value: 90 },
+                { label: "内容密度", value: 82 },
+                { label: "可维护性", value: 84 }
+            ],
             items: [
-                { title: "深度学习资料", label: "Deep Learning", href: "tools/deep_learning.html", src: "images/site-screenshots/deep-learning.webp" },
-                { title: "Python 学习导航", label: "Python", href: "tools/python_nav.html", src: "images/site-screenshots/python-nav.webp" },
-                { title: "Markdown 转 Word 工具", label: "Markdown", href: "tools/markdown_to_word.html", src: "images/site-screenshots/markdown-to-word.webp" },
-                { title: "知识库入口", label: "Library", href: "library/index.html", src: "images/site-screenshots/library.webp" }
+                { title: "深度学习资料", label: "Deep Learning", href: "tools/deep_learning.html", src: "images/site-screenshots/deep-learning.png" },
+                { title: "Python 学习导航", label: "Python", href: "tools/python_nav.html", src: "images/site-screenshots/python-nav.png" },
+                { title: "Markdown 转 Word 工具", label: "Markdown", href: "tools/markdown_to_word.html", src: "images/site-screenshots/markdown-to-word.png" },
+                { title: "知识库入口", label: "Library", href: "library/index.html", src: "images/site-screenshots/library.png" }
             ]
         }
     };
@@ -964,28 +905,20 @@
             kicker: `${fallback.label} Visual Proof`,
             title: `${pageTitle}的截图证据与相关入口`,
             copy: `${fallback.kind}页面补充真实渲染截图，并关联论文、项目、材料库和工具入口，让访问者能从当前页面继续追踪完整证据链。`,
+            metrics: [
+                { label: "页面完成", value: 88 },
+                { label: "视觉证明", value: 84 },
+                { label: "关联入口", value: 82 },
+                { label: "可维护", value: 90 }
+            ],
             items: [
-                { title: pageTitle, label: fallback.label, href: fallback.href || fallbackHref, src: `images/site-screenshots/${fallback.shot}.webp` },
-                { title: "项目总览", label: "Projects", href: "projects.html", src: "images/site-screenshots/projects.webp" },
-                { title: "论文发表", label: "Papers", href: "publications.html", src: "images/site-screenshots/publications.webp" },
-                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.webp" },
-                { title: "工程项目", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.webp" }
+                { title: pageTitle, label: fallback.label, href: fallback.href || fallbackHref, src: `images/site-screenshots/${fallback.shot}.png` },
+                { title: "项目总览", label: "Projects", href: "projects.html", src: "images/site-screenshots/projects.png" },
+                { title: "论文发表", label: "Papers", href: "publications.html", src: "images/site-screenshots/publications.png" },
+                { title: "材料库", label: "Library", href: "materials.html", src: "images/site-screenshots/materials.png" },
+                { title: "工程项目", label: "Engineering", href: "engineering-projects.html", src: "images/site-screenshots/engineering-projects.png" }
             ]
         };
-    }
-
-    function getEvidenceMetrics(items) {
-        const validItems = (items || []).filter((item) => item?.src && item?.href);
-        const pageCount = new Set(validItems.map((item) => item.href.split("#")[0])).size;
-        const localAssets = validItems.filter((item) => !/^https?:/i.test(item.src)).length;
-        const fileLinks = validItems.filter((item) => /\.(?:pdf|docx?|zip)(?:$|[?#])/i.test(item.href)).length;
-        const values = [validItems.length, pageCount, localAssets, fileLinks];
-        return [
-            { label: "截图", value: values[0], meter: Math.min(100, 22 + values[0] * 13) },
-            { label: "页面", value: values[1], meter: Math.min(100, 22 + values[1] * 13) },
-            { label: "本地素材", value: values[2], meter: Math.min(100, 22 + values[2] * 13) },
-            { label: "文件入口", value: values[3], meter: Math.min(100, 18 + values[3] * 24) }
-        ];
     }
 
     function renderVisualEvidenceDeck() {
@@ -1010,8 +943,8 @@
         const items = preset.items.slice(0, 6);
         const primary = items[0];
         const rest = items.slice(1);
-        const metrics = getEvidenceMetrics(items);
-        const dialMeter = Math.min(100, 22 + items.length * 13);
+        const metrics = preset.metrics || [];
+        const metricAverage = Math.round(metrics.reduce((sum, item) => sum + item.value, 0) / Math.max(metrics.length, 1));
 
         deck.innerHTML = `
             <div class="visual-showcase-inner">
@@ -1040,13 +973,13 @@
                         </div>
                     </div>
                     <aside class="visual-radar-panel">
-                        <div class="radar-dial" style="--score:${dialMeter * 3.6}deg">
-                            <strong>${items.length}</strong>
-                            <span>Visual Assets</span>
+                        <div class="radar-dial" style="--score:${metricAverage * 3.6}deg">
+                            <strong>${metricAverage}</strong>
+                            <span>Visual Index</span>
                         </div>
                         <div class="signal-bars">
                             ${metrics.map((metric) => `
-                                <div class="signal-bar" style="--bar:${metric.meter}%">
+                                <div class="signal-bar" style="--bar:${metric.value}%">
                                     <span>${escapeHtml(metric.label)}</span>
                                     <strong>${metric.value}</strong>
                                     <em></em>
@@ -1084,7 +1017,8 @@
 
         const primary = items[0];
         const rest = items.slice(1);
-        const metrics = getEvidenceMetrics(items);
+        const metrics = (preset.metrics || []).slice(0, 4);
+        const average = Math.round(metrics.reduce((sum, item) => sum + item.value, 0) / Math.max(metrics.length, 1));
 
         wall.innerHTML = `
             <div class="shot-wall-inner">
@@ -1096,7 +1030,7 @@
                     </div>
                     <div class="shot-wall-metrics">
                         ${metrics.map((metric) => `
-                            <div class="shot-wall-metric" style="--metric-meter:${metric.meter}%">
+                            <div class="shot-wall-metric" style="--metric-meter:${metric.value}%">
                                 <span>${escapeHtml(metric.label)}</span>
                                 <strong>${metric.value}</strong>
                                 <em></em>
@@ -1114,8 +1048,8 @@
                         <span>${escapeHtml(primary.title)}</span>
                     </a>
                     <div class="shot-wall-status">
-                        <span>Captured assets</span>
-                        <strong>${items.length}</strong>
+                        <span>Live capture</span>
+                        <strong>${average}</strong>
                     </div>
                 </div>
                 <div class="shot-wall-stack">
@@ -1141,14 +1075,7 @@
         if (!hero || hero.closest(visualWidgetSelector)) return;
 
         const container = hero.querySelector(":scope > .container") || hero;
-        const heroTextSlot = container.matches(".hero-layout") ? container.querySelector(":scope > div") : null;
-        const consoleHost = heroTextSlot || container;
-        let consolePanel = consoleHost.querySelector(":scope > .hero-signal-console");
-        const strayConsole = container.querySelector(":scope > .hero-signal-console");
-        if (!consolePanel && strayConsole && consoleHost !== container) {
-            consoleHost.appendChild(strayConsole);
-            consolePanel = strayConsole;
-        }
+        let consolePanel = container.querySelector(":scope > .hero-signal-console");
         const text = getReadableText(main);
         const headings = getPageHeadings(main);
         const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector));
@@ -1160,7 +1087,7 @@
         const shots = (getVisualEvidencePreset()?.items || [])
             .filter((item) => item.src && item.href)
             .slice(0, 3);
-        const pulseMeter = Math.min(100, 26 + headings.length * 8 + Math.min(images.length, 6) * 4);
+        const pulse = Math.min(98, Math.max(32, Math.round(34 + headings.length * 5 + images.length * 6 + links.length * 2 + cards * 3)));
         const stats = [
             { label: "结构", value: headings.length || 1, icon: "fa-sitemap", meter: Math.min(100, 24 + headings.length * 12) },
             { label: "证据", value: images.length, icon: "fa-image", meter: Math.min(100, 20 + images.length * 14) },
@@ -1172,14 +1099,14 @@
             consolePanel = document.createElement("aside");
             consolePanel.className = "hero-signal-console";
             consolePanel.setAttribute("aria-label", "首屏页面信号控制台");
-            consoleHost.appendChild(consolePanel);
+            container.appendChild(consolePanel);
         }
 
-        consolePanel.style.setProperty("--hero-pulse", `${pulseMeter * 3.6}deg`);
+        consolePanel.style.setProperty("--hero-pulse", `${pulse * 3.6}deg`);
         consolePanel.innerHTML = `
             <div class="hero-console-core">
-                <span>Page Sections</span>
-                <strong>${headings.length || 1}</strong>
+                <span>Live Signal</span>
+                <strong>${pulse}</strong>
                 <em>${escapeHtml(pageTitle)}</em>
             </div>
             <div class="hero-console-grid">
@@ -1216,11 +1143,6 @@
 
         const panel = main.querySelector(".hero-redesign .hero-panel");
         if (!panel) return;
-
-        if (panel.querySelector(".hero-visual-stage")) {
-            panel.querySelector(".hero-panel-shots")?.remove();
-            return;
-        }
 
         const shots = (getVisualEvidencePreset()?.items || [])
             .filter((item) => item.src && item.href)
@@ -1481,84 +1403,6 @@
         `;
     }
 
-    function renderPageOrbitDashboard() {
-        const main = getMainContent();
-        if (!main) return;
-
-        const headings = getPageHeadings(main);
-        const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector));
-        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector) && !img.closest("header"));
-        const cards = Array.from(main.querySelectorAll(".surface-card, .project-showcase, .publication-card, .material-card, .blog-card, .capability-card, .timeline-card, .handbook-section, .evidence-section, .case-block"))
-            .filter((card) => !card.closest(visualWidgetSelector));
-        const keywords = getPageKeywords(main).slice(0, 8);
-        const textLength = getReadableText(main).replace(/\s/g, "").length;
-        const orbitMeter = Math.min(100, Math.max(28, Math.round(30 + headings.length * 5 + images.length * 5 + cards.length * 2 + links.length * 0.8)));
-
-        let orbit = main.querySelector(".page-orbit-dashboard");
-        if (headings.length + cards.length + links.length < 6) {
-            orbit?.remove();
-            return;
-        }
-
-        if (!orbit) {
-            orbit = document.createElement("section");
-            orbit.className = "page-orbit-dashboard";
-            orbit.setAttribute("aria-label", "页面轨道仪表盘");
-            const intel = main.querySelector(".page-intel-strip");
-            const shotWall = main.querySelector(".page-shot-wall");
-            const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
-            if (intel) intel.insertAdjacentElement("afterend", orbit);
-            else if (shotWall) shotWall.insertAdjacentElement("beforebegin", orbit);
-            else if (hero) hero.insertAdjacentElement("afterend", orbit);
-            else main.prepend(orbit);
-        }
-
-        const metrics = [
-            { label: "章节", value: headings.length, meter: Math.min(100, 20 + headings.length * 10), icon: "fa-sitemap" },
-            { label: "图像", value: images.length, meter: Math.min(100, 20 + images.length * 12), icon: "fa-image" },
-            { label: "入口", value: links.length, meter: Math.min(100, 12 + links.length * 4), icon: "fa-link" },
-            { label: "卡片", value: cards.length, meter: Math.min(100, 18 + cards.length * 5), icon: "fa-table-cells-large" }
-        ];
-        const orbitNodes = metrics.concat(keywords.slice(0, 4).map((keyword, index) => ({
-            label: keyword,
-            value: index + 1,
-            meter: 46 + index * 10,
-            icon: "fa-sparkles"
-        }))).slice(0, 8);
-
-        orbit.style.setProperty("--orbit-score", `${orbitMeter * 3.6}deg`);
-        orbit.innerHTML = `
-            <div class="orbit-core">
-                <strong>${headings.length}</strong>
-                <span>Sections</span>
-            </div>
-            <div class="orbit-rings" aria-hidden="true">
-                ${orbitNodes.map((node, index) => `
-                    <span class="orbit-node orbit-node-${index + 1}" style="--orbit-meter:${node.meter}%">
-                        <i class="fas ${node.icon}" aria-hidden="true"></i>
-                    </span>
-                `).join("")}
-            </div>
-            <div class="orbit-copy">
-                <span>Page Orbit</span>
-                <strong>${escapeHtml(getPageTitle())}</strong>
-                <em>${Math.max(1, Math.ceil(textLength / 650))} min read · ${cards.length} cards · ${links.length} links</em>
-            </div>
-            <div class="orbit-metrics">
-                ${metrics.map((metric) => `
-                    <div style="--metric:${metric.meter}%">
-                        <i class="fas ${metric.icon}" aria-hidden="true"></i>
-                        <span>${escapeHtml(metric.label)}</span>
-                        <strong>${escapeHtml(String(metric.value))}</strong>
-                    </div>
-                `).join("")}
-            </div>
-            <div class="orbit-keywords">
-                ${keywords.map((keyword, index) => `<span style="--keyword-index:${index}">${escapeHtml(keyword)}</span>`).join("")}
-            </div>
-        `;
-    }
-
     function renderMediaFilmstrip() {
         const main = getMainContent();
         if (!main) return;
@@ -1741,8 +1585,8 @@
                     <h2>${escapeHtml(getPageTitle())} 证据流</h2>
                 </div>
                 <div class="flow-lab-score">
-                    <strong>${routeItems.slice(0, 6).length}</strong>
-                    <span>Flow Nodes</span>
+                    <strong>${average}</strong>
+                    <span>Flow</span>
                 </div>
             </div>
             <div class="flow-lab-grid">
@@ -1848,9 +1692,9 @@
             </div>
             <div class="bento-grid">
                 <div class="bento-tile bento-tile-score">
-                    <span>Sections</span>
-                    <strong>${headings.length}</strong>
-                    <em>Content Map</em>
+                    <span>Density</span>
+                    <strong>${density}</strong>
+                    <em>Content Pulse</em>
                 </div>
                 <div class="bento-tile bento-tile-heat" aria-hidden="true">
                     ${heatCells.map((value, index) => `<span style="--heat:${value}%;--heat-index:${index}"></span>`).join("")}
@@ -2124,12 +1968,8 @@
             "page-intel-strip",
             "page-motion-ticker",
             "page-shot-wall",
-            "page-route-strip",
             "page-media-filmstrip",
             "page-constellation",
-            "page-flow-lab",
-            "page-evidence-bento",
-            "page-orbit-dashboard",
             "site-visual-showcase",
             "section-blueprint"
         ];
@@ -2137,7 +1977,7 @@
         const sections = Array.from(main.querySelectorAll(":scope > section, :scope > .resume-builder-container, :scope > .markdown-converter-container, :scope > .resource-grid, :scope > .nav-grid, :scope > .video-section, .handbook-section, .evidence-section, .case-block"))
             .filter((section) => {
                 if (skipClasses.some((className) => section.classList.contains(className))) return false;
-                if (section.closest(visualWidgetSelector)) return false;
+                if (section.closest(".page-shot-wall, .page-constellation, .page-media-filmstrip, .page-intel-strip, .site-visual-showcase")) return false;
                 const text = getReadableText(section);
                 if (section.matches(".resume-builder-container, .markdown-converter-container, .resource-grid, .nav-grid, .video-section")) return text.length >= 50;
                 return text.length >= 90;
@@ -2194,19 +2034,15 @@
             "page-intel-strip",
             "page-motion-ticker",
             "page-shot-wall",
-            "page-route-strip",
             "page-media-filmstrip",
             "page-constellation",
-            "page-flow-lab",
-            "page-evidence-bento",
-            "page-orbit-dashboard",
             "site-visual-showcase"
         ];
 
         const sections = Array.from(main.querySelectorAll(":scope > section, :scope > .resume-builder-container, :scope > .markdown-converter-container, :scope > .resource-grid, :scope > .nav-grid, :scope > .video-section, .handbook-section, .evidence-section, .case-block"))
             .filter((section) => {
                 if (skipClasses.some((className) => section.classList.contains(className))) return false;
-                if (section.closest(visualWidgetSelector)) return false;
+                if (section.closest(".page-shot-wall, .page-constellation, .page-media-filmstrip, .page-intel-strip, .site-visual-showcase")) return false;
                 const text = getReadableText(section);
                 if (section.matches(".resume-builder-container, .markdown-converter-container, .resource-grid, .nav-grid, .video-section")) return text.length >= 50;
                 return text.length >= 150;
@@ -2294,62 +2130,10 @@
                     </div>
                 </div>
                 <div class="blueprint-score" aria-hidden="true">
-                    <strong>${cards + lists}</strong>
-                    <span>Blocks</span>
+                    <strong>${average}</strong>
+                    <span>Index</span>
                 </div>
             `;
-        });
-    }
-
-    function renderSectionMiniMaps() {
-        const main = getMainContent();
-        if (!main) return;
-
-        const sections = Array.from(main.querySelectorAll(":scope > section, :scope > .resume-builder-container, :scope > .markdown-converter-container, .handbook-section, .evidence-section, .case-block"))
-            .filter((section) => {
-                if (section.closest(visualWidgetSelector)) return false;
-                if (section.matches(".page-hero, .hero-redesign, .resume-hero, .page-intel-strip, .page-shot-wall, .page-route-strip, .page-media-filmstrip, .site-visual-showcase, .page-constellation, .page-flow-lab, .page-evidence-bento, .page-orbit-dashboard")) return false;
-                return getReadableText(section).length >= 120;
-            })
-            .slice(0, 18);
-
-        sections.forEach((section, index) => {
-            const host = section.querySelector(":scope > .container") || section;
-            if (host.querySelector(":scope > .section-mini-map")) return;
-
-            const title = section.querySelector("h2, h3, h1")?.textContent.trim().replace(/\s+/g, " ") || `Section ${index + 1}`;
-            const textLength = getReadableText(section).replace(/\s/g, "").length;
-            const links = Array.from(section.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector)).length;
-            const images = Array.from(section.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector)).length;
-            const lists = Array.from(section.querySelectorAll("ul, ol")).filter((list) => !list.closest(visualWidgetSelector)).length;
-            const cells = Array.from({ length: 18 }, (_, cellIndex) => {
-                const seed = [textLength, links * 19, images * 31, lists * 23, index * 17][cellIndex % 5] || 9;
-                return Math.min(100, Math.max(14, (seed + cellIndex * 11) % 100));
-            });
-            const map = document.createElement("div");
-            map.className = "section-mini-map";
-            map.setAttribute("aria-label", "章节微型地图");
-            map.innerHTML = `
-                <div class="mini-map-grid" aria-hidden="true">
-                    ${cells.map((value, cellIndex) => `<span style="--cell:${value}%;--cell-index:${cellIndex}"></span>`).join("")}
-                </div>
-                <div class="mini-map-copy">
-                    <span>M${String(index + 1).padStart(2, "0")}</span>
-                    <strong>${escapeHtml(title)}</strong>
-                </div>
-                <div class="mini-map-stats">
-                    <span><i class="fas fa-align-left" aria-hidden="true"></i>${Math.max(1, Math.ceil(textLength / 520))}m</span>
-                    <span><i class="fas fa-link" aria-hidden="true"></i>${links}</span>
-                    <span><i class="fas fa-image" aria-hidden="true"></i>${images}</span>
-                    <span><i class="fas fa-list" aria-hidden="true"></i>${lists}</span>
-                </div>
-            `;
-
-            const blueprint = host.querySelector(":scope > .section-blueprint");
-            const signal = host.querySelector(":scope > .section-signal");
-            if (blueprint) blueprint.insertAdjacentElement("afterend", map);
-            else if (signal) signal.insertAdjacentElement("afterend", map);
-            else host.prepend(map);
         });
     }
 
@@ -2585,7 +2369,6 @@
         renderHeroSignalConsole();
         renderHeroPanelShots();
         renderPageIntelligence();
-        renderPageOrbitDashboard();
         renderPageScreenshotWall();
         renderPageRouteStrip();
         renderVisualEvidenceDeck();
@@ -2600,7 +2383,6 @@
         renderCollectionTelemetry();
         renderSectionSignals();
         renderSectionBlueprints();
-        renderSectionMiniMaps();
         renderCardMicroWidgets();
         renderCardSignalStrips();
         renderCardPixelGrids();
@@ -2689,7 +2471,6 @@
     initReadingProgress();
     initCommandPalette();
     initPageActionBar();
-    initMobileToolDock();
     renderGlobalVisualWidgets();
     initScrollTopButton();
     initContactValidation();
