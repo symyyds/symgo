@@ -7,20 +7,12 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/dropdown.css">
     <link rel="stylesheet" href="../css/site.css">
-    <link rel="stylesheet" href="../vendor/fontawesome/css/all.min.css">
-    <link rel="stylesheet" href="../vendor/codemirror/codemirror.min.css">
-    <link rel="stylesheet" href="../vendor/codemirror/theme/monokai.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css">
     <!-- MathJax支持 -->
-    <script>
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']]
-            },
-            svg: { fontCache: 'global' }
-        };
-    </script>
-    <script id="MathJax-script" async src="../vendor/libs/tex-svg.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         .markdown-converter-container {
             padding: 2rem;
@@ -63,7 +55,7 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         .export-btn {
-            background: #19712f;
+            background: #28a745;
             color: white;
             border: none;
             padding: 0.5rem 1rem;
@@ -75,14 +67,14 @@
             transition: background-color 0.3s;
         }
         .export-btn:hover {
-            background: #145c27;
+            background: #218838;
         }
         .export-btn:disabled {
             background: #6c757d;
             cursor: not-allowed;
         }
         .export-img-btn {
-            background: #0c6674;
+            background: #17a2b8;
             color: white;
             border: none;
             padding: 0.5rem 1rem;
@@ -94,7 +86,7 @@
             transition: background-color 0.3s;
         }
         .export-img-btn:hover {
-            background: #084f59;
+            background: #138496;
         }
         .export-options {
             display: none;
@@ -154,10 +146,10 @@
             background: #5a6268;
         }
         .option-btn.primary {
-            background: #095db5;
+            background: #007bff;
         }
         .option-btn.primary:hover {
-            background: #084b91;
+            background: #0069d9;
         }
         .export-preview {
             background: #f8f9fa;
@@ -272,7 +264,7 @@
             margin: 1em 0;
             padding-left: 1em;
             border-left: 4px solid #eee;
-            color: #65635c;
+            color: #777;
         }
         .preview-content pre {
             background-color: #f6f8fa;
@@ -341,15 +333,6 @@
             min-width: 0 !important; /* 允许缩小到容器宽度 */
         }
 
-        .cm-s-monokai.CodeMirror .cm-comment {
-            color: #b8b39f;
-        }
-
-        .cm-s-monokai.CodeMirror .cm-keyword,
-        .cm-s-monokai.CodeMirror .cm-atom {
-            color: #ff80aa;
-        }
-
         .help-section {
             margin-top: 2rem;
             background: #f8f9fa;
@@ -357,7 +340,7 @@
             padding: 1.5rem;
             box-shadow: 0 1px 5px rgba(0,0,0,0.05);
         }
-        .help-section h2 {
+        .help-section h3 {
             margin-top: 0;
             color: #343a40;
             border-bottom: 1px solid #dfe2e6;
@@ -369,7 +352,7 @@
             padding: 0.2rem 0.4rem;
             border-radius: 3px;
             font-family: 'Consolas', monospace;
-            color: #9b1c55;
+            color: #d63384;
         }
         .markdown-examples {
             display: grid;
@@ -384,28 +367,12 @@
             padding: 1.2rem;
             height: 100%;
         }
-        .example-card h3 {
+        .example-card h4 {
             margin-top: 0;
             border-bottom: 1px solid #dee2e6;
             padding-bottom: 0.6rem;
             color: #495057;
             font-size: 1.1rem;
-        }
-        .tool-dependency-status {
-            margin: 1rem 0;
-            padding: 0.8rem 1rem;
-            border-left: 3px solid #b83218;
-            background: #fff1ed;
-            color: #70200f;
-            line-height: 1.55;
-        }
-        #markdown-editor.markdown-editor-fallback {
-            display: block;
-            min-height: 100%;
-            border-color: #77736b;
-            background: #171716;
-            color: #f5f3ed;
-            resize: vertical;
         }
         .loading {
             display: none;
@@ -436,7 +403,7 @@
             margin-bottom: 1.5rem;
             line-height: 1.6;
         }
-        .markdown-converter-container > h1 {
+        .markdown-converter-container h2 {
             margin-bottom: 0.8rem;
             color: #333;
             border-bottom: 1px solid #eee;
@@ -463,7 +430,7 @@
         .preview-content pre code {
             display: block;
             padding: 1em;
-            overflow-x: visible;
+            overflow-x: auto;
         }
         .preview-content pre code .line {
             display: block;
@@ -475,12 +442,12 @@
         }
     </style>
     <link rel="manifest" href="../manifest.webmanifest">
-    <link rel="canonical" href="https://symweb.netlify.app/tools/markdown_to_word.html">
+    <link rel="canonical" href="https://symgo.netlify.app/tools/markdown_to_word.html">
     <meta property="og:title" content="Markdown转Word工具">
     <meta property="og:description" content="????????????????????????/??????????">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://symweb.netlify.app/tools/markdown_to_word.html">
-    <meta property="og:image" content="https://symweb.netlify.app/images/sym_photo.jpg">
+    <meta property="og:url" content="https://symgo.netlify.app/tools/markdown_to_word.html">
+    <meta property="og:image" content="https://symgo.netlify.app/images/sym_photo.jpg">
     <meta name="twitter:card" content="summary_large_image">
 </head>
 <body class="site-shell">
@@ -489,7 +456,7 @@
             <div class="profile">
                 <img src="../images/sym_photo.jpg" alt="个人照片" class="profile-img">
                 <div class="profile-info">
-                    <p class="legacy-profile-name">孙远鸣</p>
+                    <h1>孙远鸣</h1>
                     <p class="title">Computer Science / Software Engineering</p>
                     <p class="keywords">研究 · 工程 · 写作</p>
                 </div>
@@ -520,12 +487,11 @@
 
     <main>
         <div class="markdown-converter-container">
-            <h1>Markdown 转 Word 工具</h1>
+            <h2>Markdown转Word工具</h2>
             <p class="tool-description">
                 在编辑器中输入Markdown格式的文本，左侧编辑、右侧预览，并可一键导出为Word文档或高质量图片。
                 支持数学公式、表格和各种格式化选项。
             </p>
-            <div class="tool-dependency-status" id="markdown-dependency-status" role="status" aria-live="polite" hidden></div>
 
             <div class="control-panel">
                 <button id="export-word-btn" class="export-btn">
@@ -655,53 +621,53 @@
 
             <div class="markdown-panel">
                 <div class="editor-section">
-                    <h2 class="panel-title">Markdown编辑器</h2>
-                    <textarea id="markdown-editor" aria-label="Markdown 编辑器" placeholder="在此输入Markdown文本..."></textarea>
+                    <h3 class="panel-title">Markdown编辑器</h3>
+                    <textarea id="markdown-editor" placeholder="在此输入Markdown文本..."></textarea>
                 </div>
                 <div class="preview-section">
-                    <h2 class="panel-title">实时预览</h2>
-                    <div id="preview-content" class="preview-content" tabindex="0" aria-label="可滚动的 Markdown 实时预览"></div>
+                    <h3 class="panel-title">实时预览</h3>
+                    <div id="preview-content" class="preview-content"></div>
                 </div>
             </div>
 
             <div class="help-section">
-                <h2>Markdown语法帮助</h2>
+                <h3>Markdown语法帮助</h3>
                 <p>以下是一些常用的Markdown语法示例，可以直接在编辑器中使用：</p>
 
                 <div class="markdown-examples">
                     <div class="example-card">
-                        <h3>标题</h3>
+                        <h4>标题</h4>
                         <code># 一级标题</code><br>
                         <code>## 二级标题</code><br>
                         <code>### 三级标题</code>
                     </div>
                     <div class="example-card">
-                        <h3>格式化</h3>
+                        <h4>格式化</h4>
                         <code>**粗体文本**</code><br>
                         <code>*斜体文本*</code><br>
                         <code>~~删除线~~</code>
                     </div>
                     <div class="example-card">
-                        <h3>列表</h3>
+                        <h4>列表</h4>
                         <code>- 无序列表项</code><br>
                         <code>1. 有序列表项</code>
                     </div>
                     <div class="example-card">
-                        <h3>链接和图片</h3>
+                        <h4>链接和图片</h4>
                         <code>[链接文本](URL)</code><br>
                         <code>![图片描述](图片URL)</code>
                     </div>
                     <div class="example-card">
-                        <h3>引用</h3>
+                        <h4>引用</h4>
                         <code>> 这是一段引用文本</code>
                     </div>
                     <div class="example-card">
-                        <h3>代码</h3>
+                        <h4>代码</h4>
                         <code>`行内代码`</code><br>
                         <code>```<br>代码块<br>```</code>
                     </div>
                     <div class="example-card">
-                        <h3>表格</h3>
+                        <h4>表格</h4>
                         <code>| 表头1 | 表头2 |<br>| ------ | ------ |<br>| 单元格 | 单元格 |</code>
                     </div>
                 </div>
@@ -734,19 +700,16 @@
     </footer>
 
     <!-- 必要的JavaScript库 -->
-    <script defer src="../vendor/codemirror/codemirror.min.js"></script>
-    <script defer src="../vendor/codemirror/mode/markdown.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/markdown/markdown.min.js"></script>
     <!-- Showdown - Markdown转HTML -->
-    <script defer src="../vendor/libs/showdown.min.js"></script>
-    <!-- DOMPurify + 本地白名单策略：所有 Markdown 预览在进入 DOM 前必须消毒 -->
-    <script defer src="../vendor/libs/purify.min.js"></script>
-    <script defer src="../js/safe-markdown.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/2.1.0/showdown.min.js"></script>
     <!-- docx.js - 用于创建Word文档 -->
-    <script defer src="../vendor/libs/docx.min.js"></script>
+    <script src="https://unpkg.com/docx@8.0.0/build/index.js"></script>
     <!-- FileSaver.js - 用于保存文件 -->
-    <script defer src="../vendor/libs/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <!-- html-to-image 用于将数学公式转为图片 -->
-    <script defer src="../vendor/libs/html-to-image.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
 
     <!-- 图片导出预览区域 -->
     <div id="export-preview" class="export-preview">
@@ -768,7 +731,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // 定义示例Markdown内容，确保在初始化编辑器前声明
-            const sampleMarkdown = `## Markdown 示例文档
+            const sampleMarkdown = `# Markdown示例文档
 
 ## 简介
 这是一个简单的Markdown文档示例，展示了常用的Markdown语法和数学公式支持。
@@ -813,187 +776,47 @@ def hello_world():
 $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
 `;
 
-            const dependencyStatus = document.getElementById('markdown-dependency-status');
-            const dependencyMessages = new Set();
-            const sourceTextarea = document.getElementById('markdown-editor');
-
-            function reportDependencyIssue(message) {
-                dependencyMessages.add(message);
-                dependencyStatus.hidden = false;
-                dependencyStatus.textContent = Array.from(dependencyMessages).join(' ');
-            }
-
-            function createTextareaEditor(textarea) {
-                textarea.hidden = false;
-                textarea.style.display = 'block';
-                textarea.classList.add('markdown-editor-fallback');
-                textarea.setAttribute('aria-label', 'Markdown 编辑器（基础文本模式）');
-                return {
-                    getValue: function() { return textarea.value; },
-                    setValue: function(value) { textarea.value = String(value || ''); },
-                    on: function(eventName, handler) {
-                        if (eventName === 'change') textarea.addEventListener('input', handler);
-                    },
-                    focus: function() { textarea.focus(); }
-                };
-            }
-
-            // 增强编辑器失败时保留原生 textarea，避免第三方资源故障中断整页初始化。
-            let editor;
-            if (window.CodeMirror && typeof window.CodeMirror.fromTextArea === 'function') {
-                try {
-                    editor = window.CodeMirror.fromTextArea(sourceTextarea, {
-                        mode: 'markdown',
-                        lineNumbers: true,
-                        theme: 'monokai',
-                        lineWrapping: true
-                    });
-                    const editorInput = editor.getInputField?.();
-                    editorInput?.setAttribute('aria-label', 'Markdown 编辑器');
-                    const editorScroller = editor.getScrollerElement?.();
-                    editorScroller?.setAttribute('tabindex', '0');
-                    editorScroller?.setAttribute('aria-label', '可滚动的 Markdown 编辑区域');
-                } catch (error) {
-                    document.querySelector('.editor-section > .CodeMirror')?.remove();
-                    editor = createTextareaEditor(sourceTextarea);
-                    reportDependencyIssue('增强 Markdown 编辑器初始化失败，已切换到基础文本编辑模式。');
-                }
-            } else {
-                editor = createTextareaEditor(sourceTextarea);
-                reportDependencyIssue('增强 Markdown 编辑器未加载，已切换到基础文本编辑模式。');
-            }
+            // 初始化CodeMirror编辑器
+            const editor = CodeMirror.fromTextArea(document.getElementById('markdown-editor'), {
+                mode: 'markdown',
+                lineNumbers: true,
+                theme: 'monokai',
+                lineWrapping: true
+            });
 
             // 初始设置编辑器内容
             editor.setValue(sampleMarkdown);
 
-            // Showdown 缺失时使用安全的纯文本预览，编辑内容仍可完整保留。
-            const escapeHtml = function(value) {
-                return String(value || '').replace(/[&<>"']/g, function(character) {
-                    return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character];
-                });
-            };
-            let converter;
-            if (window.showdown && typeof window.showdown.Converter === 'function') {
-                converter = new window.showdown.Converter({
-                    tables: true,
-                    tasklists: true,
-                    strikethrough: true
-                });
-            } else {
-                converter = { makeHtml: function(markdownText) { return '<pre>' + escapeHtml(markdownText) + '</pre>'; } };
-                reportDependencyIssue('Markdown 转换组件未加载，预览暂以可读的纯文本显示。');
-            }
-
-            if (!window.SymgoSafeMarkdown || typeof window.SymgoSafeMarkdown.render !== 'function') {
-                reportDependencyIssue('安全预览组件未加载，页面不会渲染未经消毒的 HTML。');
-            } else if (!window.DOMPurify || typeof window.DOMPurify.sanitize !== 'function') {
-                reportDependencyIssue('HTML 消毒组件未加载，预览已自动退化为纯文本。');
-            }
-
-            const previewContent = document.getElementById('preview-content');
-
-            function applyExportLayout(target, settings) {
-                const presetMap = {
-                    default: { maxWidth: '980px', padding: '48px' },
-                    exam: { maxWidth: '980px', padding: '56px', fontFamily: 'SimSun, serif' },
-                    paper: { maxWidth: '860px', padding: '64px', fontFamily: 'Times New Roman, SimSun, serif' },
-                    presentation: { maxWidth: '1200px', padding: '56px' },
-                    dark: { maxWidth: '980px', padding: '48px', backgroundColor: '#171716', color: '#faf9f5' }
-                };
-                const spacingMap = { compact: '1.4', normal: '1.6', loose: '1.8', exam: '2' };
-                const preset = presetMap[settings.preset] || presetMap.default;
-
-                target.style.position = 'relative';
-                target.style.width = 'min(100%, ' + preset.maxWidth + ')';
-                target.style.margin = '0 auto';
-                target.style.padding = preset.padding;
-                target.style.backgroundColor = preset.backgroundColor || settings.backgroundColor;
-                target.style.color = preset.color || settings.textColor;
-                target.style.fontFamily = preset.fontFamily || settings.fontFamily;
-                target.style.fontSize = settings.fontSize + 'px';
-                target.style.lineHeight = spacingMap[settings.spacing] || settings.lineHeight;
-
-                // Broken or still-loading images would make html-to-image reject the
-                // entire export. Preserve their alt text so the document remains readable.
-                target.querySelectorAll('img').forEach(function(image) {
-                    if (image.complete && image.naturalWidth > 0) return;
-                    const fallback = document.createElement('span');
-                    fallback.textContent = image.alt ? '[图片：' + image.alt + ']' : '[图片暂不可用]';
-                    fallback.style.color = '#65635c';
-                    fallback.style.fontSize = '0.85em';
-                    image.replaceWith(fallback);
-                });
-
-                target.querySelector('[data-export-watermark]')?.remove();
-                if (!settings.watermarkEnabled) return;
-
-                const watermark = document.createElement('div');
-                watermark.dataset.exportWatermark = 'true';
-                watermark.textContent = settings.watermarkText || 'CONFIDENTIAL';
-                Object.assign(watermark.style, {
-                    position: 'absolute',
-                    inset: '0',
-                    display: 'grid',
-                    placeItems: 'center',
-                    overflow: 'hidden',
-                    color: settings.watermarkColor,
-                    opacity: settings.watermarkOpacity,
-                    fontSize: 'clamp(40px, 8vw, 96px)',
-                    fontWeight: '700',
-                    letterSpacing: '0.12em',
-                    transform: 'rotate(-24deg)',
-                    pointerEvents: 'none',
-                    userSelect: 'none'
-                });
-                target.appendChild(watermark);
-            }
-
-            // Markdown 解析器会保留用户输入的 HTML，因此解析结果必须先通过严格白名单消毒。
-            function renderMarkdownPreview(markdownText) {
-                let untrustedHtml;
-                try {
-                    untrustedHtml = converter.makeHtml(markdownText);
-                } catch (error) {
-                    reportDependencyIssue('Markdown 转换失败，预览已自动退化为纯文本。');
-                    previewContent.textContent = markdownText;
-                    return;
-                }
-
-                const rendered = window.SymgoSafeMarkdown && typeof window.SymgoSafeMarkdown.render === 'function'
-                    ? window.SymgoSafeMarkdown.render(previewContent, untrustedHtml, markdownText)
-                    : false;
-                if (!window.SymgoSafeMarkdown || typeof window.SymgoSafeMarkdown.render !== 'function') {
-                    previewContent.textContent = markdownText;
-                }
-
-                // 工具页面本身已有唯一主标题。将预览文档的一级标题安全降级，
-                // 避免用户输入任意数量的 `# 标题` 后破坏页面语义层级。
-                if (rendered) {
-                    previewContent.querySelectorAll('h1').forEach(function(heading) {
-                        const replacement = document.createElement('h2');
-                        while (heading.firstChild) replacement.appendChild(heading.firstChild);
-                        heading.replaceWith(replacement);
-                    });
-                    previewContent.querySelectorAll('pre').forEach(function(codeBlock) {
-                        codeBlock.setAttribute('tabindex', '0');
-                        codeBlock.setAttribute('aria-label', '可横向滚动的代码示例');
-                    });
-                }
-
-                if (rendered && window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
-                    window.MathJax.typesetPromise([previewContent]).catch(function (err) {
-                        console.log('MathJax渲染出错:', err);
-                    });
-                }
-            }
+            // 初始化Markdown转换器
+            const converter = new showdown.Converter({
+                tables: true,
+                tasklists: true,
+                strikethrough: true
+            });
 
             // 初始渲染预览内容
-            renderMarkdownPreview(sampleMarkdown);
+            const initialHtml = converter.makeHtml(sampleMarkdown);
+            document.getElementById('preview-content').innerHTML = initialHtml;
+
+            // 渲染数学公式
+            if (typeof MathJax !== 'undefined') {
+                MathJax.typesetPromise([document.getElementById('preview-content')]).catch(function (err) {
+                    console.log('MathJax初始化出错:', err);
+                });
+            }
 
             // 添加编辑器变更监听
             editor.on('change', function() {
                 const markdownText = editor.getValue();
-                renderMarkdownPreview(markdownText);
+                const html = converter.makeHtml(markdownText);
+                document.getElementById('preview-content').innerHTML = html;
+
+                // 渲染新内容中的数学公式
+                if (typeof MathJax !== 'undefined') {
+                    MathJax.typesetPromise([document.getElementById('preview-content')]).catch(function (err) {
+                        console.log('MathJax渲染出错:', err);
+                    });
+                }
 
                 // 为新渲染的内容添加点击事件处理
                 addClickHandlersToPreviewElements();
@@ -1010,27 +833,22 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
 
             // 导出Word文档功能
             document.getElementById('export-word-btn').addEventListener('click', function() {
-                if (!window.docx || typeof window.docx.Document !== 'function' || typeof window.docx.Packer?.toBlob !== 'function' || typeof window.saveAs !== 'function') {
-                    const message = 'Word 导出组件未加载，当前无法生成 DOCX；编辑与预览内容不会丢失。';
-                    reportDependencyIssue(message);
-                    alert(message);
-                    return;
-                }
                 // 显示加载指示器
                 document.getElementById('loading-indicator').style.display = 'flex';
 
                 setTimeout(function() {
                     try {
                         const markdownText = editor.getValue();
+                        const html = converter.makeHtml(markdownText);
 
                         // 创建Word文档
-                        const doc = new window.docx.Document({
+                        const doc = new docx.Document({
                             sections: [{
                                 properties: {},
                                 children: [
-                                    new window.docx.Paragraph({
+                                    new docx.Paragraph({
                                         children: [
-                                            new window.docx.TextRun({
+                                            new docx.TextRun({
                                                 text: "导出的Markdown文档",
                                                 bold: true,
                                                 size: 36
@@ -1040,9 +858,9 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
                                             after: 200
                                         }
                                     }),
-                                    new window.docx.Paragraph({
+                                    new docx.Paragraph({
                                         children: [
-                                            new window.docx.TextRun({
+                                            new docx.TextRun({
                                                 text: markdownText
                                             })
                                         ]
@@ -1052,14 +870,10 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
                         });
 
                         // 生成并保存文档
-                        window.docx.Packer.toBlob(doc).then(blob => {
-                            window.saveAs(blob, "markdown_document.docx");
+                        docx.Packer.toBlob(doc).then(blob => {
+                            saveAs(blob, "markdown_document.docx");
                             // 隐藏加载指示器
                             document.getElementById('loading-indicator').style.display = 'none';
-                        }).catch(function(error) {
-                            document.getElementById('loading-indicator').style.display = 'none';
-                            reportDependencyIssue('Word 文档生成失败，请保留当前文本并稍后重试。');
-                            alert('导出Word文档时出错: ' + (error.message || String(error)));
                         });
                     } catch (error) {
                         console.error("导出Word文档时出错:", error);
@@ -1117,35 +931,21 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
 
                         // 准备导出预览
                         const exportContent = document.getElementById('export-content');
-                        if (window.SymgoSafeMarkdown && typeof window.SymgoSafeMarkdown.cloneRenderedContent === 'function') {
-                            window.SymgoSafeMarkdown.cloneRenderedContent(previewContent, exportContent);
-                        } else {
-                            exportContent.replaceChildren(...Array.from(previewContent.childNodes, function(node) {
-                                return node.cloneNode(true);
-                            }));
-                        }
+                        exportContent.innerHTML = document.getElementById('preview-content').innerHTML;
 
-                        // 应用预设、间距和水印；所有可见选项都会真实影响预览与导出结果。
-                        applyExportLayout(exportContent, {
-                            preset: document.getElementById('img-preset').value,
-                            spacing: document.getElementById('img-spacing-mode').value,
-                            backgroundColor: bgColor,
-                            textColor,
-                            fontFamily: `${zhFont}, ${enFont}`,
-                            fontSize,
-                            lineHeight,
-                            watermarkEnabled: document.getElementById('img-watermark-enable').checked,
-                            watermarkText: document.getElementById('img-watermark-text').value.trim(),
-                            watermarkColor: document.getElementById('img-watermark-color').value,
-                            watermarkOpacity: document.getElementById('img-watermark-opacity').value
-                        });
+                        // 应用样式
+                        exportContent.style.backgroundColor = bgColor;
+                        exportContent.style.color = textColor;
+                        exportContent.style.fontFamily = `${zhFont}, ${enFont}`;
+                        exportContent.style.fontSize = `${fontSize}px`;
+                        exportContent.style.lineHeight = lineHeight;
 
                         // 显示预览
                         document.getElementById('export-preview').classList.add('show');
 
                         // 触发MathJax重新渲染
-                        if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
-                            window.MathJax.typesetPromise([exportContent]).then(function() {
+                        if (typeof MathJax !== 'undefined') {
+                            MathJax.typesetPromise([exportContent]).then(function() {
                                 // 隐藏加载指示器
                                 document.getElementById('loading-indicator').style.display = 'none';
                             }).catch(function(err) {
@@ -1170,12 +970,6 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
 
             // 确认导出为图片
             document.getElementById('confirm-export-btn').addEventListener('click', function() {
-                if (!window.htmlToImage || typeof window.htmlToImage.toCanvas !== 'function' || typeof window.saveAs !== 'function') {
-                    const message = '图片导出组件未加载，当前无法生成图片；编辑与预览内容不会丢失。';
-                    reportDependencyIssue(message);
-                    alert(message);
-                    return;
-                }
                 // 显示加载指示器
                 document.getElementById('loading-indicator').style.display = 'flex';
 
@@ -1185,25 +979,14 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
 
                 setTimeout(function() {
                     try {
-                        // 先生成 Canvas，再按用户选择的真实 MIME 类型编码，避免扩展名与内容不一致。
-                        window.htmlToImage.toCanvas(exportContent, {
+                        // 使用html-to-image库导出图片
+                        htmlToImage.toBlob(exportContent, {
                             quality: 0.95,
                             pixelRatio: scale,
-                            backgroundColor: getComputedStyle(exportContent).backgroundColor,
-                            skipFonts: true,
-                            fontEmbedCSS: ''
-                        })
-                        .then(function(canvas) {
-                            return new Promise(function(resolve, reject) {
-                                const mimeType = format === 'jpeg' ? 'image/jpeg' : 'image/png';
-                                canvas.toBlob(function(blob) {
-                                    if (blob) resolve(blob);
-                                    else reject(new Error('浏览器未能编码所选图片格式'));
-                                }, mimeType, 0.92);
-                            });
+                            backgroundColor: document.getElementById('img-bg-color').value
                         })
                         .then(function(blob) {
-                            window.saveAs(blob, `markdown_export.${format}`);
+                            saveAs(blob, `markdown_export.${format}`);
                             document.getElementById('loading-indicator').style.display = 'none';
                         })
                         .catch(function(error) {
@@ -1238,6 +1021,6 @@ $$\\frac{d}{dx}\\left( \\int_{0}^{x} f(u)\\,du\\right)=f(x)$$
             addClickHandlersToPreviewElements();
         });
     </script>
-    <script defer src="../js/main.js"></script>
+    <script src="../js/main.js"></script>
 </body>
 </html>
