@@ -1,8 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /old/
-Disallow: /test.html
-Disallow: /test1.html
-Disallow: /*.ipynb$
 
-Sitemap: https://symweb.netlify.app/sitemap.xml
+Sitemap: https://symgo.netlify.app/sitemap.xml

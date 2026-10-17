@@ -59,6 +59,7 @@
                 <div class="deep-evidence-nav" aria-label="项目证据导航">
                     <a href="#workload"><i class="fas fa-chart-column"></i> 工作量总览</a>
                     <a href="#evidence-dashboard"><i class="fas fa-table-cells-large"></i> 证据看板</a>
+                    <a href="#visual-proof"><i class="fas fa-images"></i> 图像证据</a>
                     <a href="#tech-chain"><i class="fas fa-diagram-project"></i> 技术链路</a>
                     <a href="#artifact-list"><i class="fas fa-file-signature"></i> 论文专利软著</a>
                     <a href="#document-atlas"><i class="fas fa-folder-tree"></i> 文档证据</a>
@@ -112,6 +113,40 @@
                     <a class="trace-card" href="#software-test"><span>测试/软著</span><strong>边缘物联设备接入管理软件 V1.0</strong><p>承接设备纳管、注册、仪表盘、云端上报和可信认证配置。</p></a>
                     <a class="trace-card" href="#patent-auth-control"><span>专利成果</span><strong>安全认证、射频指纹、协同探测和协议解析</strong><p>把安全、识别和自动配置能力沉淀为创新成果。</p></a>
                     <a class="trace-card" href="#document-atlas"><span>应用证明</span><strong>国产端边环境和 MQTT/Modbus 数据上报验证</strong><p>证明成果可以在示范场景中部署、运行和被验收。</p></a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-band" id="visual-proof">
+            <div class="container">
+                <div class="section-heading">
+                    <div>
+                        <div class="section-kicker">VISUAL PROOF</div>
+                        <h2>脱敏截图与技术可视化</h2>
+                    </div>
+                    <p>从技术报告中裁取联调界面截图，并额外绘制端-边-云可信接入流程图。公网只展示技术链路，不展示内部地址、长 ID、topic 明细和原始附件。</p>
+                </div>
+                <div class="visual-proof-grid">
+                    <article class="visual-proof-card">
+                        <a class="visual-proof-media" href="../../images/horizontal-projects/iot-access-screenshot.png" target="_blank" rel="noopener noreferrer">
+                            <img src="../../images/horizontal-projects/iot-access-screenshot.png" alt="脱敏后的 Modbus 与 MQTT 设备接入截图" loading="lazy">
+                        </a>
+                        <div class="visual-proof-caption">
+                            <span>REPORT SCREENSHOT</span>
+                            <h3>Modbus/MQTT 联调证据</h3>
+                            <p>展示 EdgeX 命令界面与 MQTTX 接收数据的公开裁图，敏感连接参数、UUID 和日志字段已遮挡。</p>
+                        </div>
+                    </article>
+                    <article class="visual-proof-card">
+                        <a class="visual-proof-media" href="../../images/horizontal-projects/iot-trusted-flow-visual.png" target="_blank" rel="noopener noreferrer">
+                            <img src="../../images/horizontal-projects/iot-trusted-flow-visual.png" alt="端边云可信接入流程可视化图" loading="lazy">
+                        </a>
+                        <div class="visual-proof-caption">
+                            <span>VISUALIZATION</span>
+                            <h3>端-边-云可信接入流程</h3>
+                            <p>把端侧采集、MQTT/Modbus 注册、EdgeX 设备模型和 SM2 可信上报压缩成一张可面试讲解的流程图。</p>
+                        </div>
+                    </article>
                 </div>
             </div>
         </section>

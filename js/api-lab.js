@@ -5,8 +5,8 @@
     if (!apiGrid) return;
 
     const functionPath = "/.netlify/functions/api-lab";
-    const cacheKey = "symgo-api-lab-cache-v3";
-    const timeoutMs = 32000;
+    const cacheKey = "symgo-api-lab-cache-v2";
+    const timeoutMs = 14000;
 
     const statusNodes = {
         total: document.querySelector("[data-api-total]"),
@@ -22,14 +22,9 @@
     const coverageStrip = document.querySelector("[data-api-coverage]");
     const backendStatus = document.querySelector("[data-api-backend-status]");
     const backendEndpoint = document.querySelector("[data-api-backend-endpoint]");
-    const pagination = document.querySelector("[data-api-pagination]");
-    const paginationStatus = document.querySelector("[data-api-page-status]");
-    const loadMoreButton = document.querySelector("[data-api-load-more]");
-    const pageSize = 12;
 
     let currentFilter = "all";
     let currentSearch = "";
-    let visibleLimit = pageSize;
     let activeRequests = 0;
     let liveApis = [];
     let proxyCandidates = [];
@@ -45,10 +40,6 @@
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
-    }
-
-    function renderApiGlyph() {
-        return '<svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="5" cy="10" r="2"/><circle cx="15" cy="5" r="2"/><circle cx="15" cy="15" r="2"/><path d="m6.8 9 6.4-3M6.8 11l6.4 3"/></svg>';
     }
 
     function trimText(value, maxLength) {
@@ -92,50 +83,6 @@
             window.location.hostname === "localhost";
     }
 
-    function normalizeFailure(payload = {}, fallback = {}) {
-        const statusCode = Number(payload.statusCode ?? fallback.statusCode);
-        const latencyMs = Number(payload.latencyMs ?? fallback.latencyMs);
-        return {
-            id: payload.id || fallback.id,
-            status: "failed",
-            statusCode: Number.isFinite(statusCode) && statusCode > 0 ? statusCode : null,
-            errorType: payload.errorType || fallback.errorType || "CLIENT_REQUEST_ERROR",
-            message: payload.message || payload.error || fallback.message || "请求失败。",
-            possibleCauses: Array.isArray(payload.possibleCauses)
-                ? payload.possibleCauses
-                : (Array.isArray(fallback.possibleCauses) ? fallback.possibleCauses : []),
-            suggestions: Array.isArray(payload.suggestions)
-                ? payload.suggestions
-                : (Array.isArray(fallback.suggestions) ? fallback.suggestions : []),
-            latencyMs: Number.isFinite(latencyMs) && latencyMs >= 0 ? latencyMs : null,
-            summary: payload.summary || fallback.summary || "本次请求没有返回可用结果。",
-            checkedAt: payload.checkedAt || fallback.checkedAt || new Date().toISOString(),
-            source: payload.source || fallback.source || "netlify-function"
-        };
-    }
-
-    function browserFailure(error, fallback = {}) {
-        if (error?.details) return normalizeFailure(error.details, fallback);
-        if (error?.name === "AbortError") {
-            return normalizeFailure({}, {
-                ...fallback,
-                statusCode: 504,
-                errorType: "CLIENT_TIMEOUT",
-                message: "浏览器等待 Netlify Function 响应超时。",
-                possibleCauses: ["Function 或上游服务响应时间过长。", "当前网络连接不稳定。"],
-                suggestions: ["稍后重试。", "在线上检查 Netlify Function 日志与执行时长。"]
-            });
-        }
-        return normalizeFailure({}, {
-            ...fallback,
-            statusCode: 0,
-            errorType: "FUNCTION_UNREACHABLE",
-            message: error?.message || "浏览器无法连接 Netlify Function。",
-            possibleCauses: ["当前是没有 Serverless 环境的本地静态预览。", "线上 Function 路由尚未部署或网络连接失败。"],
-            suggestions: ["本地使用 Netlify Dev 验证。", "线上确认 /.netlify/functions/api-lab?list=1 能返回 JSON。"]
-        });
-    }
-
     async function requestBackend(params, requestTimeoutMs = timeoutMs) {
         const controller = new AbortController();
         const timer = window.setTimeout(() => controller.abort(), requestTimeoutMs);
@@ -148,14 +95,7 @@
             });
             const payload = await response.json().catch(() => ({}));
             if (!response.ok) {
-                const details = normalizeFailure(payload, {
-                    statusCode: response.status,
-                    errorType: "FUNCTION_HTTP_ERROR",
-                    message: `后端返回 HTTP ${response.status}`
-                });
-                const error = new Error(details.message);
-                error.details = details;
-                throw error;
+                throw new Error(payload.error || `后端 HTTP ${response.status}`);
             }
             return payload;
         } finally {
@@ -163,42 +103,13 @@
         }
     }
 
-    function getMatchingApis() {
+    function getVisibleApis() {
         const search = currentSearch.trim().toLowerCase();
         return liveApis.filter((api) => {
             const categoryMatch = currentFilter === "all" || api.category === currentFilter;
             const searchable = `${api.title} ${api.source} ${api.purpose} ${api.publicApisCategory}`.toLowerCase();
             return categoryMatch && (!search || searchable.includes(search));
         });
-    }
-
-    function resetPagination() {
-        visibleLimit = pageSize;
-    }
-
-    function updatePagination(matchingCount, renderedCount) {
-        if (!pagination) return;
-
-        pagination.hidden = !backendReady;
-        if (paginationStatus) {
-            const noun = currentSearch.trim() || currentFilter !== "all" ? "个匹配 API" : "个 API";
-            paginationStatus.textContent = `当前显示 ${renderedCount} / ${matchingCount} ${noun}`;
-        }
-
-        if (!loadMoreButton) return;
-        const hasMultiplePages = matchingCount > pageSize;
-        const remaining = Math.max(0, matchingCount - renderedCount);
-        loadMoreButton.hidden = !hasMultiplePages;
-        loadMoreButton.disabled = remaining === 0;
-        loadMoreButton.textContent = remaining > 0
-            ? `显示更多（剩余 ${remaining}）`
-            : "已显示全部";
-        loadMoreButton.setAttribute(
-            "aria-label",
-            remaining > 0
-                ? `显示更多 API，当前显示 ${renderedCount} 个，共 ${matchingCount} 个`
-                : `已显示全部 ${matchingCount} 个 API`
-        );
     }
 
     function resultClass(result) {
@@ -215,23 +126,35 @@
     }
 
     function diagnoseFailure(api, result) {
-        const detail = normalizeFailure(result, {
-            id: api?.id,
-            message: "没有返回明确错误。",
-            possibleCauses: ["后端没有提供结构化诊断字段。"],
-            suggestions: ["检查 Netlify Function 日志与响应 JSON。"]
-        });
+        const error = String(result?.error || result?.summary || "没有返回明确错误。");
+        const lower = error.toLowerCase();
+        let reason = "后端代理已收到请求，但上游接口没有返回可用结果。";
+        let action = "可以稍后重试，或在 Netlify Function 日志中查看该 API 的上游响应。";
+
+        if (/403|rate limit|forbidden|限流|权限/.test(lower)) {
+            reason = "上游接口拒绝了本次请求，常见原因是匿名额度限制、访问频率过高或需要额外请求头。";
+            action = "降低调用频率，或在 Netlify 环境变量中配置对应 Token，再由后端读取。";
+        } else if (/404|not found|未知 api|unknown/.test(lower)) {
+            reason = "请求的白名单 id、分组或上游 endpoint 没有匹配到有效资源。";
+            action = "检查 netlify/functions/lib/api-lab-config.js 中的 id、endpoint 和页面分组。";
+        } else if (/5\d\d|server|上游 http 5/.test(lower)) {
+            reason = "上游服务当前异常，本站后端代理正常返回了失败状态。";
+            action = "保留错误展示并稍后重试；如果长期失败，应替换成更稳定的数据源。";
+        } else if (/timeout|abort|超时/.test(lower)) {
+            reason = "上游接口响应超过本站后端代理的超时时间。";
+            action = "提高该 API 的 timeoutMs，或减少请求数据量，或替换更快的数据源。";
+        } else if (/failed to fetch|network|load failed|后端不可用/.test(lower)) {
+            reason = "浏览器没有成功连到本站 Netlify Function，常见原因是站点未部署 Functions、域名仍返回 404，或本地静态预览没有 Serverless 环境。";
+            action = "确认 Netlify 站点绑定当前 GitHub 仓库，publish=dist，functions=netlify/functions。";
+        }
 
         return {
             api: api?.title || result?.id || "未知 API",
             endpoint: `${functionPath}?id=${api?.id || result?.id || "--"}`,
-            statusCode: detail.statusCode ?? "--",
-            errorType: detail.errorType,
-            message: detail.message,
-            possibleCauses: detail.possibleCauses.length ? detail.possibleCauses : ["后端未返回可能原因。"],
-            suggestions: detail.suggestions.length ? detail.suggestions : ["检查 Function 日志后重试。"],
-            latency: Number.isFinite(detail.latencyMs) ? `${Math.round(detail.latencyMs)} ms` : "--",
-            checkedAt: detail.checkedAt ? formatClock(detail.checkedAt) : "--"
+            error,
+            reason,
+            action,
+            checkedAt: result?.checkedAt ? formatClock(result.checkedAt) : "--"
         };
     }
 
@@ -242,12 +165,9 @@
             <div class="api-reason-panel" data-api-reason-panel="${escapeHtml(api.id)}" hidden>
                 <div><strong>失败账号/接口</strong><span>${escapeHtml(detail.api)}</span></div>
                 <div><strong>调用地址</strong><span>${escapeHtml(detail.endpoint)}</span></div>
-                <div><strong>状态码</strong><span>${escapeHtml(detail.statusCode)}</span></div>
-                <div><strong>错误类型</strong><span>${escapeHtml(detail.errorType)}</span></div>
-                <div><strong>错误信息</strong><span>${escapeHtml(detail.message)}</span></div>
-                <div><strong>可能原因</strong><span>${detail.possibleCauses.map(escapeHtml).join("；")}</span></div>
-                <div><strong>处理建议</strong><span>${detail.suggestions.map(escapeHtml).join("；")}</span></div>
-                <div><strong>响应耗时</strong><span>${escapeHtml(detail.latency)}</span></div>
+                <div><strong>原始错误</strong><span>${escapeHtml(detail.error)}</span></div>
+                <div><strong>判断原因</strong><span>${escapeHtml(detail.reason)}</span></div>
+                <div><strong>处理建议</strong><span>${escapeHtml(detail.action)}</span></div>
                 <div><strong>检查时间</strong><span>${escapeHtml(detail.checkedAt)}</span></div>
             </div>
         `;
@@ -267,11 +187,10 @@
     }
 
     function renderSkeleton() {
-        if (pagination) pagination.hidden = true;
         apiGrid.innerHTML = Array.from({ length: 6 }, (_, index) => `
             <article class="api-card api-card-skeleton premium-surface" aria-hidden="true">
                 <div class="api-card-top">
-                    <span class="api-icon">${renderApiGlyph()}</span>
+                    <span class="api-icon"></span>
                     <span class="api-status loading">加载中</span>
                 </div>
                 <div class="api-card-body">
@@ -289,19 +208,18 @@
     }
 
     function renderCards() {
-        const matchingApis = getMatchingApis();
-        const visibleApis = matchingApis.slice(0, visibleLimit);
+        const visibleApis = getVisibleApis();
         apiGrid.innerHTML = visibleApis.map((api) => {
             const result = apiResults[api.id];
             const status = resultClass(result);
-            const latency = Number.isFinite(result?.latencyMs) ? `${Math.round(result.latencyMs)} ms` : "--";
+            const latency = result?.latency ? `${Math.round(result.latency)} ms` : "--";
             const checked = result?.checkedAt ? formatClock(result.checkedAt) : "尚未测试";
             const source = result?.source === "netlify-function" ? "Netlify Function" : "Backend proxy";
             const summary = result?.summary || "点击刷新后，前端会调用本站后端函数；函数再去请求外部 API、解析数据并返回摘要。";
             return `
                 <article class="api-card premium-surface" data-api-card="${escapeHtml(api.id)}">
                     <div class="api-card-top">
-                        <span class="api-icon">${renderApiGlyph()}</span>
+                        <span class="api-icon"><i class="fas ${escapeHtml(api.icon)}"></i></span>
                         <div class="api-card-status">
                             <span class="api-status ${status}">${resultLabel(result)}</span>
                             ${result?.status === "failed" ? `<button type="button" class="api-reason-button" data-api-reason="${escapeHtml(api.id)}"><i class="fas fa-circle-question"></i> 查询原因</button>` : ""}
@@ -323,7 +241,7 @@
                         </div>
                         <p>${escapeHtml(summary)}</p>
                         ${renderFacts(result?.facts)}
-                        ${result?.message ? `<div class="api-error">${escapeHtml(result.message)}</div>` : ""}
+                        ${result?.error ? `<div class="api-error">${escapeHtml(result.error)}</div>` : ""}
                         ${renderFailureReason(api, result)}
                         <div class="api-backend-line"><i class="fas fa-server"></i> ${escapeHtml(source)} · ${escapeHtml(functionPath)}?id=${escapeHtml(api.id)}</div>
                     </div>
@@ -331,10 +249,10 @@
                         <span>上次检查：${escapeHtml(checked)}</span>
                         <div>
                             <button type="button" class="api-mini-button" data-api-refresh="${escapeHtml(api.id)}" aria-label="刷新 ${escapeHtml(api.title)}">
-                                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M15.8 7.1A6.3 6.3 0 1 0 16 12"/><path d="M15.8 3.4v3.9h-3.9"/></svg>
+                                <i class="fas fa-rotate"></i>
                             </button>
                             <a class="api-mini-button" href="${escapeHtml(api.docs)}" target="_blank" rel="noopener noreferrer" aria-label="查看 ${escapeHtml(api.title)} 文档">
-                                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8 4H4.8A1.8 1.8 0 0 0 3 5.8v9.4A1.8 1.8 0 0 0 4.8 17h9.4a1.8 1.8 0 0 0 1.8-1.8V12"/><path d="M11 3h6v6M17 3l-8 8"/></svg>
+                                <i class="fas fa-arrow-up-right-from-square"></i>
                             </a>
                         </div>
                     </div>
@@ -342,7 +260,6 @@
             `;
         }).join("") || '<div class="empty-state api-empty">没有匹配的 API。换一个关键词或分类试试。</div>';
 
-        updatePagination(matchingApis.length, visibleApis.length);
         updateSummary();
     }
 
@@ -384,8 +301,8 @@
         const ok = results.filter((result) => result.status === "ok").length;
         const failed = results.filter((result) => result.status === "failed").length;
         const latencies = results
-            .filter((result) => result.status === "ok" && Number.isFinite(result.latencyMs))
-            .map((result) => result.latencyMs);
+            .filter((result) => result.status === "ok" && Number.isFinite(result.latency))
+            .map((result) => result.latency);
         const avg = latencies.length ? `${Math.round(latencies.reduce((sum, value) => sum + value, 0) / latencies.length)} ms` : "--";
 
         if (statusNodes.total) statusNodes.total.textContent = total;
@@ -432,9 +349,7 @@
             autoRefreshFeaturedApis();
         } catch (error) {
             backendReady = false;
-            if (pagination) pagination.hidden = true;
-            const failure = browserFailure(error);
-            const reason = failure.message;
+            const reason = error.name === "AbortError" ? "后端连接超时" : error.message || "后端不可用";
             updateBackendStatus("failed", `<i class="fas fa-triangle-exclamation"></i> ${escapeHtml(reason)}`);
             apiGrid.innerHTML = `
                 <div class="empty-state api-empty api-backend-empty">
@@ -467,17 +382,22 @@
             if (!silent) {
                 const tone = result.status === "ok" ? "ok" : "failed";
                 const detail = result.status === "ok"
-                    ? `${api.title} 后端代理可用，耗时 ${Math.round(result.latencyMs || 0)} ms`
-                    : `${api.title} 后端代理失败：${result.message || "上游不可用"}`;
+                    ? `${api.title} 后端代理可用，耗时 ${Math.round(result.latency || 0)} ms`
+                    : `${api.title} 后端代理失败：${result.error || "上游不可用"}`;
                 addLog(detail, tone);
             }
         } catch (error) {
-            const failure = browserFailure(error, {
+            const reason = error.name === "AbortError" ? "后端请求超时" : error.message || "请求失败";
+            apiResults[api.id] = {
                 id: api.id,
-                summary: "前端已按设计调用后端代理，但本次没有收到可用结果。"
-            });
-            apiResults[api.id] = failure;
-            if (!silent) addLog(`${api.title} 后端代理失败：${failure.message}`, "failed");
+                status: "failed",
+                latency: null,
+                summary: "前端已按设计调用后端代理，但本次没有收到可用结果。",
+                error: reason,
+                checkedAt: new Date().toISOString(),
+                source: "netlify-function"
+            };
+            if (!silent) addLog(`${api.title} 后端代理失败：${reason}`, "failed");
         } finally {
             activeRequests = Math.max(0, activeRequests - 1);
             saveCache();
@@ -514,10 +434,8 @@
         document.querySelectorAll("[data-api-filter]").forEach((button) => {
             button.addEventListener("click", () => {
                 currentFilter = button.dataset.apiFilter || "all";
-                resetPagination();
                 document.querySelectorAll("[data-api-filter]").forEach((tab) => {
                     tab.classList.toggle("active", tab === button);
-                    tab.setAttribute("aria-pressed", String(tab === button));
                 });
                 renderCards();
             });
@@ -526,15 +444,6 @@
         if (searchInput) {
             searchInput.addEventListener("input", () => {
                 currentSearch = searchInput.value || "";
-                resetPagination();
-                renderCards();
-            });
-        }
-
-        if (loadMoreButton) {
-            loadMoreButton.addEventListener("click", () => {
-                const matchingCount = getMatchingApis().length;
-                visibleLimit = Math.min(visibleLimit + pageSize, matchingCount);
                 renderCards();
             });
         }
@@ -567,7 +476,6 @@
             clearButton.addEventListener("click", () => {
                 apiResults = {};
                 localStorage.removeItem(cacheKey);
-                resetPagination();
                 renderCards();
                 addLog("已清空本地缓存结果；后端缓存仍由 Netlify 控制", "info");
             });

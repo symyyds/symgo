@@ -848,6 +848,34 @@ body.site-shell {
     padding: 24px;
 }
 
+.project-cover-link {
+    display: block;
+    margin: -24px -24px 20px;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+    background: #0f172a;
+}
+
+.project-cover {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.28s ease, filter 0.28s ease;
+}
+
+.project-cover-link:hover .project-cover,
+.project-cover-link:focus-visible .project-cover {
+    transform: scale(1.025);
+    filter: saturate(1.04) contrast(1.02);
+}
+
+.project-cover-link:focus-visible {
+    outline: 3px solid rgba(17, 97, 73, 0.28);
+    outline-offset: 3px;
+}
+
 .project-head {
     display: flex;
     justify-content: space-between;
@@ -2756,6 +2784,104 @@ body.site-shell.dark-mode .command-item {
 
 .trace-card:hover strong {
     color: var(--brand);
+}
+
+.visual-proof-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.visual-proof-grid.three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.visual-proof-grid.gallery {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.engineering-visual-wall .visual-proof-caption {
+    min-height: 172px;
+}
+
+.visual-proof-card {
+    overflow: hidden;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    border-radius: var(--radius);
+    background: var(--paper);
+    box-shadow: 0 24px 70px rgba(18, 35, 49, 0.1);
+}
+
+.visual-proof-media {
+    display: block;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #0f172a;
+}
+
+.visual-proof-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.28s ease, filter 0.28s ease;
+}
+
+.visual-proof-media:hover img,
+.visual-proof-media:focus-visible img {
+    transform: scale(1.025);
+    filter: saturate(1.04) contrast(1.02);
+}
+
+.visual-proof-media:focus-visible {
+    outline: 3px solid rgba(17, 97, 73, 0.28);
+    outline-offset: 3px;
+}
+
+.visual-proof-caption {
+    padding: 18px;
+}
+
+.visual-proof-caption span {
+    display: inline-flex;
+    margin-bottom: 8px;
+    color: var(--accent);
+    font-size: 0.76rem;
+    font-weight: 900;
+}
+
+.visual-proof-caption h3 {
+    margin: 0 0 8px;
+    color: var(--ink);
+    font-size: 1.08rem;
+}
+
+.visual-proof-caption p {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.62;
+}
+
+.horizontal-card-preview {
+    display: block;
+    margin: -24px -24px 18px;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+    background: #0f172a;
+}
+
+.horizontal-card-preview img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.28s ease;
+}
+
+.horizontal-card-preview:hover img,
+.horizontal-card-preview:focus-visible img {
+    transform: scale(1.025);
 }
 
 .evidence-timeline {
@@ -5287,7 +5413,9 @@ body.site-shell.dark-mode .resume-award-grid > div {
 
 @media (max-width: 980px) {
     .evidence-dashboard-grid,
-    .traceability-map {
+    .traceability-map,
+    .visual-proof-grid,
+    .visual-proof-grid.three {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
@@ -5295,6 +5423,8 @@ body.site-shell.dark-mode .resume-award-grid > div {
 @media (max-width: 768px) {
     .evidence-dashboard-grid,
     .traceability-map,
+    .visual-proof-grid,
+    .visual-proof-grid.three,
     .proof-metric-grid,
     .evidence-flow,
     .artifact-matrix,

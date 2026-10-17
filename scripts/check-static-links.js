@@ -2,15 +2,12 @@ const fs = require("fs");
 const path = require("path");
 
 const root = path.resolve(__dirname, "..");
-const checkDist = process.argv.includes("--dist");
-const scanRoot = checkDist ? path.join(root, "dist") : root;
 const htmlFiles = [];
 const missing = [];
 
 function walk(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    if ([".git", "server", "node_modules"].includes(entry.name)) continue;
-    if (!checkDist && entry.name === "dist") continue;
+    if ([".git", "dist", "server", "node_modules"].includes(entry.name)) continue;
     const target = path.join(dir, entry.name);
     if (entry.isDirectory()) walk(target);
     else if (entry.isFile() && entry.name.endsWith(".html")) htmlFiles.push(target);
@@ -27,16 +24,11 @@ function cleanLocalRef(value) {
 function resolveLocal(fromFile, href) {
   const clean = cleanLocalRef(href);
   if (!clean) return "";
-  const base = clean.startsWith("/") ? scanRoot : path.dirname(fromFile);
+  const base = clean.startsWith("/") ? root : path.dirname(fromFile);
   return path.resolve(base, clean.replace(/^\//, ""));
 }
 
-if (!fs.existsSync(scanRoot)) {
-  console.error(`Static link scan root does not exist: ${scanRoot}`);
-  process.exit(1);
-}
-
-walk(scanRoot);
+walk(root);
 
 for (const file of htmlFiles) {
   const html = fs.readFileSync(file, "utf8");
@@ -63,4 +55,4 @@ if (missing.length) {
   process.exit(1);
 }
 
-console.log(`Checked ${htmlFiles.length} ${checkDist ? "built" : "source"} HTML files; no missing local href/src references.`);
+console.log(`Checked ${htmlFiles.length} HTML files; no missing local href/src references.`);

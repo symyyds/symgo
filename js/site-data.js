@@ -72,6 +72,7 @@
             year: "2025 - 2026",
             name: "Symgo 个人博客与学术展示站",
             role: "独立开发 / 内容维护",
+            cover: "images/engineering-projects/symgo-portfolio-screenshot.png",
             stack: ["HTML", "CSS", "JavaScript", "Netlify"],
             summary: "将原有博客升级为求职与申博可用的个人展示站，集中呈现论文、项目、博客、工具和可下载材料。",
             work: [
@@ -97,6 +98,7 @@
             year: "2025",
             name: "升学复试与保研资料工具包",
             role: "资料整理 / 经验沉淀 / 页面开发",
+            cover: "images/engineering-projects/interview-toolkit-screenshot.png",
             stack: ["Content Design", "PDF/Docx", "HTML"],
             summary: "围绕保研推免、考研复试和导师联系，整理流程、术语、时间轴、材料清单和视频讲解，帮助低年级同学快速建立准备框架。",
             work: [
@@ -121,6 +123,7 @@
             year: "2025",
             name: "本地历史记录学术助手",
             role: "前端功能开发",
+            cover: "images/engineering-projects/academic-ai-assistant-screenshot.png",
             stack: ["JavaScript", "LocalStorage", "DeepSeek API"],
             summary: "实现支持多轮聊天、会话列表、文件预览、记录导入导出的学术助手页面，用于阅读材料、整理问题和生成初稿。",
             work: [
@@ -144,6 +147,7 @@
             year: "2025",
             name: "在线简历制作工具",
             role: "页面设计 / 交互开发",
+            cover: "images/engineering-projects/resume-builder-screenshot.png",
             stack: ["HTML", "CSS", "JavaScript"],
             summary: "面向学生求职和升学申请的简历编辑工具，提供结构化输入、模板预览和内容生成入口。",
             work: [
@@ -167,6 +171,7 @@
             year: "2026",
             name: "Public API 实验室",
             role: "API 选型 / 后端代理 / 页面植入",
+            cover: "images/engineering-projects/public-api-lab-screenshot.png",
             stack: ["public-apis", "Netlify Functions", "Serverless Proxy", "Static UI"],
             summary: "参考 public-apis/public-apis，把适合个人博客、论文展示、项目证据、求职申博和写作辅助的免费公开 API 接入成可实时测试、可跨页面复用的后端代理控制台。",
             work: [
@@ -237,6 +242,7 @@
             year: "2024 - 2025",
             name: "面向物联体系的柔性配置接入与可信认证管控关键技术研究及应用",
             role: "项目组成员 / 方案整理 / 边缘物联接入与可信管控材料支持",
+            cover: "images/horizontal-projects/iot-access-screenshot.png",
             stack: ["电力物联网", "EdgeX Foundry", "Docker", "OpenHarmony", "openEuler", "MQTT", "Modbus", "SM2", "CNN-LSTM", "边缘计算"],
             summary: "面向电力物联网终端多厂家、多协议、现场配置复杂和安全认证链条不完整的问题，参与整理端边协同柔性接入、自动注册、可信认证与边缘管控方案，并支撑示范应用、测试验收和成果材料沉淀。",
             work: [
@@ -266,6 +272,7 @@
             year: "2022 - 2024",
             name: "基于分布式多能互补的新型城镇综合能源系统信息与物理架构研究",
             role: "项目材料整理 / 技术路线归纳 / 验收展示支撑",
+            cover: "images/horizontal-projects/energy-architecture-screenshot.png",
             stack: ["综合能源系统", "源网荷储", "CNN-Bi-LSTM", "Attention LSTM", "PSO", "多目标遗传算法", "多能流耦合", "35kV", "储能", "Spring Boot", "Shiro"],
             summary: "围绕宁夏典型城镇分布式新能源接入、冷热电多能供需波动、能量梯级利用和源网荷储协同架构，整理可研、任务书、实施方案、技术/工作报告、查新报告、成果清单和验收材料，形成可公开展示的横向项目档案。",
             work: [
@@ -297,6 +304,7 @@
             year: "2024.02 - 2025.12",
             name: "基于闽宁绿电小镇的终端接入网 IPv6 数据通信技术研究及应用",
             role: "项目材料整理 / 技术路线归纳 / 验收证据结构化",
+            cover: "images/horizontal-projects/ipv6-sdn-qos-screenshot.png",
             stack: ["IPv6", "电力物联网", "边缘物联代理", "地址规划", "合规性检查", "追踪溯源", "QoS", "GRL-ATE", "SDN", "NAT64/DNS64", "AIOps", "软件著作权"],
             summary: "围绕闽宁绿电小镇源网荷储业务和多类型终端接入场景，整理 44 份验收材料，将 IPv6 地址规划、边缘物联代理合规检查、终端接入网性能建模、地址监测与追踪溯源平台等内容转化为可公开展示的横向项目档案。",
             work: [
@@ -821,6 +829,7 @@
                     <div class="project-list-group">
                         ${filtered.filter((project) => project.category === group.key).map((project, index) => `
                 <article class="project-showcase" id="${project.id}">
+                    ${project.cover ? `<a class="project-cover-link" href="${getProjectHref(project)}"><img class="project-cover" src="${project.cover}" alt="${project.name} 视觉证据图" loading="lazy"></a>` : ""}
                     <div class="project-head">
                         <div>
                             <div class="project-index">${String(index + 1).padStart(2, "0")}</div>

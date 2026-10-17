@@ -8,9 +8,9 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/dropdown.css">
     <link rel="stylesheet" href="../css/site.css">
-    <link rel="stylesheet" href="../vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="manifest" href="../manifest.webmanifest">
-    <link rel="canonical" href="https://symweb.netlify.app/tools/api_lab.html">
+    <link rel="canonical" href="https://symgo.netlify.app/tools/api_lab.html">
 </head>
 <body class="site-shell">
     <header>
@@ -60,7 +60,7 @@
                     <div>
                         <span class="section-kicker">BACKEND STATUS</span>
                         <h2>Netlify Functions API 代理</h2>
-                    <p>点击“刷新全部”时，浏览器会按白名单逐项访问 <code>/.netlify/functions/api-lab?id=...</code>。后端函数统一返回状态码、错误类型、耗时、可能原因和处理建议；每位访客都有请求与上游调用预算，受保护的 <code>?all=1</code> 不接受匿名浏览器调用。</p>
+                    <p>点击“刷新全部”时，浏览器只会访问 <code>/.netlify/functions/api-lab</code>。后端函数再按白名单请求外部 API，返回统一的状态、耗时、摘要和结构化事实；以后需要 Key 的 API 也可以只放在 Netlify 环境变量里。</p>
                     <div class="api-backend-status loading" data-api-backend-status>
                         <i class="fas fa-circle-notch fa-spin"></i> 正在连接后端代理
                     </div>
@@ -93,31 +93,22 @@
                 <div class="api-coverage-strip" data-api-coverage></div>
 
                 <div class="page-tools api-tools">
-                    <div class="filter-tabs" role="group" aria-label="按 API 使用场景筛选">
-                        <button class="filter-tab active" type="button" data-api-filter="all" aria-pressed="true">全部</button>
-                        <button class="filter-tab" type="button" data-api-filter="portfolio" aria-pressed="false">作品集</button>
-                        <button class="filter-tab" type="button" data-api-filter="research" aria-pressed="false">研究</button>
-                        <button class="filter-tab" type="button" data-api-filter="career" aria-pressed="false">求职申博</button>
-                        <button class="filter-tab" type="button" data-api-filter="writing" aria-pressed="false">写作</button>
-                        <button class="filter-tab" type="button" data-api-filter="utility" aria-pressed="false">工具</button>
-                        <button class="filter-tab" type="button" data-api-filter="design" aria-pressed="false">设计</button>
-                        <button class="filter-tab" type="button" data-api-filter="data" aria-pressed="false">开放数据</button>
+                    <div class="filter-tabs" aria-label="按 API 使用场景筛选">
+                        <button class="filter-tab active" type="button" data-api-filter="all">全部</button>
+                        <button class="filter-tab" type="button" data-api-filter="portfolio">作品集</button>
+                        <button class="filter-tab" type="button" data-api-filter="research">研究</button>
+                        <button class="filter-tab" type="button" data-api-filter="career">求职申博</button>
+                        <button class="filter-tab" type="button" data-api-filter="writing">写作</button>
+                        <button class="filter-tab" type="button" data-api-filter="utility">工具</button>
+                        <button class="filter-tab" type="button" data-api-filter="design">设计</button>
+                        <button class="filter-tab" type="button" data-api-filter="data">开放数据</button>
                     </div>
                     <div class="search-box">
                         <input type="search" data-api-search aria-label="搜索 API" placeholder="搜索 API、用途或数据源">
                     </div>
                 </div>
 
-                <div class="api-grid" id="api-lab-grid" data-api-grid>
-                    <article class="api-card premium-surface static-api-fallback" data-static-fallback>
-                        <div class="api-card-body"><div class="api-meta-line"><span>Netlify Function</span><span>50 APIs</span></div><h3>公开 API 目录</h3><p>本站通过 Netlify Function 代理 50 个白名单 API，不在浏览器中暴露密钥或任意第三方请求地址。</p></div>
-                        <div class="api-result"><p>启用 JavaScript 后可查看请求状态、响应时间、返回摘要、状态码和失败原因。</p><a class="text-link" href="/.netlify/functions/api-lab?list=1">打开静态 API 元数据</a></div>
-                    </article>
-                </div>
-                <div class="api-pagination" data-api-pagination hidden>
-                    <p class="api-pagination__status" data-api-page-status role="status" aria-live="polite" aria-atomic="true">当前显示 0 / 0 个 API</p>
-                    <button class="btn secondary api-pagination__button" type="button" data-api-load-more aria-controls="api-lab-grid">显示更多</button>
-                </div>
+                <div class="api-grid" data-api-grid></div>
             </div>
         </section>
 
@@ -157,8 +148,6 @@
                     <ul class="compact-list">
                         <li><i class="fas fa-check"></i><span>前端只能传白名单 id，不能传任意外部 URL。</span></li>
                         <li><i class="fas fa-check"></i><span>后端统一处理超时、错误和缓存响应头。</span></li>
-                        <li><i class="fas fa-check"></i><span>失败结果返回 statusCode、errorType、possibleCauses、suggestions 和 latencyMs。</span></li>
-                        <li><i class="fas fa-check"></i><span>按访客限流；全量健康检查仅允许携带服务端环境变量令牌的任务调用。</span></li>
                         <li><i class="fas fa-check"></i><span>能服务博客、论文、项目、材料或设计展示。</span></li>
                     </ul>
                 </aside>

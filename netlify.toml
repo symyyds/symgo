@@ -2,11 +2,48 @@
   publish = "dist"
   command = "node scripts/build-static.js"
 
-[build.environment]
-  NODE_VERSION = "22"
-
 [functions]
   directory = "netlify/functions"
 
-# Static response headers are defined in _headers.
-# Redirect rules are defined in _redirects.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Cache-Control = "no-cache"
+
+[[redirects]]
+  from = "/api"
+  to = "/tools/api_lab.html"
+  status = 301
+
+[[redirects]]
+  from = "/api-proxy"
+  to = "/tools/netlify_api_proxy.html"
+  status = 301
+
+[[redirects]]
+  from = "/home"
+  to = "/index.html"
+  status = 301
+
+[[redirects]]
+  from = "/old/about.html"
+  to = "/profile.html"
+  status = 301
+
+[[redirects]]
+  from = "/old/contact.html"
+  to = "/leave_message.html"
+  status = 301
+
+[[redirects]]
+  from = "/old/publications.html"
+  to = "/publications.html"
+  status = 301
+
+[[redirects]]
+  from = "/old/research.html"
+  to = "/research.html"
+  status = 301

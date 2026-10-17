@@ -53,7 +53,7 @@
 
     async function requestGroup(group) {
         const controller = new AbortController();
-        const timer = window.setTimeout(() => controller.abort(), 32000);
+        const timer = window.setTimeout(() => controller.abort(), 15000);
         try {
             const response = await fetch(`${functionPath}?group=${encodeURIComponent(group)}`, {
                 signal: controller.signal,
@@ -61,9 +61,7 @@
             });
             const payload = await response.json().catch(() => ({}));
             if (!response.ok || payload.status !== "ok") {
-                const error = new Error(payload.message || payload.error || `HTTP ${response.status}`);
-                error.details = payload;
-                throw error;
+                throw new Error(payload.error || `HTTP ${response.status}`);
             }
             writeCache(group, payload.group);
             return payload.group;
@@ -86,7 +84,7 @@
         const results = Array.isArray(group.results) ? group.results : [];
         const okResults = results.filter((result) => result.status === "ok");
         const avg = okResults.length
-            ? `${Math.round(okResults.reduce((sum, result) => sum + Number(result.latencyMs || 0), 0) / okResults.length)} ms`
+            ? `${Math.round(okResults.reduce((sum, result) => sum + Number(result.latency || 0), 0) / okResults.length)} ms`
             : "--";
 
         root.innerHTML = `
@@ -115,7 +113,7 @@
                                 <span>${escapeHtml(result.id)}</span>
                                 <strong>${escapeHtml(result.status === "ok" ? "OK" : "FAIL")}</strong>
                             </div>
-                            <p>${escapeHtml(result.summary || result.message || "暂无返回摘要。")}</p>
+                            <p>${escapeHtml(result.summary || result.error || "暂无返回摘要。")}</p>
                             ${factList(result)}
                         </article>
                     `).join("")}
@@ -157,17 +155,13 @@
             return;
         }
 
-        const detail = error?.details || {};
-        const message = detail.message || error.message || "请求失败";
-        const suggestions = Array.isArray(detail.suggestions) ? detail.suggestions : [];
         root.innerHTML = `
             <div class="api-widget-shell failed">
                 <div class="api-widget-head">
                     <div>
                         <span class="section-kicker">LIVE PUBLIC API</span>
                         <h2><i class="fas fa-triangle-exclamation"></i> 后端代理暂时不可用</h2>
-                        <p>这个模块只调用本站 Netlify Function。${escapeHtml(detail.errorType || "FUNCTION_ERROR")} · ${escapeHtml(message)}</p>
-                        ${suggestions.length ? `<p>建议：${suggestions.map(escapeHtml).join("；")}</p>` : ""}
+                        <p>这个模块只调用本站 Netlify Function。错误：${escapeHtml(error.message || "请求失败")}</p>
                     </div>
                 </div>
                 <div class="api-widget-foot">
