@@ -511,24 +511,14 @@
         "footer",
         ".page-intel-strip",
         ".page-motion-ticker",
-        ".page-shot-wall",
         ".page-media-filmstrip",
         ".site-visual-showcase",
         ".page-constellation",
         ".page-flow-lab",
-        ".page-evidence-bento",
-        ".page-orbit-dashboard",
-        ".page-route-strip",
-        ".hero-signal-console",
-        ".hero-panel-shots",
         ".section-signal",
         ".section-blueprint",
-        ".section-mini-map",
-        ".list-telemetry",
-        ".collection-telemetry",
         ".card-micro-widget",
         ".card-signal-strip",
-        ".card-pixel-grid",
         ".card-proof-thumb",
         ".section-compass",
         ".page-side-rail"
@@ -567,7 +557,7 @@
     }
 
     function getPageTitle() {
-        return document.querySelector(".page-hero h1, .page-header h1, .hero-redesign h1, .resume-hero h1, main h1")?.textContent.trim()
+        return document.querySelector(".page-hero h1, .hero-redesign h1, .resume-hero h1, main h1")?.textContent.trim()
             || document.title.split("|")[0].trim();
     }
 
@@ -935,9 +925,9 @@
             deck = document.createElement("section");
             deck.className = "site-visual-showcase";
             deck.setAttribute("aria-label", "视觉证据看板");
-            const anchor = main.querySelector(".page-route-strip") || main.querySelector(".page-shot-wall") || main.querySelector(".page-intel-strip");
-            const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
-            if (anchor) anchor.insertAdjacentElement("afterend", deck);
+            const intel = main.querySelector(".page-intel-strip");
+            const hero = main.querySelector(".page-hero, .hero-redesign, .resume-hero");
+            if (intel) intel.insertAdjacentElement("afterend", deck);
             else if (hero) hero.insertAdjacentElement("afterend", deck);
             else main.prepend(deck);
         }
@@ -994,195 +984,6 @@
         `;
     }
 
-    function renderPageScreenshotWall() {
-        const main = getMainContent();
-        if (!main) return;
-
-        const preset = getVisualEvidencePreset();
-        const items = (preset?.items || []).filter((item) => item.src && item.href).slice(0, 5);
-        let wall = main.querySelector(".page-shot-wall");
-        if (items.length < 3) {
-            wall?.remove();
-            return;
-        }
-
-        if (!wall) {
-            wall = document.createElement("section");
-            wall.className = "page-shot-wall";
-            wall.setAttribute("aria-label", "真实页面截图墙");
-            const intel = main.querySelector(".page-intel-strip");
-            const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
-            if (intel) intel.insertAdjacentElement("afterend", wall);
-            else if (hero) hero.insertAdjacentElement("afterend", wall);
-            else main.prepend(wall);
-        }
-
-        const primary = items[0];
-        const rest = items.slice(1);
-        const metrics = (preset.metrics || []).slice(0, 4);
-        const average = Math.round(metrics.reduce((sum, item) => sum + item.value, 0) / Math.max(metrics.length, 1));
-
-        wall.innerHTML = `
-            <div class="shot-wall-inner">
-                <div class="shot-wall-copy">
-                    <div>
-                        <span>Screenshot Evidence</span>
-                        <h2>${escapeHtml(preset.title)}</h2>
-                        <p>${escapeHtml(preset.copy)}</p>
-                    </div>
-                    <div class="shot-wall-metrics">
-                        ${metrics.map((metric) => `
-                            <div class="shot-wall-metric" style="--metric-meter:${metric.value}%">
-                                <span>${escapeHtml(metric.label)}</span>
-                                <strong>${metric.value}</strong>
-                                <em></em>
-                            </div>
-                        `).join("")}
-                    </div>
-                </div>
-                <div class="shot-wall-browser">
-                    <div class="shot-browser-chrome">
-                        <span><i></i><i></i><i></i></span>
-                        <strong>${escapeHtml(primary.label || "Preview")}</strong>
-                    </div>
-                    <a class="shot-wall-main" href="${localAsset(primary.href)}">
-                        <img src="${localAsset(primary.src)}" alt="${escapeHtml(primary.title)}截图" loading="lazy" decoding="async">
-                        <span>${escapeHtml(primary.title)}</span>
-                    </a>
-                    <div class="shot-wall-status">
-                        <span>Live capture</span>
-                        <strong>${average}</strong>
-                    </div>
-                </div>
-                <div class="shot-wall-stack">
-                    ${rest.map((item, index) => `
-                        <a class="shot-stack-item" href="${localAsset(item.href)}" style="--shot-index:${index}">
-                            <img src="${localAsset(item.src)}" alt="${escapeHtml(item.title)}截图" loading="lazy" decoding="async">
-                            <span>
-                                <em>${escapeHtml(item.label || "Shot")}</em>
-                                <strong>${escapeHtml(item.title)}</strong>
-                            </span>
-                        </a>
-                    `).join("")}
-                </div>
-            </div>
-        `;
-    }
-
-    function renderHeroSignalConsole() {
-        const main = getMainContent();
-        if (!main) return;
-
-        const hero = main.querySelector(".hero-redesign, .page-hero, .page-header, .resume-hero, .markdown-converter-container, .code-runner-container");
-        if (!hero || hero.closest(visualWidgetSelector)) return;
-
-        const container = hero.querySelector(":scope > .container") || hero;
-        const heroTextSlot = container.matches(".hero-layout") ? container.querySelector(":scope > div") : null;
-        const consoleHost = heroTextSlot || container;
-        let consolePanel = consoleHost.querySelector(":scope > .hero-signal-console");
-        const strayConsole = container.querySelector(":scope > .hero-signal-console");
-        if (!consolePanel && strayConsole && consoleHost !== container) {
-            consoleHost.appendChild(strayConsole);
-            consolePanel = strayConsole;
-        }
-        const text = getReadableText(main);
-        const headings = getPageHeadings(main);
-        const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector));
-        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector) && !img.closest("header"));
-        const cards = main.querySelectorAll(".surface-card, .project-showcase, .publication-card, .material-card, .blog-card, .capability-card, .timeline-card, .evidence-section, .handbook-section").length;
-        const charCount = text.replace(/\s/g, "").length;
-        const pageTitle = getPageTitle();
-        const keywords = getPageKeywords(main).slice(0, 6);
-        const shots = (getVisualEvidencePreset()?.items || [])
-            .filter((item) => item.src && item.href)
-            .slice(0, 3);
-        const pulse = Math.min(98, Math.max(32, Math.round(34 + headings.length * 5 + images.length * 6 + links.length * 2 + cards * 3)));
-        const stats = [
-            { label: "结构", value: headings.length || 1, icon: "fa-sitemap", meter: Math.min(100, 24 + headings.length * 12) },
-            { label: "证据", value: images.length, icon: "fa-image", meter: Math.min(100, 20 + images.length * 14) },
-            { label: "入口", value: links.length, icon: "fa-link", meter: Math.min(100, 22 + links.length * 4) },
-            { label: "密度", value: Math.max(1, Math.ceil(charCount / 700)), icon: "fa-wave-square", meter: Math.min(100, 28 + charCount / 130) }
-        ];
-
-        if (!consolePanel) {
-            consolePanel = document.createElement("aside");
-            consolePanel.className = "hero-signal-console";
-            consolePanel.setAttribute("aria-label", "首屏页面信号控制台");
-            consoleHost.appendChild(consolePanel);
-        }
-
-        consolePanel.style.setProperty("--hero-pulse", `${pulse * 3.6}deg`);
-        consolePanel.innerHTML = `
-            <div class="hero-console-core">
-                <span>Live Signal</span>
-                <strong>${pulse}</strong>
-                <em>${escapeHtml(pageTitle)}</em>
-            </div>
-            <div class="hero-console-grid">
-                ${stats.map((stat, index) => `
-                    <div class="hero-console-stat" style="--stat-meter:${stat.meter}%;--stat-index:${index}">
-                        <i class="fas ${stat.icon}" aria-hidden="true"></i>
-                        <span>${escapeHtml(stat.label)}</span>
-                        <strong>${escapeHtml(String(stat.value))}</strong>
-                    </div>
-                `).join("")}
-            </div>
-            <div class="hero-console-wave" aria-hidden="true">
-                ${stats.map((stat, index) => `<span style="--wave-meter:${stat.meter}%;--wave-index:${index}"></span>`).join("")}
-            </div>
-            <div class="hero-console-tags">
-                ${keywords.map((keyword, index) => `<span style="--tag-index:${index}">${escapeHtml(keyword)}</span>`).join("")}
-            </div>
-            ${shots.length ? `
-                <div class="hero-console-shots">
-                    ${shots.map((shot, index) => `
-                        <a href="${localAsset(shot.href)}" style="--hero-shot-index:${index}">
-                            <img src="${localAsset(shot.src)}" alt="${escapeHtml(shot.title)}截图" loading="lazy" decoding="async">
-                            <span>${escapeHtml(shot.label || "Shot")}</span>
-                        </a>
-                    `).join("")}
-                </div>
-            ` : ""}
-        `;
-    }
-
-    function renderHeroPanelShots() {
-        const main = getMainContent();
-        if (!main) return;
-
-        const panel = main.querySelector(".hero-redesign .hero-panel");
-        if (!panel) return;
-
-        if (panel.querySelector(".hero-visual-stage")) {
-            panel.querySelector(".hero-panel-shots")?.remove();
-            return;
-        }
-
-        const shots = (getVisualEvidencePreset()?.items || [])
-            .filter((item) => item.src && item.href)
-            .slice(0, 3);
-        let shotGrid = panel.querySelector(".hero-panel-shots");
-        if (!shots.length) {
-            shotGrid?.remove();
-            return;
-        }
-
-        if (!shotGrid) {
-            shotGrid = document.createElement("div");
-            shotGrid.className = "hero-panel-shots";
-            const heading = panel.querySelector("h2");
-            if (heading) heading.insertAdjacentElement("afterend", shotGrid);
-            else panel.prepend(shotGrid);
-        }
-
-        shotGrid.innerHTML = shots.map((shot, index) => `
-            <a href="${localAsset(shot.href)}" class="hero-panel-shot" style="--panel-shot-index:${index}">
-                <img src="${localAsset(shot.src)}" alt="${escapeHtml(shot.title)}截图" loading="lazy" decoding="async">
-                <span>${escapeHtml(shot.label || "Shot")}</span>
-            </a>
-        `).join("");
-    }
-
     function renderCardScreenshotThumbs() {
         const main = getMainContent();
         if (!main) return;
@@ -1213,7 +1014,7 @@
 
         Array.from(main.querySelectorAll(cardSelectors))
             .filter((card) => {
-                if (card.closest(".page-shot-wall, .site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .section-signal, .section-blueprint, header, footer")) return false;
+                if (card.closest(".site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .section-signal, .section-blueprint, header, footer")) return false;
                 if (card.querySelector(":scope > .card-proof-thumb")) return false;
                 if (card.querySelector("img, video, canvas, iframe")) return false;
                 return getReadableText(card).length >= 80;
@@ -1263,8 +1064,8 @@
         const text = getReadableText(main);
         const charCount = text.replace(/\s/g, "").length;
         const headings = getPageHeadings(main);
-        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(".page-intel-strip") && !img.closest(".page-shot-wall") && !img.closest(".page-constellation"));
-        const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(".page-intel-strip") && !link.closest(".page-shot-wall") && !link.closest(".page-motion-ticker") && !link.closest(".page-constellation"));
+        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(".page-intel-strip") && !img.closest(".page-constellation"));
+        const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(".page-intel-strip") && !link.closest(".page-motion-ticker") && !link.closest(".page-constellation"));
         const readingMinutes = Math.max(1, Math.ceil(charCount / 650));
         const pageTitle = getPageTitle();
 
@@ -1280,7 +1081,7 @@
             strip = document.createElement("section");
             strip.className = "page-intel-strip";
             strip.setAttribute("aria-label", "页面情报概览");
-            const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
+            const hero = main.querySelector(".page-hero, .hero-redesign, .resume-hero");
             if (hero) hero.insertAdjacentElement("afterend", strip);
             else main.prepend(strip);
         }
@@ -1333,8 +1134,8 @@
             ticker = document.createElement("section");
             ticker.className = "page-motion-ticker";
             ticker.setAttribute("aria-label", "页面重点速览");
-            const anchor = main.querySelector(".site-visual-showcase") || main.querySelector(".page-route-strip") || main.querySelector(".page-shot-wall") || main.querySelector(".page-intel-strip");
-            if (anchor) anchor.insertAdjacentElement("afterend", ticker);
+            const intel = main.querySelector(".page-intel-strip");
+            if (intel) intel.insertAdjacentElement("afterend", ticker);
             else main.prepend(ticker);
         }
 
@@ -1347,154 +1148,6 @@
         ticker.innerHTML = `<div class="motion-track">${track}</div>`;
     }
 
-    function renderPageRouteStrip() {
-        const main = getMainContent();
-        if (!main) return;
-
-        const headings = getPageHeadings(main).slice(0, 7).map((item, index) => ({
-            text: item.text,
-            href: `#${ensureHeadingId(item.node, index)}`,
-            kind: "Section",
-            icon: "fa-location-dot"
-        }));
-        const actions = getPageActions(main).slice(0, 3).map((item) => ({
-            text: item.text,
-            href: item.href,
-            kind: "Action",
-            icon: "fa-arrow-up-right-from-square"
-        }));
-        const keywordItems = getPageKeywords(main).slice(0, 7).map((keyword) => ({
-            text: keyword,
-            href: "",
-            kind: "Signal",
-            icon: "fa-sparkles"
-        }));
-        const items = [...headings, ...actions];
-        while (items.length < 5 && keywordItems.length) items.push(keywordItems.shift());
-
-        let routeStrip = main.querySelector(".page-route-strip");
-        if (items.length < 3) {
-            routeStrip?.remove();
-            return;
-        }
-
-        if (!routeStrip) {
-            routeStrip = document.createElement("section");
-            routeStrip.className = "page-route-strip";
-            routeStrip.setAttribute("aria-label", "页面章节路径");
-            const anchor = main.querySelector(".page-shot-wall") || main.querySelector(".page-intel-strip");
-            const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
-            if (anchor) anchor.insertAdjacentElement("afterend", routeStrip);
-            else if (hero) hero.insertAdjacentElement("afterend", routeStrip);
-            else main.prepend(routeStrip);
-        }
-
-        const visibleItems = items.slice(0, 8);
-        const progressStops = visibleItems.map((_, index) => {
-            const position = visibleItems.length > 1 ? (index / (visibleItems.length - 1)) * 100 : 0;
-            return `<span style="--route-pos:${position}%"></span>`;
-        }).join("");
-        routeStrip.innerHTML = `
-            <div class="route-strip-head">
-                <span>Page Route</span>
-                <strong>${escapeHtml(getPageTitle())}</strong>
-            </div>
-            <div class="route-strip-line" aria-hidden="true">${progressStops}</div>
-            <div class="route-strip-track">
-                ${visibleItems.map((item, index) => {
-                    const content = `
-                        <em>${String(index + 1).padStart(2, "0")}</em>
-                        <i class="fas ${item.icon}" aria-hidden="true"></i>
-                        <span>${escapeHtml(item.text)}</span>
-                        <b>${escapeHtml(item.kind)}</b>
-                    `;
-                    if (item.href) {
-                        return `<a href="${item.href}" class="route-node" style="--route-index:${index}">${content}</a>`;
-                    }
-                    return `<span class="route-node" style="--route-index:${index}">${content}</span>`;
-                }).join("")}
-            </div>
-        `;
-    }
-
-    function renderPageOrbitDashboard() {
-        const main = getMainContent();
-        if (!main) return;
-
-        const headings = getPageHeadings(main);
-        const links = Array.from(main.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector));
-        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector) && !img.closest("header"));
-        const cards = Array.from(main.querySelectorAll(".surface-card, .project-showcase, .publication-card, .material-card, .blog-card, .capability-card, .timeline-card, .handbook-section, .evidence-section, .case-block"))
-            .filter((card) => !card.closest(visualWidgetSelector));
-        const keywords = getPageKeywords(main).slice(0, 8);
-        const textLength = getReadableText(main).replace(/\s/g, "").length;
-        const score = Math.min(99, Math.max(28, Math.round(30 + headings.length * 5 + images.length * 5 + cards.length * 2 + links.length * 0.8)));
-
-        let orbit = main.querySelector(".page-orbit-dashboard");
-        if (headings.length + cards.length + links.length < 6) {
-            orbit?.remove();
-            return;
-        }
-
-        if (!orbit) {
-            orbit = document.createElement("section");
-            orbit.className = "page-orbit-dashboard";
-            orbit.setAttribute("aria-label", "页面轨道仪表盘");
-            const intel = main.querySelector(".page-intel-strip");
-            const shotWall = main.querySelector(".page-shot-wall");
-            const hero = main.querySelector(".page-hero, .page-header, .hero-redesign, .resume-hero");
-            if (intel) intel.insertAdjacentElement("afterend", orbit);
-            else if (shotWall) shotWall.insertAdjacentElement("beforebegin", orbit);
-            else if (hero) hero.insertAdjacentElement("afterend", orbit);
-            else main.prepend(orbit);
-        }
-
-        const metrics = [
-            { label: "章节", value: headings.length, meter: Math.min(100, 20 + headings.length * 10), icon: "fa-sitemap" },
-            { label: "图像", value: images.length, meter: Math.min(100, 20 + images.length * 12), icon: "fa-image" },
-            { label: "入口", value: links.length, meter: Math.min(100, 12 + links.length * 4), icon: "fa-link" },
-            { label: "卡片", value: cards.length, meter: Math.min(100, 18 + cards.length * 5), icon: "fa-table-cells-large" }
-        ];
-        const orbitNodes = metrics.concat(keywords.slice(0, 4).map((keyword, index) => ({
-            label: keyword,
-            value: index + 1,
-            meter: 46 + index * 10,
-            icon: "fa-sparkles"
-        }))).slice(0, 8);
-
-        orbit.style.setProperty("--orbit-score", `${score * 3.6}deg`);
-        orbit.innerHTML = `
-            <div class="orbit-core">
-                <strong>${score}</strong>
-                <span>Orbit</span>
-            </div>
-            <div class="orbit-rings" aria-hidden="true">
-                ${orbitNodes.map((node, index) => `
-                    <span class="orbit-node orbit-node-${index + 1}" style="--orbit-meter:${node.meter}%">
-                        <i class="fas ${node.icon}" aria-hidden="true"></i>
-                    </span>
-                `).join("")}
-            </div>
-            <div class="orbit-copy">
-                <span>Page Orbit</span>
-                <strong>${escapeHtml(getPageTitle())}</strong>
-                <em>${Math.max(1, Math.ceil(textLength / 650))} min read · ${cards.length} cards · ${links.length} links</em>
-            </div>
-            <div class="orbit-metrics">
-                ${metrics.map((metric) => `
-                    <div style="--metric:${metric.meter}%">
-                        <i class="fas ${metric.icon}" aria-hidden="true"></i>
-                        <span>${escapeHtml(metric.label)}</span>
-                        <strong>${escapeHtml(String(metric.value))}</strong>
-                    </div>
-                `).join("")}
-            </div>
-            <div class="orbit-keywords">
-                ${keywords.map((keyword, index) => `<span style="--keyword-index:${index}">${escapeHtml(keyword)}</span>`).join("")}
-            </div>
-        `;
-    }
-
     function renderMediaFilmstrip() {
         const main = getMainContent();
         if (!main) return;
@@ -1502,7 +1155,7 @@
         const images = Array.from(main.querySelectorAll("img"))
             .filter((img) => {
                 const src = img.getAttribute("src") || "";
-                return src && !img.closest("header") && !img.closest(".page-shot-wall") && !img.closest(".site-visual-showcase") && !img.closest(".page-media-filmstrip") && !img.closest(".page-constellation") && !img.classList.contains("profile-img");
+                return src && !img.closest("header") && !img.closest(".site-visual-showcase") && !img.closest(".page-media-filmstrip") && !img.closest(".page-constellation") && !img.classList.contains("profile-img");
             })
             .slice(0, 8);
 
@@ -1560,15 +1213,9 @@
             constellation.setAttribute("aria-label", "页面内容星图");
             const filmstrip = main.querySelector(".page-media-filmstrip");
             const ticker = main.querySelector(".page-motion-ticker");
-            const showcase = main.querySelector(".site-visual-showcase");
-            const route = main.querySelector(".page-route-strip");
-            const shotWall = main.querySelector(".page-shot-wall");
             const intel = main.querySelector(".page-intel-strip");
             if (filmstrip) filmstrip.insertAdjacentElement("afterend", constellation);
             else if (ticker) ticker.insertAdjacentElement("afterend", constellation);
-            else if (showcase) showcase.insertAdjacentElement("afterend", constellation);
-            else if (route) route.insertAdjacentElement("afterend", constellation);
-            else if (shotWall) shotWall.insertAdjacentElement("afterend", constellation);
             else if (intel) intel.insertAdjacentElement("afterend", constellation);
             else main.prepend(constellation);
         }
@@ -1635,15 +1282,11 @@
             const constellation = main.querySelector(".page-constellation");
             const filmstrip = main.querySelector(".page-media-filmstrip");
             const showcase = main.querySelector(".site-visual-showcase");
-            const route = main.querySelector(".page-route-strip");
-            const shotWall = main.querySelector(".page-shot-wall");
             const ticker = main.querySelector(".page-motion-ticker");
             const intel = main.querySelector(".page-intel-strip");
             if (constellation) constellation.insertAdjacentElement("afterend", lab);
             else if (filmstrip) filmstrip.insertAdjacentElement("afterend", lab);
             else if (showcase) showcase.insertAdjacentElement("afterend", lab);
-            else if (route) route.insertAdjacentElement("afterend", lab);
-            else if (shotWall) shotWall.insertAdjacentElement("afterend", lab);
             else if (ticker) ticker.insertAdjacentElement("afterend", lab);
             else if (intel) intel.insertAdjacentElement("afterend", lab);
             else main.prepend(lab);
@@ -1718,118 +1361,6 @@
         `;
     }
 
-    function renderPageEvidenceBento() {
-        const main = getMainContent();
-        if (!main) return;
-
-        const headings = getPageHeadings(main).slice(0, 6);
-        const keywords = getPageKeywords(main).filter((keyword) => keyword.length <= 18).slice(0, 9);
-        const actions = getPageActions(main).slice(0, 4);
-        const images = Array.from(main.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector) && !img.closest("header"));
-        const cards = Array.from(main.querySelectorAll(".surface-card, .project-showcase, .publication-card, .material-card, .blog-card, .capability-card, .timeline-card, .handbook-section, .evidence-section, .case-block"))
-            .filter((card) => !card.closest(visualWidgetSelector));
-        const textLength = getReadableText(main).replace(/\s/g, "").length;
-        const signalCount = headings.length + keywords.length + actions.length + images.length + cards.length;
-        let bento = main.querySelector(".page-evidence-bento");
-
-        if (signalCount < 6) {
-            bento?.remove();
-            return;
-        }
-
-        if (!bento) {
-            bento = document.createElement("section");
-            bento.className = "page-evidence-bento";
-            bento.setAttribute("aria-label", "页面证据 Bento 可视化");
-            const flow = main.querySelector(".page-flow-lab");
-            const constellation = main.querySelector(".page-constellation");
-            const filmstrip = main.querySelector(".page-media-filmstrip");
-            const showcase = main.querySelector(".site-visual-showcase");
-            const route = main.querySelector(".page-route-strip");
-            const shotWall = main.querySelector(".page-shot-wall");
-            if (flow) flow.insertAdjacentElement("afterend", bento);
-            else if (constellation) constellation.insertAdjacentElement("afterend", bento);
-            else if (filmstrip) filmstrip.insertAdjacentElement("afterend", bento);
-            else if (showcase) showcase.insertAdjacentElement("afterend", bento);
-            else if (route) route.insertAdjacentElement("afterend", bento);
-            else if (shotWall) shotWall.insertAdjacentElement("afterend", bento);
-            else main.prepend(bento);
-        }
-
-        const metrics = [
-            { label: "章节", value: Math.max(1, headings.length), icon: "fa-sitemap", meter: Math.min(100, 28 + headings.length * 11) },
-            { label: "图像", value: images.length, icon: "fa-image", meter: Math.min(100, 20 + images.length * 12) },
-            { label: "卡片", value: cards.length, icon: "fa-table-cells-large", meter: Math.min(100, 18 + cards.length * 6) },
-            { label: "行动", value: actions.length, icon: "fa-arrow-up-right-from-square", meter: Math.min(100, 26 + actions.length * 14) }
-        ];
-        const density = Math.min(100, Math.max(18, Math.round(textLength / 90)));
-        const heatCells = Array.from({ length: 24 }, (_, index) => {
-            const seed = [textLength, headings.length, images.length, cards.length, actions.length, keywords.length][index % 6] || 1;
-            return Math.min(100, Math.max(16, Math.round((seed * (index + 3)) % 92) + 8));
-        });
-        const timeline = headings.length ? headings : keywords.slice(0, 6).map((keyword) => ({ text: keyword }));
-        const presetImage = (getVisualEvidencePreset()?.items || []).find((item) => item.src);
-        const firstImage = images[0];
-        const imgSrc = presetImage?.src ? localAsset(presetImage.src) : (firstImage ? (firstImage.currentSrc || firstImage.src || firstImage.getAttribute("src")) : "");
-        const imgAlt = presetImage?.title || (firstImage ? (firstImage.getAttribute("alt") || getPageTitle()) : "");
-
-        bento.style.setProperty("--bento-density", `${density * 3.6}deg`);
-        bento.innerHTML = `
-            <div class="bento-head">
-                <div>
-                    <span>Evidence Bento</span>
-                    <h2>${escapeHtml(getPageTitle())} 可视证据面板</h2>
-                </div>
-                <p>自动读取本页章节、图像、卡片和操作入口，生成一组更像作品集产品页的小组件。</p>
-            </div>
-            <div class="bento-grid">
-                <div class="bento-tile bento-tile-score">
-                    <span>Density</span>
-                    <strong>${density}</strong>
-                    <em>Content Pulse</em>
-                </div>
-                <div class="bento-tile bento-tile-heat" aria-hidden="true">
-                    ${heatCells.map((value, index) => `<span style="--heat:${value}%;--heat-index:${index}"></span>`).join("")}
-                </div>
-                <div class="bento-tile bento-tile-metrics">
-                    ${metrics.map((metric) => `
-                        <div style="--metric:${metric.meter}%">
-                            <i class="fas ${metric.icon}" aria-hidden="true"></i>
-                            <span>${escapeHtml(metric.label)}</span>
-                            <strong>${escapeHtml(String(metric.value))}</strong>
-                            <em></em>
-                        </div>
-                    `).join("")}
-                </div>
-                <div class="bento-tile bento-tile-timeline">
-                    ${timeline.slice(0, 6).map((item, index) => {
-                        const id = item.node ? ensureHeadingId(item.node, index) : "";
-                        const href = id ? `#${id}` : "";
-                        const content = `<b>${String(index + 1).padStart(2, "0")}</b><span>${escapeHtml(item.text)}</span>`;
-                        return href ? `<a href="${href}">${content}</a>` : `<span>${content}</span>`;
-                    }).join("")}
-                </div>
-                <div class="bento-tile bento-tile-image">
-                    ${imgSrc ? `<img src="${imgSrc}" alt="${escapeHtml(imgAlt)}" loading="lazy" decoding="async">` : `<span class="bento-image-placeholder"><i class="fas fa-image" aria-hidden="true"></i>No image</span>`}
-                    <strong>${escapeHtml(imgAlt || "页面视觉入口")}</strong>
-                </div>
-                <div class="bento-tile bento-tile-keywords">
-                    ${keywords.map((keyword, index) => `<span style="--keyword-index:${index}">${escapeHtml(keyword)}</span>`).join("")}
-                </div>
-                ${actions.length ? `
-                    <div class="bento-tile bento-tile-actions">
-                        ${actions.map((action) => `
-                            <a href="${action.href}">
-                                <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
-                                <span>${escapeHtml(action.text)}</span>
-                            </a>
-                        `).join("")}
-                    </div>
-                ` : ""}
-            </div>
-        `;
-    }
-
     function renderHeadingSignalBadges() {
         const main = getMainContent();
         if (!main) return;
@@ -1880,175 +1411,6 @@
         });
     }
 
-    function renderListTelemetry() {
-        const main = getMainContent();
-        if (!main) return;
-        if (main.querySelector(".jp-Notebook, .jp-Cell, .jp-RenderedHTMLCommon")) return;
-
-        const skipSelector = [
-            visualWidgetSelector,
-            "header",
-            "footer",
-            "nav",
-            ".dropdown-content",
-            ".hero-actions",
-            ".project-actions",
-            ".publication-actions",
-            ".material-actions",
-            ".page-action-bar",
-            ".command-palette",
-            ".floating-tool",
-            ".api-direct-entry",
-            ".section-compass",
-            ".tag-list",
-            ".project-tags",
-            ".publication-tags",
-            ".social-links",
-            ".breadcrumb",
-            ".tabs",
-            ".tab-list"
-        ].join(",");
-
-        Array.from(main.querySelectorAll("ul, ol"))
-            .filter((list) => {
-                if (list.closest(skipSelector)) return false;
-                if (list.closest(".visual-list")) return false;
-                const className = String(list.className || "");
-                if (/nav|menu|tag|action|tabs|pagination|breadcrumb/i.test(className)) return false;
-                const items = Array.from(list.children).filter((item) => item.tagName === "LI");
-                if (items.length < 3 || items.length > 14) return false;
-                const textLength = items.map((item) => getCleanNodeText(item)).join(" ").replace(/\s/g, "").length;
-                return textLength >= 70;
-            })
-            .slice(0, 56)
-            .forEach((list, index) => {
-                const items = Array.from(list.children).filter((item) => item.tagName === "LI");
-                const links = Array.from(list.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector)).length;
-                const section = list.closest("section, article, .container, .handbook-section, .evidence-section, .case-block") || main;
-                const heading = Array.from(section.querySelectorAll("h2, h3"))
-                    .filter((node) => !node.closest(visualWidgetSelector))[0];
-                const title = getCleanNodeText(heading) || (list.tagName === "OL" ? "步骤清单" : "结构要点");
-                const itemTexts = items.map((item) => getCleanNodeText(item));
-                const longest = Math.max(...itemTexts.map((text) => text.replace(/\s/g, "").length), 1);
-                const average = Math.round(itemTexts.reduce((sum, text) => sum + text.replace(/\s/g, "").length, 0) / Math.max(items.length, 1));
-                const completion = Math.min(98, Math.max(24, Math.round(26 + items.length * 5 + links * 8 + average / 3)));
-                let telemetry = list.previousElementSibling?.classList?.contains("list-telemetry")
-                    ? list.previousElementSibling
-                    : null;
-
-                list.classList.add("visual-list");
-                list.style.setProperty("--list-accent-index", String(index % 6));
-                items.forEach((item, itemIndex) => {
-                    const density = Math.min(100, Math.max(14, Math.round((itemTexts[itemIndex].replace(/\s/g, "").length / longest) * 100)));
-                    item.style.setProperty("--item-meter", `${density}%`);
-                    item.style.setProperty("--item-index", String(itemIndex + 1));
-                });
-
-                if (!telemetry) {
-                    telemetry = document.createElement("div");
-                    telemetry.className = "list-telemetry";
-                    telemetry.setAttribute("aria-label", "列表可视化概览");
-                    list.insertAdjacentElement("beforebegin", telemetry);
-                }
-
-                telemetry.style.setProperty("--list-score", `${completion}%`);
-                telemetry.innerHTML = `
-                    <div class="list-telemetry-copy">
-                        <span>${list.tagName === "OL" ? "Step Signal" : "List Signal"}</span>
-                        <strong>${escapeHtml(title)}</strong>
-                    </div>
-                    <div class="list-telemetry-bars" aria-hidden="true">
-                        ${itemTexts.map((text, barIndex) => {
-                            const density = Math.min(100, Math.max(14, Math.round((text.replace(/\s/g, "").length / longest) * 100)));
-                            return `<span style="--bar-meter:${density}%;--bar-index:${barIndex}"></span>`;
-                        }).join("")}
-                    </div>
-                    <div class="list-telemetry-stats">
-                        <span><i class="fas fa-list-check" aria-hidden="true"></i><b>${items.length}</b><em>项</em></span>
-                        <span><i class="fas fa-link" aria-hidden="true"></i><b>${links}</b><em>入口</em></span>
-                        <span><i class="fas fa-wave-square" aria-hidden="true"></i><b>${average}</b><em>密度</em></span>
-                    </div>
-                `;
-            });
-    }
-
-    function renderCollectionTelemetry() {
-        const main = getMainContent();
-        if (!main) return;
-
-        const collectionSelectors = [
-            ".metrics-grid",
-            ".focus-grid",
-            ".capability-grid",
-            ".project-hub-grid",
-            ".project-list-group",
-            ".blog-grid",
-            ".material-grid",
-            ".resource-grid",
-            ".nav-grid",
-            ".video-grid",
-            ".visual-proof-grid",
-            ".two-column",
-            ".evidence-card-grid",
-            ".markdown-panel",
-            ".markdown-examples",
-            ".control-panel",
-            ".code-panel",
-            ".evidence-grid",
-            ".handbook-grid",
-            ".timeline-grid"
-        ].join(",");
-
-        Array.from(main.querySelectorAll(collectionSelectors))
-            .filter((collection) => {
-                if (collection.closest(visualWidgetSelector)) return false;
-                if (collection.previousElementSibling?.classList?.contains("collection-telemetry")) return false;
-                const children = Array.from(collection.children).filter((child) => {
-                    if (!(child instanceof HTMLElement)) return false;
-                    if (child.matches(visualWidgetSelector)) return false;
-                    return getReadableText(child).length >= 20 || child.querySelector("img, a[href]");
-                });
-                return children.length >= 2;
-            })
-            .slice(0, 42)
-            .forEach((collection, index) => {
-                const children = Array.from(collection.children).filter((child) => child instanceof HTMLElement && !child.matches(visualWidgetSelector));
-                const cards = children.length;
-                const links = Array.from(collection.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector)).length;
-                const images = Array.from(collection.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector)).length;
-                const headings = Array.from(collection.querySelectorAll("h2, h3, h4")).filter((heading) => !heading.closest(visualWidgetSelector)).length;
-                const host = collection.closest("section, article, .container, .case-block, .handbook-section, .evidence-section") || main;
-                const heading = Array.from(host.querySelectorAll("h2, h3"))
-                    .filter((node) => !node.closest(visualWidgetSelector))[0];
-                const title = getCleanNodeText(heading) || "内容集合";
-                const score = Math.min(98, Math.max(28, 20 + cards * 8 + links * 4 + images * 6 + headings * 3));
-                const telemetry = document.createElement("div");
-                telemetry.className = "collection-telemetry";
-                telemetry.setAttribute("aria-label", "内容集合可视化概览");
-                telemetry.style.setProperty("--collection-score", `${score}%`);
-                telemetry.innerHTML = `
-                    <div class="collection-telemetry-map" aria-hidden="true">
-                        ${children.slice(0, 12).map((child, childIndex) => {
-                            const weight = Math.min(100, Math.max(18, getReadableText(child).replace(/\s/g, "").length / 3));
-                            return `<span style="--tile-meter:${weight}%;--tile-index:${childIndex}"></span>`;
-                        }).join("")}
-                    </div>
-                    <div class="collection-telemetry-copy">
-                        <span>Collection Signal</span>
-                        <strong>${escapeHtml(title)}</strong>
-                    </div>
-                    <div class="collection-telemetry-stats">
-                        <span><i class="fas fa-layer-group" aria-hidden="true"></i><b>${cards}</b><em>卡片</em></span>
-                        <span><i class="fas fa-link" aria-hidden="true"></i><b>${links}</b><em>入口</em></span>
-                        <span><i class="fas fa-image" aria-hidden="true"></i><b>${images}</b><em>图像</em></span>
-                    </div>
-                `;
-                collection.insertAdjacentElement("beforebegin", telemetry);
-                collection.classList.add("visual-collection");
-                collection.style.setProperty("--collection-index", String(index % 6));
-            });
-    }
-
     function renderSectionSignals() {
         const main = getMainContent();
         if (!main) return;
@@ -2059,13 +1421,8 @@
             "resume-hero",
             "page-intel-strip",
             "page-motion-ticker",
-            "page-shot-wall",
-            "page-route-strip",
             "page-media-filmstrip",
             "page-constellation",
-            "page-flow-lab",
-            "page-evidence-bento",
-            "page-orbit-dashboard",
             "site-visual-showcase",
             "section-blueprint"
         ];
@@ -2073,7 +1430,7 @@
         const sections = Array.from(main.querySelectorAll(":scope > section, :scope > .resume-builder-container, :scope > .markdown-converter-container, :scope > .resource-grid, :scope > .nav-grid, :scope > .video-section, .handbook-section, .evidence-section, .case-block"))
             .filter((section) => {
                 if (skipClasses.some((className) => section.classList.contains(className))) return false;
-                if (section.closest(visualWidgetSelector)) return false;
+                if (section.closest(".page-constellation, .page-media-filmstrip, .page-intel-strip, .site-visual-showcase")) return false;
                 const text = getReadableText(section);
                 if (section.matches(".resume-builder-container, .markdown-converter-container, .resource-grid, .nav-grid, .video-section")) return text.length >= 50;
                 return text.length >= 90;
@@ -2085,7 +1442,7 @@
             let signal = host.querySelector(":scope > .section-signal");
             const title = section.querySelector("h2, h3, h1")?.textContent.trim().replace(/\s+/g, " ") || `Section ${index + 1}`;
             const contentText = Array.from(host.childNodes)
-                .filter((node) => !(node.nodeType === 1 && node.matches?.(visualWidgetSelector)))
+                .filter((node) => !(node.nodeType === 1 && (node.classList?.contains("section-signal") || node.classList?.contains("section-blueprint"))))
                 .map((node) => node.textContent || "")
                 .join(" ")
                 .replace(/\s+/g, " ")
@@ -2129,20 +1486,15 @@
             "resume-hero",
             "page-intel-strip",
             "page-motion-ticker",
-            "page-shot-wall",
-            "page-route-strip",
             "page-media-filmstrip",
             "page-constellation",
-            "page-flow-lab",
-            "page-evidence-bento",
-            "page-orbit-dashboard",
             "site-visual-showcase"
         ];
 
         const sections = Array.from(main.querySelectorAll(":scope > section, :scope > .resume-builder-container, :scope > .markdown-converter-container, :scope > .resource-grid, :scope > .nav-grid, :scope > .video-section, .handbook-section, .evidence-section, .case-block"))
             .filter((section) => {
                 if (skipClasses.some((className) => section.classList.contains(className))) return false;
-                if (section.closest(visualWidgetSelector)) return false;
+                if (section.closest(".page-constellation, .page-media-filmstrip, .page-intel-strip, .site-visual-showcase")) return false;
                 const text = getReadableText(section);
                 if (section.matches(".resume-builder-container, .markdown-converter-container, .resource-grid, .nav-grid, .video-section")) return text.length >= 50;
                 return text.length >= 150;
@@ -2170,7 +1522,7 @@
             const host = section.querySelector(":scope > .container") || section;
             let blueprint = host.querySelector(":scope > .section-blueprint");
             const rawText = Array.from(host.childNodes)
-                .filter((node) => !(node.nodeType === 1 && node.matches?.(visualWidgetSelector)))
+                .filter((node) => !(node.nodeType === 1 && (node.classList?.contains("section-signal") || node.classList?.contains("section-blueprint"))))
                 .map((node) => node.textContent || "")
                 .join(" ")
                 .replace(/\s+/g, " ")
@@ -2237,58 +1589,6 @@
         });
     }
 
-    function renderSectionMiniMaps() {
-        const main = getMainContent();
-        if (!main) return;
-
-        const sections = Array.from(main.querySelectorAll(":scope > section, :scope > .resume-builder-container, :scope > .markdown-converter-container, .handbook-section, .evidence-section, .case-block"))
-            .filter((section) => {
-                if (section.closest(visualWidgetSelector)) return false;
-                if (section.matches(".page-hero, .hero-redesign, .resume-hero, .page-intel-strip, .page-shot-wall, .page-route-strip, .page-media-filmstrip, .site-visual-showcase, .page-constellation, .page-flow-lab, .page-evidence-bento, .page-orbit-dashboard")) return false;
-                return getReadableText(section).length >= 120;
-            })
-            .slice(0, 18);
-
-        sections.forEach((section, index) => {
-            const host = section.querySelector(":scope > .container") || section;
-            if (host.querySelector(":scope > .section-mini-map")) return;
-
-            const title = section.querySelector("h2, h3, h1")?.textContent.trim().replace(/\s+/g, " ") || `Section ${index + 1}`;
-            const textLength = getReadableText(section).replace(/\s/g, "").length;
-            const links = Array.from(section.querySelectorAll("a[href]")).filter((link) => !link.closest(visualWidgetSelector)).length;
-            const images = Array.from(section.querySelectorAll("img")).filter((img) => !img.closest(visualWidgetSelector)).length;
-            const lists = Array.from(section.querySelectorAll("ul, ol")).filter((list) => !list.closest(visualWidgetSelector)).length;
-            const cells = Array.from({ length: 18 }, (_, cellIndex) => {
-                const seed = [textLength, links * 19, images * 31, lists * 23, index * 17][cellIndex % 5] || 9;
-                return Math.min(100, Math.max(14, (seed + cellIndex * 11) % 100));
-            });
-            const map = document.createElement("div");
-            map.className = "section-mini-map";
-            map.setAttribute("aria-label", "章节微型地图");
-            map.innerHTML = `
-                <div class="mini-map-grid" aria-hidden="true">
-                    ${cells.map((value, cellIndex) => `<span style="--cell:${value}%;--cell-index:${cellIndex}"></span>`).join("")}
-                </div>
-                <div class="mini-map-copy">
-                    <span>M${String(index + 1).padStart(2, "0")}</span>
-                    <strong>${escapeHtml(title)}</strong>
-                </div>
-                <div class="mini-map-stats">
-                    <span><i class="fas fa-align-left" aria-hidden="true"></i>${Math.max(1, Math.ceil(textLength / 520))}m</span>
-                    <span><i class="fas fa-link" aria-hidden="true"></i>${links}</span>
-                    <span><i class="fas fa-image" aria-hidden="true"></i>${images}</span>
-                    <span><i class="fas fa-list" aria-hidden="true"></i>${lists}</span>
-                </div>
-            `;
-
-            const blueprint = host.querySelector(":scope > .section-blueprint");
-            const signal = host.querySelector(":scope > .section-signal");
-            if (blueprint) blueprint.insertAdjacentElement("afterend", map);
-            else if (signal) signal.insertAdjacentElement("afterend", map);
-            else host.prepend(map);
-        });
-    }
-
     function renderCardMicroWidgets() {
         const main = getMainContent();
         if (!main) return;
@@ -2334,7 +1634,7 @@
 
         Array.from(main.querySelectorAll(cardSelectors))
             .filter((card) => {
-                if (card.closest(".page-shot-wall, .site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .section-signal, header, footer")) return false;
+                if (card.closest(".site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .section-signal, header, footer")) return false;
                 return getReadableText(card).length >= 40;
             })
             .slice(0, 80)
@@ -2392,7 +1692,7 @@
 
         Array.from(main.querySelectorAll(cardSelectors))
             .filter((card) => {
-                if (card.closest(".page-shot-wall, .site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .section-signal, .section-blueprint, header, footer")) return false;
+                if (card.closest(".site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .section-signal, .section-blueprint, header, footer")) return false;
                 return getReadableText(card).length >= 70;
             })
             .slice(0, 90)
@@ -2418,62 +1718,6 @@
                 }
 
                 strip.innerHTML = values.map((value, index) => `<span style="--strip-meter:${value}%;--strip-index:${index}"></span>`).join("");
-            });
-    }
-
-    function renderCardPixelGrids() {
-        const main = getMainContent();
-        if (!main) return;
-
-        const cardSelectors = [
-            ".publication-card",
-            ".project-showcase",
-            ".surface-card",
-            ".material-card",
-            ".capability-card",
-            ".blog-card",
-            ".timeline-card",
-            ".roadmap-card",
-            ".achievement-card",
-            ".service-card",
-            ".story-card",
-            ".library-card",
-            ".resource-card",
-            ".framework-card",
-            ".nav-card",
-            ".video-card",
-            ".example-card",
-            ".case-block",
-            ".handbook-section",
-            ".evidence-section",
-            ".api-card",
-            ".api-widget-card",
-            ".proxy-api-card"
-        ].join(",");
-
-        Array.from(main.querySelectorAll(cardSelectors))
-            .filter((card) => {
-                if (card.closest(".page-shot-wall, .site-visual-showcase, .page-constellation, .page-media-filmstrip, .page-intel-strip, .page-evidence-bento, .section-signal, .section-blueprint, header, footer")) return false;
-                if (card.querySelector(":scope > .card-pixel-grid")) return false;
-                return getReadableText(card).length >= 55;
-            })
-            .slice(0, 90)
-            .forEach((card, index) => {
-                const text = getReadableText(card).replace(/\s/g, "");
-                const links = card.querySelectorAll("a[href]").length;
-                const images = card.querySelectorAll("img").length;
-                const headings = card.querySelectorAll("h2, h3, h4").length;
-                const code = card.querySelectorAll("pre, code").length;
-                const values = Array.from({ length: 12 }, (_, cellIndex) => {
-                    const seed = [text.length, links * 17, images * 23, headings * 19, code * 29, index * 11][cellIndex % 6] || 7;
-                    return Math.min(100, Math.max(12, (seed + cellIndex * 13) % 100));
-                });
-                const pixel = document.createElement("div");
-                pixel.className = "card-pixel-grid";
-                pixel.setAttribute("aria-hidden", "true");
-                pixel.innerHTML = values.map((value, cellIndex) => `<span style="--pixel:${value}%;--pixel-index:${cellIndex}"></span>`).join("");
-                card.classList.add("has-card-pixel-grid");
-                card.appendChild(pixel);
             });
     }
 
@@ -2518,28 +1762,18 @@
 
     function renderGlobalVisualWidgets() {
         initAmbientLayer();
-        renderHeroSignalConsole();
-        renderHeroPanelShots();
         renderPageIntelligence();
-        renderPageOrbitDashboard();
-        renderPageScreenshotWall();
-        renderPageRouteStrip();
         renderVisualEvidenceDeck();
         renderCardScreenshotThumbs();
         renderMotionTicker();
         renderMediaFilmstrip();
         renderPageConstellation();
         renderPageFlowLab();
-        renderPageEvidenceBento();
         renderHeadingSignalBadges();
-        renderListTelemetry();
-        renderCollectionTelemetry();
         renderSectionSignals();
         renderSectionBlueprints();
-        renderSectionMiniMaps();
         renderCardMicroWidgets();
         renderCardSignalStrips();
-        renderCardPixelGrids();
         renderSectionCompass();
     }
 
@@ -2630,10 +1864,5 @@
     initContactValidation();
     refreshEnhancements();
     window.symgoRefreshEnhancements = refreshEnhancements;
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", refreshEnhancements, { once: true });
-    }
-    window.addEventListener("load", refreshEnhancements, { once: true });
-    [900, 2400].forEach((delay) => window.setTimeout(refreshEnhancements, delay));
     document.addEventListener("symgo:content-updated", refreshEnhancements);
 })();
